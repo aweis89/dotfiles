@@ -1,4 +1,4 @@
-call plug#begin('~/.config/nvim/pluglsp')
+call plug#begin('~/.config/nvim/plug')
 Plug 'easymotion/vim-easymotion'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
