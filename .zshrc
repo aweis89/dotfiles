@@ -44,12 +44,6 @@ zinit light junegunn/fzf
 zinit ice from"gh-r" as"program"
 zinit light ahmetb/kubectx
 
-# Scripts that are built at install (there's single default make target, "install",
-# and it constructs scripts by `cat'ing a few files). The make'' ice could also be:
-# `make"install PREFIX=$ZPFX"`, if "install" wouldn't be the only, default target.
-zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX"
-zinit light tj/git-extras
-
 zinit wait lucid for \
       OMZ::plugins/common-aliases \
       OMZ::plugins/alias-finder \
@@ -57,12 +51,35 @@ zinit wait lucid for \
       OMZ::plugins/cp \
       OMZ::plugins/encode64 \
       OMZ::plugins/extract \
-      OMZ::plugins/git \
       if"[[ $+commands[go] ]]" OMZ::plugins/golang \
       if"[[ $+commands[npm] ]]" OMZ::plugins/npm \
       if"[[ $+commands[sudo] ]]" OMZ::plugins/sudo \
       if"[[ $+commands[systemd] ]]" OMZ::plugins/systemd \
       OMZ::plugins/urltools
+
+# oh-my-zsh plugins
+zinit ice wait'!'
+zinit snippet OMZ::lib/git.zsh
+zinit ice wait'!'
+zinit snippet OMZP::git
+zinit ice wait'!'
+zinit snippet OMZP::fzf
+zinit ice wait'!'
+zinit snippet OMZP::ssh-agent
+
+# https://github.com/zdharma/zinit-configs/blob/a60ff64823778969ce2b66230fd8cfb1a957fe89/psprint/zshrc.zsh#L277
+# Fast-syntax-highlighting & autosuggestions
+zinit wait lucid for \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" \
+    zdharma/fast-syntax-highlighting \
+ atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+ blockf \
+    zsh-users/zsh-completions
+
+# GitHub Plugins
+zinit ice wait'!'
+zinit light zsh-users/zsh-history-substring-search
 
 # Handle completions without loading any plugin, see "clist" command.
 # This one is to be ran just once, in interactive session.

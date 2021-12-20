@@ -4,7 +4,9 @@ Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 
 Plug 'itchyny/lightline.vim'
-Plug 'nvim-lua/lsp-status.nvim'
+" Plug 'nvim-lua/lsp-status.nvim'
+" Plug 'glepnir/galaxyline.nvim', {'branch': 'main'}
+
 
 " Plug 'jamespwilliams/bat.vim'
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -219,6 +221,18 @@ lua <<EOF
       end
     end
   end
+
+  -- local colors = require('galaxyline.colors')
+
+  -- require('galaxyline').section.left[1] = {
+  --   FileSize = {
+  --     provider = 'FileSize',
+  --     icon = '   ',
+  --     highlight = {colors.green,colors.purple},
+  --     separator = '',
+  --     separator_highlight = {colors.purple,colors.darkblue},
+  --   }
+  -- }
 EOF
 
 " Register the components:
