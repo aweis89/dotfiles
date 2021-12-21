@@ -2,6 +2,7 @@ call plug#begin('~/.config/nvim/plug')
 Plug 'easymotion/vim-easymotion'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
+Plug 'mrk21/yaml-vim'
 
 Plug 'itchyny/lightline.vim'
 " TODO
@@ -10,7 +11,6 @@ Plug 'itchyny/lightline.vim'
 
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-lua/plenary.nvim'
-
 
 Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'buoto/gotests-vim'
@@ -40,6 +40,8 @@ Plug 'nvim-lua/lsp-status.nvim'
 " For vsnip users.
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'rafamadriz/friendly-snippets'
 
 " Plug 'rakr/vim-one'
 Plug 'nvim-treesitter/nvim-treesitter'
