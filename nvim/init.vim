@@ -124,7 +124,7 @@ map H ^
 map <C-k> :GoDeclsDir<cr>
 nmap gf :GoFillStruct<cr>
 map ga :GoAlternate<cr>
-map tt :vsplit \| T gotestsum<cr>
+map tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
 let g:go_fmt_command = "goimports"
 let g:go_auto_type_info = 1
 nmap <leader>i :GoInfo<cr>
@@ -164,7 +164,6 @@ let g:gitgutter_sign_allow_clobber = 0
 
 " terminal settings
 let g:neoterm_autoinsert = 1 " start in insert mode
-
 tnoremap jj <C-\><C-n>
 tnoremap qq <C-\><C-n>:q!<CR>
 tnoremap <Esc> <C-\><C-n>:q!<CR>
