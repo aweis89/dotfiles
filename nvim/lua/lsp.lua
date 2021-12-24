@@ -204,7 +204,6 @@ local result = vim.api.nvim_exec([[
   augroup END
 ]], true)
 
-
 -- local colors = require('galaxyline.colors')
 
 -- require('galaxyline').section.left[1] = {
