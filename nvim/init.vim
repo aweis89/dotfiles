@@ -158,6 +158,13 @@ function GoSetup()
   map <leader>dt :DlvTest<cr>
   map tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
   map <leader>tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
+
+  function! GoTestFunc()
+    let func_regex = cfi#format("^(Test_)?%s$", "")
+    execute "T go test -json -v -run '" . func_regex . "' ./... 2>&1" . '|gotestfmt'
+  endfunction
+
+  map <leader>tf :vsplit \| call GoTestFunc()<cr>
 endfunction
 
 autocmd FileType go call GoSetup()
