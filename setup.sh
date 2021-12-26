@@ -19,7 +19,7 @@ tmux_setup() {
 nvim_setup() {
 	brew install neovim
 
-	packer_dest=~/.local/share/nvim/site/pack/packer/start/packer.nvim
+	packer_dest=$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim
 	test -d $packer_dest || \
 		git clone --depth 1 https://github.com/wbthomason/packer.nvim $packer_dest
 	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
@@ -27,6 +27,7 @@ nvim_setup() {
 
 language_servers() {
 	npm i -g bash-language-server
+	brew install lua-language-server
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -43,7 +44,7 @@ while [[ "$#" -gt 0 ]]; do
 			tmux_setup
             shift
             ;;
-        -v|--nvim)
+        -n|--nvim)
 			nvim_setup
             shift
             ;;
