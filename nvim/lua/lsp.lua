@@ -162,15 +162,53 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local nvim_lsp = require('lspconfig')
-local servers = { 'bashls', 'gopls', 'golangci_lint_ls', 'pyright', 'rust_analyzer', 'tsserver' }
-for _, lsp in ipairs(servers) do
-	nvim_lsp[lsp].setup {
+local servers = {
+	java_language_server = {},
+	bashls = {},
+	golangci_lint_ls = {},
+	gopls = {},
+	pyright = {},
+	rust_analyzer = {},
+	sumneko_lua = {
+		settings = {
+			Lua = {
+				runtime = {
+					-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+					version = 'LuaJIT',
+					-- Setup your lua path
+					-- path = runtime_path,
+				},
+				diagnostics = {
+					-- Get the language server to recognize the `vim` global
+					globals = {'vim'},
+				},
+				workspace = {
+					-- Make the server aware of Neovim runtime files
+					library = vim.api.nvim_get_runtime_file("", true),
+				},
+				-- Do not send telemetry data containing a randomized but unique identifier
+				telemetry = {
+					enable = false,
+				},
+			},
+		},
+	},
+	tsserver = {},
+}
+
+for lsp, config in pairs(servers) do
+	local default = {
 		on_attach = on_attach,
 		capabilities = capabilities,
 		flags = {
 			debounce_text_changes = 150,
 		}
 	}
+
+	for k, v in pairs(default) do
+		if config[k] == nil then config[k] = v end
+    end
+	nvim_lsp[lsp].setup(config)
 end
 
 vim.diagnostic.config({
