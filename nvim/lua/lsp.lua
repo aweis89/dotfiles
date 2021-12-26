@@ -103,7 +103,7 @@ cmp.setup.cmdline(':', {
 
 
 -- Setup lspconfig.
-on_attach = function(client, bufnr)
+local on_attach = function(client, bufnr)
 	require "lsp_signature".on_attach({
 		floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
 		bind = true, -- This is mandatory, otherwise border config won't get registered.
@@ -113,7 +113,7 @@ on_attach = function(client, bufnr)
 		}
 	})  -- Note: add in lsp client on-attach
 
-	-- Register client for messages and set up buffer autocommands to update 
+	-- Register client for messages and set up buffer autocommands to update
 	-- the statusline and the current function.
 	-- NOTE: on_attach is called with the client object, which is the "client" parameter below
 	-- lsp_status.on_attach(client)
