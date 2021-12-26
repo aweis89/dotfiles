@@ -42,18 +42,31 @@ return require('packer').startup(function(use)
 			config = function() require('neoscroll').setup() end,
 		}
 
+		use 'arkav/lualine-lsp-progress'
 		use {
 			'nvim-lualine/lualine.nvim',
-			config = function() require('lualine').setup() end,
+			requires = {{'arkav/lualine-lsp-progress'}},
+			config = function()
+				require('lualine').setup({
+					sections = {
+						lualine_c = {
+							'lsp_progress'
+						}
+					}
+				})
+			end,
 			event = 'VimEnter',
 		}
-
-		use 'nvim-lua/plenary.nvim'
-
 		use {
 			'nvim-telescope/telescope.nvim',
-			-- after = {'jamespwilliams/bat.vim'},
+			requires = {{'nvim-lua/plenary.nvim'}},
 			config = function()
+				require('telescope').setup({
+					defaults = {
+						previewer = true,
+						layout_strategy = "flex",
+					},
+				})
 				vim.cmd([[
 				nnoremap <leader>ff <cmd>Telescope find_files<cr>
 				nnoremap <leader>fg <cmd>Telescope live_grep<cr>
@@ -109,7 +122,7 @@ return require('packer').startup(function(use)
 		use {
 			'romgrk/nvim-treesitter-context',
 			config = function() require'treesitter-context'.setup() end,
-			requires = {'nvim-treesitter/nvim-treesitter'}
+			requires = {{'nvim-treesitter/nvim-treesitter'}},
 		}
 		use 'tyru/current-func-info.vim'
 
