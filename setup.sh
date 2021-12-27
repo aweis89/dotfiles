@@ -25,11 +25,6 @@ nvim_setup() {
 	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 }
 
-language_servers() {
-	npm i -g bash-language-server
-	brew install lua-language-server
-}
-
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
         -m|--mac)
@@ -52,7 +47,6 @@ while [[ "$#" -gt 0 ]]; do
 			mac_setup
 			tmux_setup
 			nvim_setup
-			language_servers
             shift
             ;;
         --)

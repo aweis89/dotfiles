@@ -108,6 +108,7 @@ return require('packer').startup(function(use)
 		use 'hrsh7th/nvim-cmp'
 		use 'ray-x/lsp_signature.nvim'
 		use 'nvim-lua/lsp-status.nvim'
+		use 'williamboman/nvim-lsp-installer'
 
 		-- debugger
 		use 'mfussenegger/nvim-dap'

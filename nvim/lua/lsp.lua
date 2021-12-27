@@ -86,22 +86,6 @@ cmp.setup.cmdline(':', {
 	})
 })
 
--- --LSP status
--- local lsp_status = require('lsp-status')
--- -- completion_customize_lsp_label as used in completion-nvim
--- -- Optional: customize the kind labels used in identifying the current function.
--- -- g:completion_customize_lsp_label is a dict mapping from LSP symbol kind 
--- -- to the string you want to display as a label
--- -- lsp_status.config { kind_labels = vim.g.completion_customize_lsp_label }
--- 
--- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
--- 
--- -- Register the progress handler
--- lsp_status.register_progress()
--- -- Set default client capabilities plus window/workDoneProgress
--- capabilities = vim.tbl_extend('keep', capabilities or {}, lsp_status.capabilities)
-
-
 -- Setup lspconfig.
 local on_attach = function(client, bufnr)
 	require "lsp_signature".on_attach({
@@ -111,15 +95,11 @@ local on_attach = function(client, bufnr)
 		handler_opts = {
 			border = "none"
 		}
-	})  -- Note: add in lsp client on-attach
-
-	-- Register client for messages and set up buffer autocommands to update
-	-- the statusline and the current function.
-	-- NOTE: on_attach is called with the client object, which is the "client" parameter below
-	-- lsp_status.on_attach(client)
+	})
 
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+
 	-- Mappings.
 	local opts = { noremap=true, silent=true }
 	buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -159,10 +139,28 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 	}
 }
 
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
 local nvim_lsp = require('lspconfig')
-local servers = {
+
+-- Add custom installer for golangci-lint-langserver
+local go = require "nvim-lsp-installer.installers.go"
+local lsp_installer_servers = require'nvim-lsp-installer.servers'
+local server = require "nvim-lsp-installer.server"
+local servers = require "nvim-lsp-installer.servers"
+local path = require "nvim-lsp-installer.path"
+local server_name = 'golangci_lint_ls'
+local root_dir = server.get_server_root_path(server_name)
+local golang_ci_installer = go.packages { "github.com/nametake/golangci-lint-langserver@latest" }
+servers.register(server.Server:new {
+    name = server_name,
+    root_dir = root_dir,
+    installer = golang_ci_installer,
+	default_options = {
+		cmd = { path.concat { root_dir, "golangci-lint-langserver" }},
+	},
+})
+
+local myservers = {
+	vimls = {},
 	java_language_server = {},
 	bashls = {},
 	golangci_lint_ls = {},
@@ -196,7 +194,8 @@ local servers = {
 	tsserver = {},
 }
 
-for lsp, config in pairs(servers) do
+
+for lsp, config in pairs(myservers) do
 	local default = {
 		on_attach = on_attach,
 		capabilities = capabilities,
@@ -206,9 +205,21 @@ for lsp, config in pairs(servers) do
 	}
 
 	for k, v in pairs(default) do
-		if config[k] == nil then config[k] = v end
-    end
-	nvim_lsp[lsp].setup(config)
+	 	if config[k] == nil then config[k] = v end
+	end
+
+	local server_available, requested_server = lsp_installer_servers.get_server(lsp)
+	if server_available then
+		requested_server:on_ready(function ()
+			requested_server:setup(config)
+		end)
+		if not requested_server:is_installed() then
+			-- Queue the server to be installed
+			requested_server:install()
+		end
+	else -- not able to be managed by lsp_installer
+		nvim_lsp[lsp].setup(config)
+	end
 end
 
 vim.diagnostic.config({
@@ -234,7 +245,7 @@ function org_imports(wait_ms)
 	end
 end
 
-local result = vim.api.nvim_exec([[
+vim.api.nvim_exec([[
 augroup GO_LSP
 autocmd!
 autocmd BufWritePre *.go :silent! lua vim.lsp.buf.formatting()
