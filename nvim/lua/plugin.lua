@@ -22,20 +22,22 @@ return require('packer').startup(function(use)
 		event = 'VimEnter',
 	}
 	use {
-	'airblade/vim-gitgutter',
-	config = function() vim.cmd([[
-		set updatetime=250
-		let g:gitgutter_max_signs = 500
-		let g:gitgutter_map_keys = 0
-		let g:gitgutter_override_sign_column_highlight = 0
-		highlight GitGutterAdd ctermfg=2
-		highlight GitGutterChange ctermfg=3
-		highlight GitGutterDelete ctermfg=1
-		highlight GitGutterChangeDelete ctermfg=4
-		highlight HighlightedyankRegion cterm=reverse gui=reverse
-		let g:highlightedyank_highlight_duration = 150
-		let g:gitgutter_sign_allow_clobber = 0
-		]]) end,
+		'airblade/vim-gitgutter',
+		config = function()
+			vim.cmd([[
+			set updatetime=250
+			let g:gitgutter_max_signs = 500
+			let g:gitgutter_map_keys = 0
+			let g:gitgutter_override_sign_column_highlight = 0
+			highlight GitGutterAdd ctermfg=2
+			highlight GitGutterChange ctermfg=3
+			highlight GitGutterDelete ctermfg=1
+			highlight GitGutterChangeDelete ctermfg=4
+			highlight HighlightedyankRegion cterm=reverse gui=reverse
+			let g:highlightedyank_highlight_duration = 150
+			let g:gitgutter_sign_allow_clobber = 0
+			]])
+		end,
 		event = 'VimEnter',
 	}
 
@@ -151,4 +153,4 @@ return require('packer').startup(function(use)
 			]])
 		end,
 	}
-	end)
+end)
