@@ -12,14 +12,11 @@ mac_setup() {
 	brew bundle --file $dotfiles/Brewfile
 }
 
-tmux_setup() {
-	ln -sf $dotfiles/.tmux ~/.tmux
-	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-}
-
-nvim_setup() {
-	brew install neovim
+global_setup() {
+	ln -s $dotfiles/.tmux ~/.tmux
 	ln -s $dotfiles/nvim ~/.config/nvim
+
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 }
 
