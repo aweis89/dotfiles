@@ -26,5 +26,5 @@ tnoremap qq <C-\><C-n>:q!<CR>
 tnoremap <Esc> <C-\><C-n>:q!<CR>
 
 autocmd FileType go exec 'source ' . stdpath('config') . '/golang/init.vim'
-autocmd BufWritePre * :silent! lua vim.lsp.buf.formatting()
-autocmd BufWritePre * :silent! lua require('lsp_utils').org_imports(3000)
+autocmd BufWritePre *.go,*.rs :silent! lua vim.lsp.buf.formatting()
+autocmd BufWritePre *.go,*.rs :silent! lua require('lsp_utils').org_imports(3000)
