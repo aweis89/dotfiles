@@ -4,24 +4,22 @@ set -eo pipefail
 dotfiles=$HOME/dotfiles
 
 mac_setup() {
-	# fonts
-	brew tap homebrew/cask-fonts
-	brew install --cask font-hack-nerd-font
-	brew install reattach-to-user-namespace
+	# install brew
+	which brew 1>/dev/null || \
+		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+	brew tap Homebrew/bundle
+	brew bundle --file $dotfiles/Brewfile
 }
 
 tmux_setup() {
-	brew install tmux
 	ln -sf $dotfiles/.tmux ~/.tmux
 	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
 
 nvim_setup() {
 	brew install neovim
-
-	packer_dest=$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim
-	test -d $packer_dest || \
-		git clone --depth 1 https://github.com/wbthomason/packer.nvim $packer_dest
+	ln -s $dotfiles/nvim ~/.config/nvim
 	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 }
 
