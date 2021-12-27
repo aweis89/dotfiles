@@ -26,24 +26,6 @@ while [[ "$#" -gt 0 ]]; do
 			mac_setup
             shift
             ;;
-        -lsp|--language-servers)
-			language_servers
-            shift
-            ;;
-        -t|--tmux)
-			tmux_setup
-            shift
-            ;;
-        -n|--nvim)
-			nvim_setup
-            shift
-            ;;
-        -a|--all)
-			mac_setup
-			tmux_setup
-			nvim_setup
-            shift
-            ;;
         --)
             shift
             break
@@ -54,3 +36,5 @@ while [[ "$#" -gt 0 ]]; do
             ;;
     esac
 done
+
+global_setup()
