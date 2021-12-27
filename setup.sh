@@ -13,10 +13,15 @@ mac_setup() {
 }
 
 global_setup() {
-	ln -s $dotfiles/.tmux ~/.tmux
-	ln -s $dotfiles/nvim ~/.config/nvim
+	test -d $dotfiles || \
+		git clone https://github.com/aweis89/dotfiles.git $dotfiles
 
-	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+	ln -s $dotfiles/.tmux.conf ~/.tmux.conf || true
+	ln -s $dotfiles/nvim ~/.config/nvim || true
+
+	test -d ~/.tmux/plugins/tpm || \
+		git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 }
 
@@ -37,4 +42,4 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-global_setup()
+global_setup
