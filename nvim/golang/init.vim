@@ -20,7 +20,7 @@ let g:go_highlight_extra_types = 1
 let g:delve_sign_priority = 10000
 " let g:go_addtags_transform = "camelcase"
 " Set custom templates for tests
-let g:gotests_template_dir = $HOME . '/.config/nvim/gotests-templates'
+let g:gotests_template_dir = stdpath('config') . '/golang/gotests-templates'
 
 map <leader>dd :DlvToggleBreakpoint<cr>
 map <leader>dt :DlvTest<cr>

@@ -1,7 +1,9 @@
 let mapleader = " "
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-lua require('init')
+lua <<EOL
+  require('plugin')
+EOL
 
 set termguicolors
 set autoindent
@@ -23,4 +25,6 @@ tnoremap jj <C-\><C-n>
 tnoremap qq <C-\><C-n>:q!<CR>
 tnoremap <Esc> <C-\><C-n>:q!<CR>
 
-autocmd FileType go source ~/.config/nvim/golang/init.vim
+autocmd FileType go exec 'source ' . stdpath('config') . '/golang/init.vim'
+autocmd BufWritePre * :silent! lua vim.lsp.buf.formatting()
+autocmd BufWritePre * :silent! lua require('lsp_utils').org_imports(3000)
