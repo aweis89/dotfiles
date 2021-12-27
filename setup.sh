@@ -22,7 +22,12 @@ global_setup() {
 	test -d ~/.tmux/plugins/tpm || \
 		git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+	go install github.com/haveyoudebuggedit/gotestfmt/v2/cmd/gotestfmt@latest
+	go install github.com/cweill/gotests/gotests@latest
+
+	nvim --headless -c 'autocmd User PackerComplete quitall' \
+		-c 'GoInstallBinaries' \
+		-c 'PackerSync'
 }
 
 while [[ "$#" -gt 0 ]]; do
