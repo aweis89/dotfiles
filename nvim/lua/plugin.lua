@@ -105,10 +105,16 @@ return require('packer').startup(function(use)
 		use 'hrsh7th/cmp-buffer'
 		use 'hrsh7th/cmp-path'
 		use 'hrsh7th/cmp-cmdline'
-		use 'hrsh7th/nvim-cmp'
 		use 'ray-x/lsp_signature.nvim'
 		use 'nvim-lua/lsp-status.nvim'
-		use 'williamboman/nvim-lsp-installer'
+		use {
+			'williamboman/nvim-lsp-installer',
+			config = require('lsp')
+		}
+		use {
+			'hrsh7th/nvim-cmp',
+			config = require('nvim-cmp-config'),
+		}
 
 		-- debugger
 		use 'mfussenegger/nvim-dap'
