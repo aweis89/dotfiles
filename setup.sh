@@ -18,6 +18,8 @@ global_setup() {
 
 	ln -s $dotfiles/.tmux.conf ~/.tmux.conf || true
 	ln -s $dotfiles/nvim ~/.config/nvim || true
+	ln -s $dotfiles/.zsh ~/.zsh || true
+	ln -s $dotfiles/.zshrc ~/.zshrc || true
 
 	test -d ~/.tmux/plugins/tpm || \
 		git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
