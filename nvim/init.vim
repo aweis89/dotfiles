@@ -24,6 +24,7 @@ map H ^
 tnoremap jj <C-\><C-n>
 tnoremap qq <C-\><C-n>:q!<CR>
 tnoremap <Esc> <C-\><C-n>:q!<CR>
+autocmd TermOpen * startinsert
 
 autocmd FileType go exec 'source ' . stdpath('config') . '/golang/init.vim'
 autocmd BufWritePre *.go,*.rs :silent! lua vim.lsp.buf.formatting()
