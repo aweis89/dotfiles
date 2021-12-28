@@ -3,7 +3,7 @@ set -eo pipefail
 
 dotfiles=$HOME/dotfiles
 
-mac_setup() {
+brew_deps() {
 	# install brew
 	which brew 1>/dev/null || \
 		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -32,21 +32,22 @@ global_setup() {
 		-c 'PackerSync'
 }
 
-while [[ "$#" -gt 0 ]]; do
-    case "$1" in
-        -m|--mac)
-			mac_setup
-            shift
-            ;;
-        --)
-            shift
-            break
-            ;;
-        *)
-            echo "Arg not known"
-            exit 3
-            ;;
-    esac
-done
+#while [[ "$#" -gt 0 ]]; do
+#    case "$1" in
+#        -b|--brew)
+#			brew_deps
+#            shift
+#            ;;
+#        --)
+#            shift
+#            break
+#            ;;
+#        *)
+#            echo "Arg not known"
+#            exit 3
+#            ;;
+#    esac
+#done
 
+brew_deps
 global_setup
