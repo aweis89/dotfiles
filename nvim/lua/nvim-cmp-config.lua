@@ -1,4 +1,5 @@
-return function ()
+local M = {}
+M.setup = function ()
 	local cmp = require'cmp'
 
 	local has_words_before = function()
@@ -81,3 +82,5 @@ return function ()
 		})
 	})
 end
+
+return M
