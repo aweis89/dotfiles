@@ -155,7 +155,7 @@ return require('packer').startup(function(use)
 		'ellisonleao/gruvbox.nvim',
 		config = function()
 			vim.cmd([[
-			set background=light
+			set background=dark
 			colorscheme gruvbox
 			]])
 		end,
