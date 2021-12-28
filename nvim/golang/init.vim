@@ -1,5 +1,5 @@
 function! GoTestFunc()
-  let func_regex = cfi#format("^(Test_)?%s$", "")
+  let func_regex = cfi#format("^(Test_?)?%s$", "")
   execute "T go test -json -v -run '" . func_regex . "' ./... 2>&1" . '|gotestfmt'
 endfunction
 
