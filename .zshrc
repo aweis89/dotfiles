@@ -16,8 +16,19 @@ source ~/Git/zsh-snap/znap.zsh  # Start Znap
 # znap prompt sindresorhus/pure
 
 # `znap source` automatically downloads and starts your plugins.
-znap source agkozak/zsh-z
-znap source ohmyzsh/ohmyzsh plugins/git lib/git
+
+ZSH_CACHE_DIR="~/.local/share/zsh/cache/" # used by ohmyzsh
+znap source ohmyzsh/ohmyzsh \
+	plugins/git lib/git \
+	plugins/golang \
+	plugins/cargo \
+	plugins/tmux \
+	plugins/yarn \
+	plugins/npm \
+	plugins/pip \
+	plugins/z
+
+# znap source agkozak/zsh-z
 znap source romkatv/powerlevel10k
 znap source unixorn/fzf-zsh-plugin
 znap source zsh-users/zsh-autosuggestions
