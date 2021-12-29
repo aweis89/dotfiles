@@ -18,10 +18,11 @@ source ~/Git/zsh-snap/znap.zsh  # Start Znap
 # `znap source` automatically downloads and starts your plugins.
 
 ZSH_CACHE_DIR="~/.local/share/zsh/cache/" # used by ohmyzsh
+ZSH=~/Git/ohmyzsh
 znap source ohmyzsh/ohmyzsh \
 	plugins/git lib/git \
 	plugins/golang \
-	plugins/cargo \
+	plugins/rust \
 	plugins/tmux \
 	plugins/yarn \
 	plugins/npm \
@@ -43,6 +44,7 @@ deps=(
 	~/.zsh/history.zsh
 	~/.zsh/alias.zsh
 )
+
 for i in "${deps[@]}"
 do
 	[[ ! -f "$i" ]] || source "$i"
