@@ -1,5 +1,5 @@
 local M = {}
-M.setup = function ()
+function M.setup ()
 	local cmp = require'cmp'
 
 	local has_words_before = function()
