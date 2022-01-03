@@ -1,54 +1,121 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+_cache_key_file() {
+	local cache_dir=${CACHE_DIR:-$HOME/tmp}
+	local key=${1}.cache
+	echo $cache_dir/$key
+}
 
-# Download Znap, if it's not there yet.
-[[ -f ~/Git/zsh-snap/znap.zsh ]] ||
-    git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git ~/Git/zsh-snap
+cache_rm() {
+	local cache_file=$(_cache_key_file $key)
+	rm $cache_file
+}
 
-source ~/Git/zsh-snap/znap.zsh  # Start Znap
+cache_cmd() {
+	local key=$1
+	local cache_file=$(_cache_key_file $key)
+	[[ ! -f $cache_file ]] || return 0
 
-# `znap prompt` makes your prompt visible in just 15-40ms!
-# znap prompt sindresorhus/pure
+	local cmds="$(cat /dev/stdin)"
+	set -x
+	eval "$cmds"
+	touch $cache_file
+	set +x
+}
 
-# `znap source` automatically downloads and starts your plugins.
+# Colors
+cache_cmd color-setup <<'EOL'
+	pip install --user alacritty-colorscheme
 
-ZSH_CACHE_DIR="~/.local/share/zsh/cache/" # used by ohmyzsh
-ZSH=~/Git/ohmyzsh
-znap source ohmyzsh/ohmyzsh \
-	plugins/git lib/git \
-	plugins/golang \
-	plugins/rust \
-	plugins/tmux \
-	plugins/yarn \
-	plugins/npm \
-	plugins/pip \
-	plugins/z
+	REPO="https://github.com/aaron-williamson/base16-alacritty.git"
+	DEST="$HOME/.config/base16"
+	
+	# Get colorschemes 
+	git clone $REPO $DEST
+	# Create symlink at default colors location (optional)
+	ln -s "$DEST/colors" "$HOME/.config/alacritty/colors"
+EOL
 
-# znap source agkozak/zsh-z
-znap source romkatv/powerlevel10k
-znap source unixorn/fzf-zsh-plugin
-znap source zsh-users/zsh-autosuggestions
-znap source zsh-users/zsh-syntax-highlighting
-# `znap eval` caches and runs any kind of command output for you.
-# znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
+LIGHT_COLOR='base16-gruvbox-light-soft.yml'
+DARK_COLOR='base16-gruvbox-dark-soft.yml'
 
-deps=(
-	~/.zshrc.local
-	~/.zsh/keybindings.zsh
-	~/.zsh/completion.zsh
-	~/.zsh/history.zsh
-	~/.zsh/alias.zsh
-)
+alias day="alacritty-colorscheme -V apply $LIGHT_COLOR"
+alias night="alacritty-colorscheme -V apply $DARK_COLOR"
+alias toggle="alacritty-colorscheme -V toggle $LIGHT_COLOR $DARK_COLOR"
 
-for i in "${deps[@]}"
-do
-	[[ ! -f "$i" ]] || source "$i"
-done
+cache_cmd link-dotflies <<EOL
+	test -d $DOTFILES_PATH || \
+		git clone https://github.com/aweis89/dotfiles.git $DOTFILES_PATH
+	ln -s $DOTFILES_PATH/.tmux.conf ~/.tmux.conf || true
+	ln -s $DOTFILES_PATH/nvim ~/.config/nvim || true
+	ln -s $DOTFILES_PATH/.zsh ~/.zsh || true
+	ln -s $DOTFILES_PATH/.zshrc ~/.zshrc || true
+	ln -s $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
+EOL
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+antigen_dst=$HOME/antigen.zsh
+cache_cmd antigen <<EOL
+	curl -L git.io/antigen | tee $antigen_dst"
+EOL
+source $HOME/antigen.zsh
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle git
+antigen bundle golang
+antigen bundle lein
+antigen bundle npm
+antigen bundle pip
+# antigen bundle rust
+antigen bundle tmux
+antigen bundle yarn
+antigen bundle fzf
+antigen bundle z
+
+# antigen bundle RobSis/zsh-completion-generator
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle mafredri/zsh-async
+antigen theme simple
+
+# Tell Antigen that you're done.
+antigen apply
+
+source_present() {
+	local -r file="$1"
+	test -r $file && . $file
+}
+
+source_present $HOME/.zshrc.local
+source_present $HOME/.zsh/completion.zsh
+source_present $HOME/.zsh/history.zsh
+source_present $HOME/.zsh/alias.zsh
+
+load_brew() {
+	dist=$(uname -s)
+	if [[ "${dist}" =~ "linux" ]]
+	then
+		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 1>/dev/null
+	fi
+}
+
+load_brew
+
+# Brew package manager setup, assumes ruby is installed
+cache_cmd brewsetup <<EOL
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	load_brew
+	brew tap Homebrew/bundle
+	# Insall all deps from Brewfile
+	brew bundle --file $DOTFILES_PATH/Brewfile
+EOL
+
+# Completion init
+autoload -U +X compinit; compinit
+
+# Fallback to using --help for autocompletion
+compdef _gnu_generic \
+	alacritty \
+	alacritty-colorscheme \
+	cargo
+# Uncomment to enable for all commands
+# compdef _gnu_generic $(ls $(echo $PATH | sed 's/:/ /g'))
