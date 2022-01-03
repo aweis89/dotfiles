@@ -27,3 +27,7 @@ map <leader>dt :DlvTest<cr>
 map tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
 map <leader>tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
 map <leader>tf :vsplit \| call GoTestFunc()<cr>
+
+if !executable('gotests')
+	!go get -u github.com/cweill/gotests/...
+endif
