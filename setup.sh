@@ -49,14 +49,13 @@ neovim_setup() {
 	then
 		brew tap jason0x43/neovim-nightly
 		brew install neovim
-	if
+	fi
 
 	# plugin manager should self install and then install all deps
 	nvim --headless -c 'autocmd User PackerComplete quitall' \
 		-c 'PackerSync'
 
-	nvim --headless -c 'autocmd User PackerComplete quitall' \
-		-c 'GoInstallBinaries'
+	nvim --headless -c 'GoInstallBinaries'
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -85,7 +84,9 @@ while [[ "$#" -gt 0 ]]; do
 			link_configs
 			go_deps
 			neovim_setup $ALSO_INSTALL
-        --)
+            shift
+            ;;
+    	--)
             shift
             break
             ;;
