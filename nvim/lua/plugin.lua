@@ -152,12 +152,17 @@ return require('packer').startup(function(use)
 	use 'marko-cerovac/material.nvim'
 	use 'jamespwilliams/bat.vim'
 	use {
-		'ellisonleao/gruvbox.nvim',
-		config = function()
-			vim.cmd([[
-			set background=dark
-			colorscheme gruvbox
-			]])
-		end,
+		'chriskempson/base16-vim',
+		requires = {{'nvim-lua/plenary.nvim'}},
+		config = function ()
+			local Path = require("plenary.path")
+			local vim_file = Path:new({vim.env.HOME, '.vimrc_background'})
+			if vim_file:exists() then
+				-- vim.cmd(vim_file:read())
+				vim.cmd([[source ]] .. vim_file.filename)
+			else
+				vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+			end
+		end
 	}
 end)
