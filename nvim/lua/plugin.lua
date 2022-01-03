@@ -120,6 +120,9 @@ return require('packer').startup(function(use)
 	use 'hrsh7th/cmp-cmdline'
 	use 'ray-x/lsp_signature.nvim'
 	use 'nvim-lua/lsp-status.nvim'
+	use 'hrsh7th/vim-vsnip'
+	use 'hrsh7th/cmp-vsnip'
+	use 'rafamadriz/friendly-snippets'
 	use {
 		'williamboman/nvim-lsp-installer',
 		config = function() require('lsp') end,
@@ -133,10 +136,6 @@ return require('packer').startup(function(use)
 	use 'mfussenegger/nvim-dap'
 	use 'rcarriga/nvim-dap-ui'
 
-	-- For vsnip users.
-	use 'hrsh7th/vim-vsnip'
-	use 'hrsh7th/vim-vsnip-integ'
-	use 'rafamadriz/friendly-snippets'
 	use 'nvim-treesitter/nvim-treesitter'
 	use {
 		'romgrk/nvim-treesitter-context',
@@ -160,9 +159,9 @@ return require('packer').startup(function(use)
 			if vim_file:exists() then
 				-- vim.cmd(vim_file:read())
 				vim.cmd([[source ]] .. vim_file.filename)
-			else
-				vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+				return
 			end
+			vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
 		end
 	}
 end)
