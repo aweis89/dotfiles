@@ -41,14 +41,15 @@ alias day="alacritty-colorscheme -V apply $LIGHT_COLOR"
 alias night="alacritty-colorscheme -V apply $DARK_COLOR"
 alias toggle="alacritty-colorscheme -V toggle $LIGHT_COLOR $DARK_COLOR"
 
+export DOTFILES_PATH=$HOME/dotfiles
 cache_cmd link-dotflies <<EOL
 	test -d $DOTFILES_PATH || \
 		git clone https://github.com/aweis89/dotfiles.git $DOTFILES_PATH
-	ln -s $DOTFILES_PATH/.tmux.conf ~/.tmux.conf || true
-	ln -s $DOTFILES_PATH/nvim ~/.config/nvim || true
-	ln -s $DOTFILES_PATH/.zsh ~/.zsh || true
-	ln -s $DOTFILES_PATH/.zshrc ~/.zshrc || true
-	ln -s $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
+	ln -sf $DOTFILES_PATH/.tmux.conf ~/.tmux.conf || true
+	ln -sf $DOTFILES_PATH/nvim ~/.config/nvim || true
+	ln -sf $DOTFILES_PATH/.zsh ~/.zsh || true
+	ln -sf $DOTFILES_PATH/.zshrc ~/.zshrc || true
+	ln -sf $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
 EOL
 
 antigen_dst=$HOME/.config/zsh/antigen.zsh
