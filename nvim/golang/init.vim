@@ -22,6 +22,10 @@ let g:delve_sign_priority = 10000
 " Set custom templates for tests
 let g:gotests_template_dir = stdpath('config') . '/golang/gotests-templates'
 
+" lspconfig gopls requires:
+let g:go_imports_autosave = 0
+let g:go_fmt_autosave = 0
+
 map <leader>dd :DlvToggleBreakpoint<cr>
 map <leader>dt :DlvTest<cr>
 map tt :vsplit \| T go test -json -v ./... 2>&1 \| gotestfmt<cr>
