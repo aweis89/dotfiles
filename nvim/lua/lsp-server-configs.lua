@@ -9,7 +9,8 @@ local server_configs = {
 	java_language_server = {},
 	bashls = {},
 	golangci_lint_ls = {},
-	gopls = {},
+	gopls = {cmd = {'gopls','--remote=auto'}},
+
 	pyright = {},
 	rust_analyzer = {},
 	sumneko_lua = {
