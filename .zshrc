@@ -51,11 +51,12 @@ cache_cmd link-dotflies <<EOL
 	ln -s $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
 EOL
 
-antigen_dst=$HOME/antigen.zsh
+antigen_dst=$HOME/.config/zsh/antigen.zsh
 cache_cmd antigen <<EOL
-	curl -L git.io/antigen | tee $antigen_dst"
+	mkdir -p $(dirname $antigen_dst)
+	curl -L git.io/antigen > $antigen_dst
 EOL
-source $HOME/antigen.zsh
+source $antigen_dst
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
