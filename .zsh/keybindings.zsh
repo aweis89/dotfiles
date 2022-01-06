@@ -1,8 +1,8 @@
+bindkey "^R" fzf-history-widget
 bindkey "^K" kill-line
 bindkey "^N" insert-last-word
 bindkey "^P" history-search-backward
 bindkey "^Q" push-line-or-edit
-bindkey "^R" fzf-history-widget
 bindkey "^Y" accept-and-hold
 bindkey '^D' clear-screen
 bindkey '^F' autosuggest-accept
