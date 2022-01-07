@@ -2,10 +2,14 @@
 local fn = vim.fn
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 if fn.empty(fn.glob(install_path)) > 0 then
-  packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+	local packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
 vim.cmd [[packadd packer.nvim]]
+
+function map (mode, key, target, opts)
+	vim.api.nvim_set_keymap(mode, key, target, opts)
+end
 
 return require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim'
@@ -16,33 +20,35 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'kassio/neoterm',
-		config = 'vim.g.neoterm_autoinsert = 1',
+		config = function () vim.g.neoterm_autoinsert = 1 end,
 	}
 	use {
 		'easymotion/vim-easymotion',
-		config = 'vim.cmd([[nmap s <Plug>(easymotion-s)]])',
+		config = function () map('n', 's', '<Plug>(easymotion-s)', {}) end,
 		event = 'VimEnter',
 	}
 	use {
 		'preservim/nerdtree',
-		config = 'vim.cmd([[nnoremap <C-n> :NERDTreeToggle<cr>]])',
+		config = function () map('n', '<C-n>', ':NERDTreeToggle<CR>', {}) end,
 		event = 'VimEnter',
 	}
 	use {
 		'airblade/vim-gitgutter',
 		config = function()
+			vim.g.gitgutter_max_signs = 500
+			vim.g.gitgutter_map_keys = 0
+			vim.g.gitgutter_override_sign_column_highlight = 0
+			vim.g.highlightedyank_highlight_duration = 150
+			vim.g.gitgutter_sign_allow_clobber = 0
+
+			vim.o.updatetime = 250
+
 			vim.cmd([[
-			set updatetime=250
-			let g:gitgutter_max_signs = 500
-			let g:gitgutter_map_keys = 0
-			let g:gitgutter_override_sign_column_highlight = 0
-			highlight GitGutterAdd ctermfg=2
-			highlight GitGutterChange ctermfg=3
-			highlight GitGutterDelete ctermfg=1
-			highlight GitGutterChangeDelete ctermfg=4
-			highlight HighlightedyankRegion cterm=reverse gui=reverse
-			let g:highlightedyank_highlight_duration = 150
-			let g:gitgutter_sign_allow_clobber = 0
+				highlight GitGutterAdd ctermfg=2
+				highlight GitGutterChange ctermfg=3
+				highlight GitGutterDelete ctermfg=1
+				highlight GitGutterChangeDelete ctermfg=4
+				highlight HighlightedyankRegion cterm=reverse gui=reverse
 			]])
 		end,
 		event = 'VimEnter',
@@ -77,13 +83,12 @@ return require('packer').startup(function(use)
 					layout_strategy = "flex",
 				},
 			})
-			vim.cmd([[
-			nnoremap <leader>ff <cmd>Telescope find_files<cr>
-			nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-			nnoremap <leader>fb <cmd>Telescope buffers<cr>
-			nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-			nnoremap <leader>fa <cmd>Telescope builtin.lsp_code_actions<cr>
-			]])
+			map('n', '<leader>ff', '<cmd>Telescope find_files<CR>', {})
+			map('n', '<leader>fg', '<cmd>Telescope live_grep<CR>', {})
+			map('n', '<leader>fb', '<cmd>Telescope buffers<CR>', {})
+			map('n', '<leader>fh', '<cmd>Telescope help_tags<CR>', {})
+			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<CR>', {})
+			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<CR>', {})
 		end
 	}
 	-- Golang plugins
@@ -93,22 +98,22 @@ return require('packer').startup(function(use)
 		setup = function ()
 			vim.g.go_auto_type_info = 1
 			vim.g.go_metalinter_autosave = 0
-			vim.g.go_highlight_types = 1
-			vim.g.go_highlight_fields = 1
-			vim.g.go_highlight_functions = 1
-			vim.g.go_highlight_function_calls = 1
-			vim.g.go_highlight_operators = 1
-			vim.g.go_highlight_extra_types = 1
+			vim.g.go_highlight_types = 0
+			vim.g.go_highlight_fields = 0
+			vim.g.go_highlight_functions = 0
+			vim.g.go_highlight_function_calls = 0
+			vim.g.go_highlight_operators = 0
+			vim.g.go_highlight_extra_types = 0
 			-- lspconfig gopls requires:
 			vim.g.go_imports_autosave = 0
 			vim.g.go_fmt_autosave = 0
 			-- vim.g.go_addtags_transform = "camelcase"
 
 			-- mappings
-			vim.api.nvim_set_keymap('', 'C-i', ':GoInfo<CR>', {})
-			vim.api.nvim_set_keymap('n', 'gf', ':GoFillStruct<CR>', {})
-			vim.api.nvim_set_keymap('n', 'ga', ':GoAlternate<CR>', {})
-			vim.api.nvim_set_keymap('n', '<leader>dr', ':GoDeclsDir<CR>', {})
+			map('', 'C-i', ':GoInfo<CR>', {})
+			map('n', 'gf', ':GoFillStruct<CR>', {})
+			map('n', 'ga', ':GoAlternate<CR>', {})
+			map('n', '<leader>dr', ':GoDeclsDir<CR>', {})
 		end,
 	}
 	use {
@@ -118,17 +123,19 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'buoto/gotests-vim',
+		ft = 'go',
 		setup = function ()
 			vim.g.gotests_template_dir = vim.fn.stdpath('config') .. '/golang/gotests-templates'
 		end,
 	}
 	use {
 		'sebdah/vim-delve',
+		ft = 'go',
 		setup = function ()
 			-- override lsp symbols
 			vim.g.delve_sign_priority = 10000
-			vim.api.nvim_set_keymap('', '<leader>dd', ':DlvToggleBreakpoint<CR>', {})
-			vim.api.nvim_set_keymap('', '<leader>dt', ':DlvTest<CR>', {})
+			map('', '<leader>dd', ':DlvToggleBreakpoint<CR>', {})
+			map('', '<leader>dt', ':DlvTest<CR>', {})
 		end,
 	}
 
@@ -144,13 +151,14 @@ return require('packer').startup(function(use)
 	-- LSP
 	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/cmp-nvim-lsp'
+	use 'hrsh7th/cmp-cmdline'
 	use 'hrsh7th/cmp-buffer'
 	use 'hrsh7th/cmp-path'
-	use 'hrsh7th/cmp-cmdline'
-	use 'ray-x/lsp_signature.nvim'
-	use 'nvim-lua/lsp-status.nvim'
 	use 'hrsh7th/vim-vsnip'
 	use 'hrsh7th/cmp-vsnip'
+
+	use 'ray-x/lsp_signature.nvim'
+	use 'nvim-lua/lsp-status.nvim'
 	use 'rafamadriz/friendly-snippets'
 	use {
 		'williamboman/nvim-lsp-installer',
@@ -165,7 +173,35 @@ return require('packer').startup(function(use)
 	use 'mfussenegger/nvim-dap'
 	use 'rcarriga/nvim-dap-ui'
 
-	use 'nvim-treesitter/nvim-treesitter'
+	use {
+		'nvim-treesitter/nvim-treesitter',
+		config = function ()
+			require'nvim-treesitter.configs'.setup {
+				-- One of "all", "maintained" (parsers with maintainers), or a list of languages
+				ensure_installed = "all",
+
+				-- Install languages synchronously (only applied to `ensure_installed`)
+				sync_install = false,
+
+				-- List of parsers to ignore installing
+				ignore_install = { "javascript" },
+
+				highlight = {
+					-- `false` will disable the whole extension
+					enable = true,
+
+					-- list of language that will be disabled
+					-- disable = { "c", "rust" },
+
+					-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+					-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+					-- Using this option may slow down your editor, and you may see some duplicate highlights.
+					-- Instead of true it can also be a list of languages
+					additional_vim_regex_highlighting = false,
+				},
+			}	
+		end,
+	}
 	use {
 		'romgrk/nvim-treesitter-context',
 		config = function() require'treesitter-context'.setup() end,
@@ -179,14 +215,26 @@ return require('packer').startup(function(use)
 	use 'marko-cerovac/material.nvim'
 	use 'jamespwilliams/bat.vim'
 	use {
-		'chriskempson/base16-vim',
-		requires = {{'nvim-lua/plenary.nvim'}},
+		'RRethy/nvim-base16',
+		requires = {{'nvim-lua/plenary.nvim'}, {'rktjmp/fwatch.nvim'}},
 		config = function ()
 			local Path = require("plenary.path")
 			local vim_file = Path:new({vim.env.HOME, '.vimrc_background'})
 			if vim_file:exists() then
 				-- vim.cmd(vim_file:read())
 				vim.cmd([[source ]] .. vim_file.filename)
+
+				-- watch for changes
+				local w = vim.loop.new_fs_event()
+				local function on_change(err, fname, status)
+					vim.cmd([[source ]] .. vim_file.filename)
+				end
+				function watch_file(fname)
+					local fullpath = vim.api.nvim_call_function('fnamemodify', {fname, ':p'})
+					w:start(fullpath, {}, vim.schedule_wrap(function(...) on_change(...) end))
+				end
+				watch_file(vim_file.filename)
+
 				return
 			end
 			vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
