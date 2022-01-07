@@ -91,9 +91,30 @@ return require('packer').startup(function(use)
 	}
 
 	-- Golang plugins
-	use 'fatih/vim-go'
+	use {
+		'fatih/vim-go',
+		ft = 'go',
+		config = function ()
+			vim.g.go_auto_type_info = 1
+			vim.g.go_metalinter_autosave = 0
+			vim.g.go_highlight_types = 1
+			vim.g.go_highlight_fields = 1
+			vim.g.go_highlight_functions = 1
+			vim.g.go_highlight_function_calls = 1
+			vim.g.go_highlight_operators = 1
+			vim.g.go_highlight_extra_types = 1
+			-- lspconfig gopls requires:
+			vim.g.go_imports_autosave = 0
+			vim.g.go_fmt_autosave = 0
+
+			-- mappings
+			vim.api.nvim_set_keymap('', 'ga', ':GoAlternate<CR>', {})
+			vim.api.nvim_set_keymap('n', 'gf', ':GoFillStruct<CR>', {})
+		end,
+	}
 	use {
 		'ray-x/go.nvim',
+		ft = 'go',
 		config = function() require('go').setup() end,
 	}
 	use 'buoto/gotests-vim'
