@@ -21,27 +21,6 @@ cache_cmd() {
 	set +x
 }
 
-# Colors
-cache_cmd color-setup <<'EOL'
-	pip install --user alacritty-colorscheme
-
-	REPO="https://github.com/aaron-williamson/base16-alacritty.git"
-	DEST="$HOME/.config/base16"
-	
-	# Get colorschemes 
-	git clone $REPO $DEST
-	# Create symlink at default colors location (optional)
-	mkdir -p $HOME/.config/alacritty/colors
-	ln -s $DEST/colors $HOME/.config/alacritty/colors
-EOL
-
-LIGHT_COLOR='base16-gruvbox-light-soft.yml'
-DARK_COLOR='base16-gruvbox-dark-soft.yml'
-
-alias day="alacritty-colorscheme -V apply $LIGHT_COLOR"
-alias night="alacritty-colorscheme -V apply $DARK_COLOR"
-alias toggle="alacritty-colorscheme -V toggle $LIGHT_COLOR $DARK_COLOR"
-
 cache_cmd link-dotflies <<'EOL'
 	DOTFILES_PATH=$HOME/dotfiles
 	test -d $DOTFILES_PATH || \
@@ -111,6 +90,20 @@ cache_cmd brewsetup <<EOL
 	brew bundle --file $DOTFILES_PATH/Brewfile
 EOL
 
+# Colors
+cache_cmd color-setup <<'EOL'
+	pip install --user alacritty-colorscheme
+
+	REPO="https://github.com/aaron-williamson/base16-alacritty.git"
+	DEST="$HOME/.config/base16"
+	
+	# Get colorschemes 
+	git clone $REPO $DEST
+	# Create symlink at default colors location (optional)
+	mkdir -p $HOME/.config/alacritty
+	ln -sf $DEST/colors $HOME/.config/alacritty
+EOL
+
 # Completion init
 autoload -U +X compinit; compinit
 
@@ -121,3 +114,25 @@ compdef _gnu_generic \
 	cargo
 # Uncomment to enable for all commands
 # compdef _gnu_generic $(ls $(echo $PATH | sed 's/:/ /g'))
+
+colorscheme() {
+    local colors_file=$1
+	alacritty-colorscheme apply $colors_file
+    local vim_colorscheme=$(echo $colors_file | sed -e 's/-256//' -e 's/\.yml//')
+    echo "colorscheme $vim_colorscheme" > $HOME/.vimrc_background
+}
+
+_colorscheme() {
+    cmds=($(ls -f $HOME/.config/alacritty/colors/)) 
+    _describe 'profiles' cmds
+}
+
+alias c=colorscheme
+autoload _colorscheme
+compdef _colorscheme colorscheme
+
+LIGHT_COLOR='base16-gruvbox-light-soft.yml'
+DARK_COLOR='base16-gruvbox-dark-soft.yml'
+
+alias day="colorscheme $LIGHT_COLOR"
+alias night="colorscheme $DARK_COLOR"
