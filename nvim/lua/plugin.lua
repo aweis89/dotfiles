@@ -47,14 +47,11 @@ return require('packer').startup(function(use)
 		end,
 		event = 'VimEnter',
 	}
-
 	use 'mrk21/yaml-vim'
-
 	use {
 		'karb94/neoscroll.nvim',
 		config = function() require('neoscroll').setup() end,
 	}
-
 	use 'arkav/lualine-lsp-progress'
 	use {
 		'nvim-lualine/lualine.nvim',
@@ -89,12 +86,11 @@ return require('packer').startup(function(use)
 			]])
 		end
 	}
-
 	-- Golang plugins
 	use {
 		'fatih/vim-go',
 		ft = 'go',
-		config = function ()
+		setup = function ()
 			vim.g.go_auto_type_info = 1
 			vim.g.go_metalinter_autosave = 0
 			vim.g.go_highlight_types = 1
@@ -106,10 +102,13 @@ return require('packer').startup(function(use)
 			-- lspconfig gopls requires:
 			vim.g.go_imports_autosave = 0
 			vim.g.go_fmt_autosave = 0
+			-- vim.g.go_addtags_transform = "camelcase"
 
 			-- mappings
-			vim.api.nvim_set_keymap('', 'ga', ':GoAlternate<CR>', {})
+			vim.api.nvim_set_keymap('', 'C-i', ':GoInfo<CR>', {})
 			vim.api.nvim_set_keymap('n', 'gf', ':GoFillStruct<CR>', {})
+			vim.api.nvim_set_keymap('n', 'ga', ':GoAlternate<CR>', {})
+			vim.api.nvim_set_keymap('n', '<leader>dr', ':GoDeclsDir<CR>', {})
 		end,
 	}
 	use {
@@ -117,22 +116,31 @@ return require('packer').startup(function(use)
 		ft = 'go',
 		config = function() require('go').setup() end,
 	}
-	use 'buoto/gotests-vim'
-	use 'sebdah/vim-delve'
-	use 'junegunn/fzf'
+	use {
+		'buoto/gotests-vim',
+		setup = function ()
+			vim.g.gotests_template_dir = vim.fn.stdpath('config') .. '/golang/gotests-templates'
+		end,
+	}
+	use {
+		'sebdah/vim-delve',
+		setup = function ()
+			-- override lsp symbols
+			vim.g.delve_sign_priority = 10000
+			vim.api.nvim_set_keymap('', '<leader>dd', ':DlvToggleBreakpoint<CR>', {})
+			vim.api.nvim_set_keymap('', '<leader>dt', ':DlvTest<CR>', {})
+		end,
+	}
 
+	use 'junegunn/fzf'
 	use 'preservim/vimux'
-	-- github
 	use {
 		'ruanyl/vim-gh-line',
-		config = function() vim.g.gh_line_map = "<leader>hh" end,
+		setup = function() vim.g.gh_line_map = "<leader>hh" end,
 	}
 	use 'pwntester/octo.nvim'
 	use 'kyazdani42/nvim-web-devicons'
-
-	-- git
 	use 'tpope/vim-fugitive'
-
 	-- LSP
 	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/cmp-nvim-lsp'
@@ -165,7 +173,6 @@ return require('packer').startup(function(use)
 	}
 	use 'tyru/current-func-info.vim'
 
-	-- use 'folke/tokyonight.nvim', { 'branch': 'main' }
 	use 'machakann/vim-highlightedyank'
 	-- Themes
 	use 'rktjmp/lush.nvim'
