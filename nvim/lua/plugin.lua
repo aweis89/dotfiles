@@ -2,14 +2,10 @@
 local fn = vim.fn
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 if fn.empty(fn.glob(install_path)) > 0 then
-	local packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+	fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
 vim.cmd [[packadd packer.nvim]]
-
-function map (mode, key, target, opts)
-	vim.api.nvim_set_keymap(mode, key, target, opts)
-end
 
 return require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim'
@@ -24,12 +20,12 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'easymotion/vim-easymotion',
-		config = function () map('n', 's', '<Plug>(easymotion-s)', {}) end,
+		config = function () map('n', 's', '<Plug>(easymotion-s)') end,
 		event = 'VimEnter',
 	}
 	use {
 		'preservim/nerdtree',
-		config = function () map('n', '<C-n>', ':NERDTreeToggle<CR>', {}) end,
+		config = function () map('n', '<C-n>', ':NERDTreeToggle<CR>') end,
 		event = 'VimEnter',
 	}
 	use {
@@ -40,8 +36,7 @@ return require('packer').startup(function(use)
 			vim.g.gitgutter_override_sign_column_highlight = 0
 			vim.g.highlightedyank_highlight_duration = 150
 			vim.g.gitgutter_sign_allow_clobber = 0
-
-			vim.o.updatetime = 250
+            vim.g.gitgutter_sign_priority = 1
 
 			vim.cmd([[
 				highlight GitGutterAdd ctermfg=2
@@ -83,12 +78,12 @@ return require('packer').startup(function(use)
 					layout_strategy = "flex",
 				},
 			})
-			map('n', '<leader>ff', '<cmd>Telescope find_files<CR>', {})
-			map('n', '<leader>fg', '<cmd>Telescope live_grep<CR>', {})
-			map('n', '<leader>fb', '<cmd>Telescope buffers<CR>', {})
-			map('n', '<leader>fh', '<cmd>Telescope help_tags<CR>', {})
-			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<CR>', {})
-			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<CR>', {})
+			map('n', '<leader>ff', '<cmd>Telescope find_files<CR>')
+			map('n', '<leader>fg', '<cmd>Telescope live_grep<CR>')
+			map('n', '<leader>fb', '<cmd>Telescope buffers<CR>')
+			map('n', '<leader>fh', '<cmd>Telescope help_tags<CR>')
+			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<CR>')
+			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<CR>')
 		end
 	}
 	-- Golang plugins
@@ -104,16 +99,16 @@ return require('packer').startup(function(use)
 			vim.g.go_highlight_function_calls = 0
 			vim.g.go_highlight_operators = 0
 			vim.g.go_highlight_extra_types = 0
+			-- vim.g.go_addtags_transform = "camelcase"
+
 			-- lspconfig gopls requires:
 			vim.g.go_imports_autosave = 0
 			vim.g.go_fmt_autosave = 0
-			-- vim.g.go_addtags_transform = "camelcase"
 
 			-- mappings
-			map('', 'C-i', ':GoInfo<CR>', {})
-			map('n', 'gf', ':GoFillStruct<CR>', {})
-			map('n', 'ga', ':GoAlternate<CR>', {})
-			map('n', '<leader>dr', ':GoDeclsDir<CR>', {})
+			map('', 'C-i', ':GoInfo<CR>')
+			map('n', 'gf', ':GoFillStruct<CR>')
+			map('n', 'ga', ':GoAlternate<CR>')
 		end,
 	}
 	use {
@@ -125,7 +120,7 @@ return require('packer').startup(function(use)
 		'buoto/gotests-vim',
 		ft = 'go',
 		setup = function ()
-			vim.g.gotests_template_dir = vim.fn.stdpath('config') .. '/golang/gotests-templates'
+			vim.g.gotests_template_dir = fn.stdpath('config') .. '/golang/gotests-templates'
 		end,
 	}
 	use {
@@ -134,8 +129,8 @@ return require('packer').startup(function(use)
 		setup = function ()
 			-- override lsp symbols
 			vim.g.delve_sign_priority = 10000
-			map('', '<leader>dd', ':DlvToggleBreakpoint<CR>', {})
-			map('', '<leader>dt', ':DlvTest<CR>', {})
+			map('', '<leader>dd', ':DlvToggleBreakpoint<CR>')
+			map('', '<leader>dt', ':DlvTest<CR>')
 		end,
 	}
 
@@ -199,7 +194,7 @@ return require('packer').startup(function(use)
 					-- Instead of true it can also be a list of languages
 					additional_vim_regex_highlighting = false,
 				},
-			}	
+			}
 		end,
 	}
 	use {
