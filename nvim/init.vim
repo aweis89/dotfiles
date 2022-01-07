@@ -29,7 +29,3 @@ autocmd TermOpen * startinsert
 autocmd FileType go exec 'source ' . stdpath('config') . '/golang/init.vim'
 autocmd BufWritePre *.go,*.rs :silent! lua vim.lsp.buf.formatting()
 autocmd BufWritePre *.go,*.rs :silent! lua require('lsp_utils').org_imports(3000)
-
-" if filereadable(expand("~/.vimrc_background"))
-"   source ~/.vimrc_background
-" endif
