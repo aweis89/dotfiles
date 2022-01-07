@@ -31,7 +31,8 @@ cache_cmd color-setup <<'EOL'
 	# Get colorschemes 
 	git clone $REPO $DEST
 	# Create symlink at default colors location (optional)
-	ln -s "$DEST/colors" "$HOME/.config/alacritty/colors"
+	mkdir -p $HOME/.config/alacritty/colors
+	ln -s $DEST/colors $HOME/.config/alacritty/colors
 EOL
 
 LIGHT_COLOR='base16-gruvbox-light-soft.yml'
@@ -41,15 +42,14 @@ alias day="alacritty-colorscheme -V apply $LIGHT_COLOR"
 alias night="alacritty-colorscheme -V apply $DARK_COLOR"
 alias toggle="alacritty-colorscheme -V toggle $LIGHT_COLOR $DARK_COLOR"
 
-export DOTFILES_PATH=$HOME/dotfiles
-cache_cmd link-dotflies <<EOL
+cache_cmd link-dotflies <<'EOL'
+	DOTFILES_PATH=$HOME/dotfiles
 	test -d $DOTFILES_PATH || \
 		git clone https://github.com/aweis89/dotfiles.git $DOTFILES_PATH
-	ln -sf $DOTFILES_PATH/.tmux.conf ~/.tmux.conf || true
-	ln -sf $DOTFILES_PATH/nvim ~/.config/nvim || true
-	ln -sf $DOTFILES_PATH/.zsh ~/.zsh || true
-	ln -sf $DOTFILES_PATH/.zshrc ~/.zshrc || true
-	ln -sf $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
+	ln -sf $DOTFILES_PATH/.zshrc ${ZDOTDIR:-$HOME}/.zshrc
+	ln -sf $DOTFILES_PATH/.tmux.conf ~/.tmux.conf
+	ln -sf $DOTFILES_PATH/nvim ~/.config/nvim
+	ln -sf $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml
 EOL
 
 antigen_dst=$HOME/.config/zsh/antigen.zsh
