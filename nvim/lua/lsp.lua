@@ -1,6 +1,5 @@
--- Setup lspconfig.
-local lspconfig = require('lspconfig')
 local myservers = require('lsp-server-configs')
+local lspconfig = require('lspconfig')
 
 local on_attach = function(client, bufnr)
 	require "lsp_signature".on_attach({
