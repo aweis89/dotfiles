@@ -35,7 +35,7 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
-local signs = { Error = "✘", Warn = "⚠️", Hint = "", Info = "" }
+local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
 	-- vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
