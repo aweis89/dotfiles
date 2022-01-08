@@ -35,10 +35,12 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
-local signs = { Error = "✘", Warn = "⚠️", Hint = " ", Info = " " }
+-- local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
+local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+	-- vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+	vim.fn.sign_define(hl, { text = icon })
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -99,12 +101,12 @@ vim.diagnostic.config({
 		focusable = true,
 	},
 	virtual_text = {
-        spacing = 1,
-        prefix = "",
+        spacing = 0,
+        prefix = "",
     },
 	signs = true,
 	underline = false,
-	update_in_insert = true,
+	update_in_insert = false,
 	severity_sort = true,
 })
 
