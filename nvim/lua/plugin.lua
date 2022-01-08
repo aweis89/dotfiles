@@ -120,7 +120,7 @@ return require('packer').startup(function(use)
 		'buoto/gotests-vim',
 		ft = 'go',
 		setup = function ()
-			vim.g.gotests_template_dir = fn.stdpath('config') .. '/golang/gotests-templates'
+			vim.g.gotests_template_dir = vim.fn.stdpath('config') .. '/golang/gotests-templates'
 		end,
 	}
 	use {
@@ -216,7 +216,6 @@ return require('packer').startup(function(use)
 			local Path = require("plenary.path")
 			local vim_file = Path:new({vim.env.HOME, '.vimrc_background'})
 			if vim_file:exists() then
-				-- vim.cmd(vim_file:read())
 				vim.cmd([[source ]] .. vim_file.filename)
 
 				-- watch for changes
@@ -229,10 +228,9 @@ return require('packer').startup(function(use)
 					w:start(fullpath, {}, vim.schedule_wrap(function(...) on_change(...) end))
 				end
 				watch_file(vim_file.filename)
-
-				return
-			end
-			vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+            else
+                vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+            end
 		end
 	}
 end)
