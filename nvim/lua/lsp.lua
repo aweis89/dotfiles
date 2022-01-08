@@ -98,14 +98,16 @@ vim.diagnostic.config({
 		border = 'rounded',
 		focusable = true,
 	},
-	virtual_text = false,
+	virtual_text = {
+        spacing = 1,
+        prefix = "",
+    },
 	signs = true,
-	underline = true,
+	underline = false,
 	update_in_insert = true,
 	severity_sort = true,
 })
 
 -- You will likely want to reduce updatetime which affects CursorHold
 -- note: this setting is global and should be set only once
-vim.o.updatetime = 10
-vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+-- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
