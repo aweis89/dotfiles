@@ -7,7 +7,7 @@ local on_attach = function(client, bufnr)
 		bind = true, -- This is mandatory, otherwise border config won't get registered.
 		padding = ' ',
 		handler_opts = {
-			border = "none"
+			border = "rounded"
 		}
 	})
 
