@@ -10,23 +10,41 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim'
 	use 'tpope/vim-sensible'
-	use {
-		'simrat39/rust-tools.nvim',
-		config = function() require('rust-tools').setup({}) end,
-	}
-	use {
-		'kassio/neoterm',
-		config = function () vim.g.neoterm_autoinsert = 1 end,
-	}
-	use {
-		'easymotion/vim-easymotion',
-		config = function () map('n', 's', '<Plug>(easymotion-s)') end,
-		event = 'VimEnter',
-	}
+    -- Lua
+    use {
+        "folke/trouble.nvim",
+        requires = "kyazdani42/nvim-web-devicons",
+        event = 'VimEnter',
+        config = function()
+            require("trouble").setup()
+            map("n", "<leader>xx", "<cmd>Trouble<cr>")
+            map("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>")
+            map("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>")
+            map("n", "<leader>xl", "<cmd>Trouble loclist<cr>")
+            map("n", "<leader>xq", "<cmd>Trouble quickfix<cr>")
+            map("n", "gR", "<cmd>Trouble lsp_references<cr>")
+        end
+    }
+    use {
+        'simrat39/rust-tools.nvim',
+        config = function() require('rust-tools').setup({}) end,
+    }
+    use {
+        'kassio/neoterm',
+        config = function () vim.g.neoterm_autoinsert = 1 end,
+    }
+    use {
+        'phaazon/hop.nvim',
+        branch = 'v1', -- optional but strongly recommended
+        config = function()
+            require'hop'.setup()
+            map('n', 's', '<cmd>HopWord<cr>')
+            map('n', '<leader>j', '<cmd>HopLineStart<cr>')
+        end
+    }
 	use {
 		'preservim/nerdtree',
-		config = function () map('n', '<C-n>', ':NERDTreeToggle<CR>') end,
-		event = 'VimEnter',
+		config = function () map('n', '<c-n>', ':NERDTreeToggle<cr>') end,
 	}
 	use {
 		'airblade/vim-gitgutter',
@@ -78,44 +96,42 @@ return require('packer').startup(function(use)
 					layout_strategy = "flex",
 				},
 			})
-			map('n', '<leader>ff', '<cmd>Telescope find_files<CR>')
-			map('n', '<leader>fg', '<cmd>Telescope live_grep<CR>')
-			map('n', '<leader>fb', '<cmd>Telescope buffers<CR>')
-			map('n', '<leader>fh', '<cmd>Telescope help_tags<CR>')
-			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<CR>')
-			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<CR>')
+			map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
+			map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
+			map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
+			map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
+			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
+			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<cr>')
 		end
 	}
 	-- Golang plugins
-	use {
-		'fatih/vim-go',
-		ft = 'go',
-		setup = function ()
-			vim.g.go_auto_type_info = 1
-			vim.g.go_metalinter_autosave = 0
-			vim.g.go_highlight_types = 0
-			vim.g.go_highlight_fields = 0
-			vim.g.go_highlight_functions = 0
-			vim.g.go_highlight_function_calls = 0
-			vim.g.go_highlight_operators = 0
-			vim.g.go_highlight_extra_types = 0
-			-- vim.g.go_addtags_transform = "camelcase"
+    use {
+        'fatih/vim-go',
+        ft = 'go',
+        setup = function ()
+            vim.g.go_auto_type_info = 1
+            vim.g.go_metalinter_autosave = 0
+            vim.g.go_highlight_types = 0
+            vim.g.go_highlight_fields = 0
+            vim.g.go_highlight_functions = 0
+            vim.g.go_highlight_function_calls = 0
+            vim.g.go_highlight_operators = 0
+            vim.g.go_highlight_extra_types = 0
+            -- vim.g.go_addtags_transform = "camelcase"
 
-			-- lspconfig gopls requires:
-			vim.g.go_imports_autosave = 0
-			vim.g.go_fmt_autosave = 0
+            -- lspconfig gopls requires:
+            vim.g.go_imports_autosave = 0
+            vim.g.go_fmt_autosave = 0
+            vim.g.go_imports_mode = 'gopls'
+            vim.g.go_fmt_command = "gopls"
+            vim.g.go_gopls_gofumpt = 1
 
-			-- mappings
-			map('', 'C-i', ':GoInfo<CR>')
-			map('n', 'gf', ':GoFillStruct<CR>')
-			map('n', 'ga', ':GoAlternate<CR>')
-		end,
-	}
-	use {
-		'ray-x/go.nvim',
-		ft = 'go',
-		config = function() require('go').setup() end,
-	}
+            -- mappings
+            map('', 'C-i', ':GoInfo<cr>')
+            map('n', 'gf', ':GoFillStruct<cr>')
+            map('n', 'ga', ':GoAlternate<cr>')
+        end,
+    }
 	use {
 		'buoto/gotests-vim',
 		ft = 'go',
@@ -129,8 +145,8 @@ return require('packer').startup(function(use)
 		setup = function ()
 			-- override lsp symbols
 			vim.g.delve_sign_priority = 10000
-			map('', '<leader>dd', ':DlvToggleBreakpoint<CR>')
-			map('', '<leader>dt', ':DlvTest<CR>')
+			map('', '<leader>dd', ':DlvToggleBreakpoint<cr>')
+			map('', '<leader>dt', ':DlvTest<cr>')
 		end,
 	}
 
@@ -196,11 +212,6 @@ return require('packer').startup(function(use)
 				},
 			}
 		end,
-	}
-	use {
-		'romgrk/nvim-treesitter-context',
-		config = function() require'treesitter-context'.setup() end,
-		requires = {{'nvim-treesitter/nvim-treesitter'}},
 	}
 	use 'tyru/current-func-info.vim'
 
