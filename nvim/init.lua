@@ -43,11 +43,11 @@ vim.cmd([[
     autocmd BufWritePre *.go,*.rs :silent! lua vim.lsp.buf.formatting()
     autocmd BufWritePre *.go,*.rs :silent! lua require('lsp_utils').org_imports(3000)
 
-    "augroup colorschemes
-    "    autocmd!
-    "    autocmd ColorScheme * hi! link DiagnosticError Comment
-    "    autocmd ColorScheme * hi! link DiagnosticWarn Comment
-    "    autocmd ColorScheme * hi! link DiagnosticInfo Comment
-    "    autocmd ColorScheme * hi! link DiagnosticHint Comment
-    "augroup end
+    augroup colorschemes
+        autocmd!
+        autocmd ColorScheme * hi! link DiagnosticWarn Comment
+        autocmd ColorScheme * hi! link DiagnosticInfo Comment
+        autocmd ColorScheme * hi! link DiagnosticHint Comment
+        " autocmd ColorScheme * hi! link DiagnosticError Comment
+    augroup end
 ]])
