@@ -82,7 +82,7 @@ load_brew() {
 load_brew
 
 # Brew package manager setup, assumes ruby is installed
-cache_cmd brewsetup <<EOL
+cache_cmd brewsetup <<'EOL'
 	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	load_brew
 	brew tap Homebrew/bundle
