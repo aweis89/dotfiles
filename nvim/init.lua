@@ -46,9 +46,9 @@ vim.cmd([[
 
     augroup colorschemes
         autocmd!
-        autocmd ColorScheme * hi! link DiagnosticError Comment
         autocmd ColorScheme * hi! link DiagnosticWarn Comment
         autocmd ColorScheme * hi! link DiagnosticInfo Comment
         autocmd ColorScheme * hi! link DiagnosticHint Comment
+        " autocmd ColorScheme * hi! link DiagnosticError Comment
     augroup end
 ]])
