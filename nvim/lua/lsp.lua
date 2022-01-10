@@ -7,7 +7,7 @@ local on_attach = function(client, bufnr)
 		bind = true, -- This is mandatory, otherwise border config won't get registered.
 		padding = ' ',
 		handler_opts = {
-			border = "none"
+			border = "rounded"
 		}
 	})
 
@@ -62,7 +62,7 @@ installers.add_go_server(
 	lsp_installer_servers,
 	'golangci_lint_ls',
 	'golangci-lint-langserver',
-	'github.com/nametake/golangci-lint-langserver@latest'
+	'github.com/nametake/golangci-lint-langserver'
 )
 
 for lsp, config in pairs(myservers) do
