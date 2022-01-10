@@ -61,17 +61,10 @@ local lsp_installer_servers = require('nvim-lsp-installer.servers')
 local installers = require('lsp-installers')
 
 installers.add_go_server(
-<<<<<<< HEAD
 	lsp_installer_servers,
 	'golangci_lint_ls',
 	'golangci-lint-langserver',
 	'github.com/nametake/golangci-lint-langserver'
-=======
-lsp_installer_servers,
-'golangci_lint_ls',
-'golangci-lint-langserver',
-'github.com/nametake/golangci-lint-langserver@latest'
->>>>>>> a1dc0d6313dbc6dad37e7ffe65d24d8fdfb4fd36
 )
 
 for lsp, config in pairs(myservers) do
