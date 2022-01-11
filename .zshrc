@@ -32,7 +32,7 @@ cache_cmd link-dotflies <<'EOL'
 EOL
 
 antigen_dst=$HOME/.config/zsh/antigen.zsh
-cache_cmd antigen <<EOL
+cache_cmd antigen <<'EOL'
 	mkdir -p $(dirname $antigen_dst)
 	curl -L git.io/antigen > $antigen_dst
 EOL
