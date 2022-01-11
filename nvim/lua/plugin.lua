@@ -83,7 +83,8 @@ return require('packer').startup(function(use)
         config = function()
             require('lualine').setup({
                 options = {
-                    theme = 'gruvbox'
+                    -- theme = 'gruvbox'
+                    theme = 'tokyonight'
                 },
                 sections = {
                     lualine_c = {
@@ -260,12 +261,12 @@ return require('packer').startup(function(use)
         end,
     }
     use 'tyru/current-func-info.vim'
-    use {
-        'chentau/marks.nvim',
-        config = function()
-           require('marks').setup({})
-        end
-    }
+    -- use {
+    --     'chentau/marks.nvim',
+    --     config = function()
+    --        require('marks').setup({})
+    --     end
+    -- }
     use {
         'kyazdani42/nvim-tree.lua',
         requires = {'kyazdani42/nvim-web-devicons'},
@@ -283,14 +284,14 @@ return require('packer').startup(function(use)
     -- }
     -- Themes
     use 'rktjmp/lush.nvim'
-    -- use {
-    --     'marko-cerovac/material.nvim',
-    --     config = function()
-    --         vim.g.material_style = "deep ocean"
-    --         vim.cmd([[colorscheme material]])
-    --         map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
-    --     end
-    -- }
+    use {
+        'marko-cerovac/material.nvim',
+        config = function()
+            vim.g.material_style = "darker"
+            -- vim.cmd([[colorscheme material]])
+            map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
+        end
+    }
     use 'jamespwilliams/bat.vim'
     -- use "lukas-reineke/indent-blankline.nvim"
     use {

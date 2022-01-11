@@ -26,7 +26,7 @@ set("expandtab", false)
 set("tabstop", 4)
 set("shiftwidth", 4)
 set("updatetime", 250)
-set("shellcmdflag", "-ic")
+-- set("shellcmdflag", "-ic")
 
 map('i', 'jj', '<ESC>')
 map('i', '<C-c>', '<ESC>')
@@ -46,7 +46,7 @@ vim.cmd([[
 
     augroup colorschemes
         autocmd!
-        autocmd ColorScheme * hi! link DiagnosticWarn Comment
+        " autocmd ColorScheme * hi! link DiagnosticWarn Comment
         autocmd ColorScheme * hi! link DiagnosticInfo Comment
         autocmd ColorScheme * hi! link DiagnosticHint Comment
         " autocmd ColorScheme * hi! link DiagnosticError Comment
