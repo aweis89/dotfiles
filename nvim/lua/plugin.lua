@@ -27,6 +27,7 @@ return require('packer').startup(function(use)
     }
     use {
         'simrat39/rust-tools.nvim',
+        ft = 'rust',
         config = function() require('rust-tools').setup({}) end,
     }
     use {
@@ -36,15 +37,20 @@ return require('packer').startup(function(use)
     use {
         'phaazon/hop.nvim',
         branch = 'v1', -- optional but strongly recommended
-        config = function()
-            require'hop'.setup()
+        cmd = 'HopWord',
+        setup = function()
             map('n', 's', '<cmd>HopWord<cr>')
             map('n', '<leader>j', '<cmd>HopLineStart<cr>')
+        end,
+        config = function()
+            require'hop'.setup()
         end
     }
     use {
         'preservim/nerdtree',
-        config = function () map('n', '<c-n>', ':NERDTreeToggle<cr>') end,
+        cmd = 'NERDTreeToggle',
+        keys = '<c-n>',
+        config = function () map('n', '<c-n>', '<cmd>NERDTreeToggle<cr>') end,
     }
     use {
         'airblade/vim-gitgutter',
@@ -71,15 +77,17 @@ return require('packer').startup(function(use)
         'karb94/neoscroll.nvim',
         config = function() require('neoscroll').setup() end,
     }
-    use 'arkav/lualine-lsp-progress'
     use {
         'nvim-lualine/lualine.nvim',
-        requires = {{'arkav/lualine-lsp-progress'}},
+        requires = {'arkav/lualine-lsp-progress'},
         config = function()
             require('lualine').setup({
+                options = {
+                    theme = 'gruvbox'
+                },
                 sections = {
                     lualine_c = {
-                        'lsp_progress'
+                        "lsp_progress",
                     }
                 }
             })
@@ -88,7 +96,7 @@ return require('packer').startup(function(use)
     }
     use {
         'nvim-telescope/telescope.nvim',
-        requires = {{'nvim-lua/plenary.nvim'}},
+        requires = {'nvim-lua/plenary.nvim', "AckslD/nvim-neoclip.lua"},
         config = function()
             require('telescope').setup({
                 defaults = {
@@ -96,12 +104,15 @@ return require('packer').startup(function(use)
                     layout_strategy = "flex",
                 },
             })
+            require('neoclip').setup()
+            require('telescope').load_extension('neoclip')
             map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
             map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
             map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
             map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
             map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
             map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<cr>')
+            map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
         end
     }
     -- Golang plugins
@@ -145,7 +156,7 @@ return require('packer').startup(function(use)
         setup = function ()
             -- override lsp symbols
             vim.g.delve_sign_priority = 10000
-            map('', '<leader>dd', ':DlvToggleBreakpoint<cr>')
+            -- map('', '<leader>dd', ':DlvToggleBreakpoint<cr>')
             map('', '<leader>dt', ':DlvTest<cr>')
         end,
     }
@@ -154,37 +165,71 @@ return require('packer').startup(function(use)
     use 'preservim/vimux'
     use {
         'ruanyl/vim-gh-line',
+        cmd = {'<Plug>(gh-line)'},
         setup = function() vim.g.gh_line_map = "<leader>hh" end,
     }
     use 'pwntester/octo.nvim'
     use 'kyazdani42/nvim-web-devicons'
     use 'tpope/vim-fugitive'
-    -- LSP
-    use 'neovim/nvim-lspconfig'
-    use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-cmdline'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-path'
-    use 'hrsh7th/vim-vsnip'
-    use 'hrsh7th/cmp-vsnip'
-
-    use 'ray-x/lsp_signature.nvim'
-    use 'nvim-lua/lsp-status.nvim'
     use 'rafamadriz/friendly-snippets'
+
+    -- LSP
     use {
         'williamboman/nvim-lsp-installer',
+        requires = {
+            'RRethy/vim-illuminate',
+            'neovim/nvim-lspconfig',
+            'ray-x/lsp_signature.nvim',
+        },
         config = function() require('lsp') end,
     }
     use {
         'hrsh7th/nvim-cmp',
+        requires = {
+            {'hrsh7th/cmp-nvim-lsp'},
+            {'hrsh7th/cmp-cmdline'},
+            {'hrsh7th/cmp-buffer'},
+            {'hrsh7th/cmp-path'},
+            {'hrsh7th/vim-vsnip'},
+            {'hrsh7th/cmp-vsnip'},
+            {'andersevenrud/cmp-tmux'},
+        },
         config = function() require('nvim-cmp-config').setup() end,
     }
 
     -- debugger
-    use 'mfussenegger/nvim-dap'
-    use 'rcarriga/nvim-dap-ui'
-    use 'RRethy/vim-illuminate'
+    use {
+        "rcarriga/nvim-dap-ui",
+        requires = {
+            "mfussenegger/nvim-dap",
+            "leoluz/nvim-dap-go",
+            "theHamsta/nvim-dap-virtual-text",
+        },
+        config = function ()
+            require("dapui").setup()
+            require("nvim-dap-virtual-text").setup()
+            require('dap-go').setup()
 
+            map('', '<leader>dd', ":lua require'dap'.toggle_breakpoint(); vim.api.nvim_command('DlvToggleBreakpoint')<cr>")
+            map('', '<leader>du', ":lua require('dapui').toggle()<cr>")
+            map('', '<leader>dc', ":lua require('dap').continue()<cr>")
+            map('', '<leader>di', ":lua require('dap').step_into()<cr>")
+            map('', '<leader>do', ":lua require('dap').step_over()<cr>")
+            map('v', '<leader>de', "<cmd>lua require('dapui').eval()<cr>")
+        end
+    }
+    use {
+        'Pocco81/DAPInstall',
+        config = function ()
+            local dap_install = require("dap-install")
+            local dbg_list = require("dap-install.api.debuggers").get_installed_debuggers()
+
+            for _, debugger in ipairs(dbg_list) do
+                dap_install.config(debugger)
+            end
+        end
+    }
+    use 'RRethy/vim-illuminate'
     use {
         'nvim-treesitter/nvim-treesitter',
         config = function ()
@@ -215,12 +260,39 @@ return require('packer').startup(function(use)
         end,
     }
     use 'tyru/current-func-info.vim'
-
+    use {
+        'chentau/marks.nvim',
+        config = function()
+           require('marks').setup({})
+        end
+    }
+    use {
+        'kyazdani42/nvim-tree.lua',
+        requires = {'kyazdani42/nvim-web-devicons'},
+        cmd = {'NvimTreeToggle', 'NvimTreeOpen'},
+        config = function() require'nvim-tree'.setup {} end
+    }
     use 'machakann/vim-highlightedyank'
+    -- use {
+    --     'akinsho/bufferline.nvim',
+    --     requires = 'kyazdani42/nvim-web-devicons',
+    --     config = function ()
+    --         require("bufferline").setup{}
+    --         map("", "gb", "<cmd>BufferLinePick<CR>")
+    --     end
+    -- }
     -- Themes
     use 'rktjmp/lush.nvim'
-    use 'marko-cerovac/material.nvim'
+    -- use {
+    --     'marko-cerovac/material.nvim',
+    --     config = function()
+    --         vim.g.material_style = "deep ocean"
+    --         vim.cmd([[colorscheme material]])
+    --         map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
+    --     end
+    -- }
     use 'jamespwilliams/bat.vim'
+    -- use "lukas-reineke/indent-blankline.nvim"
     use {
         'RRethy/nvim-base16',
         requires = {{'nvim-lua/plenary.nvim'}, {'rktjmp/fwatch.nvim'}},
@@ -241,7 +313,7 @@ return require('packer').startup(function(use)
                 end
                 watch_file(vim_file.filename)
             else
-                vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+                -- vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
             end
         end
     }
