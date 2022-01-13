@@ -30,9 +30,9 @@ set("updatetime", 250)
 
 map('i', 'jj', '<ESC>')
 map('i', '<C-c>', '<ESC>')
-map('', '<leader>q', ':q<cr>')
-map('', 'L', '$')
-map('', 'H', '^')
+map('n', '<leader>q', ':q<cr>')
+map('n', 'L', '$')
+map('n', 'H', '^')
 map('t', 'jj', [[<C-\><C-n>]])
 map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
 map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
@@ -46,7 +46,7 @@ vim.cmd([[
 
     augroup colorschemes
         autocmd!
-        " autocmd ColorScheme * hi! link DiagnosticWarn Comment
+        autocmd ColorScheme * hi! link DiagnosticWarn Comment
         autocmd ColorScheme * hi! link DiagnosticInfo Comment
         autocmd ColorScheme * hi! link DiagnosticHint Comment
         " autocmd ColorScheme * hi! link DiagnosticError Comment
