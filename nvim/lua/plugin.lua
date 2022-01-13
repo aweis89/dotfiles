@@ -17,7 +17,7 @@ return require('packer').startup(function(use)
         event = 'VimEnter',
         config = function()
             require("trouble").setup()
-            map("n", "<leader>xx", "<cmd>Trouble<cr>")
+            map("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
             map("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>")
             map("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>")
             map("n", "<leader>xl", "<cmd>Trouble loclist<cr>")
@@ -83,8 +83,7 @@ return require('packer').startup(function(use)
         config = function()
             require('lualine').setup({
                 options = {
-                    -- theme = 'gruvbox'
-                    theme = 'tokyonight'
+                    theme = 'gruvbox'
                 },
                 sections = {
                     lualine_c = {
@@ -119,9 +118,9 @@ return require('packer').startup(function(use)
     -- Golang plugins
     use {
         'fatih/vim-go',
-        ft = 'go',
+        -- ft = 'go', breaks adding package to new files
         setup = function ()
-            vim.g.go_auto_type_info = 1
+            vim.g.go_auto_type_info = 0
             vim.g.go_metalinter_autosave = 0
             vim.g.go_highlight_types = 0
             vim.g.go_highlight_fields = 0
@@ -139,7 +138,7 @@ return require('packer').startup(function(use)
             vim.g.go_gopls_gofumpt = 1
 
             -- mappings
-            map('', 'C-i', ':GoInfo<cr>')
+            map('n', '<leader>i', ':GoInfo<cr>')
             map('n', 'gf', ':GoFillStruct<cr>')
             map('n', 'ga', ':GoAlternate<cr>')
         end,
@@ -173,6 +172,13 @@ return require('packer').startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'tpope/vim-fugitive'
     use 'rafamadriz/friendly-snippets'
+
+    use {
+        'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
+        config = function ()
+            require'toggle_lsp_diagnostics'.init({start_on = true})
+        end
+    }
 
     -- LSP
     use {
@@ -208,15 +214,30 @@ return require('packer').startup(function(use)
         },
         config = function ()
             require("dapui").setup()
-            require("nvim-dap-virtual-text").setup()
+            require("nvim-dap-virtual-text").setup({
+                enabled = true,                     -- enable this plugin (the default)
+                enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+                highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+                highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+                show_stop_reason = true,            -- show stop reason when stopped for exceptions
+                commented = false,                  -- prefix virtual text with comment string
+                -- experimental features:
+                virt_text_pos = 'eol',              -- position of virtual text, see `:h nvim_buf_set_extmark()`
+                all_frames = false,                 -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+                virt_lines = false,                 -- show virtual lines instead of virtual text (will flicker!)
+                virt_text_win_col = nil             -- position the virtual text at a fixed window column (starting from the first text column) ,
+                -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
+            })
             require('dap-go').setup()
 
-            map('', '<leader>dd', ":lua require'dap'.toggle_breakpoint(); vim.api.nvim_command('DlvToggleBreakpoint')<cr>")
+            map('', '<leader>dd', ":lua require'dap'.toggle_breakpoint(); vim.api.nvim_command('DlvToggleBreakpoint')<cr><cr>")
             map('', '<leader>du', ":lua require('dapui').toggle()<cr>")
             map('', '<leader>dc', ":lua require('dap').continue()<cr>")
             map('', '<leader>di', ":lua require('dap').step_into()<cr>")
             map('', '<leader>do', ":lua require('dap').step_over()<cr>")
-            map('v', '<leader>de', "<cmd>lua require('dapui').eval()<cr>")
+            map('', '<leader>de', ":lua require('dap').repl.toggle()<cr>")
+            -- map('v', '<leader>de', "<cmd>lua require('dapui').eval()<cr>")
+            vim.cmd([[command! -nargs=* Deval :lua require('dapui').eval(<q-args>)]])
         end
     }
     use {
