@@ -82,10 +82,10 @@ return require('packer').startup(function(use)
         requires = {'arkav/lualine-lsp-progress'},
         config = function()
             require('lualine').setup({
-                options = {
+                -- options = {
                     -- theme = 'gruvbox'
-                    theme = 'tokyonight'
-                },
+                    -- theme = 'tokyonight'
+                -- },
                 sections = {
                     lualine_c = {
                         "lsp_progress",
@@ -165,9 +165,8 @@ return require('packer').startup(function(use)
     use 'junegunn/fzf'
     use 'preservim/vimux'
     use {
-        'ruanyl/vim-gh-line',
-        cmd = {'<Plug>(gh-line)'},
-        setup = function() vim.g.gh_line_map = "<leader>hh" end,
+        'tyru/open-browser-github.vim',
+        requires = {'tyru/open-browser.vim'}
     }
     use 'pwntester/octo.nvim'
     use 'kyazdani42/nvim-web-devicons'
@@ -314,7 +313,7 @@ return require('packer').startup(function(use)
                 end
                 watch_file(vim_file.filename)
             else
-                -- vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
+                vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
             end
         end
     }
