@@ -73,6 +73,7 @@ return require('packer').startup(function(use)
         event = 'VimEnter',
     }
     use 'mrk21/yaml-vim'
+    use 'towolf/vim-helm'
     use {
         'karb94/neoscroll.nvim',
         config = function() require('neoscroll').setup() end,
