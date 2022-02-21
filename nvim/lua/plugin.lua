@@ -87,9 +87,15 @@ return require('packer').startup(function(use)
                     -- theme = 'tokyonight'
                 -- },
                 sections = {
+                    lualine_b = {
+                        {
+                            'filename',
+                             path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+                        }
+                    },
                     lualine_c = {
                         "lsp_progress",
-                    }
+                    },
                 }
             })
         end,
