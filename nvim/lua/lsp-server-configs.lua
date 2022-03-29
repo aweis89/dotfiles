@@ -48,6 +48,20 @@ local server_configs = {
         },
     },
 
+    solargraph = {
+        settings = {
+            solargraph = {
+                diagnostics = true,
+                completion = true,
+                autoformat = true,
+                folding = true,
+                references = true,
+                rename = true,
+                symbols = true,
+            }
+        }
+    },
+
     pyright = {},
     rust_analyzer = {},
     sumneko_lua = {
