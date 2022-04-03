@@ -10,6 +10,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'tpope/vim-sensible'
+    use 'iamcco/markdown-preview.nvim'
     -- Lua
     use {
         "folke/trouble.nvim",
