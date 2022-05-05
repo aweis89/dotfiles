@@ -47,10 +47,10 @@ local server_configs = {
             },
         },
     },
-
     solargraph = {
         settings = {
             solargraph = {
+                definitions = true,
                 diagnostics = true,
                 completion = true,
                 autoformat = true,
@@ -61,7 +61,6 @@ local server_configs = {
             }
         }
     },
-
     pyright = {},
     rust_analyzer = {},
     sumneko_lua = {

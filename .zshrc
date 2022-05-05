@@ -1,3 +1,5 @@
+export PATH=$PWD/venv/bin:$PATH
+
 _cache_key_file() {
 	local cache_dir=${CACHE_DIR:-$HOME/tmp}
 	local key=${1}.cache
@@ -56,6 +58,8 @@ antigen bundle z
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle mafredri/zsh-async
+antigen bundle ahmetb/kubectx path:completion kind:fpath
+
 antigen theme simple
 
 # Tell Antigen that you're done.
@@ -117,7 +121,7 @@ compdef _gnu_generic \
 
 colorscheme() {
     local colors_file=$1
-	alacritty-colorscheme apply $colors_file
+	alacritty-colorscheme -c /mnt/c/Users/$USER/AppData/Roaming/alacritty/alacritty.yml apply $colors_file
     local vim_colorscheme=$(echo $colors_file | sed -e 's/-256//' -e 's/\.yml//')
     echo "colorscheme $vim_colorscheme" > $HOME/.vimrc_background
 }
@@ -136,3 +140,7 @@ DARK_COLOR='base16-gruvbox-dark-soft.yml'
 
 alias day="colorscheme $LIGHT_COLOR"
 alias night="colorscheme $DARK_COLOR"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

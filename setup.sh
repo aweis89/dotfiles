@@ -25,7 +25,24 @@ brew_deps() {
 	brew bundle --file $DOTFILES_PATH/Brewfile
 }
 
+install_kubectl() {
+    tmp_dir=$(mktemp -d -t tmp-XXXXXXXXXX)
+    cd $tmp_dir
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+    echo "$(<kubectl.sha256)  kubectl" | sha256sum --check
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    rm -rf $tmp_dir
+
+    sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
+    sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
+    sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+}
+
 link_configs() {
+	test -d $HOME/.config || mkdir $HOME/.config
+	test -d $HOME/.config/alacritty || mkdir $HOME/.config/alacritty
+	test -d $HOME/.zsh || mkdir $HOME/.zsh
 	test -d $DOTFILES_PATH || \
 		git clone https://github.com/aweis89/dotfiles.git $DOTFILES_PATH
 	ln -s $DOTFILES_PATH/.tmux.conf ~/.tmux.conf || true

@@ -100,6 +100,7 @@ vim.diagnostic.config({
         show_header = false,
         prefix_diagnostic = false,
         border = 'rounded',
+        source = "always",  -- Or "if_many"
         focusable = true,
     },
     virtual_text = {
