@@ -199,6 +199,16 @@ return require('packer').startup(function(use)
         config = function() require('lsp') end,
     }
     use {
+        'L3MON4D3/LuaSnip',
+        config = function ()
+            require("luasnip.loaders.from_vscode").lazy_load()
+
+            vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
+            vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
+        end
+    }
+    use { 'saadparwaiz1/cmp_luasnip' }
+    use {
         'hrsh7th/nvim-cmp',
         requires = {
             {'hrsh7th/cmp-nvim-lsp'},
@@ -209,7 +219,9 @@ return require('packer').startup(function(use)
             {'hrsh7th/cmp-vsnip'},
             {'andersevenrud/cmp-tmux'},
         },
-        config = function() require('nvim-cmp-config').setup() end,
+        config = function()
+            require('nvim-cmp-config').setup()
+        end,
     }
 
     -- debugger

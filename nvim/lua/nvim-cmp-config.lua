@@ -1,6 +1,7 @@
 local M = {}
 function M.setup ()
     local cmp = require'cmp'
+    local luasnip = require("luasnip")
 
     local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -14,31 +15,32 @@ function M.setup ()
     cmp.setup({
         snippet = {
             expand = function(args)
-                vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-                -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+                luasnip.lsp_expand(args.body) -- For `luasnip` users.
                 -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
                 -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
             end,
         },
         mapping = {
-            -- Tab with snippet jump
             ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
-                elseif vim.fn["vsnip#available"](1) == 1 then
-                    feedkey("<Plug>(vsnip-expand-or-jump)", "")
+                elseif luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
                 elseif has_words_before() then
                     cmp.complete()
                 else
-                    fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+                    fallback()
                 end
             end, { "i", "s" }),
 
-            ["<S-Tab>"] = cmp.mapping(function()
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item()
-                elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-                    feedkey("<Plug>(vsnip-jump-prev)", "")
+                elseif luasnip.jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
                 end
             end, { "i", "s" }),
 
@@ -59,7 +61,8 @@ function M.setup ()
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
             { name = 'path' },
-            { name = 'vsnip' }, -- For vsnip users.
+            -- { name = 'vsnip' }, -- For vsnip users.
+            { name = 'luasnip' }, -- For vsnip users.
             -- { name = 'tmux' },
         }, {
             { name = 'buffer' },
