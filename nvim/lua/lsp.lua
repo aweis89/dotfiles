@@ -59,14 +59,6 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 }
 
 local lsp_installer_servers = require('nvim-lsp-installer.servers')
-local installers = require('lsp-installers')
-
-installers.add_go_server(
-	lsp_installer_servers,
-	'golangci_lint_ls',
-	'golangci-lint-langserver',
-	'github.com/nametake/golangci-lint-langserver'
-)
 
 for lsp, config in pairs(myservers) do
     local default = {
