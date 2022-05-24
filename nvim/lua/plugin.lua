@@ -64,11 +64,11 @@ return require('packer').startup(function(use)
             vim.g.gitgutter_sign_priority = 1
 
             vim.cmd([[
-            highlight GitGutterAdd ctermfg=2
-            highlight GitGutterChange ctermfg=3
-            highlight GitGutterDelete ctermfg=1
-            highlight GitGutterChangeDelete ctermfg=4
-            highlight HighlightedyankRegion cterm=reverse gui=reverse
+                highlight GitGutterAdd ctermfg=2
+                highlight GitGutterChange ctermfg=3
+                highlight GitGutterDelete ctermfg=1
+                highlight GitGutterChangeDelete ctermfg=4
+                highlight HighlightedyankRegion cterm=reverse gui=reverse
             ]])
         end,
         event = 'VimEnter',

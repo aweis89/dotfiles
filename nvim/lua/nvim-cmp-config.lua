@@ -61,9 +61,8 @@ function M.setup ()
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
             { name = 'path' },
-            -- { name = 'vsnip' }, -- For vsnip users.
-            { name = 'luasnip' }, -- For vsnip users.
-            -- { name = 'tmux' },
+            { name = 'luasnip' },
+            { name = 'tmux' },
         }, {
             { name = 'buffer' },
         })
