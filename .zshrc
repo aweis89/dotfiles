@@ -136,3 +136,9 @@ DARK_COLOR='base16-gruvbox-dark-soft.yml'
 
 alias day="colorscheme $LIGHT_COLOR"
 alias night="colorscheme $DARK_COLOR"
+
+kf() {
+    resource=${1:-pods}
+    local name=$(kubectl get $resource --no-headers | fzf | awk '{print $1}')
+    kubectl get $resource $name -o yaml | fzf
+}
