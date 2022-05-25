@@ -1,3 +1,5 @@
+alias kcn=kubens
+alias kcu=kubectx
 
 kf() {
     resource=${1:-pods}
@@ -16,24 +18,11 @@ kfa() {
 }
 
 fzf_stdin_preview() {
-    yaml=$(cat /dev/stdin)
-    echo $yaml > ~/tmp/fzf.yaml
-    preview_cmd='cat ~/tmp/fzf.yaml | head -n $((10 + {n})) | tail -n 20 | bat --language=yaml --color=always --highlight-line=11 --theme OneHalfDark'
-    echo $yaml | fzf --preview "$preview_cmd"
-}
-
-kcn() {
-	if [[ "$1" = "" ]]; then
-		kubens "$(kubens | fzf)"
-	else
-		kubens $1
-	fi
-}
-
-kcu() {
-	if [[ "$1" = "" ]]; then
-		kubectx "$(kubectx | fzf)"
-	else
-		kubectx $1
-	fi
+    stdin=$(cat /dev/stdin)
+    lang=${1:-yaml}
+    tmpfile=$(mktemp $HOME/tmp/fzfstin.XXXX)
+    echo "$stdin" > $tmpfile
+    preview_cmd="cat $tmpfile | head -n \$((10 + {n})) | tail -n 20 | bat --language=$lang --color=always --highlight-line=11 --theme OneHalfDark"
+    echo $stdin | fzf --preview "$preview_cmd"
+    rm $tmpfile
 }
