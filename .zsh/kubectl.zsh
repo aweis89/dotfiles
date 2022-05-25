@@ -27,13 +27,14 @@ fzf_stdin_preview() {
         local height=$(tmux display-message -p '#{pane_height}')
         surround=$((height - 15))
     fi
+
     local stdin=$(cat /dev/stdin)
     local tmpfile=$(mktemp $HOME/tmp/fzfstin.XXXX)
     trap "rm -f $tmpfile" EXIT
-    echo "$stdin" > $tmpfile
-    local preview_cmd="cat $tmpfile | head -n \$(($surround+{n})) | \
+
+    echo "$stdin" | tee $tmpfile | fzf --preview \
+    "cat $tmpfile | head -n \$(($surround+{n})) | \
         tail -n \$(($surround*2)) | bat \
         --language=$lang --color=always --style=grid \
         --highlight-line=\$(($surround+1)) --theme $BAT_THEME"
-    echo $stdin | fzf --preview "$preview_cmd"
 }
