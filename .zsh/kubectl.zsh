@@ -32,7 +32,8 @@ fzf_stdin_preview() {
     trap "rm -f $tmpfile" EXIT
     echo "$stdin" > $tmpfile
     local preview_cmd="cat $tmpfile | head -n \$(($surround+{n})) | \
-        tail -n \$(($surround*2)) | bat --language=$lang --color=always \
+        tail -n \$(($surround*2)) | bat \
+        --language=$lang --color=always --style=grid \
         --highlight-line=\$(($surround+1)) --theme $BAT_THEME"
     echo $stdin | fzf --preview "$preview_cmd"
 }
