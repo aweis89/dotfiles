@@ -9,6 +9,7 @@ vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
+    use 'mbbill/undotree'
     use 'tpope/vim-sensible'
     use 'iamcco/markdown-preview.nvim'
     -- Lua
@@ -109,8 +110,38 @@ return require('packer').startup(function(use)
         config = function()
             require('telescope').setup({
                 defaults = {
-                    previewer = true,
-                    layout_strategy = "flex",
+                    preview = {
+                        timeout = 500,
+                        msg_bg_fillchar = "",
+                    },
+                    multi_icon = " ",
+                    vimgrep_arguments = {
+                        "rg",
+                        "--color=never",
+                        "--no-heading",
+                        "--with-filename",
+                        "--line-number",
+                        "--column",
+                        "--smart-case",
+                        "--hidden",
+                    },
+                    prompt_prefix = "❯ ",
+                    selection_caret = "❯ ",
+                    sorting_strategy = "ascending",
+                    color_devicons = true,
+                    layout_config = {
+                        prompt_position = "bottom",
+                        horizontal = {
+                            width_padding = 0.04,
+                            height_padding = 0.1,
+                            preview_width = 0.6,
+                        },
+                        vertical = {
+                            width_padding = 0.05,
+                            height_padding = 1,
+                            preview_height = 0.5,
+                        },
+                    },
                 },
             })
             require('neoclip').setup()
@@ -225,52 +256,52 @@ return require('packer').startup(function(use)
     }
 
     -- debugger
-    use {
-        "rcarriga/nvim-dap-ui",
-        requires = {
-            "mfussenegger/nvim-dap",
-            "leoluz/nvim-dap-go",
-            "theHamsta/nvim-dap-virtual-text",
-        },
-        config = function ()
-            require("dapui").setup()
-            require("nvim-dap-virtual-text").setup({
-                enabled = true,                     -- enable this plugin (the default)
-                enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
-                highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-                highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-                show_stop_reason = true,            -- show stop reason when stopped for exceptions
-                commented = false,                  -- prefix virtual text with comment string
-                -- experimental features:
-                virt_text_pos = 'eol',              -- position of virtual text, see `:h nvim_buf_set_extmark()`
-                all_frames = false,                 -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-                virt_lines = false,                 -- show virtual lines instead of virtual text (will flicker!)
-                virt_text_win_col = nil             -- position the virtual text at a fixed window column (starting from the first text column) ,
-                -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-            })
-            require('dap-go').setup()
+    -- use {
+    --     "rcarriga/nvim-dap-ui",
+    --     requires = {
+    --         "mfussenegger/nvim-dap",
+    --         "leoluz/nvim-dap-go",
+    --         "theHamsta/nvim-dap-virtual-text",
+    --     },
+    --     config = function ()
+    --         require("dapui").setup()
+    --         require("nvim-dap-virtual-text").setup({
+    --             enabled = true,                     -- enable this plugin (the default)
+    --             enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+    --             highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+    --             highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+    --             show_stop_reason = true,            -- show stop reason when stopped for exceptions
+    --             commented = false,                  -- prefix virtual text with comment string
+    --             -- experimental features:
+    --             virt_text_pos = 'eol',              -- position of virtual text, see `:h nvim_buf_set_extmark()`
+    --             all_frames = false,                 -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+    --             virt_lines = false,                 -- show virtual lines instead of virtual text (will flicker!)
+    --             virt_text_win_col = nil             -- position the virtual text at a fixed window column (starting from the first text column) ,
+    --             -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
+    --         })
+    --         require('dap-go').setup()
 
-            map('', '<leader>dd', ":lua require'dap'.toggle_breakpoint(); vim.api.nvim_command('DlvToggleBreakpoint')<cr><cr>")
-            map('', '<leader>du', ":lua require('dapui').toggle()<cr>")
-            map('', '<leader>dc', ":lua require('dap').continue()<cr>")
-            map('', '<leader>di', ":lua require('dap').step_into()<cr>")
-            map('', '<leader>do', ":lua require('dap').step_over()<cr>")
-            map('', '<leader>de', ":lua require('dap').repl.toggle()<cr>")
-            -- map('v', '<leader>de', "<cmd>lua require('dapui').eval()<cr>")
-            vim.cmd([[command! -nargs=* Deval :lua require('dapui').eval(<q-args>)]])
-        end
-    }
-    use {
-        'Pocco81/DAPInstall',
-        config = function ()
-            local dap_install = require("dap-install")
-            local dbg_list = require("dap-install.api.debuggers").get_installed_debuggers()
+    --         map('', '<leader>dd', ":lua require'dap'.toggle_breakpoint(); vim.api.nvim_command('DlvToggleBreakpoint')<cr><cr>")
+    --         map('', '<leader>du', ":lua require('dapui').toggle()<cr>")
+    --         map('', '<leader>dc', ":lua require('dap').continue()<cr>")
+    --         map('', '<leader>di', ":lua require('dap').step_into()<cr>")
+    --         map('', '<leader>do', ":lua require('dap').step_over()<cr>")
+    --         map('', '<leader>de', ":lua require('dap').repl.toggle()<cr>")
+    --         -- map('v', '<leader>de', "<cmd>lua require('dapui').eval()<cr>")
+    --         vim.cmd([[command! -nargs=* Deval :lua require('dapui').eval(<q-args>)]])
+    --     end
+    -- }
+    -- use {
+    --     'Pocco81/DAPInstall',
+    --     config = function ()
+    --         local dap_install = require("dap-install")
+    --         local dbg_list = require("dap-install.api.debuggers").get_installed_debuggers()
 
-            for _, debugger in ipairs(dbg_list) do
-                dap_install.config(debugger)
-            end
-        end
-    }
+    --         for _, debugger in ipairs(dbg_list) do
+    --             dap_install.config(debugger)
+    --         end
+    --     end
+    -- }
     use 'RRethy/vim-illuminate'
     use {
         'nvim-treesitter/nvim-treesitter',
