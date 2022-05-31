@@ -137,3 +137,14 @@ DARK_COLOR='base16-gruvbox-dark-soft.yml'
 
 alias day="colorscheme $LIGHT_COLOR"
 alias night="colorscheme $DARK_COLOR"
+
+auto_start_tmux() {
+    session=${1:-default}
+    if test -z "$TMUX"
+    then
+        tmux new-session -ds $session
+    fi
+    tmux attach -t $session
+}
+
+auto_start_tmux
