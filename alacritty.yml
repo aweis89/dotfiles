@@ -5,84 +5,93 @@ font:
   size: 22
   normal:
     # family: 'Droid Sans Mono for Powerline Plus Nerd File Types Mono'
-    family: 'Hack Nerd Font'
+    family: Hack Nerd Font
     style: Regular
+
+key_bindings:
+  - {key: F, mods: Command, action: ToggleSimpleFullscreen}
 
 schemes:
   # Colors (Gruvbox light)
-  gruvbox_light: &gruvbox_light
+  gruvbox_light:
     # Default colors
     primary:
       # hard contrast: background = '#f9f5d7'
       background: '#fbf1c7'
       # soft contrast: background = '#f2e5bc'
       foreground: '#3c3836'
-  
+
     # Normal colors
     normal:
-      black:   '#fbf1c7'
-      red:     '#cc241d'
-      green:   '#98971a'
-      yellow:  '#d79921'
-      blue:    '#458588'
+      black: '#fbf1c7'
+      red: '#cc241d'
+      green: '#98971a'
+      yellow: '#d79921'
+      blue: '#458588'
       magenta: '#b16286'
-      cyan:    '#689d6a'
-      white:   '#7c6f64'
-  
+      cyan: '#689d6a'
+      white: '#7c6f64'
+
     # Bright colors
     bright:
-      black:   '#928374'
-      red:     '#9d0006'
-      green:   '#79740e'
-      yellow:  '#b57614'
-      blue:    '#076678'
+      black: '#928374'
+      red: '#9d0006'
+      green: '#79740e'
+      yellow: '#b57614'
+      blue: '#076678'
       magenta: '#8f3f71'
-      cyan:    '#427b58'
-      white:   '#3c3836'
+      cyan: '#427b58'
+      white: '#3c3836'
   gruvbox_dark: &gruvbox_dark
+  # COLORSCHEME: base16-gruvbox-light-soft.yml
+  # Default colors
     primary:
       # hard contrast background - '#1d2021'
-      background:        &gruvbox_dark_bg '#282828'
-      # soft contrast background - '#32302f'
-      foreground:        '#ebdbb2'
-      bright_foreground: '#fbf1c7'
-      dim_foreground:    '#a89984'
+      background: '0xf2e5bc'
+      foreground: '0x504945'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
     cursor:
-      text:   CellBackground
-      cursor: CellForeground
+      text: '0xf2e5bc'
+      cursor: '0x504945'
+
+  # Normal colors
     vi_mode_cursor:
-      text:   CellBackground
+      text: CellBackground
       cursor: CellForeground
     selection:
-      text:       CellBackground
+      text: CellBackground
       background: CellForeground
     bright:
-      black:   '#928374'
-      red:     '#fb4934'
-      green:   '#b8bb26'
-      yellow:  '#fabd2f'
-      blue:    '#83a598'
-      magenta: '#d3869b'
-      cyan:    '#8ec07c'
-      white:   '#ebdbb2'
+      black: '0xbdae93'
+      red: '0xaf3a03'
+      green: '0xebdbb2'
+      yellow: '0xd5c4a1'
+      blue: '0x665c54'
+      magenta: '0x3c3836'
+      cyan: '0xd65d0e'
+      white: '0x282828'
+
     normal:
-      black:   *gruvbox_dark_bg
-      red:     '#cc241d'
-      green:   '#98971a'
-      yellow:  '#d79921'
-      blue:    '#458588'
-      magenta: '#b16286'
-      cyan:    '#689d6a'
-      white:   '#a89984'
+      black: '0xf2e5bc'
+      red: '0x9d0006'
+      green: '0x79740e'
+      yellow: '0xb57614'
+      blue: '0x076678'
+      magenta: '0x8f3f71'
+      cyan: '0x427b58'
+      white: '0x504945'
+
+  # Bright colors
     dim:
-      black:   '#32302f'
-      red:     '#9d0006'
-      green:   '#79740e'
-      yellow:  '#b57614'
-      blue:    '#076678'
+      black: '#32302f'
+      red: '#9d0006'
+      green: '#79740e'
+      yellow: '#b57614'
+      blue: '#076678'
       magenta: '#8f3f71'
-      cyan:    '#427b58'
-      white:   '#928374'
+      cyan: '#427b58'
+      white: '#928374'
     # indexed_colors: []
 
 colors: *gruvbox_dark
