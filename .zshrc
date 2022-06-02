@@ -82,7 +82,12 @@ load_brew() {
 	fi
 }
 
+# brew
 export PATH=$PATH:/opt/homebrew/bin
+
+# editor
+export VISUAL=nvim
+export EDITOR=$VISUAL
 
 # Brew package manager setup, assumes ruby is installed
 cache_cmd brewsetup <<'EOL'
