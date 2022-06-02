@@ -2,8 +2,10 @@ vim.g.mapleader = " "
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
 function set(name, val)
-	val = val or true
-	vim.o[name] = val
+    if val ~= false then
+        val = val or true
+    end
+    vim.o[name] = val
 end
 
 function map (mode, key, target, opts)
