@@ -13,24 +13,27 @@ hs.hotkey.bind({"ctrl"}, "space", function()
   end
 end)
 
-local main_monitor = hs.screen.allScreens()[1]:name()
-local macbook_monitor = hs.screen.allScreens()[2]:name()
+local screens = hs.screen.allScreens()
 local hyper = {'cmd'}
 local hyperShift = {'cmd', 'shift'}
 
-local reading_layout = {
-    {"Opera", nil, main_monitor, hs.layout.right50, nil, nil},
-    {"Alacritty", nil, main_monitor, hs.layout.left50, nil, nil},
-    {"Slack", nil, macbook_monitor, hs.layout.apply, nil, nil},
-}
+if #screens == 2 then
+	hs.hotkey.bind(hyper, '1', function()
+		hs.application.launchOrFocus('Opera')
+		hs.application.launchOrFocus('Alacritty')
+		hs.application.launchOrFocus('Slack')
 
-hs.hotkey.bind(hyper, '1', function()
-    hs.application.launchOrFocus('Opera')
-    hs.application.launchOrFocus('Alacritty')
-    hs.application.launchOrFocus('Slack')
+		local main_monitor = screens[1]:name()
+		local macbook_monitor = screens[2]:name()
+		local reading_layout = {
+			{"Opera", nil, main_monitor, hs.layout.right50, nil, nil},
+			{"Alacritty", nil, main_monitor, hs.layout.left50, nil, nil},
+			{"Slack", nil, macbook_monitor, hs.layout.apply, nil, nil},
+		}
 
-    hs.layout.apply(reading_layout)
-end)
+		hs.layout.apply(reading_layout)
+	end)
+end
 
 hs.hotkey.bind(hyperShift, 'o', function()
     hs.application.launchOrFocus('Opera')
