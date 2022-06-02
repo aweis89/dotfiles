@@ -2,3 +2,7 @@ nvim/plugin
 nvim/java-language-server
 .tmux/plugins
 dist
+node_modules
+nvim/nvim
+package.json
+package-lock.json
