@@ -32,6 +32,7 @@ link_configs() {
 	ln -s $DOTFILES_PATH/nvim ~/.config/nvim || true
 	ln -s $DOTFILES_PATH/.zsh ~/.zsh || true
 	ln -s $DOTFILES_PATH/.zshrc ~/.zshrc || true
+	test -d ~/.config/alacritty || mkdir -p ~/.config/alacritty
 	ln -s $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml || true
 }
 

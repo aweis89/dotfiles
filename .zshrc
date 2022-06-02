@@ -10,15 +10,17 @@ cache_rm() {
 }
 
 cache_cmd() {
-	local key=$1
-	local cache_file=$(_cache_key_file $key)
-	[[ ! -f $cache_file ]] || return 0
+    local key=$1
+    local cache_file=$(_cache_key_file $key)
+    local dir=$(dirname $cache_file)
+    test -d $dir || mkdir -p $dir
+    [[ ! -f $cache_file ]] || return 0
 
-	local cmds="$(cat /dev/stdin)"
-	set -x
-	eval "$cmds"
-	touch $cache_file
-	set +x
+    local cmds="$(cat /dev/stdin)"
+    set -x
+    eval "$cmds"
+    touch $cache_file
+    set +x
 }
 
 cache_cmd link-dotflies <<'EOL'
@@ -80,7 +82,7 @@ load_brew() {
 	fi
 }
 
-load_brew
+export PATH=$PATH:/opt/homebrew/bin
 
 # Brew package manager setup, assumes ruby is installed
 cache_cmd brewsetup <<'EOL'
@@ -143,8 +145,8 @@ auto_start_tmux() {
     if test -z "$TMUX"
     then
         tmux new-session -ds $session
+        tmux attach -t $session
     fi
-    tmux attach -t $session
 }
 
 auto_start_tmux
