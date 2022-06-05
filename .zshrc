@@ -42,13 +42,14 @@ source $antigen_dst
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
+antigen bundle ohmyzsh/ohmyzsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle git
 antigen bundle golang
 antigen bundle lein
 antigen bundle npm
 antigen bundle pip
-# antigen bundle rust
+antigen bundle kubectl
 antigen bundle tmux
 antigen bundle yarn
 antigen bundle fzf
@@ -139,7 +140,7 @@ alias c=colorscheme
 autoload _colorscheme
 compdef _colorscheme colorscheme
 
-LIGHT_COLOR='base16-gruvbox-light-soft.yml'
+LIGHT_COLOR='base16-gruvbox-light-medium.yml'
 DARK_COLOR='base16-gruvbox-dark-soft.yml'
 
 alias day="colorscheme $LIGHT_COLOR"
