@@ -12,7 +12,7 @@ return require('packer').startup(function(use)
     use 'mbbill/undotree'
     use 'tpope/vim-sensible'
     use 'iamcco/markdown-preview.nvim'
-    -- Lua
+	use 'github/copilot.vim'
     use {
         "folke/trouble.nvim",
         requires = "kyazdani42/nvim-web-devicons",
@@ -171,10 +171,8 @@ return require('packer').startup(function(use)
             vim.g.go_addtags_transform = "camelcase"
 
             -- lspconfig gopls requires:
-            vim.g.go_imports_autosave = 0
-            vim.g.go_fmt_autosave = 0
-            vim.g.go_imports_mode = 'gopls'
-            vim.g.go_fmt_command = "gopls"
+            vim.g.go_imports_autosave = 1
+            vim.g.go_fmt_autosave = 1
             vim.g.go_gopls_gofumpt = 1
 
             -- mappings
@@ -225,14 +223,14 @@ return require('packer').startup(function(use)
         requires = {
             'RRethy/vim-illuminate',
             'neovim/nvim-lspconfig',
-            'ray-x/lsp_signature.nvim',
         },
         config = function() require('lsp') end,
     }
     use {
         'L3MON4D3/LuaSnip',
-        config = function ()
-            require("luasnip.loaders.from_vscode").lazy_load()
+		config = function ()
+			-- require("luasnip.loaders.from_vscode").lazy_load()
+			require("luasnip.loaders.from_snipmate").lazy_load()
 
             vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
             vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
@@ -242,6 +240,8 @@ return require('packer').startup(function(use)
     use {
         'hrsh7th/nvim-cmp',
         requires = {
+			{'onsails/lspkind.nvim'},
+			{'hrsh7th/cmp-nvim-lsp-signature-help'},
             {'hrsh7th/cmp-nvim-lsp'},
             {'hrsh7th/cmp-cmdline'},
             {'hrsh7th/cmp-buffer'},
@@ -367,9 +367,13 @@ return require('packer').startup(function(use)
     use 'jamespwilliams/bat.vim'
     -- use "lukas-reineke/indent-blankline.nvim"
     use {
-        'RRethy/nvim-base16',
+        -- 'RRethy/nvim-base16',
+		'MaxVerevkin/nvim-base16',
         requires = {{'nvim-lua/plenary.nvim'}, {'rktjmp/fwatch.nvim'}},
         config = function ()
+			require('base16-colorscheme').with_config {
+				telescope = false,
+			}
             local Path = require("plenary.path")
             local vim_file = Path:new({vim.env.HOME, '.vimrc_background'})
             if vim_file:exists() then

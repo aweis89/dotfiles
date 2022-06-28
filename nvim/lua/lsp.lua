@@ -4,15 +4,6 @@ local lspconfig = require('lspconfig')
 local on_attach = function(client, bufnr)
     require 'illuminate'.on_attach(client)
 
-    require "lsp_signature".on_attach({
-        floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
-        bind = true, -- This is mandatory, otherwise border config won't get registered.
-        padding = ' ',
-        handler_opts = {
-            border = "rounded"
-        }
-    })
-
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
