@@ -225,8 +225,8 @@ return require('packer').startup(function(use)
 	use {
 		'L3MON4D3/LuaSnip',
 		config = function ()
-			-- require("luasnip.loaders.from_vscode").lazy_load()
-			require("luasnip.loaders.from_snipmate").lazy_load()
+			require("luasnip.loaders.from_vscode").lazy_load()
+			-- require("luasnip.loaders.from_snipmate").lazy_load()
 
 			vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
 			vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
