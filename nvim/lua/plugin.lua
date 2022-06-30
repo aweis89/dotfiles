@@ -14,6 +14,10 @@ return require('packer').startup(function(use)
 	use 'iamcco/markdown-preview.nvim'
 	use 'github/copilot.vim'
 	use {
+		'windwp/nvim-autopairs',
+		config = function() require("nvim-autopairs").setup {} end
+	}
+	use {
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
 		event = 'VimEnter',
@@ -49,10 +53,30 @@ return require('packer').startup(function(use)
 		end
 	}
 	use {
-		'preservim/nerdtree',
-		cmd = 'NERDTreeToggle',
-		keys = '<c-n>',
-		config = function () map('n', '<c-n>', '<cmd>NERDTreeToggle<cr>') end,
+		'kyazdani42/nvim-tree.lua',
+		requires = {
+			'kyazdani42/nvim-web-devicons', -- optional, for file icons
+		},
+		config = function ()
+			map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
+			require("nvim-tree").setup({
+				sort_by = "case_sensitive",
+				view = {
+					adaptive_size = true,
+					mappings = {
+						list = {
+							{ key = "u", action = "dir_up" },
+						},
+					},
+				},
+				renderer = {
+					group_empty = true,
+				},
+				filters = {
+					dotfiles = true,
+				},
+			})
+		end
 	}
 	use {
 		'airblade/vim-gitgutter',
@@ -86,16 +110,15 @@ return require('packer').startup(function(use)
 		config = function()
 			require('lualine').setup({
 				sections = {
-					lualine_b = {
-						{
-							'filename',
-							path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
-						}
+					lualine_a = {
+						{ 'mode', fmt = function(str) return str:sub(1,1) end },
 					},
-					lualine_c = {
-						"lsp_progress",
-					},
-				}
+					lualine_b = {'branch', 'diff', 'diagnostics'},
+					lualine_c = {'filename'},
+					lualine_x = {'fileformat', 'filetype'},
+					lualine_y = {'progress'},
+					lualine_z = {'location'}
+				},
 			})
 		end,
 		event = 'VimEnter',
@@ -224,12 +247,9 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'L3MON4D3/LuaSnip',
+		requires = {'rafamadriz/friendly-snippets'},
 		config = function ()
 			require("luasnip.loaders.from_vscode").lazy_load()
-			-- require("luasnip.loaders.from_snipmate").lazy_load()
-
-			vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
-			vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
 		end
 	}
 	use { 'saadparwaiz1/cmp_luasnip' }
