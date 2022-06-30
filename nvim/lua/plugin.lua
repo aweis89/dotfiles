@@ -14,6 +14,28 @@ return require('packer').startup(function(use)
 	use 'iamcco/markdown-preview.nvim'
 	use 'github/copilot.vim'
 	use {
+		'numToStr/Comment.nvim',
+		config = function()
+			require('Comment').setup({
+				---Create basic (operator-pending) and extended mappings for NORMAL + VISUAL mode
+				---NOTE: If `mappings = false` then the plugin won't create any mappings
+				---@type boolean|table
+				mappings = {
+					---Operator-pending mapping
+					---Includes `gcc`, `gbc`, `gc[count]{motion}` and `gb[count]{motion}`
+					---NOTE: These mappings can be changed individually by `opleader` and `toggler` config
+					basic = true,
+					---Extra mapping
+					---Includes `gco`, `gcO`, `gcA`
+					extra = true,
+					---Extended mapping
+					---Includes `g>`, `g<`, `g>[count]{motion}` and `g<[count]{motion}`
+					extended = true,
+				},
+			})
+		end
+	}
+	use {
 		'windwp/nvim-autopairs',
 		config = function() require("nvim-autopairs").setup {} end
 	}
@@ -302,12 +324,6 @@ return require('packer').startup(function(use)
 		end,
 	}
 	use 'tyru/current-func-info.vim'
-	use {
-		'kyazdani42/nvim-tree.lua',
-		requires = {'kyazdani42/nvim-web-devicons'},
-		cmd = {'NvimTreeToggle', 'NvimTreeOpen'},
-		config = function() require'nvim-tree'.setup {} end
-	}
 	use 'machakann/vim-highlightedyank'
 	use 'rktjmp/lush.nvim'
 	use {
