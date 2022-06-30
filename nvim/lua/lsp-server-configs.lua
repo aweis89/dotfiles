@@ -1,8 +1,9 @@
 -- key is server name and value is options used by lspconfig
 -- nvim-lsp-installer will also install and setup if it has installer
+
 local server_configs = {
     cmake = {},
-    yamlls = {},
+    -- yamlls = {},
     jsonls = {},
     jdtls = {},
     vimls = {},
