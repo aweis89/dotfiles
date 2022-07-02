@@ -7,6 +7,19 @@ end
 
 vim.cmd [[packadd packer.nvim]]
 
+function LspBorder(hl_name)
+	return {
+		{ "╭", hl_name },
+		{ "─", hl_name },
+		{ "╮", hl_name },
+		{ "│", hl_name },
+		{ "╯", hl_name },
+		{ "─", hl_name },
+		{ "╰", hl_name },
+		{ "│", hl_name },
+	}
+end
+
 return require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim'
 	use 'mbbill/undotree'
@@ -45,12 +58,12 @@ return require('packer').startup(function(use)
 		event = 'VimEnter',
 		config = function()
 			require("trouble").setup()
-			map("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
-			map("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>")
-			map("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>")
-			map("n", "<leader>xl", "<cmd>Trouble loclist<cr>")
-			map("n", "<leader>xq", "<cmd>Trouble quickfix<cr>")
-			map("n", "gR", "<cmd>Trouble lsp_references<cr>")
+			Map("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
+			Map("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>")
+			Map("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>")
+			Map("n", "<leader>xl", "<cmd>Trouble loclist<cr>")
+			Map("n", "<leader>xq", "<cmd>Trouble quickfix<cr>")
+			Map("n", "gR", "<cmd>Trouble lsp_references<cr>")
 		end
 	}
 	use {
@@ -67,8 +80,8 @@ return require('packer').startup(function(use)
 		branch = 'v1', -- optional but strongly recommended
 		cmd = 'HopWord',
 		setup = function()
-			map('n', 's', '<cmd>HopWord<cr>')
-			map('n', '<leader>j', '<cmd>HopLineStart<cr>')
+			Map('n', 's', '<cmd>HopWord<cr>')
+			Map('n', '<leader>j', '<cmd>HopLineStart<cr>')
 		end,
 		config = function()
 			require'hop'.setup()
@@ -80,7 +93,7 @@ return require('packer').startup(function(use)
 			'kyazdani42/nvim-web-devicons', -- optional, for file icons
 		},
 		config = function ()
-			map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
+			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
 			require("nvim-tree").setup({
 				sort_by = "case_sensitive",
 				view = {
@@ -187,13 +200,13 @@ return require('packer').startup(function(use)
 			})
 			require('neoclip').setup()
 			require('telescope').load_extension('neoclip')
-			map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
-			map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
-			map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
-			map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
-			map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
-			map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<cr>')
-			map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
+			Map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
+			Map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
+			Map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
+			Map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
+			Map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
+			Map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<cr>')
+			Map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
 		end
 	}
 	-- Golang plugins
@@ -217,9 +230,9 @@ return require('packer').startup(function(use)
 			vim.g.go_gopls_gofumpt = 1
 
 			-- mappings
-			map('n', '<leader>i', ':GoInfo<cr>')
-			map('n', 'gf', ':GoFillStruct<cr>')
-			map('n', 'ga', ':GoAlternate<cr>')
+			Map('n', '<leader>i', ':GoInfo<cr>')
+			Map('n', 'gf', ':GoFillStruct<cr>')
+			Map('n', 'ga', ':GoAlternate<cr>')
 		end,
 	}
 	use {
@@ -236,7 +249,7 @@ return require('packer').startup(function(use)
 			-- override lsp symbols
 			vim.g.delve_sign_priority = 10000
 			-- map('', '<leader>dd', ':DlvToggleBreakpoint<cr>')
-			map('', '<leader>dt', ':DlvTest<cr>')
+			Map('', '<leader>dt', ':DlvTest<cr>')
 		end,
 	}
 
@@ -265,7 +278,7 @@ return require('packer').startup(function(use)
 			'RRethy/vim-illuminate',
 			'neovim/nvim-lspconfig',
 		},
-		config = function() require('lsp') end,
+		config = function() require('config.nvim-lsp-installer').setup() end,
 	}
 	use {
 		'L3MON4D3/LuaSnip',
@@ -289,7 +302,7 @@ return require('packer').startup(function(use)
 			{'andersevenrud/cmp-tmux'},
 		},
 		config = function()
-			require('nvim-cmp-config').setup()
+			require('config.nvim-cmp-config').setup()
 		end,
 	}
 
@@ -331,7 +344,7 @@ return require('packer').startup(function(use)
 		config = function()
 			vim.g.material_style = "darker"
 			-- vim.cmd([[colorscheme material]])
-			map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
+			Map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
 		end
 	}
 	use 'jamespwilliams/bat.vim'
