@@ -50,18 +50,16 @@ Map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
 Map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
 
 -- auto formatt
-local format_group = vim.api.nvim_create_augroup("formatt", { clear = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
-	group = format_group,
+	group = vim.api.nvim_create_augroup("Format", { clear = true }),
 	pattern = { "*" },
 	callback = function()
 		vim.lsp.buf.formatting_sync(nil, 3000)
 	end,
 })
 
-local auto_import_group = vim.api.nvim_create_augroup("auto_imports", { clear = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
-	group = auto_import_group,
+	group = vim.api.nvim_create_augroup("AutoImport", { clear = true }),
 	pattern = { "*.go" },
 	callback = function()
 		local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
