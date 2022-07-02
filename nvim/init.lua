@@ -1,18 +1,18 @@
 vim.g.mapleader = " "
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
-function Map (mode, key, target, opts)
-	opts = opts or {noremap = true}
+function Map(mode, key, target, opts)
+	opts = opts or { noremap = true }
 	vim.api.nvim_set_keymap(mode, key, target, opts)
 end
 
 require('plugins')
 
 local function set(name, val)
-    if val ~= false then
-        val = val or true
-    end
-    vim.o[name] = val
+	if val ~= false then
+		val = val or true
+	end
+	vim.o[name] = val
 end
 
 set("termguicolors")
@@ -49,18 +49,23 @@ Map('t', 'jj', [[<C-\><C-n>]])
 Map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
 Map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
 
+-- auto formatt
+vim.api.nvim_create_augroup("formatt", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = { "*.go", "*.lua", "*.rs"},
-  callback = function()
-	  vim.lsp.buf.formatting_sync(nil, 3000)
-  end,
+	group = "formatt",
+	pattern = { "*" },
+	callback = function()
+		vim.lsp.buf.formatting_sync(nil, 3000)
+	end,
 })
 
+vim.api.nvim_create_augroup("auto_imports", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
+	group = "auto_imports",
 	pattern = { "*.go" },
 	callback = function()
 		local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
-		params.context = {only = {"source.organizeImports"}}
+		params.context = { only = { "source.organizeImports" } }
 
 		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
 		for _, res in pairs(result or {}) do
