@@ -1,19 +1,19 @@
 vim.g.mapleader = " "
 vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
-function set(name, val)
+function Map (mode, key, target, opts)
+	opts = opts or {noremap = true}
+	vim.api.nvim_set_keymap(mode, key, target, opts)
+end
+
+require('plugins')
+
+local function set(name, val)
     if val ~= false then
         val = val or true
     end
     vim.o[name] = val
 end
-
-function map (mode, key, target, opts)
-	opts = opts or {noremap = true}
-	vim.api.nvim_set_keymap(mode, key, target, opts)
-end
-
-require('plugin')
 
 set("termguicolors")
 set("termguicolors")
@@ -29,6 +29,7 @@ set("tabstop", 4)
 set("softtabstop", 4)
 set("shiftwidth", 4)
 set("updatetime", 250)
+set("cmdheight", 1)
 
 set("smartindent")
 set("errorbells", false)
@@ -39,46 +40,37 @@ set("incsearch")
 set("termguicolors")
 set("scrolloff", 8)
 
-map('i', 'jj', '<ESC>')
-map('i', '<C-c>', '<ESC>')
-map('n', '<leader>q', ':q<cr>')
-map('n', 'L', '$')
-map('n', 'H', '^')
-map('t', 'jj', [[<C-\><C-n>]])
-map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
-map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
+Map('i', 'jj', '<ESC>')
+Map('i', '<C-c>', '<ESC>')
+Map('n', '<leader>q', ':q<cr>')
+Map('n', 'L', '$')
+Map('n', 'H', '^')
+Map('t', 'jj', [[<C-\><C-n>]])
+Map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
+Map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
 
-map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-map('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>')
-map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-map('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
-map('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
-map('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
-map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-map('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-map('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-map('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
-map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
-map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
-map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
-map('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = { "*.go", "*.lua", "*.rs"},
+  callback = function()
+	  vim.lsp.buf.formatting_sync(nil, 3000)
+  end,
+})
 
-vim.cmd([[
-    autocmd TermOpen * startinsert
-    
-    autocmd FileType go exec 'source ' . stdpath('config') . '/golang/init.vim'
-    autocmd BufWritePre *.go,*.rs :silent! lua vim.lsp.buf.formatting()
-    autocmd BufWritePre *.go,*.rs :silent! lua require('lsp_utils').org_imports(3000)
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = { "*.go" },
+	callback = function()
+		local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
+		params.context = {only = {"source.organizeImports"}}
 
-    augroup colorschemes
-        autocmd!
-        autocmd ColorScheme * hi! link DiagnosticWarn Comment
-        autocmd ColorScheme * hi! link DiagnosticInfo Comment
-        autocmd ColorScheme * hi! link DiagnosticHint Comment
-        " autocmd ColorScheme * hi! link DiagnosticError Comment
-    augroup end
-]])
+		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+		for _, res in pairs(result or {}) do
+			for _, r in pairs(res.result or {}) do
+				if r.edit then
+					vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding())
+				else
+					vim.lsp.buf.execute_command(r.command)
+				end
+			end
+		end
+	end,
+})
