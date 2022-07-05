@@ -22,45 +22,45 @@ local server_configs = {
 	java_language_server = {},
 	bashls = {},
 	golangci_lint_ls = {},
-	gopls = {},
-	-- gopls = {
-	--     -- capabilities = cap,
-	--     filetypes = { 'go', 'gomod', 'gohtmltmpl', 'gotexttmpl' },
-	--     message_level = vim.lsp.protocol.MessageType.Error,
-	--     cmd = {
-	--         'gopls', -- share the gopls instance if there is one already
-	--         '-remote=auto', --[[ debug options ]] --
-	--         -- "-logfile=auto",
-	--         -- "-debug=:0",
-	--         '-remote.debug=:0',
-	--         -- "-rpc.trace",
-	--     },
-	--     flags = { allow_incremental_sync = true, debounce_text_changes = 1000 },
-	--     settings = {
-	--         gopls = {
-	--             -- more settings: https://github.com/golang/tools/blob/master/gopls/doc/settings.md
-	--             -- not supported
-	--             analyses = { unusedparams = true, unreachable = false },
-	--             codelenses = {
-	--                 generate = true, -- show the `go generate` lens.
-	--                 gc_details = false, --  // Show a code lens toggling the display of gc's choices.
-	--                 test = true,
-	--                 tidy = true,
-	--             },
-	--             usePlaceholders = true,
-	--             completeUnimported = true,
-	--             staticcheck = true,
-	--             matcher = 'fuzzy',
-	--             diagnosticsDelay = '500ms',
-	--             experimentalWatchedFileDelay = '1000ms',
-	--             symbolMatcher = 'fuzzy',
-	--             gofumpt = true, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
-	--             buildFlags = { '-tags', 'integration' },
-	--             -- buildFlags = {"-tags", "functional"}
-	--         },
-	--     },
-	-- },
-	--
+	-- gopls = {},
+
+	gopls = {
+		-- capabilities = cap,
+		filetypes = { 'go', 'gomod', 'gohtmltmpl', 'gotexttmpl' },
+		message_level = vim.lsp.protocol.MessageType.Error,
+		cmd = {
+			'gopls', -- share the gopls instance if there is one already
+			'-remote=auto', --[[ debug options ]] --
+			-- "-logfile=auto",
+			-- "-debug=:0",
+			'-remote.debug=:0',
+			-- "-rpc.trace",
+		},
+		flags = { allow_incremental_sync = true, debounce_text_changes = 1000 },
+		settings = {
+			gopls = {
+				-- more settings: https://github.com/golang/tools/blob/master/gopls/doc/settings.md
+				-- not supported
+				analyses = { unusedparams = true, unreachable = true },
+				codelenses = {
+					generate = true, -- show the `go generate` lens.
+					gc_details = false, --  // Show a code lens toggling the display of gc's choices.
+					test = true,
+					tidy = true,
+				},
+				usePlaceholders = true,
+				completeUnimported = true,
+				staticcheck = true,
+				matcher = 'fuzzy',
+				diagnosticsDelay = '500ms',
+				experimentalWatchedFileDelay = '1000ms',
+				symbolMatcher = 'fuzzy',
+				gofumpt = true, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
+				buildFlags = { '-tags', 'integration' },
+				-- buildFlags = {"-tags", "functional"}
+			},
+		},
+	},
 
 	solargraph = {
 		settings = {
@@ -108,7 +108,7 @@ local server_configs = {
 	tsserver = {},
 }
 
--- To instead override globally
+-- Add border
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
 function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 	opts = opts or {}
@@ -119,7 +119,6 @@ end
 local on_attach = function(client, bufnr)
 	require 'illuminate'.on_attach(client)
 
-	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
 	-- Mappings.
@@ -143,8 +142,6 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
--- local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
--- local signs = { Error = "E", Warn = "W", Hint = "H", Info = "I" }
 local signs = { Error = "✘", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
