@@ -42,6 +42,8 @@ set("scrolloff", 8)
 
 Map('i', 'jj', '<ESC>')
 Map('i', '<C-c>', '<ESC>')
+Map('i', '<C-l>', '<RIGHT>')
+Map('i', '<C-h>', '<LEFT>')
 Map('n', '<leader>q', ':q<cr>')
 Map('n', 'L', '$')
 Map('n', 'H', '^')
