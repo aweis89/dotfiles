@@ -75,18 +75,6 @@ return require('packer').startup(function(use)
 		'kassio/neoterm',
 		config = function() vim.g.neoterm_autoinsert = 1 end,
 	}
-	-- use {
-	-- 	'phaazon/hop.nvim',
-	-- 	branch = 'v1', -- optional but strongly recommended
-	-- 	cmd = 'HopWord',
-	-- 	setup = function()
-	-- 		Map('n', 's', '<cmd>HopWord<cr>')
-	-- 		Map('n', '<leader>j', '<cmd>HopLineStart<cr>')
-	-- 	end,
-	-- 	config = function()
-	-- 		require 'hop'.setup()
-	-- 	end
-	-- }
 	use {
 		'ggandor/lightspeed.nvim',
 		config = function()
