@@ -1,8 +1,8 @@
 -- Install packer if missing
 local fn = vim.fn
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 if fn.empty(fn.glob(install_path)) > 0 then
-	fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+	fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
 end
 
 vim.cmd [[packadd packer.nvim]]
@@ -73,18 +73,24 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'kassio/neoterm',
-		config = function () vim.g.neoterm_autoinsert = 1 end,
+		config = function() vim.g.neoterm_autoinsert = 1 end,
 	}
+	-- use {
+	-- 	'phaazon/hop.nvim',
+	-- 	branch = 'v1', -- optional but strongly recommended
+	-- 	cmd = 'HopWord',
+	-- 	setup = function()
+	-- 		Map('n', 's', '<cmd>HopWord<cr>')
+	-- 		Map('n', '<leader>j', '<cmd>HopLineStart<cr>')
+	-- 	end,
+	-- 	config = function()
+	-- 		require 'hop'.setup()
+	-- 	end
+	-- }
 	use {
-		'phaazon/hop.nvim',
-		branch = 'v1', -- optional but strongly recommended
-		cmd = 'HopWord',
-		setup = function()
-			Map('n', 's', '<cmd>HopWord<cr>')
-			Map('n', '<leader>j', '<cmd>HopLineStart<cr>')
-		end,
+		'ggandor/lightspeed.nvim',
 		config = function()
-			require'hop'.setup()
+			Map('n', 's', '<Plug>Lightspeed_omni_s', { noremap = false })
 		end
 	}
 	use {
@@ -92,7 +98,7 @@ return require('packer').startup(function(use)
 		requires = {
 			'kyazdani42/nvim-web-devicons', -- optional, for file icons
 		},
-		config = function ()
+		config = function()
 			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
 			require("nvim-tree").setup({
 				sort_by = "case_sensitive",
@@ -141,18 +147,18 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'nvim-lualine/lualine.nvim',
-		requires = {'arkav/lualine-lsp-progress'},
+		requires = { 'arkav/lualine-lsp-progress' },
 		config = function()
 			require('lualine').setup({
 				sections = {
 					lualine_a = {
-						{ 'mode', fmt = function(str) return str:sub(1,1) end },
+						{ 'mode', fmt = function(str) return str:sub(1, 1) end },
 					},
-					lualine_b = {'branch', 'diff', 'diagnostics'},
-					lualine_c = {'filename'},
-					lualine_x = {'fileformat', 'filetype'},
-					lualine_y = {'progress'},
-					lualine_z = {'location'}
+					lualine_b = { 'branch', 'diff', 'diagnostics' },
+					lualine_c = { 'filename' },
+					lualine_x = { 'fileformat', 'filetype' },
+					lualine_y = { 'progress' },
+					lualine_z = { 'location' }
 				},
 			})
 		end,
@@ -160,7 +166,7 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'nvim-telescope/telescope.nvim',
-		requires = {'nvim-lua/plenary.nvim', "AckslD/nvim-neoclip.lua"},
+		requires = { 'nvim-lua/plenary.nvim', "AckslD/nvim-neoclip.lua" },
 		config = function()
 			require('telescope').setup({
 				defaults = {
@@ -213,7 +219,7 @@ return require('packer').startup(function(use)
 	use {
 		'fatih/vim-go',
 		-- ft = 'go', breaks adding package to new files
-		setup = function ()
+		setup = function()
 			vim.g.go_auto_type_info = 0
 			vim.g.go_metalinter_autosave = 0
 			vim.g.go_highlight_types = 0
@@ -238,14 +244,14 @@ return require('packer').startup(function(use)
 	use {
 		'buoto/gotests-vim',
 		ft = 'go',
-		setup = function ()
+		setup = function()
 			vim.g.gotests_template_dir = vim.fn.stdpath('config') .. '/golang/gotests-templates'
 		end,
 	}
 	use {
 		'sebdah/vim-delve',
 		ft = 'go',
-		setup = function ()
+		setup = function()
 			-- override lsp symbols
 			vim.g.delve_sign_priority = 10000
 			-- map('', '<leader>dd', ':DlvToggleBreakpoint<cr>')
@@ -257,7 +263,7 @@ return require('packer').startup(function(use)
 	use 'preservim/vimux'
 	use {
 		'tyru/open-browser-github.vim',
-		requires = {'tyru/open-browser.vim'}
+		requires = { 'tyru/open-browser.vim' }
 	}
 	use 'pwntester/octo.nvim'
 	use 'kyazdani42/nvim-web-devicons'
@@ -266,8 +272,8 @@ return require('packer').startup(function(use)
 
 	use {
 		'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
-		config = function ()
-			require'toggle_lsp_diagnostics'.init({start_on = true})
+		config = function()
+			require 'toggle_lsp_diagnostics'.init({ start_on = true })
 		end
 	}
 
@@ -282,8 +288,8 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'L3MON4D3/LuaSnip',
-		requires = {'rafamadriz/friendly-snippets'},
-		config = function ()
+		requires = { 'rafamadriz/friendly-snippets' },
+		config = function()
 			require("luasnip.loaders.from_vscode").lazy_load()
 		end
 	}
@@ -291,15 +297,15 @@ return require('packer').startup(function(use)
 	use {
 		'hrsh7th/nvim-cmp',
 		requires = {
-			{'onsails/lspkind.nvim'},
-			{'hrsh7th/cmp-nvim-lsp-signature-help'},
-			{'hrsh7th/cmp-nvim-lsp'},
-			{'hrsh7th/cmp-cmdline'},
-			{'hrsh7th/cmp-buffer'},
-			{'hrsh7th/cmp-path'},
-			{'hrsh7th/vim-vsnip'},
-			{'hrsh7th/cmp-vsnip'},
-			{'andersevenrud/cmp-tmux'},
+			{ 'onsails/lspkind.nvim' },
+			{ 'hrsh7th/cmp-nvim-lsp-signature-help' },
+			{ 'hrsh7th/cmp-nvim-lsp' },
+			{ 'hrsh7th/cmp-cmdline' },
+			{ 'hrsh7th/cmp-buffer' },
+			{ 'hrsh7th/cmp-path' },
+			{ 'hrsh7th/vim-vsnip' },
+			{ 'hrsh7th/cmp-vsnip' },
+			{ 'andersevenrud/cmp-tmux' },
 		},
 		config = function()
 			require('config.nvim-cmp-config').setup()
@@ -309,8 +315,8 @@ return require('packer').startup(function(use)
 	use 'RRethy/vim-illuminate'
 	use {
 		'nvim-treesitter/nvim-treesitter',
-		config = function ()
-			require'nvim-treesitter.configs'.setup {
+		config = function()
+			require 'nvim-treesitter.configs'.setup {
 				-- One of "all", "maintained" (parsers with maintainers), or a list of languages
 				ensure_installed = "all",
 
@@ -352,13 +358,13 @@ return require('packer').startup(function(use)
 	use {
 		-- 'RRethy/nvim-base16',
 		'MaxVerevkin/nvim-base16',
-		requires = {{'nvim-lua/plenary.nvim'}, {'rktjmp/fwatch.nvim'}},
-		config = function ()
+		requires = { { 'nvim-lua/plenary.nvim' }, { 'rktjmp/fwatch.nvim' } },
+		config = function()
 			require('base16-colorscheme').with_config {
 				telescope = false,
 			}
 			local Path = require("plenary.path")
-			local vim_file = Path:new({vim.env.HOME, '.vimrc_background'})
+			local vim_file = Path:new({ vim.env.HOME, '.vimrc_background' })
 			if vim_file:exists() then
 				vim.cmd([[source ]] .. vim_file.filename)
 
@@ -367,10 +373,12 @@ return require('packer').startup(function(use)
 				local function on_change(err, fname, status)
 					vim.cmd([[source ]] .. vim_file.filename)
 				end
+
 				function watch_file(fname)
-					local fullpath = vim.api.nvim_call_function('fnamemodify', {fname, ':p'})
+					local fullpath = vim.api.nvim_call_function('fnamemodify', { fname, ':p' })
 					w:start(fullpath, {}, vim.schedule_wrap(function(...) on_change(...) end))
 				end
+
 				watch_file(vim_file.filename)
 			else
 				vim.cmd([[colorscheme base16-gruvbox-dark-soft]])
