@@ -162,6 +162,10 @@ return require('packer').startup(function(use)
 						timeout = 500,
 						msg_bg_fillchar = "",
 					},
+					path_display = {
+						"truncate",
+						"smart",
+					},
 					multi_icon = " ",
 					vimgrep_arguments = {
 						"rg",
@@ -199,8 +203,9 @@ return require('packer').startup(function(use)
 			Map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
 			Map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
 			Map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
-			Map('n', '<leader>fs', '<cmd>Telescope lsp_document_symbols<cr>')
+			Map('n', '<leader>fs', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>')
 			Map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
+			Map('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>')
 		end
 	}
 	-- Golang plugins
