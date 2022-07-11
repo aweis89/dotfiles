@@ -17,7 +17,6 @@ end
 
 set("termguicolors")
 set("termguicolors")
-set("autoindent")
 set("ignorecase")
 set("number")
 set("hlsearch", false)
@@ -25,13 +24,14 @@ set("ai")
 set("cursorline")
 set("completeopt", "menu,menuone,noselect")
 set("expandtab", false)
-set("tabstop", 4)
-set("softtabstop", 4)
-set("shiftwidth", 4)
+set("autoindent")
+-- set("tabstop", 4)
+-- set("softtabstop", 4)
+-- set("shiftwidth", 4)
+set("smartindent")
 set("updatetime", 250)
 set("cmdheight", 1)
 
-set("smartindent")
 set("errorbells", false)
 set("swapfile", false)
 set("backup", false)
@@ -95,5 +95,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 				end
 			end
 		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("YamlFileTYpe", { clear = true }),
+	pattern = { "*.yaml", "*.yml" },
+	callback = function()
+		set("tabstop", 2)
+		set("softtabstop", 2)
+		set("shiftwidth", 2)
 	end,
 })
