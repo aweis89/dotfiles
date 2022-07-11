@@ -15,13 +15,13 @@ local border = {
 -- nvim-lsp-installer will also install and setup if it has installer
 local server_configs = {
 	cmake = {},
-	-- yamlls = {},
+	yamlls = {},
 	jsonls = {},
 	jdtls = {},
 	vimls = {},
 	java_language_server = {},
 	bashls = {},
-	golangci_lint_ls = {},
+	-- golangci_lint_ls = {},
 	-- gopls = {},
 
 	gopls = {
@@ -77,7 +77,11 @@ local server_configs = {
 	},
 
 	pyright = {},
-	rust_analyzer = {},
+	rust_analyzer = {
+		settings = {
+			serverPath = "/Users/aweisberg/rust-analyzer-docker",
+		},
+	},
 	sumneko_lua = {
 		settings = {
 			Lua = {
@@ -134,7 +138,8 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 	buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 	buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+	-- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+	buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
 	buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
 	buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 	buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
