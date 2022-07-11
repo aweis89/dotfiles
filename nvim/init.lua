@@ -51,6 +51,24 @@ Map('t', 'jj', [[<C-\><C-n>]])
 Map('t', 'qq', [[<C-\><C-n>:q!<CR>]])
 Map('t', '<Esc>', [[<C-\><C-n>:q!<CR>]])
 
+Map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+Map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+Map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+Map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+Map('n', '<C-k>', '^f(<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+Map('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+Map('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+Map('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+Map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+Map('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+Map('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+Map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+Map('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+Map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+Map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+Map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+Map('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
 -- auto formatt
 vim.api.nvim_create_autocmd("BufWritePre", {
 	group = vim.api.nvim_create_augroup("Format", { clear = true }),
