@@ -76,12 +76,15 @@ local server_configs = {
 		}
 	},
 
+	terraformls = {},
+
 	pyright = {},
 	rust_analyzer = {
 		settings = {
 			serverPath = "/Users/aweisberg/rust-analyzer-docker",
 		},
 	},
+	kotlin_language_server = {},
 	sumneko_lua = {
 		settings = {
 			Lua = {
