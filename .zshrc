@@ -44,22 +44,25 @@ source $antigen_dst
 antigen use oh-my-zsh
 antigen bundle ohmyzsh/ohmyzsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle ag
+antigen bundle command-not-found
+antigen bundle fzf
 antigen bundle git
 antigen bundle golang
+antigen bundle kubectl
 antigen bundle lein
 antigen bundle npm
 antigen bundle pip
-antigen bundle kubectl
 antigen bundle tmux
 antigen bundle yarn
-antigen bundle fzf
 antigen bundle z
 
 # antigen bundle RobSis/zsh-completion-generator
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle mafredri/zsh-async
-antigen theme simple
+# antigen theme simple
+eval "$(starship init zsh)"
 
 # Tell Antigen that you're done.
 antigen apply
@@ -84,7 +87,7 @@ load_brew() {
 }
 
 # brew
-export PATH=$PATH:/opt/homebrew/bin
+export PATH=$PATH:/opt/homebrew/bin:$HOME/.local/bin
 
 # editor
 export VISUAL=nvim
@@ -140,11 +143,19 @@ alias c=colorscheme
 autoload _colorscheme
 compdef _colorscheme colorscheme
 
-LIGHT_COLOR='base16-gruvbox-light-medium.yml'
-DARK_COLOR='base16-gruvbox-dark-soft.yml'
+alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
 
-alias day="colorscheme $LIGHT_COLOR"
-alias night="colorscheme $DARK_COLOR"
+day() {
+	echo 'gruvbox-light' > $HOME/tmp/bat-theme
+	LIGHT_COLOR='base16-gruvbox-light-soft.yml'
+	colorscheme $LIGHT_COLOR
+}
+
+night() {
+	echo 'gruvbox-dark' > $HOME/tmp/bat-theme
+	DARK_COLOR='base16-woodland.yml'
+	colorscheme $DARK_COLOR
+}
 
 auto_start_tmux() {
     session=${1:-default}
@@ -156,3 +167,15 @@ auto_start_tmux() {
 }
 
 auto_start_tmux
+export PATH="$HOME/.tfenv/bin:$PATH"
+export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+
+profile_cycle() {
+	IFS=$'\n'
+	sleep_time=${1:-0.5}
+	for profile in $HOME/.config/alacritty/colors/*.yml; do
+		echo Profile: $profile
+		colorscheme $profile
+		sleep $sleep_time
+	done
+}
