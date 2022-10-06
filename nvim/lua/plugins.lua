@@ -54,30 +54,6 @@ return require('packer').startup(function(use)
 		config = function() require("nvim-autopairs").setup {} end
 	}
 	use {
-		'MattFlower/telescope-kubernetes',
-		config = function()
-			require("telescope").load_extension("k8s") 
-			-- require("telescope").setup {
-			-- 	extensions = {
-			-- 		k8s = {
-			-- 			kubectl_location = "/usr/local/bin/kubectl",
-			-- 			yq_location = "/opt/homebrew/bin/yq",
-			-- 			object_types = { "pod", "secret", "deployment", "service", "daemonset", "replicaset", "statefulset",
-			-- 				"persistentvolume", "persistentvolumeclaim" },
-			-- 			fields_to_filter = {
-			-- 				".metadata.annotations",
-			-- 				".metadata.creationTimestamp",
-			-- 				".metadata.resourceVersion",
-			-- 				".metadata.selfLink",
-			-- 				".metadata.uid",
-			-- 			}
-			-- 		}
-			-- 	}
-			-- }
-
-		end
-	}
-	use {
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
 		event = 'VimEnter',
