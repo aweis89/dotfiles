@@ -69,15 +69,16 @@ Map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 Map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
 Map('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 Map('n', 'gr', '<cmd>Telescope lsp_references<CR>')
+Map('v', 'f', '<ESC><cmd>lua vim.lsp.buf.range_formatting()<CR>', { noremap = true })
 
 -- auto formatt
-vim.api.nvim_create_autocmd("BufWritePre", {
-	group = vim.api.nvim_create_augroup("Format", { clear = true }),
-	pattern = { "*" },
-	callback = function()
-		vim.lsp.buf.formatting_sync(nil, 3000)
-	end,
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	group = vim.api.nvim_create_augroup("Format", { clear = true }),
+-- 	pattern = { "*" },
+-- 	callback = function()
+-- 		vim.lsp.buf.formatting_sync(nil, 3000)
+-- 	end,
+-- })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	group = vim.api.nvim_create_augroup("AutoImport", { clear = true }),

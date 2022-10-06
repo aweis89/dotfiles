@@ -21,6 +21,7 @@ function LspBorder(hl_name)
 end
 
 return require('packer').startup(function(use)
+	use 'tpope/vim-abolish'
 	use 'wbthomason/packer.nvim'
 	use 'mbbill/undotree'
 	use 'tpope/vim-sensible'
@@ -51,6 +52,30 @@ return require('packer').startup(function(use)
 	use {
 		'windwp/nvim-autopairs',
 		config = function() require("nvim-autopairs").setup {} end
+	}
+	use {
+		'MattFlower/telescope-kubernetes',
+		config = function()
+			require("telescope").load_extension("k8s") 
+			-- require("telescope").setup {
+			-- 	extensions = {
+			-- 		k8s = {
+			-- 			kubectl_location = "/usr/local/bin/kubectl",
+			-- 			yq_location = "/opt/homebrew/bin/yq",
+			-- 			object_types = { "pod", "secret", "deployment", "service", "daemonset", "replicaset", "statefulset",
+			-- 				"persistentvolume", "persistentvolumeclaim" },
+			-- 			fields_to_filter = {
+			-- 				".metadata.annotations",
+			-- 				".metadata.creationTimestamp",
+			-- 				".metadata.resourceVersion",
+			-- 				".metadata.selfLink",
+			-- 				".metadata.uid",
+			-- 			}
+			-- 		}
+			-- 	}
+			-- }
+
+		end
 	}
 	use {
 		"folke/trouble.nvim",
@@ -343,7 +368,8 @@ return require('packer').startup(function(use)
 		config = function()
 			vim.g.material_style = "darker"
 			-- vim.cmd([[colorscheme material]])
-			Map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]], { noremap = true, silent = true })
+			Map('n', '<leader>mm', [[<Cmd>lua require('material.functions').toggle_style()<CR>]],
+				{ noremap = true, silent = true })
 		end
 	}
 	use 'jamespwilliams/bat.vim'
