@@ -21,7 +21,7 @@ local server_configs = {
 	vimls = {},
 	java_language_server = {},
 	bashls = {},
-	-- golangci_lint_ls = {},
+	golangci_lint_ls = {},
 	-- gopls = {},
 
 	gopls = {
