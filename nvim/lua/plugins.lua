@@ -26,7 +26,7 @@ return require('packer').startup(function(use)
 	use 'mbbill/undotree'
 	use 'tpope/vim-sensible'
 	use 'iamcco/markdown-preview.nvim'
-	use 'github/copilot.vim'
+	-- use 'github/copilot.vim'
 	use {
 		'numToStr/Comment.nvim',
 		config = function()
@@ -207,6 +207,7 @@ return require('packer').startup(function(use)
 			Map('n', '<leader>fs', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>')
 			Map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
 			Map('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>')
+			Map('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
 		end
 	}
 	-- Golang plugins
