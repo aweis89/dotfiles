@@ -39,6 +39,7 @@ set("undofile")
 set("incsearch")
 set("termguicolors")
 set("scrolloff", 8)
+set("copyindent", true)
 
 Map('i', 'jj', '<ESC>')
 Map('i', '<C-c>', '<ESC>')
@@ -69,8 +70,8 @@ Map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 Map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
 Map('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 Map('n', 'gr', '<cmd>Telescope lsp_references<CR>')
-Map('v', 'f', '<ESC><cmd>lua vim.lsp.buf.range_formatting()<CR>', { noremap = true })
 
+Map('v', 'f', '<ESC><cmd>lua vim.lsp.buf.range_formatting()<CR>', { noremap = true })
 -- auto formatt
 -- vim.api.nvim_create_autocmd("BufWritePre", {
 -- 	group = vim.api.nvim_create_augroup("Format", { clear = true }),
@@ -107,5 +108,6 @@ vim.api.nvim_create_autocmd("FileType", {
 		set("tabstop", 2)
 		set("softtabstop", 2)
 		set("shiftwidth", 2)
+		set("expandtab", false)
 	end,
 })
