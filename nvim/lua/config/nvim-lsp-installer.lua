@@ -20,9 +20,12 @@ local server_configs = {
 	jdtls = {},
 	vimls = {},
 	java_language_server = {},
-	bashls = {},
+	bashls = {
+		cmd_env = {
+			  GLOB_PATTERN = "*@(.sh|.inc|.bash|.command|.zsh)",
+		},
+	},
 	golangci_lint_ls = {},
-	-- gopls = {},
 
 	gopls = {
 		-- capabilities = cap,
@@ -55,7 +58,7 @@ local server_configs = {
 				diagnosticsDelay = '500ms',
 				experimentalWatchedFileDelay = '1000ms',
 				symbolMatcher = 'fuzzy',
-				gofumpt = true, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
+				gofumpt = false, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
 				buildFlags = { '-tags', 'integration' },
 				-- buildFlags = {"-tags", "functional"}
 			},
@@ -85,7 +88,7 @@ local server_configs = {
 		},
 	},
 	kotlin_language_server = {},
-	sumneko_lua = {
+	lua_ls = {
 		settings = {
 			Lua = {
 				runtime = {
