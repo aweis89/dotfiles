@@ -15,8 +15,6 @@ local function set(name, val)
 	vim.o[name] = val
 end
 
-set("termguicolors")
-set("termguicolors")
 set("ignorecase")
 set("number")
 set("hlsearch", false)
@@ -37,9 +35,10 @@ set("swapfile", false)
 set("backup", false)
 set("undofile")
 set("incsearch")
-set("termguicolors")
 set("scrolloff", 8)
 set("copyindent", true)
+
+set("termguicolors")
 
 Map('i', 'jj', '<ESC>')
 Map('i', '<C-c>', '<ESC>')
