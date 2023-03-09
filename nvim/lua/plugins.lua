@@ -28,8 +28,18 @@ return require('packer').startup(function(use)
 	use 'iamcco/markdown-preview.nvim'
 	use 'aduros/ai.vim'
 	use {
-		-- "jackMort/ChatGPT.nvim",
-		"/Users/aweisberg/ChatGPT.nvim",
+		"neovim/nvim-lspconfig",
+		requires = {
+			"williamboman/mason-lspconfig.nvim",
+			"RRethy/vim-illuminate",
+			"williamboman/mason.nvim",
+		},
+		config = function ()
+			require('config.lsp').setup()
+		end
+	}
+	use {
+		"jackMort/ChatGPT.nvim",
 		config = function()
 			require("chatgpt").setup({
 				{
@@ -354,15 +364,15 @@ return require('packer').startup(function(use)
 		end
 	}
 
-	-- LSP
-	use {
-		'williamboman/nvim-lsp-installer',
-		requires = {
-			'RRethy/vim-illuminate',
-			'neovim/nvim-lspconfig',
-		},
-		config = function() require('config.nvim-lsp-installer').setup() end,
-	}
+	-- -- LSP
+	-- use {
+	-- 	'williamboman/nvim-lsp-installer',
+	-- 	requires = {
+	-- 		'RRethy/vim-illuminate',
+	-- 		'neovim/nvim-lspconfig',
+	-- 	},
+	-- 	config = function() require('config.nvim-lsp-installer').setup() end,
+	-- }
 	use {
 		'L3MON4D3/LuaSnip',
 		requires = { 'rafamadriz/friendly-snippets' },
@@ -389,7 +399,7 @@ return require('packer').startup(function(use)
 		end,
 	}
 
-	use 'RRethy/vim-illuminate'
+	-- use 'RRethy/vim-illuminate'
 	use {
 		'nvim-treesitter/nvim-treesitter',
 		config = function()
