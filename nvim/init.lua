@@ -40,6 +40,7 @@ set("copyindent", true)
 
 set("termguicolors")
 
+Map('n', '<C-w>', ':execute ":!gh browse %:" . line(".")<CR>')
 Map('i', 'jj', '<ESC>')
 Map('i', '<C-c>', '<ESC>')
 Map('i', '<C-l>', '<RIGHT>')
