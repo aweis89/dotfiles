@@ -13,7 +13,6 @@ local border = {
 -- mason will also install and setup if it has installer
 local server_configs = {
 	cmake = {},
-	yamlls = {},
 	jsonls = {},
 	jdtls = {},
 	vimls = {},
