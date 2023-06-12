@@ -99,6 +99,7 @@ local server_configs = {
 		},
 	},
 	tsserver = {},
+	dartls = {},
 }
 
 -- local function get_keys(t)
@@ -125,6 +126,7 @@ end
 
 local on_attach = function(client, bufnr)
 	require 'illuminate'.on_attach(client)
+	require("lsp-format").on_attach(client)
 
 	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
