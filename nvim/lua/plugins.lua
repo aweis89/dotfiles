@@ -21,6 +21,8 @@ function LspBorder(hl_name)
 end
 
 return require('packer').startup(function(use)
+	use 'thosakwe/vim-flutter'
+	use "rebelot/kanagawa.nvim"
 	use 'tpope/vim-abolish'
 	use 'wbthomason/packer.nvim'
 	use 'mbbill/undotree'
@@ -30,11 +32,13 @@ return require('packer').startup(function(use)
 	use {
 		"neovim/nvim-lspconfig",
 		requires = {
+			"lukas-reineke/lsp-format.nvim",
 			"williamboman/mason-lspconfig.nvim",
 			"RRethy/vim-illuminate",
 			"williamboman/mason.nvim",
 		},
-		config = function ()
+		config = function()
+			require("lsp-format").setup({})
 			require('config.lsp').setup()
 		end
 	}
@@ -110,7 +114,7 @@ return require('packer').startup(function(use)
 						new_session = "<C-n>",
 						cycle_windows = "<Tab>",
 					},
-				}		-- optional configuration
+				} -- optional configuration
 			})
 		end,
 		requires = {
@@ -181,23 +185,7 @@ return require('packer').startup(function(use)
 		},
 		config = function()
 			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
-			require("nvim-tree").setup({
-				sort_by = "case_sensitive",
-				view = {
-					adaptive_size = true,
-					mappings = {
-						list = {
-							{ key = "u", action = "dir_up" },
-						},
-					},
-				},
-				renderer = {
-					group_empty = true,
-				},
-				filters = {
-					dotfiles = false,
-				},
-			})
+			require("nvim-tree").setup()
 		end
 	}
 	use {
@@ -348,10 +336,6 @@ return require('packer').startup(function(use)
 
 	use 'junegunn/fzf'
 	use 'preservim/vimux'
-	use {
-		'tyru/open-browser-github.vim',
-		requires = { 'tyru/open-browser.vim' }
-	}
 	use 'pwntester/octo.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'tpope/vim-fugitive'
@@ -363,16 +347,6 @@ return require('packer').startup(function(use)
 			require 'toggle_lsp_diagnostics'.init({ start_on = true })
 		end
 	}
-
-	-- -- LSP
-	-- use {
-	-- 	'williamboman/nvim-lsp-installer',
-	-- 	requires = {
-	-- 		'RRethy/vim-illuminate',
-	-- 		'neovim/nvim-lspconfig',
-	-- 	},
-	-- 	config = function() require('config.nvim-lsp-installer').setup() end,
-	-- }
 	use {
 		'L3MON4D3/LuaSnip',
 		requires = { 'rafamadriz/friendly-snippets' },
@@ -416,7 +390,6 @@ return require('packer').startup(function(use)
 				highlight = {
 					-- `false` will disable the whole extension
 					enable = true,
-
 					-- list of language that will be disabled
 					-- disable = { "c", "rust" },
 
