@@ -21,7 +21,23 @@ function LspBorder(hl_name)
 end
 
 return require('packer').startup(function(use)
-	use 'thosakwe/vim-flutter'
+	use {
+		'akinsho/flutter-tools.nvim',
+		requires = {
+			'nvim-lua/plenary.nvim',
+			'stevearc/dressing.nvim', -- optional for vim.ui.select
+		},
+		config = function()
+			require("flutter-tools").setup({
+				on_attach = require('config.lsp').on_attach,
+				capabilities = vim.lsp.protocol.make_client_capabilities(),
+			})
+			require("flutter-tools").setup_project({
+				name = 'default',
+				device = 'chrome',
+			})
+		end
+	}
 	use "rebelot/kanagawa.nvim"
 	use 'tpope/vim-abolish'
 	use 'wbthomason/packer.nvim'
@@ -32,13 +48,11 @@ return require('packer').startup(function(use)
 	use {
 		"neovim/nvim-lspconfig",
 		requires = {
-			"lukas-reineke/lsp-format.nvim",
 			"williamboman/mason-lspconfig.nvim",
 			"RRethy/vim-illuminate",
 			"williamboman/mason.nvim",
 		},
 		config = function()
-			require("lsp-format").setup({})
 			require('config.lsp').setup()
 		end
 	}
@@ -279,6 +293,7 @@ return require('packer').startup(function(use)
 			})
 			require('neoclip').setup()
 			require('telescope').load_extension('neoclip')
+			require("telescope").load_extension("flutter")
 			Map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
 			Map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
 			Map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
@@ -288,6 +303,7 @@ return require('packer').startup(function(use)
 			Map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
 			Map('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>')
 			Map('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
+			Map('n', '<leader>fc', '<cmd>Telescope flutter commands<cr>')
 		end
 	}
 	-- Golang plugins

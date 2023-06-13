@@ -40,7 +40,7 @@ set("copyindent", true)
 
 set("termguicolors")
 
-Map('n', '<C-w>', ':execute ":!gh browse %:" . line(".")<CR>')
+Map('n', '<leader>w', ':execute ":!gh browse %:" . line(".")<CR>')
 Map('i', 'jj', '<ESC>')
 Map('i', '<C-c>', '<ESC>')
 Map('i', '<C-l>', '<RIGHT>')
@@ -68,7 +68,7 @@ Map('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>')
 Map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 Map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 Map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
-Map('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+Map('n', '<space>f', '<cmd>lua vim.lsp.buf.format()<CR>')
 Map('n', 'gr', '<cmd>Telescope lsp_references<CR>')
 
 Map('v', 'f', '<ESC><cmd>lua vim.lsp.buf.range_formatting()<CR>', { noremap = true })
@@ -110,4 +110,11 @@ vim.api.nvim_create_autocmd("FileType", {
 		set("shiftwidth", 2)
 		set("expandtab", false)
 	end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	group = vim.api.nvim_create_augroup("Format", { clear = true }),
+	callback = function()
+		vim.lsp.buf.format()
+	end
 })
