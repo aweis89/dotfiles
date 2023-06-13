@@ -1,3 +1,5 @@
+local M = {}
+
 local border = {
 	{ "╭", "FloatBorder" },
 	{ "─", "FloatBorder" },
@@ -19,17 +21,16 @@ local server_configs = {
 	-- java_language_server = {},
 	bashls = {
 		cmd_env = {
-			  GLOB_PATTERN = "*@(.sh|.inc|.bash|.command|.zsh)",
+			GLOB_PATTERN = "*@(.sh|.inc|.bash|.command|.zsh)",
 		},
 	},
 	golangci_lint_ls = {},
-
 	gopls = {
 		-- capabilities = cap,
 		filetypes = { 'go', 'gomod', 'gohtmltmpl', 'gotexttmpl' },
 		message_level = vim.lsp.protocol.MessageType.Error,
 		cmd = {
-			'gopls', -- share the gopls instance if there is one already
+			'gopls',         -- share the gopls instance if there is one already
 			'-remote=auto', --[[ debug options ]] --
 			-- "-logfile=auto",
 			-- "-debug=:0",
@@ -61,9 +62,7 @@ local server_configs = {
 			},
 		},
 	},
-
 	terraformls = {},
-
 	pyright = {},
 	rust_analyzer = {
 		settings = {
@@ -88,7 +87,8 @@ local server_configs = {
 					-- Make the server aware of Neovim runtime files
 					library = {
 						vim.api.nvim_get_runtime_file("", true),
-						string.format('%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations', os.getenv 'HOME'),
+						string.format('%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations',
+							os.getenv 'HOME'),
 					}
 				},
 				-- Do not send telemetry data containing a randomized but unique identifier
@@ -99,20 +99,11 @@ local server_configs = {
 		},
 	},
 	tsserver = {},
-	dartls = {},
+	-- dartls = {},
 }
 
--- local function get_keys(t)
---   local keys={}
---   for key,_ in pairs(t) do
---     table.insert(keys, key)
---   end
---   return keys
--- end
-
 require("mason").setup()
--- require("mason-lspconfig").setup({ensure_installed = get_keys(server_configs)})
-require("mason-lspconfig").setup({automatic_installation = true})
+require("mason-lspconfig").setup({ automatic_installation = true })
 
 local lspconfig = require('lspconfig')
 
@@ -124,9 +115,8 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
 end
 
-local on_attach = function(client, bufnr)
+function M.on_attach(client, bufnr)
 	require 'illuminate'.on_attach(client)
-	require("lsp-format").on_attach(client)
 
 	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
@@ -175,11 +165,10 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 }
 
 
-local M = {}
 function M.setup()
 	for lsp, config in pairs(server_configs) do
 		local default = {
-			on_attach = on_attach,
+			on_attach = M.on_attach,
 			capabilities = capabilities,
 			flags = {
 				debounce_text_changes = 150,
