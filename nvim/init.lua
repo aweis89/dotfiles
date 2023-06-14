@@ -6,6 +6,9 @@ function Map(mode, key, target, opts)
 	vim.api.nvim_set_keymap(mode, key, target, opts)
 end
 
+vim.api.nvim_command([[command! TmuxSplit silent execute '!tmux split-window -v -e "cd %:p:h"']])
+vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
+
 require('plugins')
 
 local function set(name, val)
