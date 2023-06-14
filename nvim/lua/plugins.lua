@@ -25,7 +25,6 @@ return require('packer').startup(function(use)
 		'akinsho/flutter-tools.nvim',
 		requires = {
 			'nvim-lua/plenary.nvim',
-			'stevearc/dressing.nvim', -- optional for vim.ui.select
 		},
 		config = function()
 			require("flutter-tools").setup({
@@ -38,7 +37,33 @@ return require('packer').startup(function(use)
 			})
 		end
 	}
-	use "rebelot/kanagawa.nvim"
+	-- treesitter is buggy for dart
+	use 'dart-lang/dart-vim-plugin'
+
+	use { 'stevearc/dressing.nvim' } -- for vim.ui.select
+	use {
+		'nmac427/guess-indent.nvim',
+		config = function() require('guess-indent').setup {} end,
+	}
+	use {
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				suggestion = { enabled = false },
+				panel = { enabled = false },
+			})
+		end,
+	}
+	use {
+		"zbirenbaum/copilot-cmp",
+		after = { "copilot.lua" },
+		config = function()
+			require("copilot_cmp").setup()
+		end
+	}
+	use 'rebelot/kanagawa.nvim'
 	use 'tpope/vim-abolish'
 	use 'wbthomason/packer.nvim'
 	use 'mbbill/undotree'
@@ -294,11 +319,18 @@ return require('packer').startup(function(use)
 			require('neoclip').setup()
 			require('telescope').load_extension('neoclip')
 			require("telescope").load_extension("flutter")
-			Map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
-			Map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
+
+			local builtin = require('telescope.builtin')
+			vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+			vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+			vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+			vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+			vim.keymap.set('n', '<leader>fa', vim.lsp.buf.code_action, {})
+
+			-- Map('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
+			-- Map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
 			Map('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
 			Map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
-			Map('n', '<leader>fa', '<cmd>Telescope builtin.lsp_code_actions<cr>')
 			Map('n', '<leader>fs', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>')
 			Map('n', '<leader>fp', '<cmd>Telescope neoclip<cr>')
 			Map('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>')
@@ -377,6 +409,7 @@ return require('packer').startup(function(use)
 			{ 'onsails/lspkind.nvim' },
 			{ 'hrsh7th/cmp-nvim-lsp-signature-help' },
 			{ 'hrsh7th/cmp-nvim-lsp' },
+			{ 'hrsh7th/cmp-nvim-lua' },
 			{ 'hrsh7th/cmp-cmdline' },
 			{ 'hrsh7th/cmp-buffer' },
 			{ 'hrsh7th/cmp-path' },
@@ -401,7 +434,7 @@ return require('packer').startup(function(use)
 				sync_install = false,
 
 				-- phpdoc doesn't work on m1 chips
-				ignore_install = { "phpdoc" },
+				ignore_install = { "phpdoc", "dart" },
 
 				highlight = {
 					-- `false` will disable the whole extension
