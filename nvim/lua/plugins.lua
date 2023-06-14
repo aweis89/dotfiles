@@ -41,6 +41,7 @@ return require('packer').startup(function(use)
 		"ahmedkhalf/project.nvim",
 		config = function()
 			require("project_nvim").setup({
+				silent_chdir = true,
 				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json",
 					"init.lua" },
 			})
