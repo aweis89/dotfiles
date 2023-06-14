@@ -102,6 +102,7 @@ function M.setup()
 			{ name = "copilot",                 group_index = 2 },
 			{ name = 'path',                    group_index = 2 },
 			{ name = 'luasnip',                 group_index = 2 },
+			{ name = 'nvim_lua',                group_index = 2 },
 			{ name = 'buffer',                  group_index = 3, max_item_count = 3 },
 			{ name = 'tmux',                    group_index = 3, max_item_count = 3 },
 		})

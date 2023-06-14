@@ -37,6 +37,15 @@ return require('packer').startup(function(use)
 			})
 		end
 	}
+	use {
+		"ahmedkhalf/project.nvim",
+		config = function()
+			require("project_nvim").setup({
+				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json",
+					"init.lua" },
+			})
+		end
+	}
 	-- treesitter is buggy for dart
 	use 'dart-lang/dart-vim-plugin'
 
@@ -224,7 +233,17 @@ return require('packer').startup(function(use)
 		},
 		config = function()
 			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
-			require("nvim-tree").setup()
+			require("nvim-tree").setup(
+			-- see https://github.com/ahmedkhalf/project.nvim
+				{
+					sync_root_with_cwd = true,
+					respect_buf_cwd = true,
+					update_focused_file = {
+						enable = true,
+						update_root = true
+					},
+				}
+			)
 		end
 	}
 	use {
@@ -274,7 +293,11 @@ return require('packer').startup(function(use)
 	}
 	use {
 		'nvim-telescope/telescope.nvim',
-		requires = { 'nvim-lua/plenary.nvim', "AckslD/nvim-neoclip.lua" },
+		requires = {
+			'ahmedkhalf/project.nvim',
+			'nvim-lua/plenary.nvim',
+			"AckslD/nvim-neoclip.lua"
+		},
 		config = function()
 			require('telescope').setup({
 				defaults = {
@@ -319,6 +342,7 @@ return require('packer').startup(function(use)
 			require('neoclip').setup()
 			require('telescope').load_extension('neoclip')
 			require("telescope").load_extension("flutter")
+			require('telescope').load_extension('projects')
 
 			local builtin = require('telescope.builtin')
 			vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
@@ -336,6 +360,7 @@ return require('packer').startup(function(use)
 			Map('n', '<leader>fr', '<cmd>Telescope lsp_references<cr>')
 			Map('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
 			Map('n', '<leader>fc', '<cmd>Telescope flutter commands<cr>')
+			Map('n', '<leader>pp', '<cmd>Telescope projects<cr>')
 		end
 	}
 	-- Golang plugins
