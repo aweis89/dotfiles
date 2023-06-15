@@ -43,7 +43,7 @@ return require('packer').startup(function(use)
 			require("project_nvim").setup({
 				silent_chdir = true,
 				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json",
-					"init.lua" },
+					"init.lua", "helmfile.yaml", "Chart.yaml" },
 			})
 		end
 	}
@@ -234,17 +234,45 @@ return require('packer').startup(function(use)
 		},
 		config = function()
 			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
-			require("nvim-tree").setup(
-			-- see https://github.com/ahmedkhalf/project.nvim
-				{
-					sync_root_with_cwd = true,
-					respect_buf_cwd = true,
-					update_focused_file = {
-						enable = true,
-						update_root = true
-					},
-				}
-			)
+			local function copy_file_to(node)
+				local file_src = node['absolute_path']
+				vim.ui.input({ prompt = "Copy to: ", default = file_src }, function(file_out)
+					vim.o.shiftwidth = tonumber(file_out)
+					local dir = vim.fn.fnamemodify(file_out, ":h")
+					vim.fn.system { 'mkdir', '-p', dir }
+					vim.fn.system { 'cp', file_src, file_out }
+				end)
+			end
+
+			local function on_attach(bufnr)
+				local api = require('nvim-tree.api')
+
+				local function opts(desc)
+					return {
+						desc = 'nvim-tree: ' .. desc,
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						nowait = true
+					}
+				end
+				api.config.mappings.default_on_attach(bufnr)
+				vim.keymap.set('n', 'c',
+					function()
+						local node = api.tree.get_node_under_cursor()
+						copy_file_to(node)
+					end, opts('Copy'))
+			end
+			require("nvim-tree").setup({
+				-- see https://github.com/ahmedkhalf/project.nvim
+				sync_root_with_cwd = true,
+				respect_buf_cwd = true,
+				update_focused_file = {
+					enable = true,
+					update_root = true
+				},
+				on_attach = on_attach,
+			})
 		end
 	}
 	use {

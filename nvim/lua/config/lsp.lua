@@ -76,8 +76,6 @@ local server_configs = {
 				runtime = {
 					-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
 					version = 'LuaJIT',
-					-- Setup your lua path
-					-- path = runtime_path,
 				},
 				diagnostics = {
 					-- Get the language server to recognize the `vim` global
@@ -87,8 +85,6 @@ local server_configs = {
 					-- Make the server aware of Neovim runtime files
 					library = {
 						vim.api.nvim_get_runtime_file("", true),
-						string.format('%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations',
-							os.getenv 'HOME'),
 					}
 				},
 				-- Do not send telemetry data containing a randomized but unique identifier
