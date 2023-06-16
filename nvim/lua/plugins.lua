@@ -234,19 +234,17 @@ return require('packer').startup(function(use)
 		},
 		config = function()
 			Map('n', '<c-n>', '<cmd>NvimTreeToggle<cr>')
-			local function copy_file_to(node)
-				local file_src = node['absolute_path']
-				vim.ui.input({ prompt = "Copy to: ", default = file_src }, function(file_out)
-					vim.o.shiftwidth = tonumber(file_out)
-					local dir = vim.fn.fnamemodify(file_out, ":h")
-					vim.fn.system { 'mkdir', '-p', dir }
-					vim.fn.system { 'cp', file_src, file_out }
-				end)
-			end
-
 			local function on_attach(bufnr)
 				local api = require('nvim-tree.api')
-
+				local function copy_file_to()
+					local file_src = api.tree.get_node_under_cursor()['absolute_path']
+					vim.ui.input({ prompt = "Copy to: ", default = file_src }, function(file_out)
+						vim.o.shiftwidth = tonumber(file_out)
+						local dir = vim.fn.fnamemodify(file_out, ":h")
+						vim.fn.system { 'mkdir', '-p', dir }
+						vim.fn.system { 'cp', file_src, file_out }
+					end)
+				end
 				local function opts(desc)
 					return {
 						desc = 'nvim-tree: ' .. desc,
@@ -256,12 +254,13 @@ return require('packer').startup(function(use)
 						nowait = true
 					}
 				end
+
 				api.config.mappings.default_on_attach(bufnr)
-				vim.keymap.set('n', 'c',
-					function()
-						local node = api.tree.get_node_under_cursor()
-						copy_file_to(node)
-					end, opts('Copy'))
+				vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+				vim.keymap.set('n', '<Backspace>', api.node.open.preview, opts('Open Preview'))
+				vim.keymap.set('n', '<C-v>', api.node.open.vertical, opts('Open: Vertical Split'))
+				vim.keymap.set('n', '<C-h>', api.node.open.horizontal, opts('Open: Horizontal Split'))
+				vim.keymap.set('n', 'c', copy_file_to, opts('Copy'))
 			end
 			require("nvim-tree").setup({
 				-- see https://github.com/ahmedkhalf/project.nvim
