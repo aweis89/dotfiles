@@ -16,6 +16,17 @@ return {
   },
   { "mbbill/undotree" },
   {
+    "voldikss/vim-floaterm",
+    keys = {
+      {
+        "<leader>g",
+        "<cmd>'FloatermNew --height=0.9 --width=0.9 --wintype=float --name=git --position=center lazygit'<cr>",
+        desc = "NeoTree",
+      },
+    },
+  },
+  { "tpope/vim-fugitive" },
+  {
     "ahmedkhalf/project.nvim",
     opts = {
       patterns = {
@@ -58,25 +69,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-      ensure_installed = {
-        "bash",
-        "dart",
-        "go",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "rust",
-        "tsx",
-        "typescript",
-        "vim",
-        "yaml",
-      },
+      ensure_installed = "all",
     },
   },
 }
