@@ -19,7 +19,7 @@ return {
     "voldikss/vim-floaterm",
     keys = {
       {
-        "<leader>g",
+        "<leader>gg",
         "<cmd>'FloatermNew --height=0.9 --width=0.9 --wintype=float --name=git --position=center lazygit'<cr>",
         desc = "NeoTree",
       },
