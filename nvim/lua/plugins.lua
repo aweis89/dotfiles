@@ -355,14 +355,14 @@ return require('packer').startup(function(use)
 					layout_config = {
 						prompt_position = "bottom",
 						horizontal = {
-							width_padding = 0.04,
-							height_padding = 0.1,
-							preview_width = 0.6,
+							width_padding = 0,
+							height_padding = 0,
+							-- preview_width = 0.6,
 						},
 						vertical = {
-							width_padding = 0.05,
-							height_padding = 1,
-							preview_height = 0.5,
+							width_padding = 0,
+							height_padding = 0,
+							-- preview_height = 0.6,
 						},
 					},
 				},
