@@ -1,3 +1,7 @@
+-- Don't auto select first item
+vim.cmd([[set completeopt=menu,menuone,noselect]])
+vim.cmd([[set noswapfile]])
+
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -30,6 +34,19 @@ return {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
       }
+
+      opts.completion = {
+        completeopt = "menu,menuone,noinsert,noselect",
+      }
+      opts.preselect = "None"
+
+      opts.mapping = vim.tbl_extend("force", opts.mapping, {
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      })
 
       cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
@@ -135,9 +152,29 @@ return {
         terraformls = {},
         pyright = {},
         rust_analyzer = {
-          -- settings = {
-          --   serverPath = "/Users/aweisberg/rust-analyzer-docker",
-          -- },
+          -- https://github.com/rust-lang/rust-analyzer/issues/13529
+          cmd = {
+            "kubectl",
+            "-n",
+            "default",
+            "--context",
+            "development-eu1-d-k8s",
+            "exec",
+            "-i",
+            "local",
+            "--",
+            "/bin/sh",
+            "-c",
+            "sleep 1 && cd /Users/aweisberg/mb/mobilecoin/fog/view/server && rust-analyzer",
+          },
+          settings = {
+            checkOnSave = {
+              command = "clippy",
+            },
+            inlayHints = {
+              enable = true,
+            },
+          },
         },
         kotlin_language_server = {},
         lua_ls = {
@@ -163,6 +200,7 @@ return {
           },
         },
         tsserver = {},
+        helm_ls = {},
       },
     },
   },

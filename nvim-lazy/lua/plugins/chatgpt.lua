@@ -7,7 +7,11 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     keys = {
-      { "<leader>cc", ":<C-U>:ChatGPTEditWithInstructions<CR>", desc = "ChatGPTEditWithInstructions", mode = "v" },
+      { "<leader>a", ":<C-U>:ChatGPTEditWithInstructions<CR>", desc = "ChatGPTEditWithInstructions", mode = "v" },
+      { "<leader>a", ":ChatGPT<CR>", desc = "ChatGPT", mode = "n" },
+      { "<C-a>", ":ChatGPTCompleteCode<CR>", desc = "ChatGPTCompleteCode", mode = "i" },
+      { "<leader>ar", ":<C-U>:ChatGPTRun ", desc = "ChatGPTCompleteCode", mode = "v" },
+      { "<leader>ar", ":ChatGPTRun ", desc = "ChatGPTCompleteCode", mode = "n" },
     },
     init = function()
       require("chatgpt").setup({
