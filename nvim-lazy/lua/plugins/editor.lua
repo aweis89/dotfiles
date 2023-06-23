@@ -1,6 +1,23 @@
-vim.cmd("set background=light")
 vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
 vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
+
+-- Check if the operating system is macOS
+if vim.fn.system("uname") == "Darwin\n" then
+  -- Define a function to check if dark mode is enabled
+  local function is_dark_mode_enabled()
+    local handle = io.popen("defaults read -g AppleInterfaceStyle")
+    local result = handle:read("*a")
+    handle:close()
+    return result:match("^%s*Dark%s*$") ~= nil
+  end
+
+  -- Use the function to set the Neovim colorscheme based on dark mode
+  if is_dark_mode_enabled() then
+    vim.cmd("set background=dark")
+  else
+    vim.cmd("set background=light")
+  end
+end
 
 return {
   { -- Use gruvbox
@@ -19,9 +36,9 @@ return {
     "voldikss/vim-floaterm",
     keys = {
       {
-        "<leader>gg",
+        "<leader>gl",
         "<cmd>'FloatermNew --height=0.9 --width=0.9 --wintype=float --name=git --position=center lazygit'<cr>",
-        desc = "NeoTree",
+        desc = "LazyGit",
       },
     },
   },
@@ -41,11 +58,22 @@ return {
         "helmfile.yaml",
         "Chart.yaml",
         "Dockerfile",
+        "Cargo.toml",
       },
     },
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    opts = function(_, opts)
+      opts.filesystem = vim.tbl_extend("error", opts.filesystem, {
+        filtered_items = {
+          -- visible = true,
+          always_show = { -- remains visible even if other settings would normally hide it
+            ".github",
+          },
+        },
+      })
+    end,
     keys = {
       {
         "<leader>fe",
@@ -72,4 +100,6 @@ return {
       ensure_installed = "all",
     },
   },
+  { "towolf/vim-helm" },
+  { "mrjosh/helm-ls" },
 }
