@@ -100,6 +100,7 @@ return {
       ensure_installed = "all",
     },
   },
+
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
 }
