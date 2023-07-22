@@ -5,7 +5,7 @@ vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h
 if vim.fn.system("uname") == "Darwin\n" then
   -- Define a function to check if dark mode is enabled
   local function is_dark_mode_enabled()
-    local handle = io.popen("defaults read -g AppleInterfaceStyle")
+    local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
     if handle == nil then
       return
     end
