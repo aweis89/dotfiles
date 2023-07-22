@@ -37,7 +37,7 @@ return {
     keys = {
       {
         "<leader>gl",
-        "<cmd>'FloatermNew --height=0.9 --width=0.9 --wintype=float --name=git --position=center lazygit'<cr>",
+        "<cmd>FloatermNew --height=0.9 --width=0.9 --wintype=float --name=git --position=center lazygit<cr>",
         desc = "LazyGit",
       },
     },
