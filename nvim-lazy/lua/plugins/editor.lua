@@ -6,6 +6,9 @@ if vim.fn.system("uname") == "Darwin\n" then
   -- Define a function to check if dark mode is enabled
   local function is_dark_mode_enabled()
     local handle = io.popen("defaults read -g AppleInterfaceStyle")
+    if handle == nil then
+      return
+    end
     local result = handle:read("*a")
     handle:close()
     return result:match("^%s*Dark%s*$") ~= nil
@@ -100,7 +103,6 @@ return {
       ensure_installed = "all",
     },
   },
-
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
 }
