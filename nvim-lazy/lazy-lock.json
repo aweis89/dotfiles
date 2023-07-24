@@ -1,5 +1,6 @@
 {
   "ChatGPT.nvim": { "branch": "main", "commit": "ef0cf1f28a22bbf2e9be531f4856d2cace57e4b2" },
+  "CodeGPT.nvim": { "branch": "master", "commit": "6e3714e8d336aea4a205081d44ed8b2e3505dee2" },
   "LazyVim": { "branch": "main", "commit": "142e6bec209704210db23b3424b4d51896bb206a" },
   "LuaSnip": { "branch": "master", "commit": "0b4950a237ce441a6a3a947d501622453f6860ea" },
   "SchemaStore.nvim": { "branch": "main", "commit": "2de399e50d2529d59f5f0341891530d4637a615e" },
@@ -16,6 +17,7 @@
   "cmp-vsnip": { "branch": "main", "commit": "989a8a73c44e926199bfd05fa7a516d51f2d2752" },
   "cmp_luasnip": { "branch": "master", "commit": "18095520391186d634a0045dacaa346291096566" },
   "dressing.nvim": { "branch": "master", "commit": "39611852fd7bbac117e939a26759bb37361f0c90" },
+  "filetype.nvim": { "branch": "main", "commit": "b522628a45a17d58fc0073ffd64f9dc9530a8027" },
   "flash.nvim": { "branch": "main", "commit": "967117690bd677cb7b6a87f0bc0077d2c0be3a27" },
   "flutter-tools.nvim": { "branch": "main", "commit": "7850a771c4e773dc49d63081f508d004b416c13e" },
   "friendly-snippets": { "branch": "main", "commit": "4aed1a0ca605cb1c87f59799a0cc4afe00a40272" },
@@ -54,6 +56,7 @@
   "nvim-treesitter-textobjects": { "branch": "master", "commit": "52f1f3280d9092bfaee5c45be5962fabee3d9654" },
   "nvim-ts-context-commentstring": { "branch": "main", "commit": "7f625207f225eea97ef7a6abe7611e556c396d2f" },
   "nvim-web-devicons": { "branch": "master", "commit": "efbfed0567ef4bfac3ce630524a0f6c8451c5534" },
+  "octo.nvim": { "branch": "master", "commit": "22328c578bc013fa4b0cef3d00af35efe0c0f256" },
   "persistence.nvim": { "branch": "main", "commit": "4b8051c01f696d8849a5cb8afa9767be8db16e40" },
   "plenary.nvim": { "branch": "master", "commit": "267282a9ce242bbb0c5dc31445b6d353bed978bb" },
   "project.nvim": { "branch": "main", "commit": "8c6bad7d22eef1b71144b401c9f74ed01526a4fb" },
