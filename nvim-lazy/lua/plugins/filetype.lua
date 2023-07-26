@@ -7,6 +7,9 @@ return {
         --   -- Set the filetype of *.pn files to potion
         --   pn = "potion",
         -- },
+        literal = {
+          config = "toml",
+        },
         -- The same as the ones above except the keys map to functions
         function_extensions = {
           ["keymap"] = function()
