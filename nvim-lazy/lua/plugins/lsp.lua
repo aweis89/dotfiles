@@ -103,6 +103,7 @@ return {
     opts = {
       ---@type lspconfig.options
       servers = {
+        taplo = {},
         cmake = {},
         jsonls = {},
         jdtls = {},
