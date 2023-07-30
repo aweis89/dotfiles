@@ -10,17 +10,17 @@ cache_rm() {
 }
 
 cache_cmd() {
-    local key=$1
-    local cache_file=$(_cache_key_file $key)
-    local dir=$(dirname $cache_file)
-    test -d $dir || mkdir -p $dir
-    [[ ! -f $cache_file ]] || return 0
+	local key=$1
+	local cache_file=$(_cache_key_file $key)
+	local dir=$(dirname $cache_file)
+	test -d $dir || mkdir -p $dir
+	[[ ! -f $cache_file ]] || return 0
 
-    local cmds="$(cat /dev/stdin)"
-    set -x
-    eval "$cmds"
-    touch $cache_file
-    set +x
+	local cmds="$(cat /dev/stdin)"
+	set -x
+	eval "$cmds"
+	touch $cache_file
+	set +x
 }
 
 cache_cmd link-dotflies <<'EOL'
@@ -80,8 +80,7 @@ source_present $HOME/.zsh/kubectl.zsh
 
 load_brew() {
 	dist=$(uname -s)
-	if [[ "${dist}" =~ "linux" ]]
-	then
+	if [[ "${dist}" =~ "linux" ]]; then
 		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 1>/dev/null
 	fi
 }
@@ -117,7 +116,8 @@ cache_cmd color-setup <<'EOL'
 EOL
 
 # Completion init
-autoload -U +X compinit; compinit
+autoload -U +X compinit
+compinit
 
 # Fallback to using --help for autocompletion
 compdef _gnu_generic \
@@ -128,15 +128,15 @@ compdef _gnu_generic \
 # compdef _gnu_generic $(ls $(echo $PATH | sed 's/:/ /g'))
 
 colorscheme() {
-    local colors_file=$1
+	local colors_file=$1
 	alacritty-colorscheme apply $colors_file
-    local vim_colorscheme=$(echo $colors_file | sed -e 's/-256//' -e 's/\.yml//')
-    echo "colorscheme $vim_colorscheme" > $HOME/.vimrc_background
+	local vim_colorscheme=$(echo $colors_file | sed -e 's/-256//' -e 's/\.yml//')
+	echo "colorscheme $vim_colorscheme" >$HOME/.vimrc_background
 }
 
 _colorscheme() {
-    cmds=($(ls -f $HOME/.config/alacritty/colors/)) 
-    _describe 'profiles' cmds
+	cmds=($(ls -f $HOME/.config/alacritty/colors/))
+	_describe 'profiles' cmds
 }
 
 alias c=colorscheme
@@ -145,25 +145,33 @@ compdef _colorscheme colorscheme
 
 alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
 
-day() {
-	echo 'gruvbox-light' > $HOME/tmp/bat-theme
-	LIGHT_COLOR='base16-gruvbox-light-soft.yml'
-	colorscheme $LIGHT_COLOR
+light() {
+	echo 'gruvbox-light' >$HOME/tmp/bat-theme
+	# LIGHT_COLOR='base16-gruvbox-light-soft.yml'
+	# colorscheme $LIGHT_COLOR
+	ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_light.conf ~/.config/kitty/current-theme.conf
+	kitty_reload
 }
 
-night() {
-	echo 'gruvbox-dark' > $HOME/tmp/bat-theme
-	DARK_COLOR='base16-woodland.yml'
-	colorscheme $DARK_COLOR
+dark() {
+	echo 'gruvbox-dark' >$HOME/tmp/bat-theme
+	# DARK_COLOR='base16-woodland.yml'
+	# colorscheme $DARK_COLOR
+
+	ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_dark.conf ~/.config/kitty/current-theme.conf
+	kitty_reload
+}
+
+kitty_reload() {
+	ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1
 }
 
 auto_start_tmux() {
-    session=${1:-default}
-    if test -z "$TMUX"
-    then
-        tmux new-session -ds $session
-        tmux attach -t $session
-    fi
+	session=${1:-default}
+	if test -z "$TMUX"; then
+		tmux new-session -ds $session
+		tmux attach -t $session
+	fi
 }
 
 auto_start_tmux
