@@ -26,7 +26,8 @@ return {
   { -- Use gruvbox
     "LazyVim/LazyVim",
     dependencies = { "ellisonleao/gruvbox.nvim" },
-    opts = { colorscheme = "gruvbox" },
+    opts = { colorscheme = "tokyonight" },
+    -- opts = { colorscheme = "gruvbox" },
   },
   {
     "karb94/neoscroll.nvim",
