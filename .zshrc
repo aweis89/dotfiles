@@ -60,7 +60,7 @@ antigen bundle z
 # antigen bundle RobSis/zsh-completion-generator
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle mafredri/zsh-async
+
 # antigen theme simple
 eval "$(starship init zsh)"
 
@@ -149,7 +149,8 @@ light() {
 	echo 'gruvbox-light' >$HOME/tmp/bat-theme
 	# LIGHT_COLOR='base16-gruvbox-light-soft.yml'
 	# colorscheme $LIGHT_COLOR
-	ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_light.conf ~/.config/kitty/current-theme.conf
+	# ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_light.conf ~/.config/kitty/current-theme.conf
+  ln -sf ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_day.conf ~/.config/kitty/current-theme.conf
 	kitty_reload
 }
 
@@ -158,7 +159,8 @@ dark() {
 	# DARK_COLOR='base16-woodland.yml'
 	# colorscheme $DARK_COLOR
 
-	ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_dark.conf ~/.config/kitty/current-theme.conf
+	# ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_dark.conf ~/.config/kitty/current-theme.conf
+  ln -sf ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_night.conf ~/.config/kitty/current-theme.conf
 	kitty_reload
 }
 
