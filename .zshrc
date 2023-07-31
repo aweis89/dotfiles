@@ -33,7 +33,7 @@ cache_cmd link-dotflies <<'EOL'
 	ln -sf $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml
 EOL
 
-antigen_dst=$HOME/.config/zsh/antigen.zsh
+antigen_dst=$HOME/.local/share/zsh/antigen.zsh
 cache_cmd antigen <<'EOL'
 	mkdir -p $(dirname $antigen_dst)
 	curl -L git.io/antigen > $antigen_dst
