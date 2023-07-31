@@ -143,28 +143,20 @@ alias c=colorscheme
 autoload _colorscheme
 compdef _colorscheme colorscheme
 
-alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
+# alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
 
 light() {
-	echo 'gruvbox-light' >$HOME/tmp/bat-theme
-	# LIGHT_COLOR='base16-gruvbox-light-soft.yml'
-	# colorscheme $LIGHT_COLOR
-	# ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_light.conf ~/.config/kitty/current-theme.conf
-  ln -sf ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_day.conf ~/.config/kitty/current-theme.conf
-	kitty_reload
+  kitty_set_theme ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_day.conf
 }
 
 dark() {
-	echo 'gruvbox-dark' >$HOME/tmp/bat-theme
-	# DARK_COLOR='base16-woodland.yml'
-	# colorscheme $DARK_COLOR
-
-	# ln -sf ~/.config/kitty/kitty-themes/themes/gruvbox_dark.conf ~/.config/kitty/current-theme.conf
-  ln -sf ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_night.conf ~/.config/kitty/current-theme.conf
-	kitty_reload
+  kitty_set_theme ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_night.conf
 }
 
-kitty_reload() {
+kitty_set_theme() {
+  theme_file=$1
+  mkdir -p ~/.local/share/kitty
+  ln -sf $theme_file ~/.local/share/kitty/current-theme.conf
 	ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1
 }
 
