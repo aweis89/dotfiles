@@ -45,8 +45,8 @@ antigen use oh-my-zsh
 antigen bundle ohmyzsh/ohmyzsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle command-not-found
+antigen bundle fzf
 antigen bundle git
-antigen bundle kubectl
 antigen bundle lein
 antigen bundle z
 
