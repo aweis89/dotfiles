@@ -17,8 +17,7 @@ alias tmux="TERM=screen-256color tmux"
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vim='nvim'
-alias vimns='vimn ~/.config/nvim/init-b.lua' 
-alias vims='vim ~/.config/nvim/init.vim'
+alias vims='vim ~/.config/nvim/lua'
 alias zshs='vim ~/.zshrc'
 
 goinit() {
