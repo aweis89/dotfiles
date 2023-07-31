@@ -44,17 +44,10 @@ source $antigen_dst
 antigen use oh-my-zsh
 antigen bundle ohmyzsh/ohmyzsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle ag
 antigen bundle command-not-found
-antigen bundle fzf
 antigen bundle git
-antigen bundle golang
 antigen bundle kubectl
 antigen bundle lein
-antigen bundle npm
-antigen bundle pip
-antigen bundle tmux
-antigen bundle yarn
 antigen bundle z
 
 # antigen bundle RobSis/zsh-completion-generator
@@ -101,47 +94,14 @@ cache_cmd brewsetup <<'EOL'
 	brew bundle --file $DOTFILES_PATH/Brewfile
 EOL
 
-# Colors
-cache_cmd color-setup <<'EOL'
-	pip install --user alacritty-colorscheme
-
-	REPO="https://github.com/aaron-williamson/base16-alacritty.git"
-	DEST="$HOME/.config/base16"
-	
-	# Get colorschemes 
-	git clone $REPO $DEST
-	# Create symlink at default colors location (optional)
-	mkdir -p $HOME/.config/alacritty
-	ln -sf $DEST/colors $HOME/.config/alacritty
-EOL
-
 # Completion init
 autoload -U +X compinit
 compinit
 
 # Fallback to using --help for autocompletion
-compdef _gnu_generic \
-	alacritty \
-	alacritty-colorscheme \
-	cargo
+compdef _gnu_generic
 # Uncomment to enable for all commands
 # compdef _gnu_generic $(ls $(echo $PATH | sed 's/:/ /g'))
-
-colorscheme() {
-	local colors_file=$1
-	alacritty-colorscheme apply $colors_file
-	local vim_colorscheme=$(echo $colors_file | sed -e 's/-256//' -e 's/\.yml//')
-	echo "colorscheme $vim_colorscheme" >$HOME/.vimrc_background
-}
-
-_colorscheme() {
-	cmds=($(ls -f $HOME/.config/alacritty/colors/))
-	_describe 'profiles' cmds
-}
-
-alias c=colorscheme
-autoload _colorscheme
-compdef _colorscheme colorscheme
 
 # alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
 
@@ -171,13 +131,3 @@ auto_start_tmux() {
 auto_start_tmux
 export PATH="$HOME/.tfenv/bin:$PATH"
 export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
-
-profile_cycle() {
-	IFS=$'\n'
-	sleep_time=${1:-0.5}
-	for profile in $HOME/.config/alacritty/colors/*.yml; do
-		echo Profile: $profile
-		colorscheme $profile
-		sleep $sleep_time
-	done
-}
