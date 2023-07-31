@@ -110,9 +110,7 @@ return {
         vimls = {},
         -- java_language_server = {},
         bashls = {
-          cmd_env = {
-            GLOB_PATTERN = "*@(.sh|.inc|.bash|.command|.zsh)",
-          },
+          filetypes = { "sh", "zsh", "bash" },
         },
         golangci_lint_ls = {},
         gopls = {

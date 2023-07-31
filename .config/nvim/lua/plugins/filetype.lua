@@ -9,6 +9,7 @@ return {
         -- },
         literal = {
           config = "toml",
+          [".zshrc"] = "bash",
         },
         -- The same as the ones above except the keys map to functions
         function_extensions = {
