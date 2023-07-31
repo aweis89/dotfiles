@@ -14,7 +14,7 @@ alias os=operator-sdk
 alias rms='rm -rf ~/.local/share/nvim/swap/*'
 alias tf=terraform
 alias tmux="TERM=screen-256color tmux"
-alias tmuxs='vim ~/.tmux.conf'
+alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vim='nvim'
 alias vimns='vimn ~/.config/nvim/init-b.lua' 
