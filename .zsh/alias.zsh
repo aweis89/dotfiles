@@ -1,6 +1,5 @@
 alias ag=rg
 alias d=z
-alias git="git --no-pager"
 alias gos=go-search
 alias hf=helmfile
 alias int='curl -Ss https://google.com'
