@@ -151,27 +151,14 @@ return {
         terraformls = {},
         pyright = {},
         rust_analyzer = {
-          -- https://github.com/rust-lang/rust-analyzer/issues/13529
-          cmd = {
-            "kubectl",
-            "-n",
-            "default",
-            "--context",
-            "development-eu1-d-k8s",
-            "exec",
-            "-i",
-            "local",
-            "--",
-            "/bin/sh",
-            "-c",
-            "sleep 1 && cd /Users/aweisberg/mb/mobilecoin/fog/view/server && rust-analyzer",
-          },
           settings = {
-            checkOnSave = {
-              command = "clippy",
-            },
-            inlayHints = {
-              enable = true,
+            ["rust-analyzer"] = {
+              checkOnSave = {
+                command = "clippy",
+              },
+              inlayHints = {
+                enable = true,
+              },
             },
           },
         },

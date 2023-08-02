@@ -95,7 +95,7 @@ return {
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
       { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
-      { "<C-n>", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
+      { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
     },
   },
   {
