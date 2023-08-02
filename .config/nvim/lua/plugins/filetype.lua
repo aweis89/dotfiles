@@ -21,6 +21,9 @@ return {
           -- Set the filetype of files with a dash shebang to sh
           dash = "sh",
         },
+        complex = {
+          ["templates/.*yaml"] = "helm",
+        },
       },
     },
   },
