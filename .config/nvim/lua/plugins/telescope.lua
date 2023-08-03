@@ -15,6 +15,13 @@ return {
         desc = "Find Plugin File",
       },
       {
+        "<leader>ff",
+        function()
+          require("telescope.builtin").find_files()
+        end,
+        desc = "Find Plugin File",
+      },
+      {
         "<leader><space>",
         function()
           require("telescope.builtin").find_files()

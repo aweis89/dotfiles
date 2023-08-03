@@ -50,7 +50,12 @@ return {
   {
     "ahmedkhalf/project.nvim",
     opts = {
+      exclude_dirs = { "~/dev/mobilecoin/*" },
       patterns = {
+        "helmfile.yaml",
+        "Chart.yaml",
+        "Dockerfile",
+        "Cargo.toml",
         ".git",
         "_darcs",
         ".hg",
@@ -59,10 +64,6 @@ return {
         "Makefile",
         "package.json",
         "init.lua",
-        "helmfile.yaml",
-        "Chart.yaml",
-        "Dockerfile",
-        "Cargo.toml",
       },
     },
   },
