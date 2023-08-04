@@ -1,0 +1,6 @@
+#!/bin/bash
+
+pip3 install pyobjc
+
+ln -sf "$(dirname "$0")/com.aweis.theme-reactor.plist" ~/Library/LaunchAgents/com.aweis.theme-reactor.plist
+launchctl load -w ~/Library/LaunchAgents/com.aweis.theme-reactor.plist
