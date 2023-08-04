@@ -24,8 +24,8 @@ set -g status-right-style NONE
 set -g status-left "#[fg=#e9e9ed,bg=#2e7de9,bold] #S #[fg=#2e7de9,bg=#e9e9ec,nobold,nounderscore,noitalics]"
 
 set -g status-right "#[fg=#e9e9ec,bg=#e9e9ec,nobold,nounderscore,noitalics]#[fg=#2e7de9,bg=#e9e9ec] "\
-"#{prefix_highlight} #[fg=#a8aecb,bg=#e9e9ec,nobold,nounderscore,noitalics]#[fg=#2e7de9,bg=#a8aecb] %Y-%m-%d  %a %I:%M %p "\
-"#[fg=#2e7de9,bg=#a8aecb,nobold,nounderscore,noitalics]#[fg=#e9e9ed,bg=#2e7de9,bold] #(/bin/bash $HOME/.config/tmux/kube-context) "
+"#{prefix_highlight} #[fg=#a8aecb,bg=#e9e9ec,nobold,nounderscore,noitalics]#[fg=#2e7de9,bg=#a8aecb]   %a %Y-%m-%d   %I:%M %p "\
+"#[fg=#2e7de9,bg=#a8aecb,nobold,nounderscore,noitalics]#[fg=#e9e9ed,bg=#2e7de9,bold] ⎈ #(/bin/bash $HOME/.config/tmux/kube-context) "
 
 setw -g window-status-activity-style "underscore,fg=#6172b0,bg=#e9e9ec"
 setw -g window-status-separator ""
