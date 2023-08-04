@@ -1,3 +1,4 @@
 .config/argocd
 .config/helm
 .config/karabiner/automatic_backups
+.hammerspoon/
