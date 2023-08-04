@@ -12,7 +12,7 @@ class ThemeObserver(NSObject):
         defaults = NSUserDefaults.standardUserDefaults()
         is_dark = defaults.stringForKey_("AppleInterfaceStyle") == "Dark"
 
-        theme_file = "tokyonight_night.conf" if is_dark else "tokyonight_day.conf"
+        theme_file = "tokyonight_moon.conf" if is_dark else "tokyonight_day.conf"
         commands.append(f"ln -sf $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/{theme_file} $HOME/.local/share/kitty/current-theme.conf")
 
         commands.append("ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1")
