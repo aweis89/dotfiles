@@ -79,7 +79,7 @@ load_brew() {
 }
 
 # brew
-export PATH=$PATH:/opt/homebrew/bin:$HOME/.local/bin
+export PATH=/opt/homebrew/bin:$HOME/.local/bin:$PATH
 
 # editor
 export VISUAL=nvim
