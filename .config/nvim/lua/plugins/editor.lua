@@ -64,6 +64,8 @@ return {
         "Makefile",
         "package.json",
         "init.lua",
+        "go.*",
+        "main.*",
       },
     },
   },
