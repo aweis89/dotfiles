@@ -23,12 +23,7 @@ if vim.fn.system("uname") == "Darwin\n" then
 end
 
 return {
-  { -- Use gruvbox
-    "LazyVim/LazyVim",
-    dependencies = { "ellisonleao/gruvbox.nvim" },
-    opts = { colorscheme = "tokyonight" },
-    -- opts = { colorscheme = "gruvbox" },
-  },
+  { "akinsho/bufferline.nvim", enabled = false },
   {
     "karb94/neoscroll.nvim",
     init = function()
