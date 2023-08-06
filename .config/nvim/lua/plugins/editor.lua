@@ -23,6 +23,7 @@ if vim.fn.system("uname") == "Darwin\n" then
 end
 
 return {
+  { "christoomey/vim-tmux-navigator" },
   { "akinsho/bufferline.nvim", enabled = false },
   {
     "karb94/neoscroll.nvim",
@@ -51,16 +52,16 @@ return {
         "Chart.yaml",
         "Dockerfile",
         "Cargo.toml",
-        ".git",
-        "_darcs",
-        ".hg",
-        ".bzr",
-        ".svn",
         "Makefile",
         "package.json",
         "init.lua",
         "go.*",
         "main.*",
+        ".git",
+        "_darcs",
+        ".hg",
+        ".bzr",
+        ".svn",
       },
     },
   },
