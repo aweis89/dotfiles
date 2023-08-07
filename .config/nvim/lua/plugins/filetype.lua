@@ -24,6 +24,7 @@ return {
         },
         complex = {
           ["templates/.*yaml"] = "helm",
+          [".*Dockerfile.*"] = "dockerfile",
         },
       },
     },
