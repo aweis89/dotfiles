@@ -3,19 +3,21 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.yourdomain.watch_interface_style</string>
+    <string>com.aweis.theme-reactor</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/python3</string>
-        <string>/path/to/your/script.py</string>
+        <string>/bin/bash</string>
+        <string>--login</string>
+        <string>-c</string>
+        <string>python ~/.config/theme-reactor/reactor.py</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/tmp/watch_interface_style.out</string>
+    <string>/tmp/theme-reactor.out</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/watch_interface_style.err</string>
+    <string>/tmp/theme-reactor.err</string>
 </dict>
 </plist>
