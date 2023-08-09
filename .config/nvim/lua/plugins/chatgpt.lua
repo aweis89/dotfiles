@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 return {
   {
     "jackMort/ChatGPT.nvim",
