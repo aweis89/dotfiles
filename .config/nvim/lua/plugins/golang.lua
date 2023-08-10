@@ -28,7 +28,7 @@ return {
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
     keys = {
       { "ga", "<cmd>GoAlt<cr>", desc = "GoAlt" },
-      { "<leader>r", "<cmd>GoGenReturn<cr>", desc = "GoGenReturn" },
+      { "<leader>re", "<cmd>GoGenReturn<cr>", desc = "GoGenReturn" },
     },
   },
 }
