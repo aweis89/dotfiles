@@ -1,13 +1,6 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-telescope/telescope-cheat.nvim",
-      "kkharji/sqlite.lua",
-    },
-    init = function()
-      require("telescope").load_extension("cheat")
-    end,
     opts = {
       defaults = {
         file_ignore_patterns = { "./node_modules/*", "vendor" },
