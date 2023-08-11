@@ -46,6 +46,7 @@ return {
   {
     "ahmedkhalf/project.nvim",
     opts = {
+      manual_mode = true,
       exclude_dirs = { "~/dev/mobilecoin/*" },
       patterns = {
         "helmfile.yaml",
