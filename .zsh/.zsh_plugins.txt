@@ -1,0 +1,9 @@
+# you can even use Oh My Zsh plugins
+ohmyzsh/ohmyzsh path:lib
+ohmyzsh/ohmyzsh path:plugins/fzf
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/z
+
+# add fish-like features
+zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-autosuggestions
