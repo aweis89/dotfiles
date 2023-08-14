@@ -13,7 +13,6 @@ return {
 	{ "z", "zoom.us" }, -- "Z" for "Zoom"
 	{
 		"m",
-		-- "Slack",
 		"Arc",
 		function()
 			hs.eventtap.keyStroke({ "cmd" }, "2")
@@ -21,10 +20,16 @@ return {
 	},
 	{
 		"s",
-		-- "Slack",
 		"Arc",
 		function()
 			hs.eventtap.keyStroke({ "cmd" }, "1")
+		end,
+	},
+	{
+		"g",
+		"Arc",
+		function()
+			hs.eventtap.keyStroke({ "cmd" }, "3")
 		end,
 	},
 }
