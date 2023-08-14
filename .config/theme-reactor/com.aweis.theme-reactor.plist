@@ -7,9 +7,8 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>--login</string>
         <string>-c</string>
-        <string>python ~/.config/theme-reactor/reactor.py</string>
+        <string>~/.asdf/shims/python ~/.config/theme-reactor/reactor.py</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
