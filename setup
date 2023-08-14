@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -eo pipefail
+
+which -s brew || {
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+brew bundle check || brew bundle
+
+# create links
+stow .
+
+# Disable Dock icon for Hammerspoon
+defaults write org.hammerspoon.Hammerspoon MJShowDockIconKey -bool FALSE
+
+declare -a startup_apps=(
+	"Hammerspoon"
+	"Karabiner-Elements"
+)
+
+for app in "${startup_apps[@]}"; do
+	osascript -e "tell application \"System Events\" to make login item at end with properties {path:\":Applications:${app}.app\", hidden:true}" 1>/dev/null
+	if ! pgrep -q "$app"; then
+		open -a "${app}.app"
+	fi
+done
