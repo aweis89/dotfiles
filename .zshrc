@@ -1,64 +1,114 @@
-_cache_key_file() {
-	local cache_dir=${CACHE_DIR:-$HOME/tmp}
-	local key=${1}.cache
-	echo $cache_dir/$key
+export EDITOR=nvim
+export VISUAL=nvim
+
+# Use vi style key bindings instead of emacs
+bindkey -v
+
+# Only suggest corrections for commands, not arguments
+setopt CORRECT
+unsetopt CORRECTALL
+
+# Don't print a '%' for partial lines (ones that don't end with a newline)
+# https://superuser.com/a/645612/922801
+unsetopt PROMPT_SP
+
+# Allow comments in interactive shells
+# https://unix.stackexchange.com/q/33994/280976
+setopt INTERACTIVE_COMMENTS
+
+export PATH="/opt/homebrew/bin:$PATH"
+
+# If a command is a directory, cd to it
+setopt AUTO_CD
+
+###############################################################################
+# History
+###############################################################################
+HISTFILE=~/.zsh_history
+# Max lines kept in a session
+HISTSIZE=10000
+# Max lines kept in the file
+SAVEHIST=10000
+# Remove duplicates before unique commands
+setopt HIST_EXPIRE_DUPS_FIRST
+# Don't add entires that duplicate the previous command
+setopt HIST_IGNORE_DUPS
+# Remove commands when the first character is a space
+setopt HIST_IGNORE_SPACE
+# Don't immediately execute commands from history; just fill the edit buffer
+setopt HIST_VERIFY
+# Share history between shells
+setopt SHARE_HISTORY
+
+###############################################################################
+# Aliases
+###############################################################################
+alias b="bat"
+alias g="git"
+alias gd="diff2html -s side"
+alias d=z
+alias gos=go-search
+alias hf=helmfile
+alias int='curl -Ss https://google.com'
+alias k=kubectl
+alias kb=kubebuilder 
+alias kcg='kubectl config get-contexts'
+alias kp=kube-prompt
+alias kw='watch kubectl'
+alias ll="exa -l --git -h"
+alias os=operator-sdk
+alias rms='rm -rf ~/.local/share/nvim/swap/*'
+alias tf=terraform
+alias tmux="TERM=screen-256color tmux"
+alias tmuxs='vim ~/.config/tmux/tmux.conf'
+alias tt=gotestsum
+alias vim='nvim'
+alias v='nvim'
+alias vims='vim ~/.config/nvim/lua'
+alias zshs='vim ~/.zshrc'
+# cd aliases
+alias c="cd"
+alias c-="cd -"
+alias ..="cd .."
+alias ...="cd ../.."
+
+goinit() {
+    local name=$1
+    [[ -d $name ]] || mkdir $name
+    cd $name
+    go mod init github.com/aweis89/$name
 }
 
-cache_rm() {
-	local cache_file=$(_cache_key_file $key)
-	rm $cache_file
-}
+###############################################################################
+# Completion
+###############################################################################
+# Smartcase completions:
+# capital matches capital; lower matches both lower and capital
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# Only regenerate compinit's cache once a day:
+# https://htr3n.github.io/2018/07/faster-zsh/
+autoload -Uz compinit
+if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+  compinit
+else
+  compinit -C
+fi
 
-cache_cmd() {
-	local key=$1
-	local cache_file=$(_cache_key_file $key)
-	local dir=$(dirname $cache_file)
-	test -d $dir || mkdir -p $dir
-	[[ ! -f $cache_file ]] || return 0
-
-	local cmds="$(cat /dev/stdin)"
-	set -x
-	eval "$cmds"
-	touch $cache_file
-	set +x
-}
-
-cache_cmd link-dotflies <<'EOL'
-	DOTFILES_PATH=$HOME/dotfiles
-	test -d $DOTFILES_PATH || \
-		git clone https://github.com/aweis89/dotfiles.git $DOTFILES_PATH
-	ln -sf $DOTFILES_PATH/.zshrc ${ZDOTDIR:-$HOME}/.zshrc
-	ln -sf $DOTFILES_PATH/.tmux.conf ~/.tmux.conf
-	ln -sf $DOTFILES_PATH/nvim ~/.config/nvim
-	ln -sf $DOTFILES_PATH/alacritty.yml ~/.config/alacritty/alacritty.yml
-EOL
-
-antigen_dst=$HOME/.local/share/zsh/antigen.zsh
-cache_cmd antigen <<'EOL'
-	mkdir -p $(dirname $antigen_dst)
-	curl -L git.io/antigen > $antigen_dst
-EOL
-source $antigen_dst
-
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
-antigen bundle ohmyzsh/ohmyzsh
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle command-not-found
-antigen bundle fzf
-antigen bundle git
-antigen bundle lein
-antigen bundle z
-
-# antigen bundle RobSis/zsh-completion-generator
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-autosuggestions
-
-# antigen theme simple
+###############################################################################
+# Prompt
+###############################################################################
 eval "$(starship init zsh)"
 
-# Tell Antigen that you're done.
-antigen apply
+###############################################################################
+# Plugins
+###############################################################################
+source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+antidote load ~/.zsh/.zsh_plugins.txt
+
+# asdf
+. $(brew --prefix asdf)/libexec/asdf.sh
+
+bindkey '^w' forward-word
 
 source_present() {
 	local -r file="$1"
@@ -66,59 +116,7 @@ source_present() {
 }
 
 source_present $HOME/.zshrc.local
-source_present $HOME/.zsh/completion.zsh
-source_present $HOME/.zsh/history.zsh
-source_present $HOME/.zsh/alias.zsh
 source_present $HOME/.zsh/kubectl.zsh
-
-load_brew() {
-	dist=$(uname -s)
-	if [[ "${dist}" =~ "linux" ]]; then
-		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 1>/dev/null
-	fi
-}
-
-# brew
-export PATH=/opt/homebrew/bin:$HOME/.local/bin:$PATH
-
-# editor
-export VISUAL=nvim
-export EDITOR=$VISUAL
-
-# Brew package manager setup, assumes ruby is installed
-cache_cmd brewsetup <<'EOL'
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	load_brew
-	brew tap Homebrew/bundle
-	# Insall all deps from Brewfile
-	brew bundle --file $DOTFILES_PATH/Brewfile
-EOL
-
-# Completion init
-autoload -U +X compinit
-compinit
-
-# Fallback to using --help for autocompletion
-compdef _gnu_generic
-# Uncomment to enable for all commands
-# compdef _gnu_generic $(ls $(echo $PATH | sed 's/:/ /g'))
-
-# alias bat='bat --theme $(cat $HOME/tmp/bat-theme)'
-
-light() {
-  kitty_set_theme ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_day.conf
-}
-
-dark() {
-  kitty_set_theme ~/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty/tokyonight_night.conf
-}
-
-kitty_set_theme() {
-  theme_file=$1
-  mkdir -p ~/.local/share/kitty
-  ln -sf $theme_file ~/.local/share/kitty/current-theme.conf
-	ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1
-}
 
 auto_start_tmux() {
 	session=${1:-default}
@@ -129,5 +127,3 @@ auto_start_tmux() {
 }
 
 auto_start_tmux
-export PATH="$HOME/.tfenv/bin:$PATH"
-export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
