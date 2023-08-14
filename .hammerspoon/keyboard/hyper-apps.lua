@@ -13,20 +13,20 @@ return {
 	{ "z", "zoom.us" }, -- "Z" for "Zoom"
 	{
 		"m",
-		"Arc",
+		"Slack", -- Slack workspace #2
 		function()
 			hs.eventtap.keyStroke({ "cmd" }, "2")
 		end,
 	},
 	{
 		"s",
-		"Arc",
+		"Slack", -- Slack workspace #1
 		function()
 			hs.eventtap.keyStroke({ "cmd" }, "1")
 		end,
 	},
 	{
-		"g",
+		"g", -- ChatGPT
 		"Arc",
 		function()
 			hs.eventtap.keyStroke({ "cmd" }, "3")
