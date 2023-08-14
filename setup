@@ -8,8 +8,8 @@ which -s brew || {
 
 brew bundle check || brew bundle
 
-# create links
-stow .
+# Create links
+stow -v .
 
 # Disable Dock icon for Hammerspoon
 defaults write org.hammerspoon.Hammerspoon MJShowDockIconKey -bool FALSE

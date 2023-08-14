@@ -2,7 +2,7 @@
 
 set -e
 
-pip3 install pyobjc 1>/dev/null
+pip install pyobjc 1>/dev/null
 
 dir=$(
 	cd $(dirname "$0")
