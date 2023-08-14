@@ -1,7 +1,7 @@
 .config/argocd
 .config/helm
 .config/karabiner/automatic_backups
-.hammerspoon/
 .config/deezer-desktop
 .config/karabiner/karabiner.json
 .zsh/.zsh_plugins.zsh
+.hammerspoon/Spoons
