@@ -3,39 +3,39 @@
 --   https://gist.github.com/arbelt/b91e1f38a0880afb316dd5b5732759f1
 --   https://github.com/jasoncodes/dotfiles/blob/ac9f3ac/hammerspoon/control_escape.lua
 
-sendEscape = false
+sendTap = false
 lastMods = {}
 
-ctrlKeyHandler = function()
-	sendEscape = false
-end
+holdKeyTimer = hs.timer.delayed.new(0.15, function()
+	sendTap = false
+end)
 
-ctrlKeyTimer = hs.timer.delayed.new(0.15, ctrlKeyHandler)
-
-ctrlHandler = function(evt)
-	local newMods = evt:getFlags()
-	if lastMods["ctrl"] == newMods["ctrl"] then
+holdTap = function(hold, tap)
+	return function(evt)
+		local newMods = evt:getFlags()
+		if lastMods[hold] == newMods[hold] then
+			return false
+		end
+		if not lastMods[hold] then
+			lastMods = newMods
+			sendTap = true
+			holdKeyTimer:start()
+		else
+			if sendTap then
+				keyUpDown({}, tap)
+			end
+			lastMods = newMods
+			holdKeyTimer:stop()
+		end
 		return false
 	end
-	if not lastMods["ctrl"] then
-		lastMods = newMods
-		sendEscape = true
-		ctrlKeyTimer:start()
-	else
-		if sendEscape then
-			keyUpDown({}, "escape")
-		end
-		lastMods = newMods
-		ctrlKeyTimer:stop()
-	end
-	return false
 end
 
-ctrlTap = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, ctrlHandler)
+ctrlTap = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, holdTap("ctrl", "escape"))
 ctrlTap:start()
 
 otherHandler = function(evt)
-	sendEscape = false
+	sendTap = false
 	return false
 end
 
