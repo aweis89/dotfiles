@@ -4,6 +4,10 @@ vim.cmd([[set noswapfile]])
 
 return {
   {
+    "jose-elias-alvarez/null-ls.nvim",
+    enabled = false,
+  },
+  {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "onsails/lspkind.nvim",
