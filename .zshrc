@@ -1,9 +1,6 @@
 export EDITOR=nvim
 export VISUAL=nvim
 
-# Use vi style key bindings instead of emacs
-bindkey -v
-
 # Only suggest corrections for commands, not arguments
 setopt CORRECT
 unsetopt CORRECTALL
@@ -105,10 +102,27 @@ eval "$(starship init zsh)"
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
 antidote load ~/.zsh/.zsh_plugins.txt
 
+# kubectl completion plugin doesn't work
+if ! test -f ~/tmp/kubectl-comp.zsh; then
+  echo "generating kubectl completion"
+  touch ~/tmp/kubectl-comp.zsh
+  echo "$(kubectl completion zsh)" > ~/tmp/kubectl-comp.zsh 
+fi
+source ~/tmp/kubectl-comp.zsh
+
 # asdf
 . $(brew --prefix asdf)/libexec/asdf.sh
 
+# Use vi style key bindings instead of emacs
+bindkey -v
+
 bindkey '^w' forward-word
+bindkey "^R" fzf-history-widget
+
+# vi-mode plugin prompt info
+export MODE_INDICATOR='%B%F{blue}<%b<<%f'
+PROMPT="$PROMPT\$(vi_mode_prompt_info)"
+RPROMPT="\$(vi_mode_prompt_info)$RPROMPT"
 
 source_present() {
 	local -r file="$1"
