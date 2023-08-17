@@ -10,3 +10,4 @@ end
 
 map("n", "L", "$", { desc = "Go to end of line", remap = true })
 map("n", "H", "^", { desc = "Go to begining of line", remap = true })
+map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })

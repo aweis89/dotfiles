@@ -24,7 +24,8 @@ end
 
 return {
   { "christoomey/vim-tmux-navigator" },
-  { "akinsho/bufferline.nvim", enabled = false },
+  { "akinsho/bufferline.nvim",       enabled = false },
+  { "rcarriga/nvim-notify",          enabled = false },
   {
     "karb94/neoscroll.nvim",
     init = function()
@@ -96,8 +97,8 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
-      { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
+      { "<C-n>",     "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
     },
   },
   {
