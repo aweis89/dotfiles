@@ -9,3 +9,4 @@ ohmyzsh/ohmyzsh path:plugins/z
 # add fish-like features
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-autosuggestions
+marlonrichert/zsh-autocomplete

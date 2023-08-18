@@ -115,12 +115,16 @@ source ~/tmp/kubectl-comp.zsh
 
 # Use vi style key bindings instead of emacs
 bindkey -v
-
 bindkey '^w' forward-word
-bindkey "^R" fzf-history-widget
+bindkey "^r" fzf-history-widget
+# zsh-autosuggestions
+bindkey '^f' autosuggest-accept
+# zsh-autocomplete
+bindkey '\t' menu-select "${terminfo[kcbt]}" menu-select
+bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-complete
 
 # vi-mode plugin prompt info
-export MODE_INDICATOR='%B%F{blue}<%b<<%f'
+export MODE_INDICATOR='%B%F{blue}[<%b<<%f]'
 PROMPT="$PROMPT\$(vi_mode_prompt_info)"
 RPROMPT="\$(vi_mode_prompt_info)$RPROMPT"
 
