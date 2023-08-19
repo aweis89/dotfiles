@@ -1,3 +1,3 @@
 require("keyboard")
 
-hs.loadSpoon("ControlEscape"):start()
+-- hs.loadSpoon("ControlEscape"):start()
