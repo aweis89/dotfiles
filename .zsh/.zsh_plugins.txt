@@ -8,6 +8,8 @@ ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/z
 
 # add fish-like features
+mattmc3/zfunctions
+
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete

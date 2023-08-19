@@ -99,32 +99,29 @@ eval "$(starship init zsh)"
 ###############################################################################
 # Plugins
 ###############################################################################
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-antidote load ~/.zsh/.zsh_plugins.txt
+# source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+# antidote load ~/.zsh/.zsh_plugins.txt
 
-# kubectl completion plugin doesn't work
-if ! test -f ~/tmp/kubectl-comp.zsh; then
-  echo "generating kubectl completion"
-  touch ~/tmp/kubectl-comp.zsh
-  echo "$(kubectl completion zsh)" > ~/tmp/kubectl-comp.zsh 
+# .zshrc
+# Lazy-load antidote and generate the static load file only when needed
+zsh_plugins=~/.zsh/.zsh_plugins
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  (
+    source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  )
 fi
-source ~/tmp/kubectl-comp.zsh
+source ${zsh_plugins}.zsh
+
+# mattmc3/zfunctions
+export ZFUNCDIR=~/.zsh/functions
+fpath=($fpath $HOME/.zsh/functions)
 
 # asdf
 . $(brew --prefix asdf)/libexec/asdf.sh
 
-# Use vi style key bindings instead of emacs
-bindkey -v
-bindkey '^w' forward-word
-bindkey "^r" fzf-history-widget
-# zsh-autosuggestions
-bindkey '^f' autosuggest-accept
-# zsh-autocomplete
-bindkey '\t' menu-select "${terminfo[kcbt]}" menu-select
-bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-complete
-
 # vi-mode plugin prompt info
-export MODE_INDICATOR='%B%F{blue}[<%b<<%f]'
+export MODE_INDICATOR='%B%F{blue}[<<%f]'
 PROMPT="$PROMPT\$(vi_mode_prompt_info)"
 RPROMPT="\$(vi_mode_prompt_info)$RPROMPT"
 
@@ -145,3 +142,14 @@ auto_start_tmux() {
 }
 
 auto_start_tmux
+
+# Use vi style key bindings instead of emacs
+bindkey -v
+bindkey '^w' forward-word
+bindkey "^r" fzf-history-widget
+# zsh-autosuggestions
+bindkey '^f' autosuggest-accept
+# zsh-autocomplete
+bindkey '\t' menu-select "${terminfo[kcbt]}" menu-select
+bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-complete
+
