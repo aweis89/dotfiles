@@ -1,3 +1,4 @@
+brew "antidote"
 brew "argocd"
 brew "asdf"
 brew "bat"
