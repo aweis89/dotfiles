@@ -19,6 +19,11 @@ alias vim='nvim'
 alias vims='vim ~/.config/nvim/lua'
 alias zshs='vim ~/.zshrc'
 
+ggmain() {
+  git checkout main 2> /dev/null || git checkout master
+  ggpull
+}
+
 goinit() {
     local name=$1
     [[ -d $name ]] || mkdir $name

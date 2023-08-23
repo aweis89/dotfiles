@@ -132,6 +132,7 @@ source_present() {
 
 source_present $HOME/.zshrc.local
 source_present $HOME/.zsh/kubectl.zsh
+source_present $HOME/.zsh/alias.zsh
 
 auto_start_tmux() {
 	session=${1:-default}
@@ -149,9 +150,12 @@ bindkey '^w' forward-word
 bindkey "^r" fzf-history-widget
 # zsh-autosuggestions
 bindkey '^f' autosuggest-accept
+
 # zsh-autocomplete
 bindkey '\t' menu-select "${terminfo[kcbt]}" menu-select
 bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-complete
+# make enter submit direct from menu
+# bindkey -M menuselect '\r' .accept-line
 
 # left arrow
 bindkey '^[OD' backward-char
