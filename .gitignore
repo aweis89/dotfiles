@@ -2,5 +2,4 @@
 .config/helm
 .config/karabiner/automatic_backups
 .config/deezer-desktop
-.config/karabiner/karabiner.json
 .zsh/.zsh_plugins.zsh
