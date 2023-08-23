@@ -105,11 +105,9 @@ eval "$(starship init zsh)"
 # .zshrc
 # Lazy-load antidote and generate the static load file only when needed
 zsh_plugins=~/.zsh/.zsh_plugins
-if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
-  (
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt || ! -e ${zsh_plugins}.zsh ]]; then
     source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
-  )
 fi
 source ${zsh_plugins}.zsh
 
