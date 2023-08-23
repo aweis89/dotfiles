@@ -9,7 +9,7 @@ local function map(mode, lhs, rhs, opts)
 end
 
 function GithubBrowse()
-  local path = vim.fn.expand('%:t')
+  local path = vim.fn.expand('%')
   local line = vim.api.nvim_win_get_cursor(0)[1]
   os.execute('gh browse ' .. path .. ':' .. line)
 end
