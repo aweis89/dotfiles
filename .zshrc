@@ -99,10 +99,12 @@ eval "$(starship init zsh)"
 ###############################################################################
 # Plugins
 ###############################################################################
-# source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-# antidote load ~/.zsh/.zsh_plugins.txt
 
-# .zshrc
+# ohmyzsh support
+fpath+=~/.cache/oh-my-zsh/completions
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+[[ -d $ZSH_CACHE_DIR ]] || (mkdir -p $ZSH_CACHE_DIR && mkdir -p $ZSH_CACHE_DIR/completions)
+
 # Lazy-load antidote and generate the static load file only when needed
 zsh_plugins=~/.zsh/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt || ! -e ${zsh_plugins}.zsh ]]; then
