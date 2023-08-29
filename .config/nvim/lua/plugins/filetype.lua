@@ -3,10 +3,10 @@ return {
     "nathom/filetype.nvim",
     opts = {
       overrides = {
-        -- extensions = {
-        --   -- Set the filetype of *.pn files to potion
-        --   pn = "potion",
-        -- },
+        extensions = {
+          -- Set the filetype of *.pn files to potion
+          tf = "terraform",
+        },
         literal = {
           config = "toml",
           [".zshrc"] = "bash",

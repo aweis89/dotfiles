@@ -154,12 +154,8 @@ return {
             },
           },
         },
-        tflint = {
-          filetypes = { "tf" },
-        },
-        terraformls = {
-          filetypes = { "tf" },
-        },
+        tflint = {},
+        terraformls = {},
         pyright = {},
         rust_analyzer = {
           settings = {
