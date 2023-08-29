@@ -25,14 +25,14 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       opts.sources = cmp.config.sources({
-        { name = "nvim_lsp", group_index = 2 },
+        { name = "nvim_lsp",                group_index = 2 },
         { name = "nvim_lsp_signature_help", group_index = 2 },
-        { name = "copilot", group_index = 2 },
-        { name = "path", group_index = 2 },
-        { name = "luasnip", group_index = 2 },
-        { name = "nvim_lua", group_index = 2 },
-        { name = "buffer", group_index = 3, max_item_count = 3 },
-        { name = "tmux", group_index = 3, max_item_count = 3 },
+        { name = "copilot",                 group_index = 2 },
+        { name = "path",                    group_index = 2 },
+        { name = "luasnip",                 group_index = 2 },
+        { name = "nvim_lua",                group_index = 2 },
+        { name = "buffer",                  group_index = 3, max_item_count = 3 },
+        { name = "tmux",                    group_index = 3, max_item_count = 3 },
       })
       opts.window = {
         completion = cmp.config.window.bordered(),
@@ -129,7 +129,7 @@ return {
               -- not supported
               analyses = { unusedparams = true, unreachable = true },
               codelenses = {
-                generate = true, -- show the `go generate` lens.
+                generate = true,    -- show the `go generate` lens.
                 gc_details = false, --  // Show a code lens toggling the display of gc's choices.
                 test = true,
                 tidy = true,
@@ -154,7 +154,12 @@ return {
             },
           },
         },
-        terraformls = {},
+        tflint = {
+          filetypes = { "tf" },
+        },
+        terraformls = {
+          filetypes = { "tf" },
+        },
         pyright = {},
         rust_analyzer = {
           settings = {
