@@ -1,4 +1,3 @@
-alias ag=rg
 alias d=z
 alias gos=go-search
 alias hf=helmfile
@@ -18,6 +17,8 @@ alias tt=gotestsum
 alias vim='nvim'
 alias vims='vim ~/.config/nvim/lua'
 alias zshs='vim ~/.zshrc'
+alias ff='find . -type f -name'
+alias fd='find . -type d -name'
 
 ggmain() {
   git checkout main 2> /dev/null || git checkout master
