@@ -1,6 +1,12 @@
 alias kcn=kubens
 alias kcu=kubectx
 
+delete-finalizers() {
+  kubectl get pods -o json | jq -r \
+    '.items[] | select(.metadata.deletionTimestamp!=null) | .metadata.name' \
+    | xargs -I {} kubectl patch pod {} -p '{"metadata":{"finalizers":null}}'
+}
+
 kf() {
     local resource=${1:-pods}
     local name=$(kubectl get $resource --no-headers ${@:2} | fzf | awk '{print $1}')
