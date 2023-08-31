@@ -1,1 +1,0 @@
-/Users/aaronweisberg/dotfiles/.zsh
