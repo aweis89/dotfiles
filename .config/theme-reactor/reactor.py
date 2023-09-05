@@ -5,7 +5,7 @@ from PyObjCTools import AppHelper
 class ThemeObserver(NSObject):
     def themeChanged_(self, notification):
         commands = [
-            "/opt/homebrew/bin/tmux source-file ~/.config/tmux/tmux.conf",
+            "/usr/local/bin/tmux source-file ~/.config/tmux/tmux.conf",
             "touch ~/.config/nvim/lua/plugins/editor.lua",
         ]
 
