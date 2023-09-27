@@ -10,7 +10,7 @@ dir=$(
 )
 
 mkdir -p ~/Library/LaunchAgents
-mkdir -p ~/.local/share/kitty/current-theme.conf
+mkdir -p ~/.local/share/kitty
 sudo ln -sf $(which tmux) /usr/local/bin/tmux
 ln -sf "${dir}/com.aweis.theme-reactor.plist" ~/Library/LaunchAgents/com.aweis.theme-reactor.plist
 launchctl unload ~/Library/LaunchAgents/com.aweis.theme-reactor.plist 2>/dev/null || true
