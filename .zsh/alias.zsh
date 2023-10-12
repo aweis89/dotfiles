@@ -15,7 +15,7 @@ alias tmux="TERM=screen-256color tmux"
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vim='nvim'
-alias vims='vim ~/.config/nvim/lua'
+alias vims='cd ~/.config/nvim/lua && vim'
 alias zshs='vim ~/.zshrc'
 alias ff='find . -type f -name'
 alias fd='find . -type d -name'
