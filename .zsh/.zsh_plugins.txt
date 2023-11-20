@@ -4,6 +4,7 @@ ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
 ohmyzsh/ohmyzsh path:plugins/ag kind:fpath
 ohmyzsh/ohmyzsh path:plugins/aws
 ohmyzsh/ohmyzsh path:plugins/azure
+ohmyzsh/ohmyzsh path:plugins/istioctl
 ohmyzsh/ohmyzsh path:plugins/xcode
 ohmyzsh/ohmyzsh path:plugins/flutter
 ohmyzsh/ohmyzsh path:plugins/brew
