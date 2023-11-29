@@ -26,9 +26,7 @@ ohmyzsh/ohmyzsh path:plugins/z
 
 esc/conda-zsh-completion kind:fpath
 
-# add fish-like features
-# mattmc3/zfunctions
-
-zsh-users/zsh-syntax-highlighting
-zsh-users/zsh-autosuggestions
+junegunn/fzf path:shell/key-bindings.zsh
+zdharma-continuum/fast-syntax-highlighting
+# zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
