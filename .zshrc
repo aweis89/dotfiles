@@ -14,6 +14,7 @@ unsetopt PROMPT_SP
 setopt INTERACTIVE_COMMENTS
 
 export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$HOME/dev/flutter/bin:$PATH"
 
 # If a command is a directory, cd to it
 setopt AUTO_CD
@@ -104,6 +105,9 @@ eval "$(starship init zsh)"
 fpath+=~/.cache/oh-my-zsh/completions
 ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 [[ -d $ZSH_CACHE_DIR ]] || (mkdir -p $ZSH_CACHE_DIR && mkdir -p $ZSH_CACHE_DIR/completions)
+
+# set before loading plugins
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # Lazy-load antidote and generate the static load file only when needed
 zsh_plugins=~/.zsh/.zsh_plugins
