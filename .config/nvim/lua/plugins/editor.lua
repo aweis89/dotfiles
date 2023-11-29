@@ -1,6 +1,8 @@
 vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
 vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
 
+COLORSCHEME = "catppuccin-frappe"
+
 -- Check if the operating system is macOS
 if vim.fn.system("uname") == "Darwin\n" then
   -- Define a function to check if dark mode is enabled
@@ -17,15 +19,27 @@ if vim.fn.system("uname") == "Darwin\n" then
   -- Use the function to set the Neovim colorscheme based on dark mode
   if is_dark_mode_enabled() then
     vim.cmd("set background=dark")
+    COLORSCHEME = "catppuccin-macchiato"
   else
     vim.cmd("set background=light")
+    COLORSCHEME = "catppuccin-latte"
   end
+  -- for reload explicitly set colorscheme
+  -- vim.cmd("colorscheme " .. COLORSCHEME)
 end
 
 return {
   { "christoomey/vim-tmux-navigator" },
-  { "akinsho/bufferline.nvim",       enabled = false },
-  { "rcarriga/nvim-notify",          enabled = false },
+  { "akinsho/bufferline.nvim", enabled = false },
+  { "rcarriga/nvim-notify", enabled = false },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = COLORSCHEME,
+      -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
+    },
+  },
   {
     "karb94/neoscroll.nvim",
     init = function()
@@ -97,8 +111,8 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
-      { "<C-n>",     "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
     },
   },
   {
