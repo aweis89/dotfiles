@@ -28,5 +28,5 @@ esc/conda-zsh-completion kind:fpath
 
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
-# zsh-users/zsh-autosuggestions
+zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete

@@ -4,10 +4,6 @@ vim.cmd([[set noswapfile]])
 
 return {
   {
-    "jose-elias-alvarez/null-ls.nvim",
-    enabled = false,
-  },
-  {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "onsails/lspkind.nvim",
@@ -25,14 +21,14 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       opts.sources = cmp.config.sources({
-        { name = "nvim_lsp",                group_index = 2 },
+        { name = "nvim_lsp", group_index = 2 },
         { name = "nvim_lsp_signature_help", group_index = 2 },
-        { name = "copilot",                 group_index = 2 },
-        { name = "path",                    group_index = 2 },
-        { name = "luasnip",                 group_index = 2 },
-        { name = "nvim_lua",                group_index = 2 },
-        { name = "buffer",                  group_index = 3, max_item_count = 3 },
-        { name = "tmux",                    group_index = 3, max_item_count = 3 },
+        { name = "copilot", group_index = 2 },
+        { name = "path", group_index = 2 },
+        { name = "luasnip", group_index = 2 },
+        { name = "nvim_lua", group_index = 2 },
+        { name = "buffer", group_index = 3, max_item_count = 3 },
+        { name = "tmux", group_index = 3, max_item_count = 3 },
       })
       opts.window = {
         completion = cmp.config.window.bordered(),
@@ -112,6 +108,7 @@ return {
         jsonls = {},
         jdtls = {},
         vimls = {},
+        sourcekit = {},
         -- java_language_server = {},
         bashls = {
           filetypes = { "sh", "zsh", "bash" },
@@ -129,7 +126,7 @@ return {
               -- not supported
               analyses = { unusedparams = true, unreachable = true },
               codelenses = {
-                generate = true,    -- show the `go generate` lens.
+                generate = true, -- show the `go generate` lens.
                 gc_details = false, --  // Show a code lens toggling the display of gc's choices.
                 test = true,
                 tidy = true,
@@ -204,7 +201,7 @@ return {
           },
         },
         tsserver = {},
-        helm_ls = {},
+        -- helm_ls = {},
       },
     },
   },
