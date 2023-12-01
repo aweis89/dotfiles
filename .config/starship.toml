@@ -2,7 +2,12 @@ format = """
 $directory\
 $git_branch\
 $git_status
- --> """
+ $character"""
+
+[character]
+success_symbol = '[-->](green)'
+error_symbol = '[-->](red)'
+
 [directory]
 # style = "fg:#1b1d2b bg:#82aaff"
 format = "[ $path ]($style)"
