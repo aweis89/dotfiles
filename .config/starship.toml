@@ -28,7 +28,7 @@ error_symbol = '[-->](red)'
 # symbol = ' '
 symbol = ''
 # style = "bg:#3b4261"
-format = '[$symbol$branch]($style)'
+format = '[\($symbol$branch\)]($style)'
 
 [kubernetes]
 disabled = false
