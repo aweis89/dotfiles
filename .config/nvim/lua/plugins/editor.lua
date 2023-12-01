@@ -31,7 +31,7 @@ end
 return {
   { "christoomey/vim-tmux-navigator" },
   { "akinsho/bufferline.nvim", enabled = false },
-  { "rcarriga/nvim-notify", enabled = false },
+  { "rcarriga/nvim-notify", enabled = true },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     "LazyVim/LazyVim",

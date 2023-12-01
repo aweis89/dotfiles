@@ -2,4 +2,9 @@
 .config/helm
 .config/karabiner/automatic_backups
 .config/deezer-desktop
+.config/configstore
+.config/flutter
+.config/gcloud
+.config/rclone
+.config/tool_state
 .zsh/.zsh_plugins.zsh
