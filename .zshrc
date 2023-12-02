@@ -70,6 +70,9 @@ alias c-="cd -"
 alias ..="cd .."
 alias ...="cd ../.."
 
+# git aliases
+alias ggupdate='ga -A && git commit -m update && ggpush'
+
 goinit() {
     local name=$1
     [[ -d $name ]] || mkdir $name
