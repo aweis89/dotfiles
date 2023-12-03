@@ -15,6 +15,7 @@ setopt INTERACTIVE_COMMENTS
 
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/dev/flutter/bin:$PATH"
+export PATH="$HOME/.krew/bin:$PATH"
 
 # If a command is a directory, cd to it
 setopt AUTO_CD

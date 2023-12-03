@@ -19,7 +19,7 @@ if vim.fn.system("uname") == "Darwin\n" then
   -- Use the function to set the Neovim colorscheme based on dark mode
   if is_dark_mode_enabled() then
     vim.cmd("set background=dark")
-    COLORSCHEME = "catppuccin-macchiato"
+    COLORSCHEME = "catppuccin-mocha"
   else
     vim.cmd("set background=light")
     COLORSCHEME = "catppuccin-latte"
@@ -40,6 +40,21 @@ return {
       -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
     },
   },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = function()
+      return {
+        options = {
+          theme = "auto",
+          section_separators = { left = "", right = "" },
+          component_separators = { left = "", right = "" },
+        },
+      }
+    end,
+  },
+
   {
     "karb94/neoscroll.nvim",
     init = function()
