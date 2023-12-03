@@ -55,7 +55,7 @@ return {
           pattern = "^",
           label = { after = { 0, 0 } },
           search = {
-            // disable for regular search behavior (including not auto exiting)
+            -- disable for regular search behavior (including not auto exiting)
             enabled = true,
             mode = "search",
             exclude = {
