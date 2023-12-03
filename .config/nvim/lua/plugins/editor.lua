@@ -40,7 +40,17 @@ return {
       -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
     },
   },
-
+  {
+    "folke/flash.nvim",
+    opts = {
+      modes = {
+        search = {
+          -- prevent auto exit search when typing fast
+          enabled = false,
+        },
+      },
+    },
+  },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
