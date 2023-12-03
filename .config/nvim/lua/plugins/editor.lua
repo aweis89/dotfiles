@@ -30,9 +30,14 @@ end
 
 return {
   { "christoomey/vim-tmux-navigator" },
+  { "mbbill/undotree" },
+  { "tpope/vim-fugitive" },
+  { "towolf/vim-helm" },
+  { "mrjosh/helm-ls" },
   { "akinsho/bufferline.nvim", enabled = false },
   { "rcarriga/nvim-notify", enabled = true },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+
   {
     "LazyVim/LazyVim",
     opts = {
@@ -40,17 +45,40 @@ return {
       -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
     },
   },
+
   {
-    "folke/flash.nvim",
-    opts = {
-      modes = {
-        search = {
-          -- prevent auto exit search when typing fast
-          enabled = false,
+    "nvim-telescope/telescope.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local function flash(prompt_bufnr)
+        require("flash").jump({
+          pattern = "^",
+          label = { after = { 0, 0 } },
+          search = {
+            // disable for regular search behavior (including not auto exiting)
+            enabled = true,
+            mode = "search",
+            exclude = {
+              function(win)
+                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+              end,
+            },
+          },
+          action = function(match)
+            local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+            picker:set_selection(match.pos[1] - 1)
+          end,
+        })
+      end
+      opts.defaults = vim.tbl_deep_extend("force", opts.defaults or {}, {
+        mappings = {
+          n = { s = flash },
+          i = { ["<c-s>"] = flash },
         },
-      },
-    },
+      })
+    end,
   },
+
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
@@ -71,7 +99,7 @@ return {
       require("neoscroll").setup()
     end,
   },
-  { "mbbill/undotree" },
+
   {
     "voldikss/vim-floaterm",
     keys = {
@@ -82,7 +110,7 @@ return {
       },
     },
   },
-  { "tpope/vim-fugitive" },
+
   {
     "ahmedkhalf/project.nvim",
     opts = {
@@ -108,6 +136,7 @@ return {
       },
     },
   },
+
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = function(_, opts)
@@ -140,12 +169,11 @@ return {
       { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
     },
   },
+
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = "all",
     },
   },
-  { "towolf/vim-helm" },
-  { "mrjosh/helm-ls" },
 }
