@@ -6,6 +6,7 @@
 .config/flutter
 .config/gcloud
 .config/rclone
+.config/kitty/current-theme.conf
 .config/tool_state
 .zsh/.zsh_plugins.zsh
 Google

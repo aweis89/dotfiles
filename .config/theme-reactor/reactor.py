@@ -12,10 +12,12 @@ class ThemeObserver(NSObject):
         defaults = NSUserDefaults.standardUserDefaults()
         is_dark = defaults.stringForKey_("AppleInterfaceStyle") == "Dark"
 
-        theme_file = "mocha.conf" if is_dark else "latte.conf"
-        commands.append(f"ln -sf $HOME/.config/kitty/themes/{theme_file} $HOME/.local/share/kitty/current-theme.conf")
+        # theme_file = "mocha.conf" if is_dark else "latte.conf"
+        # commands.append(f"ln -sf $HOME/.config/kitty/themes/{theme_file} $HOME/.config/current-theme.conf")
+        # commands.append("ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1")
 
-        commands.append("ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1")
+        theme = "Mocha" if is_dark else "Latte"
+        commands.append(f"/opt/homebrew/bin/kitty +kitten themes --reload-in=all Catppuccin Kitty {theme}")
 
         command = " && ".join(commands)
 
