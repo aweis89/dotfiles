@@ -1,3 +1,4 @@
+import os
 import subprocess
 from Foundation import NSObject, NSDistributedNotificationCenter, NSUserDefaults
 from PyObjCTools import AppHelper
@@ -5,7 +6,7 @@ from PyObjCTools import AppHelper
 class ThemeObserver(NSObject):
     def themeChanged_(self, notification):
         commands = [
-            "/usr/local/bin/tmux source-file ~/.config/tmux/tmux.conf",
+            "tmux source-file ~/.config/tmux/tmux.conf",
             "touch ~/.config/nvim/lua/plugins/editor.lua",
         ]
 
@@ -16,8 +17,9 @@ class ThemeObserver(NSObject):
         # commands.append(f"ln -sf $HOME/.config/kitty/themes/{theme_file} $HOME/.config/current-theme.conf")
         # commands.append("ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1")
 
-        theme = "Mocha" if is_dark else "Latte"
-        commands.append(f"/opt/homebrew/bin/kitty +kitten themes --reload-in=all Catppuccin Kitty {theme}")
+        theme = f"Catppuccin Kitty {'Mocha' if is_dark else 'Latte'}"
+        commands.append(f"kitty +kitten themes --reload-in=all {theme}")
+        commands.append(f"sed -i '/# {theme}/d' $HOME/.config/current-theme.conf")
 
         command = " && ".join(commands)
 
@@ -34,6 +36,7 @@ class ThemeObserver(NSObject):
             print(f"Error executing command: {str(e)}")
 
 def main():
+    os.environ['PATH'] = '/opt/homebrew/bin' + os.pathsep + os.environ['PATH']
     observer = ThemeObserver.new()
     NSDistributedNotificationCenter.defaultCenter().addObserver_selector_name_object_(
         observer,
