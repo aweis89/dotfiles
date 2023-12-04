@@ -19,8 +19,6 @@ class ThemeObserver(NSObject):
 
         theme = f"Catppuccin Kitty {'Mocha' if is_dark else 'Latte'}"
         commands.append(f"kitty +kitten themes --reload-in=all {theme}")
-        commands.append(f"sed -i '' '/# {theme}/d' $HOME/.config/kitty/kitty.conf")
-
         command = " && ".join(commands)
 
         print(f"Apple Interface Style Changed to {'Dark' if is_dark else 'Light'}")
@@ -34,6 +32,21 @@ class ThemeObserver(NSObject):
                 print('Error: ' + err.decode('UTF-8'))
         except Exception as e:
             print(f"Error executing command: {str(e)}")
+            
+        delete_line('~/.config/kitty/kitty.conf', theme)
+
+
+
+def delete_line(filename, text):
+    filename = os.path.expanduser(filename)
+
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+
+    with open(filename, 'w') as file:
+        for line in lines:
+            if text not in line:
+                file.write(line)
 
 def main():
     os.environ['PATH'] = '/opt/homebrew/bin' + os.pathsep + os.environ['PATH']
