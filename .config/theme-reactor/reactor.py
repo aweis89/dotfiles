@@ -5,24 +5,18 @@ from PyObjCTools import AppHelper
 
 class ThemeObserver(NSObject):
     def themeChanged_(self, notification):
-        commands = [
-            "tmux source-file ~/.config/tmux/tmux.conf",
-            "touch ~/.config/nvim/lua/plugins/editor.lua",
-        ]
-
         defaults = NSUserDefaults.standardUserDefaults()
         is_dark = defaults.stringForKey_("AppleInterfaceStyle") == "Dark"
-
-        # theme_file = "mocha.conf" if is_dark else "latte.conf"
-        # commands.append(f"ln -sf $HOME/.config/kitty/themes/{theme_file} $HOME/.config/kitty/current-theme.conf")
-        # commands.append("ps -ef | grep kitty | grep -v grep | awk '{print $2}' | xargs kill -s SIGUSR1")
-
-        theme = f"Catppuccin Kitty {'Mocha' if is_dark else 'Latte'}"
-        commands.append(f"kitty +kitten themes --reload-in=all {theme}")
-        command = " && ".join(commands)
+        kitty_theme = f"Catppuccin Kitty {'Mocha' if is_dark else 'Latte'}"
 
         print(f"Apple Interface Style Changed to {'Dark' if is_dark else 'Light'}")
 
+        commands = [
+            "tmux source-file ~/.config/tmux/tmux.conf",
+            "touch ~/.config/nvim/lua/plugins/editor.lua",
+            f"kitty +kitten themes --reload-in=all {kitty_theme}",
+        ]
+        command = " && ".join(commands)
         try:
             process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
             out, err = process.communicate()
@@ -33,7 +27,7 @@ class ThemeObserver(NSObject):
         except Exception as e:
             print(f"Error executing command: {str(e)}")
             
-        delete_line('~/.config/kitty/kitty.conf', theme)
+        delete_line('~/.config/kitty/kitty.conf', kitty_theme)
 
 
 
