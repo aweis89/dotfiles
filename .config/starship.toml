@@ -36,6 +36,7 @@ disabled = false
 # format = '[$symbol$context( \($namespace\))]($style)'
 
 [kubernetes.context_aliases]
+gke_qzlt-dev-services_us-central1_microservices2 = 'qzlt-dev-microservices'
 'gke_.*_(?P<var_cluster>[\w-]+)' = 'gke-$var_cluster'
 'arn.*\/(?P<var_cluster>[\w-]+)' = '$var_cluster'
 
