@@ -1,5 +1,6 @@
 import os
 import subprocess
+import objc
 from Foundation import NSObject, NSDistributedNotificationCenter, NSUserDefaults
 from PyObjCTools import AppHelper
 
@@ -45,12 +46,24 @@ def delete_line(filename, text):
 def main():
     os.environ['PATH'] = '/opt/homebrew/bin' + os.pathsep + os.environ['PATH']
     observer = ThemeObserver.new()
+
+    # Listen for theme change
     NSDistributedNotificationCenter.defaultCenter().addObserver_selector_name_object_(
         observer,
         "themeChanged:",
         "AppleInterfaceThemeChangedNotification",
         None,
     )
+
+    # Listen for wake from sleep
+    workspaceNotificationCenter = objc.lookUpClass('NSWorkspace').sharedWorkspace().notificationCenter()
+    workspaceNotificationCenter.addObserver_selector_name_object_(
+        observer,
+        "themeChanged:",
+        "NSWorkspaceDidWakeNotification",
+        None,
+    )
+
     AppHelper.runConsoleEventLoop()
 
 if __name__ == "__main__":
