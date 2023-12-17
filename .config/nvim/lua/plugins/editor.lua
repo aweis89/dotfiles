@@ -47,6 +47,14 @@ return {
   },
 
   {
+    "L3MON4D3/LuaSnip",
+    -- follow latest release.
+    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    -- install jsregexp (optional!).
+    build = "make install_jsregexp",
+  },
+
+  {
     "nvim-telescope/telescope.nvim",
     optional = true,
     opts = function(_, opts)
@@ -56,7 +64,7 @@ return {
           label = { after = { 0, 0 } },
           search = {
             -- disable for regular search behavior (including not auto exiting)
-            enabled = true,
+            enabled = false,
             mode = "search",
             exclude = {
               function(win)
