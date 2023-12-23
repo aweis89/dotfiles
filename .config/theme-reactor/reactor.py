@@ -1,7 +1,7 @@
 import os
 import subprocess
-import objc
 from Foundation import NSObject, NSDistributedNotificationCenter, NSUserDefaults
+from AppKit import NSWorkspace
 from PyObjCTools import AppHelper
 
 class ThemeObserver(NSObject):
@@ -47,17 +47,18 @@ def main():
     os.environ['PATH'] = '/opt/homebrew/bin' + os.pathsep + os.environ['PATH']
     observer = ThemeObserver.new()
 
-    # Listen for theme change
-    NSDistributedNotificationCenter.defaultCenter().addObserver_selector_name_object_(
+    # Distributed Notification Center for theme change
+    distributed_notification_center = NSDistributedNotificationCenter.defaultCenter()
+    distributed_notification_center.addObserver_selector_name_object_(
         observer,
         "themeChanged:",
         "AppleInterfaceThemeChangedNotification",
         None,
     )
 
-    # Listen for wake from sleep
-    workspaceNotificationCenter = objc.lookUpClass('NSWorkspace').sharedWorkspace().notificationCenter()
-    workspaceNotificationCenter.addObserver_selector_name_object_(
+    # Workspace Notification Center for wake from sleep
+    workspace_notification_center = NSWorkspace.sharedWorkspace().notificationCenter()
+    workspace_notification_center.addObserver_selector_name_object_(
         observer,
         "themeChanged:",
         "NSWorkspaceDidWakeNotification",
