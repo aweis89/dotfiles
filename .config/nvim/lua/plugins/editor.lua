@@ -37,6 +37,7 @@ return {
   { "akinsho/bufferline.nvim", enabled = false },
   { "rcarriga/nvim-notify", enabled = true },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "echasnovski/mini.surround", version = "*" },
 
   {
     "LazyVim/LazyVim",
@@ -65,12 +66,12 @@ return {
           search = {
             -- disable for regular search behavior (including not auto exiting)
             enabled = false,
-            mode = "search",
-            exclude = {
-              function(win)
-                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
-              end,
-            },
+            -- mode = "search",
+            -- exclude = {
+            --   function(win)
+            --     return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+            --   end,
+            -- },
           },
           action = function(match)
             local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
