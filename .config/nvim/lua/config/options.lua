@@ -3,6 +3,7 @@
 -- Add any additional options here
 local settings = {
   "set norelativenumber",
+  "au ColorScheme * hi Normal guibg=none",
 }
 
 for _, value in ipairs(settings) do
