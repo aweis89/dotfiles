@@ -113,7 +113,7 @@ return {
         bashls = {
           filetypes = { "sh", "zsh", "bash" },
         },
-        golangci_lint_ls = { autostart = false },
+        golangci_lint_ls = { autostart = true },
         gopls = {
           -- capabilities = cap,
           filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
