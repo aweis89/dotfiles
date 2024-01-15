@@ -1,8 +1,5 @@
 format = """
-$kubernetes\
-$directory\
-$git_branch\
-$git_status
+$kubernetes$directory$git_branch$git_status $conda
 $character"""
 
 # Sets user-defined palette

@@ -17,6 +17,8 @@ export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/dev/flutter/bin:$PATH"
 export PATH="$HOME/.krew/bin:$PATH"
 
+export AWS_PROFILE=labs
+
 # If a command is a directory, cd to it
 setopt AUTO_CD
 
@@ -38,41 +40,6 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_VERIFY
 # Share history between shells
 setopt SHARE_HISTORY
-
-###############################################################################
-# Aliases
-###############################################################################
-alias b="bat"
-alias g="git"
-alias gd="diff2html -s side"
-alias d=z
-alias gos=go-search
-alias hf=helmfile
-alias int='curl -Ss https://google.com'
-alias k=kubectl
-alias kb=kubebuilder 
-alias kcg='kubectl config get-contexts'
-alias kp=kube-prompt
-alias kw='watch kubectl'
-alias ll="exa -l --git -h"
-alias os=operator-sdk
-alias rms='rm -rf ~/.local/share/nvim/swap/*'
-alias tf=terraform
-alias tmux="TERM=screen-256color tmux"
-alias tmuxs='vim ~/.config/tmux/tmux.conf'
-alias tt=gotestsum
-alias vim='nvim'
-alias v='nvim'
-alias vims='vim ~/.config/nvim/lua'
-alias zshs='vim ~/.zshrc'
-# cd aliases
-alias c="cd"
-alias c-="cd -"
-alias ..="cd .."
-alias ...="cd ../.."
-
-# git aliases
-alias ggupdate='ga -A && git commit -m update && ggpush'
 
 goinit() {
     local name=$1
@@ -167,3 +134,86 @@ bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-comple
 
 # left arrow
 bindkey '^[OD' backward-char
+
+which copilot >/dev/null || brew install aws/tap/copilot-cli
+source <(eksctl completion zsh)
+source <(kubebuilder completion zsh)
+source <(flyctl completion zsh)
+source <(regctl completion zsh)
+source <(copilot completion zsh)
+source $(pack completion --shell zsh)
+
+test -f ~/.zfunc/_poetry || { \
+  mkdir -p ~/.zfunc && poetry completions zsh > ~/.zfunc/_poetry
+}
+fpath+=~/.zfunc
+autoload -Uz compinit && compinit
+
+kill-vims() {
+  # Loop through each pane in all tmux sessions
+  tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep vim | awk '{print $1}' | while read pane_id; do
+    # Send 'Esc' followed by ':q!' to each Vim session to forcefully close it
+    tmux send-keys -t $pane_id Escape ':q!' Enter
+  done
+}
+
+###############################################################################
+# Aliases
+###############################################################################
+alias b="bat"
+alias g="git"
+alias gd="diff2html -s side"
+alias d=z
+alias gos=go-search
+alias hf=helmfile
+alias int='curl -Ss https://google.com'
+alias k=kubectl
+alias kb=kubebuilder 
+alias kcg='kubectl config get-contexts'
+alias kp=kube-prompt
+alias kw='watch kubectl'
+alias ll="exa -l --git -h"
+alias os=operator-sdk
+alias rms='rm -rf ~/.local/share/nvim/swap/*'
+alias tmux="TERM=screen-256color tmux"
+alias tmuxs='vim ~/.config/tmux/tmux.conf'
+alias tt=gotestsum
+alias vim='nvim'
+alias v='nvim'
+alias vims='vim ~/.config/nvim/lua'
+alias zshs='vim ~/.zshrc'
+# cd aliases
+alias c="cd"
+alias c-="cd -"
+alias ..="cd .."
+alias ...="cd ../.."
+
+alias ku='kustomize'
+
+alias tf=terraform
+alias tfa='terraform apply -auto-approve'
+alias tfi='terraform init'
+
+# git aliases
+alias ggupdate='ga -A && git commit -m update && ggpush'
+
+alias light='~/.config/theme-reactor/change_to.sh light &'
+alias dark='~/.config/theme-reactor/change_to.sh dark &'
+
+aw() {
+    awk "{print \$$1}"
+}
+
+ecr-login() {
+  aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin  805478320556.dkr.ecr.us-west-2.amazonaws.com
+}
+
+source ~/miniforge3/bin/activate
+export CONDA_DEFAULT_ENV='tensorflow_ARM'
+
+# Created by `pipx` on 2023-12-26 02:59:09
+export PATH="$PATH:/Users/aaron/.local/bin"
+export PATH="/opt/homebrew/anaconda3/bin/:$PATH"
+
+source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"

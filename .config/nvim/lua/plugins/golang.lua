@@ -18,12 +18,12 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     config = function()
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        pattern = { "*.go" },
-        callback = function()
-          vim.cmd("GoImport")
-        end,
-      })
+      -- vim.api.nvim_create_autocmd("BufWritePre", {
+      --   pattern = { "*.go" },
+      --   callback = function()
+      --     vim.cmd("GoImport")
+      --   end,
+      -- })
 
       require("go").setup()
     end,
