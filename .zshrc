@@ -17,7 +17,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/dev/flutter/bin:$PATH"
 export PATH="$HOME/.krew/bin:$PATH"
 
-export AWS_PROFILE=labs
+export AWS_PROFILE=pre-prod
 
 # If a command is a directory, cd to it
 setopt AUTO_CD
@@ -136,12 +136,10 @@ bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-comple
 bindkey '^[OD' backward-char
 
 which copilot >/dev/null || brew install aws/tap/copilot-cli
-source <(eksctl completion zsh)
 source <(kubebuilder completion zsh)
 source <(flyctl completion zsh)
 source <(regctl completion zsh)
 source <(copilot completion zsh)
-source $(pack completion --shell zsh)
 
 test -f ~/.zfunc/_poetry || { \
   mkdir -p ~/.zfunc && poetry completions zsh > ~/.zfunc/_poetry
@@ -199,6 +197,7 @@ alias ggupdate='ga -A && git commit -m update && ggpush'
 
 alias light='~/.config/theme-reactor/change_to.sh light &'
 alias dark='~/.config/theme-reactor/change_to.sh dark &'
+alias ag=rg
 
 aw() {
     awk "{print \$$1}"
@@ -208,12 +207,28 @@ ecr-login() {
   aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin  805478320556.dkr.ecr.us-west-2.amazonaws.com
 }
 
-source ~/miniforge3/bin/activate
-export CONDA_DEFAULT_ENV='tensorflow_ARM'
+# source ~/miniforge3/bin/activate  # commented out by conda initialize
+export CONDA_DEFAULT_ENV='ai'
 
 # Created by `pipx` on 2023-12-26 02:59:09
-export PATH="$PATH:/Users/aaron/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 export PATH="/opt/homebrew/anaconda3/bin/:$PATH"
 
 source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
 source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
