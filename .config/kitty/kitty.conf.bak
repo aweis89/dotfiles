@@ -2204,6 +2204,6 @@ macos_traditional_fullscreen yes
 
 
 # BEGIN_KITTY_THEME
-# Catppuccin Kitty Latte
+# Catppuccin Kitty Mocha
 include current-theme.conf
 # END_KITTY_THEME

@@ -2,6 +2,11 @@
 
 set -e
 
+alias python=/usr/bin/python3
+alias pip=/usr/bin/pip3
+
+brew info cairo >/dev/null || brew install cairo
+which pipreqs >/dev/null || pip install pipreqs
 pipreqs --force
 pip install -r requirements.txt
 
