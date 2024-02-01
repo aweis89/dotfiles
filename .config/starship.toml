@@ -33,15 +33,17 @@ symbol = ''
 # symbol = ' '
 # format = '[$symbol$context( \($namespace\))]($style)'
 
-[kubernetes.context_aliases]
-'gke_qzlt-dev-services_us-central1_microservices2' = 'qzlt-dev-microservices'
-'gke_.*_(?P<var_cluster>[\w-]+)' = '$var_cluster'
-'arn.*\/(?P<var_cluster>[\w-]+)' = '$var_cluster'
+[[kubernetes.contexts]]
+context_pattern = "gke_.*_(?P<cluster>[\\w-]+)"
+context_alias = "gke-$cluster"
+[[kubernetes.contexts]]
+context_pattern = 'arn.*\/(?P<var_cluster>[\w-]+)'
+context_alias = 'eks-$var_cluster'
 
-[git_status]
-disabled = true
-# style = "bg:#3b4261"
-# format = '[[($all_status$ahead_behind )](fg:#82aaff bg:#3b4261)]($style)'
+# [git_status]
+# disabled = true
+# # style = "bg:#3b4261"
+# # format = '[[($all_status$ahead_behind )](fg:#82aaff bg:#3b4261)]($style)'
 
 # [character]
 # # Note the use of Catppuccin color 'maroon'

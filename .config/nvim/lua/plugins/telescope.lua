@@ -8,6 +8,13 @@ return {
     },
     keys = {
       {
+        "<leader>ll",
+        function()
+          require("telescope.builtin").lsp_document_symbols({})
+        end,
+        desc = "LSP Types",
+      },
+      {
         "<leader>fp",
         function()
           require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
