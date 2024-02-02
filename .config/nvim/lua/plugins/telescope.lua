@@ -7,13 +7,32 @@ return {
       },
     },
     keys = {
+      -- LSP
       {
         "<leader>ll",
         function()
-          require("telescope.builtin").lsp_document_symbols({})
+          require("telescope.builtin").lsp_document_symbols()
         end,
         desc = "LSP Types",
       },
+      {
+        "<leader>lL",
+        function()
+          require("telescope.builtin").lsp_dynamic_workspace_symbols()
+        end,
+        desc = "LSP Types",
+      },
+
+      -- Search
+      {
+        "<leader>fg",
+        function()
+          require("telescope.builtin").live_grep()
+        end,
+        desc = "Search files",
+      },
+
+      -- Files
       {
         "<leader>fp",
         function()
