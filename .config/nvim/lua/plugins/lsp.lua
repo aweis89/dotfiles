@@ -4,6 +4,12 @@ vim.cmd([[set noswapfile]])
 
 return {
   {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup()
+    end,
+  },
+  {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "onsails/lspkind.nvim",
