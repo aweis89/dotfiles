@@ -36,9 +36,17 @@ symbol = ''
 [[kubernetes.contexts]]
 context_pattern = "gke_.*_(?P<cluster>[\\w-]+)"
 context_alias = "gke-$cluster"
+
 [[kubernetes.contexts]]
-context_pattern = 'arn.*\/(?P<var_cluster>[\w-]+)'
-context_alias = 'eks-$var_cluster'
+context_pattern = 'arn.*\/(?P<var_cluster>[\\w-]+)'
+context_alias = "eks-$var_cluster"
+
+# [[kubernetes.context_aliases]]
+# context_pattern = "gke_.*_(?P<cluster>[\\w-]+)"
+# context_alias = "gke-$cluster"
+# [[kubernetes.context_aliases]]
+# context_pattern = 'arn.*\/(?P<var_cluster>[\w-]+)'
+# context_alias = 'eks-$var_cluster'
 
 # [git_status]
 # disabled = true
@@ -52,7 +60,7 @@ context_alias = 'eks-$var_cluster'
 # vimcmd_symbol = "[❮](green)"
 
 [directory]
-truncation_length = 2
+truncation_length = 4
 # Catppuccin 'lavender'
 style = "bold lavender"
 
