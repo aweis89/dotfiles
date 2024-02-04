@@ -29,6 +29,7 @@ if vim.fn.system("uname") == "Darwin\n" then
 end
 
 return {
+  { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
   { "mbbill/undotree" },
   { "tpope/vim-fugitive" },
