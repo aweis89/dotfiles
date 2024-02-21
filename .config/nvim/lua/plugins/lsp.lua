@@ -130,7 +130,11 @@ return {
             gopls = {
               -- more settings: https://github.com/golang/tools/blob/master/gopls/doc/settings.md
               -- not supported
-              analyses = { unusedparams = true, unreachable = true },
+              analyses = {
+                unusedparams = true,
+                unreachable = true,
+                fieldalignment = false,
+              },
               codelenses = {
                 generate = true, -- show the `go generate` lens.
                 gc_details = false, --  // Show a code lens toggling the display of gc's choices.
