@@ -119,7 +119,19 @@ return {
         bashls = {
           filetypes = { "sh", "zsh", "bash" },
         },
-        golangci_lint_ls = { autostart = true },
+        html = {
+          filetypes = { "html", "templ" },
+        },
+        htmx = {
+          filetypes = { "html", "templ" },
+        },
+        templ = {},
+        tailwindcss = {
+          filetypes = { "templ", "astro", "javascript", "typescript", "react" },
+          init_options = { userLanguages = { templ = "html" } },
+        },
+        -- wait for fix with 1.22
+        golangci_lint_ls = { autostart = false },
         gopls = {
           -- capabilities = cap,
           filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
