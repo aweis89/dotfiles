@@ -8,6 +8,7 @@ return {
           tf = "terraform",
           sh = "bash",
           env = "bash",
+          html = "html",
         },
         literal = {
           config = "toml",
