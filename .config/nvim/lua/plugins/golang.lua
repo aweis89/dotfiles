@@ -25,7 +25,8 @@ return {
         pattern = "*.go",
         callback = function()
           require("go.format").goimport()
-          require("go.gotests").fun_test()
+          require("go.gotest").test_file()
+          -- vim.api.nvim_command("GoVet")
         end,
         group = format_sync_grp,
       })
