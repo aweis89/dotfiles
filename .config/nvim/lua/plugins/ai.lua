@@ -36,7 +36,7 @@ return {
         desc = "CopilotChat - Prompt actions",
       },
       {
-        "<leader>ccq",
+        "<leader>ccb",
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
@@ -44,6 +44,12 @@ return {
           end
         end,
         desc = "CopilotChat - Quick chat",
+      },
+      {
+        "<leader>ccq",
+        "<cmd>CopilotChat<cr>",
+        desc = "CopilotChat - Quick chat",
+        mode = { "n", "v" },
       },
     },
   },
