@@ -15,7 +15,7 @@ return {
     },
     config = function()
       require("go").setup({
-        trouble = true,
+        -- trouble = true,
       })
       -- vim.cmd("autocmd BufWritePost <buffer> :GoVet")
 

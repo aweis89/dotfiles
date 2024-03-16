@@ -1,6 +1,53 @@
 -- lazy.nvim
 return {
   {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+    },
+    config = function()
+      local default_opts = require("CopilotChat.config")
+      local user_opts = {
+        context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
+      }
+      local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
+      require("CopilotChat").setup(final_opts)
+    end,
+    event = "BufEnter",
+    keys = {
+      -- Telescope shortcuts
+      {
+        "<leader>cch",
+        function()
+          local actions = require("CopilotChat.actions")
+          require("CopilotChat.integrations.telescope").pick(actions.help_actions())
+        end,
+        desc = "CopilotChat - Help actions",
+      },
+      -- Show prompts actions with telescope
+      {
+        "<leader>ccp",
+        function()
+          local actions = require("CopilotChat.actions")
+          require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+        end,
+        desc = "CopilotChat - Prompt actions",
+      },
+      {
+        "<leader>ccq",
+        function()
+          local input = vim.fn.input("Quick Chat: ")
+          if input ~= "" then
+            require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
+          end
+        end,
+        desc = "CopilotChat - Quick chat",
+      },
+    },
+  },
+  {
     "robitx/gp.nvim",
     config = function()
       require("gp").setup({
