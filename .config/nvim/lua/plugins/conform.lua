@@ -1,12 +1,12 @@
 return {
   {
     "stevearc/conform.nvim",
-    dependencies = { "mason.nvim" },
     opts = function(_, opts)
-      opts.format_by_ft = {
-        go = {"gofumpt", "golines" "goimports"}
-        tf = {"terraform_fmt"}
-        yaml = {"yamlfmt"}
+      opts.formatters_by_ft = {
+        go = { "gofumpt", "goimports", "golines" },
+        tf = { "terraform_fmt" },
+        yaml = { "yamlfmt" },
+        lua = { "stylua" },
       }
     end,
   },
