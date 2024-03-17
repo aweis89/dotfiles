@@ -22,7 +22,8 @@ return {
       vim.api.nvim_create_autocmd("BufWritePre", {
         pattern = "*.go",
         callback = function()
-          require("go.gotest").test_file()
+          -- require("go.gotest").test_file()
+          require("neotest").run.run(vim.loop.cwd())
         end,
         group = format_sync_grp,
       })
