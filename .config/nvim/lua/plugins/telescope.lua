@@ -9,6 +9,14 @@ return {
         mappings = {
           i = {
             ["C-c"] = actions.close,
+            ["<c-t>"] = open_with_trouble,
+            ["<a-t>"] = open_selected_with_trouble,
+            ["<a-i>"] = find_files_no_ignore,
+            ["<a-h>"] = find_files_with_hidden,
+            ["<C-Down>"] = actions.cycle_history_next,
+            ["<C-Up>"] = actions.cycle_history_prev,
+            ["<C-u>"] = actions.preview_scrolling_down,
+            ["<C-d>"] = actions.preview_scrolling_up,
           },
         },
       },
@@ -60,6 +68,13 @@ return {
           require("telescope.builtin").find_files()
         end,
         desc = "Find local files",
+      },
+      {
+        "<leader>fc",
+        function()
+          require("telescope.builtin").command_history()
+        end,
+        desc = "Find quickfix",
       },
     },
   },
