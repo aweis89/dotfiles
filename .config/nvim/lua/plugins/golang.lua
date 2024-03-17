@@ -17,16 +17,12 @@ return {
       require("go").setup({
         -- trouble = true,
       })
-      -- vim.cmd("autocmd BufWritePost <buffer> :GoVet")
 
-      -- Run gofmt + goimport on save
-      local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
+      local format_sync_grp = vim.api.nvim_create_augroup("GoTest", {})
       vim.api.nvim_create_autocmd("BufWritePre", {
         pattern = "*.go",
         callback = function()
-          require("go.format").goimport()
           require("go.gotest").test_file()
-          -- vim.api.nvim_command("GoVet")
         end,
         group = format_sync_grp,
       })
