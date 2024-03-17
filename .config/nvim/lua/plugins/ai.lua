@@ -63,6 +63,17 @@ return {
         remap = true,
       },
       {
+        "<leader>cB",
+        function()
+          local input = vim.fn.input("Quick Chat: ")
+          if input ~= "" then
+            require("CopilotChat").ask(input, { context = "buffers" })
+          end
+        end,
+        desc = "CopilotChat - Quick chat",
+        remap = true,
+      },
+      {
         "<leader>cq",
         "<cmd>CopilotChat<cr>",
         desc = "CopilotChat - Quick chat",
@@ -76,5 +87,21 @@ return {
         remap = true,
       },
     },
+  },
+  {
+    "james1236/backseat.nvim",
+    config = function()
+      require("backseat").setup({
+        -- Alternatively, set the env var $OPENAI_API_KEY by putting "export OPENAI_API_KEY=sk-xxxxx" in your ~/.bashrc
+        openai_model_id = "gpt-4", --gpt-4 (If you do not have access to a model, it says "The model does not exist")
+        -- language = 'english', -- Such as 'japanese', 'french', 'pirate', 'LOLCAT'
+        -- split_threshold = 100,
+        -- additional_instruction = "Respond snarkily", -- (GPT-3 will probably deny this request, but GPT-4 complies)
+        highlight = {
+          icon = " ", -- ''
+          -- group = 'Comment',
+        },
+      })
+    end,
   },
 }
