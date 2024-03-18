@@ -1,9 +1,12 @@
-local function get_all_buffers_content()
+local function get_all_buffers_content(skip_current)
   local buffers = vim.api.nvim_list_bufs()
+  local current_buffer = vim.api.nvim_get_current_buf()
   local context = {}
   for _, buf in ipairs(buffers) do
-    local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-    table.insert(context, table.concat(content, "\n"))
+    if not (skip_current and buf == current_buffer) then
+      local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      table.insert(context, table.concat(content, "\n"))
+    end
   end
   return table.concat(context, "\n")
 end
@@ -35,7 +38,7 @@ return {
             selection = require("CopilotChat.select").buffer,
           },
         },
-        -- default selection (visual or line)
+        -- default selection (visual or buffer)
         selection = function(source)
           local copilotSelect = require("CopilotChat.select")
           return copilotSelect.visual(source) or copilotSelect.buffer(source)
@@ -83,7 +86,7 @@ return {
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
             require("CopilotChat").ask(input, {
-              context = get_all_buffers_content(),
+              context = get_all_buffers_content(true),
               selection = require("CopilotChat.select").buffer,
             })
           end
