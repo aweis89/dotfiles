@@ -21,10 +21,15 @@ return {
         },
         prompts = {
           Improve = {
-            prompt = "/COPILOT_REFACTOR can this be improved?",
+            prompt = "/COPILOT_IMPROVE can this be improved?",
             selection = require("CopilotChat.select").buffer,
           },
         },
+        -- default selection (visual or line)
+        selection = function(source)
+          select = require("CopilotChat.select")
+          return select.visual(source) or select.line(source)
+        end,
       }
       local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
       require("CopilotChat").setup(final_opts)
@@ -67,7 +72,18 @@ return {
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
-            require("CopilotChat").ask(input, { context = "buffers" })
+            local buffers = vim.api.nvim_list_bufs()
+            local context = {}
+            for _, buf in ipairs(buffers) do
+              local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+              table.insert(context, table.concat(content, "\n"))
+            end
+            local contextString = table.concat(context, "\n")
+            local currentBuffer = vim.api.nvim_get_current_buf()
+            require("CopilotChat").ask(input, {
+              context = contextString,
+              selection = require("CopilotChat.select").buffer,
+            })
           end
         end,
         desc = "CopilotChat - Quick chat",

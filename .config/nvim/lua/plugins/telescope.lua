@@ -74,7 +74,15 @@ return {
         function()
           require("telescope.builtin").command_history()
         end,
-        desc = "Find quickfix",
+        desc = "Command history",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>fC",
+        function()
+          require("telescope.builtin").commands()
+        end,
+        desc = "Commands",
       },
     },
   },
