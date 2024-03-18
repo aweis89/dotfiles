@@ -11,6 +11,11 @@ local function get_all_buffers_content(skip_current)
   return table.concat(context, "\n")
 end
 
+local function visualORBuffer(source)
+  local copilotSelect = require("CopilotChat.select")
+  return copilotSelect.visual(source) or copilotSelect.buffer(source)
+end
+
 -- lazy.nvim
 return {
   {
@@ -23,7 +28,7 @@ return {
     config = function()
       local default_opts = require("CopilotChat.config")
       local user_opts = {
-        context = "buffers", -- Context to use, 'buffers', 'buffer' or 'manual'
+        context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
           close = "q",
           reset = "<C-l>",
@@ -38,10 +43,9 @@ return {
             selection = require("CopilotChat.select").buffer,
           },
         },
-        -- default selection (visual or buffer)
+        -- default selection (visual or line)
         selection = function(source)
-          local copilotSelect = require("CopilotChat.select")
-          return copilotSelect.visual(source) or copilotSelect.buffer(source)
+          return visualORBuffer(source)
         end,
       }
       local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
@@ -86,7 +90,7 @@ return {
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
             require("CopilotChat").ask(input, {
-              context = get_all_buffers_content(true),
+              context = get_all_buffers_content(),
               selection = require("CopilotChat.select").buffer,
             })
           end
@@ -106,6 +110,13 @@ return {
         "<cmd>CopilotChatImprove<cr>",
         desc = "CopilotChat - Refactor",
         remap = true,
+      },
+      {
+        "<leader>a",
+        "?```<cr>nwdwjyi`u3<C-o><C-l>",
+        desc = "Yank inner block of markdown",
+        remap = true,
+        silent = true,
       },
     },
   },

@@ -197,11 +197,4 @@ return {
       { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
     },
   },
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = "all",
-    },
-  },
 }
