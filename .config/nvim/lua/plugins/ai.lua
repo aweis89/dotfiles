@@ -20,6 +20,7 @@ end
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    -- dir = "~/dev/CopilotChat.nvim",
     branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
@@ -113,10 +114,30 @@ return {
       },
       {
         "<leader>a",
-        "?```<cr>nwdwjyi`u3<C-o><C-l>",
+        "?```<cr>nwdwjyi`u3<C-o><C-h>",
         desc = "Yank inner block of markdown",
         remap = true,
         silent = true,
+      },
+      {
+        "<leader>cg",
+        function()
+          local prompt = require("CopilotChat.config").prompts.Commit.prompt
+          require("CopilotChat").ask(prompt, {
+            selection = require("CopilotChat.select").gitdiff,
+            callback = function(res)
+              local message = res:match("```gitcommit\n(.*)```")
+              if message then
+                vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
+              else
+                print("No commit message found.")
+              end
+            end,
+          })
+          vim.cmd("messages")
+        end,
+        desc = "CopilotChat - Commit",
+        remap = true,
       },
     },
   },

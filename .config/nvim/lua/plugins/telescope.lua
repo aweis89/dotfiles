@@ -1,5 +1,26 @@
 local actions = require("telescope.actions")
 
+-- Table to keep track of added files
+local added_files = {}
+
+function TelescopeGitAdd()
+  require("telescope.builtin").find_files({
+    attach_mappings = function(_, map)
+      map("i", "<C-a>", actions.select_default)
+      return true
+    end,
+    -- Modify the display to show if a file has been added
+    entry_maker = function(entry)
+      local display = entry.display
+      entry.display = function(entry)
+        local added = added_files[entry.value] and " [added]" or ""
+        return display(entry) .. added
+      end
+      return entry
+    end,
+  })
+end
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -17,11 +38,26 @@ return {
             ["<C-Up>"] = actions.cycle_history_prev,
             ["<C-u>"] = actions.preview_scrolling_down,
             ["<C-d>"] = actions.preview_scrolling_up,
+            -- Custom mapping in insert mode
+            ["<C-a>"] = function(prompt_bufnr)
+              local selection = require("telescope.actions.state").get_selected_entry()
+              local file_path = selection.value
+              -- Git add command
+              vim.cmd("!git add " .. file_path)
+            end,
           },
         },
       },
     },
     keys = {
+      -- Git Add
+      {
+        "<leader>ga",
+        function()
+          TelescopeGitAdd()
+        end,
+        desc = "Git add with Telescope",
+      },
       -- LSP
       {
         "<leader>ll",
