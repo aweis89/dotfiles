@@ -130,8 +130,14 @@ return {
         "<leader>cg",
         function()
           local prompt = require("CopilotChat.config").prompts.Commit.prompt
-          require("CopilotChat").ask(string(prompt), {
-            selection = require("CopilotChat.select").gitdiff,
+          if not prompt then
+            print("No commit prompt found.")
+            return
+          end
+          require("CopilotChat").ask(prompt, {
+            selection = function(source)
+              return require("CopilotChat.select").gitdiff(source, true)
+            end,
             callback = function(res)
               local message = res:match("```gitcommit\n(.*)```")
               if message then
