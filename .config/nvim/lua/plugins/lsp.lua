@@ -130,10 +130,7 @@ return {
           filetypes = { "templ", "astro", "javascript", "typescript", "react" },
           init_options = { userLanguages = { templ = "html" } },
         },
-        -- wait for fix with 1.22
-        golangci_lint_ls = { autostart = false },
         gopls = {
-          -- capabilities = cap,
           filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
           message_level = vim.lsp.protocol.MessageType.Error,
           flags = { allow_incremental_sync = true, debounce_text_changes = 1000 },
