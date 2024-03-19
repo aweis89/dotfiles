@@ -27,6 +27,20 @@ return {
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     config = function()
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = "copilot-*",
+        callback = function()
+          vim.opt_local.relativenumber = true
+          -- copy last code block
+          vim.keymap.set(
+            "n",
+            "<leader>a",
+            "?```<cr>nwdwjyi`u3<C-o><C-h>",
+            { noremap = true, silent = true, buffer = true }
+          )
+        end,
+      })
+
       local default_opts = require("CopilotChat.config")
       local user_opts = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
@@ -113,17 +127,10 @@ return {
         remap = true,
       },
       {
-        "<leader>a",
-        "?```<cr>nwdwjyi`u3<C-o><C-h>",
-        desc = "Yank inner block of markdown",
-        remap = true,
-        silent = true,
-      },
-      {
         "<leader>cg",
         function()
           local prompt = require("CopilotChat.config").prompts.Commit.prompt
-          require("CopilotChat").ask(prompt, {
+          require("CopilotChat").ask(string(prompt), {
             selection = require("CopilotChat.select").gitdiff,
             callback = function(res)
               local message = res:match("```gitcommit\n(.*)```")
