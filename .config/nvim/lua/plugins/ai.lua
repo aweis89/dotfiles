@@ -30,7 +30,6 @@ return {
       vim.api.nvim_create_autocmd("BufEnter", {
         pattern = "copilot-*",
         callback = function()
-          vim.opt_local.relativenumber = true
           -- copy last code block
           vim.keymap.set(
             "n",
@@ -150,6 +149,36 @@ return {
           vim.cmd("messages")
         end,
         desc = "CopilotChat - Commit",
+        remap = true,
+      },
+      {
+        "<leader>ct",
+        function()
+          local prompt = require("CopilotChat.config").prompts.Tests.prompt
+          if not prompt then
+            print("No prompt found.")
+            return
+          end
+          require("CopilotChat").ask(prompt, {
+            selection = require("CopilotChat.select").buffer,
+            callback = function(res)
+              local filetype = vim.bo.filetype
+              if filetype == "go" then
+                local message = res:match("```.*\n(.*)```")
+                -- Switch to the left window
+                vim.api.nvim_command("wincmd h")
+                -- TODO use other plugin for more generic solution
+                vim.api.nvim_command("GoAlt")
+                -- Write message to the end of the current buffer
+                local buf = vim.api.nvim_get_current_buf()
+                local total_lines = vim.api.nvim_buf_line_count(buf)
+                vim.api.nvim_buf_set_lines(buf, total_lines, -1, false, { message })
+              end
+            end,
+          })
+          vim.cmd("messages")
+        end,
+        desc = "CopilotChat - Generate tests",
         remap = true,
       },
     },
