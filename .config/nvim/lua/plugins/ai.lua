@@ -41,7 +41,10 @@ return {
       })
 
       vim.api.nvim_create_user_command("CopilotCommitStaged", function()
-        local prompt = require("CopilotChat.config").prompts.Commit.prompt
+        local prompt = "Write commit message for the change with commitizen convention. "
+          .. "Make sure the title has maximum 50 characters and message is wrapped "
+          .. "at 72 characters. Wrap the whole message in code block with language gitcommit. "
+          .. "Include the diff in the output with it's own code block with language gitdiff."
         if not prompt then
           print("No commit prompt found.")
           return
@@ -51,14 +54,13 @@ return {
             return require("CopilotChat.select").gitdiff(source, true)
           end,
           callback = function(res)
-            local message = res:match("```gitcommit\n(.*)```")
+            local message = res:match("```gitcommit\n(.-)```")
             if message then
-              vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
-
-              -- TODO ask for confirmation
               vim.ui.input({ prompt = "Commit these changes? (y/n): " }, function(input)
                 if input:lower() == "y" then
-                  print("Committing changes.")
+                  local command = "Git commit -m " .. '"' .. message .. '"'
+                  vim.notify(command, 2, { title = "CopilotChat" })
+                  vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
                 end
               end)
             else
@@ -181,7 +183,7 @@ return {
       },
       {
         "<leader>cg",
-        "<cmd>CopilotChatCommitStaged<cr>",
+        "<cmd>CopilotCommitStaged<cr>",
         desc = "CopilotChat - Commit",
         remap = true,
       },
