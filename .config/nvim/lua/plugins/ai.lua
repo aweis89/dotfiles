@@ -54,12 +54,18 @@ return {
             local message = res:match("```gitcommit\n(.*)```")
             if message then
               vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
+
+              -- TODO ask for confirmation
+              vim.ui.input({ prompt = "Commit these changes? (y/n): " }, function(input)
+                if input:lower() == "y" then
+                  print("Committing changes.")
+                end
+              end)
             else
               print("No commit message found.")
             end
           end,
         })
-        vim.cmd("messages")
       end, {})
 
       vim.api.nvim_create_user_command("CopilotAddTests", function()
