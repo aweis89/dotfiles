@@ -40,6 +40,54 @@ return {
         end,
       })
 
+      vim.api.nvim_create_user_command("CopilotCommitStaged", function()
+        local prompt = require("CopilotChat.config").prompts.Commit.prompt
+        if not prompt then
+          print("No commit prompt found.")
+          return
+        end
+        require("CopilotChat").ask(prompt, {
+          selection = function(source)
+            return require("CopilotChat.select").gitdiff(source, true)
+          end,
+          callback = function(res)
+            local message = res:match("```gitcommit\n(.*)```")
+            if message then
+              vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
+            else
+              print("No commit message found.")
+            end
+          end,
+        })
+        vim.cmd("messages")
+      end, {})
+
+      vim.api.nvim_create_user_command("CopilotAddTests", function()
+        local prompt = require("CopilotChat.config").prompts.Tests.prompt
+        if not prompt then
+          print("No prompt found.")
+          return
+        end
+        require("CopilotChat").ask(prompt, {
+          selection = require("CopilotChat.select").buffer,
+          callback = function(res)
+            local filetype = vim.bo.filetype
+            if filetype == "go" then
+              local message = res:match("```.*\n(.*)```")
+              -- Switch to the left window
+              vim.api.nvim_command("wincmd h")
+              -- TODO use other plugin for more generic solution
+              vim.api.nvim_command("GoAlt")
+              -- Write message to the end of the current buffer
+              local buf = vim.api.nvim_get_current_buf()
+              local total_lines = vim.api.nvim_buf_line_count(buf)
+              vim.api.nvim_buf_set_lines(buf, total_lines, -1, false, { message })
+            end
+          end,
+        })
+        vim.cmd("messages")
+      end, {})
+
       local default_opts = require("CopilotChat.config")
       local user_opts = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
@@ -127,57 +175,13 @@ return {
       },
       {
         "<leader>cg",
-        function()
-          local prompt = require("CopilotChat.config").prompts.Commit.prompt
-          if not prompt then
-            print("No commit prompt found.")
-            return
-          end
-          require("CopilotChat").ask(prompt, {
-            selection = function(source)
-              return require("CopilotChat.select").gitdiff(source, true)
-            end,
-            callback = function(res)
-              local message = res:match("```gitcommit\n(.*)```")
-              if message then
-                vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
-              else
-                print("No commit message found.")
-              end
-            end,
-          })
-          vim.cmd("messages")
-        end,
+        "<cmd>CopilotChatCommitStaged<cr>",
         desc = "CopilotChat - Commit",
         remap = true,
       },
       {
         "<leader>ct",
-        function()
-          local prompt = require("CopilotChat.config").prompts.Tests.prompt
-          if not prompt then
-            print("No prompt found.")
-            return
-          end
-          require("CopilotChat").ask(prompt, {
-            selection = require("CopilotChat.select").buffer,
-            callback = function(res)
-              local filetype = vim.bo.filetype
-              if filetype == "go" then
-                local message = res:match("```.*\n(.*)```")
-                -- Switch to the left window
-                vim.api.nvim_command("wincmd h")
-                -- TODO use other plugin for more generic solution
-                vim.api.nvim_command("GoAlt")
-                -- Write message to the end of the current buffer
-                local buf = vim.api.nvim_get_current_buf()
-                local total_lines = vim.api.nvim_buf_line_count(buf)
-                vim.api.nvim_buf_set_lines(buf, total_lines, -1, false, { message })
-              end
-            end,
-          })
-          vim.cmd("messages")
-        end,
+        "<cmd>CopilotChatAddTests<cr>",
         desc = "CopilotChat - Generate tests",
         remap = true,
       },
