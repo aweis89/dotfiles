@@ -32,7 +32,7 @@ end
 -- This function selects the visual or buffer source based on the CopilotChat selection.
 -- @param source The source to select from.
 -- @return The selected source.
-local function visualORBuffer(source)
+local function visual_or_buffer(source)
   return copilotSelect.visual(source) or copilotSelect.buffer(source)
 end
 
@@ -67,7 +67,6 @@ return {
           local message = last_code_block(response, "gitcommit")
           if message then
             local command = "Git commit -m " .. '"' .. message .. '" | Git push'
-            vim.notify("Running: " .. command)
             vim.api.nvim_command(command)
           else
             print("No git commit message found in response.")
@@ -118,13 +117,66 @@ return {
         auto_insert_mode = true,
         prompts = {
           Improve = {
-            prompt = "/COPILOT_IMPROVE can this be improved?",
+            prompt = [[
+COPILOT_IMPROVE You must identify any readability issues in the code snippet.
+Some readability issues to consider:
+- Unclear naming
+- Unclear purpose
+- Redundant or obvious comments
+- Lack of comments
+- Long or complex one liners
+- Too much nesting
+- Long variable names
+- Inconsistent naming and code style.
+- Code repetition
+You may identify additional problems. The user submits a section of code.
+Only list lines with aforementioned issues, in the format line=<num>: <issue and proposed solution>
+Each commentary must fit on a single line]],
             selection = copilotSelect.buffer,
+            callback = function(response)
+              -- Namespace ID
+              local namespace_id = vim.api.nvim_create_namespace("copilot")
+
+              -- Get the current tabpage
+              local tabpage = vim.api.nvim_get_current_tabpage()
+
+              -- Get the list of windows in the current tabpage
+              local windows = vim.api.nvim_tabpage_list_wins(tabpage)
+
+              -- Assuming the leftmost window is what you're looking for
+              local leftmost_win = windows[1]
+
+              -- Get the buffer associated with the leftmost window
+              local left_pane = vim.api.nvim_win_get_buf(leftmost_win)
+
+              -- Retrieve current diagnostics for the buffer
+              local existing_diagnostics = vim.diagnostic.get(left_pane, { namespace = namespace_id })
+
+              -- Split the input into lines
+              for line in response:gmatch("[^\r\n]+") do
+                -- Extract the line number and message from the input
+                local lnum, message = line:match("line=(%d+): (.*)")
+
+                -- Create a new diagnostic
+                local new_diagnostic = {
+                  lnum = tonumber(lnum) - 1, -- Lua is 1-indexed, but Neovim's diagnostics are 0-indexed
+                  col = 0,
+                  severity = vim.diagnostic.severity.WARN,
+                  message = message,
+                }
+
+                -- Append the new diagnostic to the existing ones
+                table.insert(existing_diagnostics, new_diagnostic)
+              end
+
+              -- Set the updated diagnostics for the current buffer
+              vim.diagnostic.set(namespace_id, left_pane, existing_diagnostics)
+            end,
           },
         },
         -- default selection (visual or line)
         selection = function(source)
-          return visualORBuffer(source)
+          return visual_or_buffer(source)
         end,
       }
       local final_opts = vim.tbl_deep_extend("force", config, user_opts)
@@ -215,7 +267,7 @@ return {
         -- split_threshold = 100,
         -- additional_instruction = "Respond snarkily", -- (GPT-3 will probably deny this request, but GPT-4 complies)
         highlight = {
-          icon = " ", -- ''
+          icon = " ",
           -- group = 'Comment',
         },
       })
