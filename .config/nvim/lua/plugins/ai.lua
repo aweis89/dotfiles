@@ -12,11 +12,32 @@ local function load_requirements()
   copilotTelescope = require("CopilotChat.integrations.telescope")
 end
 
+local function buffer_with_lines(_)
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+  if not lines or #lines == 0 then
+    return nil
+  end
+
+  -- Prepend each line with its line number
+  for i, line in ipairs(lines) do
+    lines[i] = string.format("%d: %s", i, line)
+  end
+
+  return {
+    lines = table.concat(lines, "\n"),
+    start_row = 1,
+    start_col = 1,
+    end_row = #lines,
+    end_col = #lines[#lines],
+  }
+end
+
 -- This function retrieves the content of all buffers in the current Neovim session.
 -- If `skip_current` is true, it will skip the content of the current buffer.
 -- @param skip_current A boolean value indicating whether to skip the current buffer.
 -- @return A string containing the content of all buffers (or all but the current buffer).
-local function get_all_buffers_content(skip_current)
+local function get_content_of_all_buffers(skip_current)
   local buffers = vim.api.nvim_list_bufs()
   local current_buffer = vim.api.nvim_get_current_buf()
   local context = {}
@@ -32,7 +53,7 @@ end
 -- This function selects the visual or buffer source based on the CopilotChat selection.
 -- @param source The source to select from.
 -- @return The selected source.
-local function visual_or_buffer(source)
+local function select_visual_or_buffer(source)
   return copilotSelect.visual(source) or copilotSelect.buffer(source)
 end
 
@@ -41,7 +62,7 @@ end
 -- @param response The response to extract the code block from.
 -- @param lang The language of the code block to match.
 -- @return The matched code block, or nil if no match was found.
-local function last_code_block(response, lang)
+local function get_last_code_block(response, lang)
   if lang then
     return response:match("```" .. lang .. "\n(.-)```[^```]*$")
   else
@@ -62,9 +83,9 @@ return {
     config = function()
       load_requirements()
 
-      local user_mappings = {
+      local user_key_mappings = {
         ["<C-g>"] = function(response)
-          local message = last_code_block(response, "gitcommit")
+          local message = get_last_code_block(response, "gitcommit")
           if message then
             local command = "Git commit -m " .. '"' .. message .. '" | Git push'
             vim.api.nvim_command(command)
@@ -74,7 +95,7 @@ return {
         end,
         ["<C-w>"] = function(response)
           vim.ui.input("Write to file: ", function(input)
-            local message = last_code_block(response)
+            local message = get_last_code_block(response)
             local file, err = io.open(input, "a")
             if file and message then
               file:write(message)
@@ -85,11 +106,11 @@ return {
           end)
         end,
         ["<C-c>"] = function(response) -- copy last code block
-          local message = last_code_block(response)
+          local message = get_last_code_block(response)
           vim.fn.setreg("+", message)
         end,
       }
-      for mapping, val in pairs(user_mappings) do
+      for mapping, val in pairs(user_key_mappings) do
         vim.api.nvim_create_autocmd("BufEnter", {
           pattern = "copilot-*",
           callback = function()
@@ -104,7 +125,7 @@ return {
         })
       end
 
-      local user_opts = {
+      local user_options = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
           close = "q",
@@ -118,21 +139,37 @@ return {
         prompts = {
           Improve = {
             prompt = [[
-COPILOT_IMPROVE You must identify any readability issues in the code snippet.
-Some readability issues to consider:
-- Unclear naming
-- Unclear purpose
-- Redundant or obvious comments
-- Lack of comments
-- Long or complex one liners
-- Too much nesting
-- Long variable names
-- Inconsistent naming and code style.
-- Code repetition
-You may identify additional problems. The user submits a section of code.
-Only list lines with aforementioned issues, in the format line=<num>: <issue and proposed solution>
-Each commentary must fit on a single line]],
-            selection = copilotSelect.buffer,
+/COPILOT_IMPROVE Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
+  Identify any issues related to:
+    - Naming conventions that is unclear, misleading or doesn't follow language conventions.
+    - The presence of unnecessary comments, or the lack of necessary ones.
+    - Overly complex expressions that could benefit from simplification.
+    - High nesting levels that make the code difficult to follow.
+    - The use of excessively long names for variables or functions.
+    - Any inconsistencies in naming, formatting, or overall coding style.
+    - Repetitive code patterns that could be more efficiently handled through abstraction or optimization.
+
+    Your feedback must be concise, directly addressing each identified issue with:
+    - The specific line number(s) where the issue is found.
+    - A clear description of the problem.
+    - A concrete suggestion for how to improve or correct the issue.
+    
+    Format your feedback as follows:
+    "line=<line_number>: <issue_description>
+    
+    If you find multiple issues on the same line, list each issue separately within the same feedback statement, using a semicolon to separate them.
+    Example feedback:
+    
+    line=3: The variable name 'x' is unclear. Comment next to variable declaration is unnecessary.
+    line=8: Expression is overly complex. Break down the expression into simpler components.
+    line=10: Using camel case here is not unconventional for lua. Use snake case instead.
+    
+    If the code snippet has no readability issues, simply confirm that the code is clear and well-written as is.
+  instructions: |
+    - Review the code for readability issues.
+    - Provide concise and actionable feedback.
+    - Use the specified format for all feedback.]],
+            selection = buffer_with_lines,
             callback = function(response)
               -- Namespace ID
               local namespace_id = vim.api.nvim_create_namespace("copilot")
@@ -176,10 +213,10 @@ Each commentary must fit on a single line]],
         },
         -- default selection (visual or line)
         selection = function(source)
-          return visual_or_buffer(source)
+          return select_visual_or_buffer(source)
         end,
       }
-      local final_opts = vim.tbl_deep_extend("force", config, user_opts)
+      local final_opts = vim.tbl_deep_extend("force", config, user_options)
       copilotChat.setup(final_opts)
     end,
     event = "BufEnter",
@@ -219,7 +256,7 @@ Each commentary must fit on a single line]],
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
             copilotChat.ask(input, {
-              context = get_all_buffers_content(),
+              context = get_content_of_all_buffers(),
               selection = copilotSelect.buffer,
             })
           end
@@ -261,14 +298,9 @@ Each commentary must fit on a single line]],
     "james1236/backseat.nvim",
     config = function()
       require("backseat").setup({
-        -- Alternatively, set the env var $OPENAI_API_KEY by putting "export OPENAI_API_KEY=sk-xxxxx" in your ~/.bashrc
-        openai_model_id = "gpt-4", --gpt-4 (If you do not have access to a model, it says "The model does not exist")
-        -- language = 'english', -- Such as 'japanese', 'french', 'pirate', 'LOLCAT'
-        -- split_threshold = 100,
-        -- additional_instruction = "Respond snarkily", -- (GPT-3 will probably deny this request, but GPT-4 complies)
+        openai_model_id = "gpt-4",
         highlight = {
           icon = " ",
-          -- group = 'Comment',
         },
       })
     end,
