@@ -94,8 +94,7 @@ return {
           callback = function()
             vim.api.nvim_buf_set_keymap(0, "n", mapping, "", {
               callback = function()
-                local response = copilotChat.get_last_response()
-                val(response)
+                val(copilotChat.get_last_response())
               end,
               noremap = true,
               silent = true,
