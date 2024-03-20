@@ -20,7 +20,7 @@ end
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    -- dir = "~/dev/CopilotChat.nvim",
+    dir = "~/dev/CopilotChat.nvim",
     branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
@@ -44,6 +44,14 @@ return {
             selection = require("CopilotChat.select").buffer,
           },
         },
+        user_mappings = {
+          ["<C-g>"] = function(response)
+            local message = response:match("```gitcommit\n(.-)```")
+            vim.api.nvim_command("Git add %")
+            local command = "Git commit -m " .. '"' .. message .. '"'
+            vim.api.nvim_command(command)
+          end,
+        },
         -- default selection (visual or line)
         selection = function(source)
           return visualORBuffer(source)
@@ -65,7 +73,7 @@ return {
         end,
       })
 
-      vim.api.nvim_del_user_command("CopilotChatCommit")
+      -- vim.api.nvim_del_user_command("CopilotChatCommit")
       vim.api.nvim_create_user_command("CopilotCommitStaged", function()
         local prompt = "Write commit message for the change with commitizen convention. "
           .. "Make sure the title has maximum 50 characters and message is wrapped "
@@ -86,8 +94,7 @@ return {
               vim.ui.input({ prompt = "Commit these changes? (y/n): " }, function(input)
                 if input:lower() == "y" then
                   local command = "Git commit -m " .. '"' .. message .. '"'
-                  vim.notify(command, 2, { title = "CopilotChat" })
-                  vim.api.nvim_command("Git commit -m " .. '"' .. message .. '"')
+                  vim.api.nvim_command(command)
                 end
               end)
             else
