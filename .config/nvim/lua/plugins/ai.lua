@@ -1,3 +1,15 @@
+local copilotChat
+local actions
+local copilotSelect
+local config
+
+local function load_requirements()
+  copilotSelect = require("CopilotChat.select")
+  actions = require("CopilotChat.actions")
+  copilotChat = require("CopilotChat")
+  config = require("CopilotChat.config")
+end
+
 -- This function retrieves the content of all buffers in the current Neovim session.
 -- If `skip_current` is true, it will skip the content of the current buffer.
 -- @param skip_current A boolean value indicating whether to skip the current buffer.
@@ -19,7 +31,6 @@ end
 -- @param source The source to select from.
 -- @return The selected source.
 local function visualORBuffer(source)
-  local copilotSelect = require("CopilotChat.select")
   return copilotSelect.visual(source) or copilotSelect.buffer(source)
 end
 
@@ -47,6 +58,8 @@ return {
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     config = function()
+      load_requirements()
+
       local user_mappings = {
         ["<C-g>"] = function(response)
           local message = last_code_block(response, "gitcommit")
@@ -81,7 +94,7 @@ return {
           callback = function()
             vim.api.nvim_buf_set_keymap(0, "n", mapping, "", {
               callback = function()
-                local response = require("CopilotChat").get_last_response()
+                local response = copilotChat.get_last_response()
                 val(response)
               end,
               noremap = true,
@@ -91,7 +104,6 @@ return {
         })
       end
 
-      local default_opts = require("CopilotChat.config")
       local user_opts = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
@@ -105,7 +117,7 @@ return {
         prompts = {
           Improve = {
             prompt = "/COPILOT_IMPROVE can this be improved?",
-            selection = require("CopilotChat.select").buffer,
+            selection = copilotSelect.buffer,
           },
         },
         -- default selection (visual or line)
@@ -113,8 +125,8 @@ return {
           return visualORBuffer(source)
         end,
       }
-      local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
-      require("CopilotChat").setup(final_opts)
+      local final_opts = vim.tbl_deep_extend("force", config, user_opts)
+      copilotChat.setup(final_opts)
     end,
     event = "BufEnter",
     keys = {
@@ -122,7 +134,6 @@ return {
       {
         "<leader>ch",
         function()
-          local actions = require("CopilotChat.actions")
           require("CopilotChat.integrations.telescope").pick(actions.help_actions())
         end,
         desc = "CopilotChat - Help actions",
@@ -132,7 +143,6 @@ return {
       {
         "<leader>cp",
         function()
-          local actions = require("CopilotChat.actions")
           require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
         end,
         desc = "CopilotChat - Prompt actions",
@@ -143,7 +153,7 @@ return {
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
-            require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
+            copilotChat.ask(input, { selection = copilotSelect.buffer })
           end
         end,
         desc = "CopilotChat - Quick chat",
@@ -154,9 +164,9 @@ return {
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
-            require("CopilotChat").ask(input, {
+            copilotChat.ask(input, {
               context = get_all_buffers_content(),
-              selection = require("CopilotChat.select").buffer,
+              selection = copilotSelect.buffer,
             })
           end
         end,
