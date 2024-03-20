@@ -47,7 +47,6 @@ return {
         user_mappings = {
           ["<C-g>"] = function(response)
             local message = response:match("```gitcommit\n(.-)```")
-            vim.api.nvim_command("Git add %")
             local command = "Git commit -m " .. '"' .. message .. '"'
             vim.api.nvim_command(command)
           end,
@@ -74,35 +73,35 @@ return {
       })
 
       -- vim.api.nvim_del_user_command("CopilotChatCommit")
-      vim.api.nvim_create_user_command("CopilotCommitStaged", function()
-        local prompt = "Write commit message for the change with commitizen convention. "
-          .. "Make sure the title has maximum 50 characters and message is wrapped "
-          .. "at 72 characters. Wrap the whole message in code block with language gitcommit. "
-          .. "Include the diff in the output with it's own code block with language gitdiff."
-        if not prompt then
-          print("No commit prompt found.")
-          return
-        end
-        vim.api.nvim_command("Git add %")
-        require("CopilotChat").ask(prompt, {
-          selection = function(source)
-            return require("CopilotChat.select").gitdiff(source, true)
-          end,
-          callback = function(res)
-            local message = res:match("```gitcommit\n(.-)```")
-            if message then
-              vim.ui.input({ prompt = "Commit these changes? (y/n): " }, function(input)
-                if input:lower() == "y" then
-                  local command = "Git commit -m " .. '"' .. message .. '"'
-                  vim.api.nvim_command(command)
-                end
-              end)
-            else
-              print("No commit message found.")
-            end
-          end,
-        })
-      end, {})
+      -- vim.api.nvim_create_user_command("CopilotCommitStaged", function()
+      --   local prompt = "Write commit message for the change with commitizen convention. "
+      --     .. "Make sure the title has maximum 50 characters and message is wrapped "
+      --     .. "at 72 characters. Wrap the whole message in code block with language gitcommit. "
+      --     .. "Include the diff in the output with it's own code block with language gitdiff."
+      --   if not prompt then
+      --     print("No commit prompt found.")
+      --     return
+      --   end
+      --   vim.api.nvim_command("Git add %")
+      --   require("CopilotChat").ask(prompt, {
+      --     selection = function(source)
+      --       return require("CopilotChat.select").gitdiff(source, true)
+      --     end,
+      --     callback = function(res)
+      --       local message = res:match("```gitcommit\n(.-)```")
+      --       if message then
+      --         vim.ui.input({ prompt = "Commit these changes? (y/n): " }, function(input)
+      --           if input:lower() == "y" then
+      --             local command = "Git commit -m " .. '"' .. message .. '"'
+      --             vim.api.nvim_command(command)
+      --           end
+      --         end)
+      --       else
+      --         print("No commit message found.")
+      --       end
+      --     end,
+      --   })
+      -- end, {})
 
       vim.api.nvim_create_user_command("CopilotAddTests", function()
         local prompt = require("CopilotChat.config").prompts.Tests.prompt
@@ -192,7 +191,10 @@ return {
       },
       {
         "<leader>cg",
-        "<cmd>CopilotCommitStaged<cr>",
+        function()
+          vim.api.nvim_command("Git add %")
+          vim.api.nvim_command("CopilotChatCommitStaged")
+        end,
         desc = "CopilotChat - Commit",
         remap = true,
       },
