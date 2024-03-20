@@ -56,7 +56,7 @@ return {
           ["<C-g>"] = function(response)
             local message = last_code_block(response, "gitcommit")
             if message then
-              local command = "Git commit -m " .. '"' .. message .. '"'
+              local command = "Git commit -m " .. '"' .. message .. '" | Git push'
               vim.api.nvim_command(command)
             else
               print("No git commit message found in response.")
