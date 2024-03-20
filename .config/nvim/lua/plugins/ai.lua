@@ -66,7 +66,7 @@ return {
               end
             end)
           end,
-          ["<C-Y>"] = function(_) -- copy last code block
+          ["<C-c>"] = function(_) -- copy last code block
             vim.api.nvim_feedkeys("?```<cr>nwdwjyi`u3<C-o><C-h>", "n", false)
           end,
         },
