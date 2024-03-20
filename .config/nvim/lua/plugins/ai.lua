@@ -141,7 +141,9 @@ return {
             prompt = [[
 /COPILOT_IMPROVE Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
   Identify any issues related to:
-    - Naming conventions that is unclear, misleading or doesn't follow language conventions.
+    - Naming conventions that is unclear, misleading or doesn't follow conventions in ]]
+              .. vim.bo.filetype
+              .. [[.
     - The presence of unnecessary comments, or the lack of necessary ones.
     - Overly complex expressions that could benefit from simplification.
     - High nesting levels that make the code difficult to follow.
@@ -162,7 +164,7 @@ return {
     
     line=3: The variable name 'x' is unclear. Comment next to variable declaration is unnecessary.
     line=8: Expression is overly complex. Break down the expression into simpler components.
-    line=10: Using camel case here is not unconventional for lua. Use snake case instead.
+    line=10: Using camel case here is unconventional for lua. Use snake case instead.
     
     If the code snippet has no readability issues, simply confirm that the code is clear and well-written as is.
   instructions: |
@@ -173,27 +175,20 @@ return {
             callback = function(response)
               -- Namespace ID
               local namespace_id = vim.api.nvim_create_namespace("copilot")
-
               -- Get the current tabpage
               local tabpage = vim.api.nvim_get_current_tabpage()
-
               -- Get the list of windows in the current tabpage
               local windows = vim.api.nvim_tabpage_list_wins(tabpage)
-
               -- Assuming the leftmost window is what you're looking for
               local leftmost_win = windows[1]
-
               -- Get the buffer associated with the leftmost window
               local left_pane = vim.api.nvim_win_get_buf(leftmost_win)
-
               -- Retrieve current diagnostics for the buffer
               local existing_diagnostics = vim.diagnostic.get(left_pane, { namespace = namespace_id })
-
               -- Split the input into lines
               for line in response:gmatch("[^\r\n]+") do
                 -- Extract the line number and message from the input
                 local lnum, message = line:match("line=(%d+): (.*)")
-
                 -- Create a new diagnostic
                 local new_diagnostic = {
                   lnum = tonumber(lnum) - 1, -- Lua is 1-indexed, but Neovim's diagnostics are 0-indexed
@@ -201,11 +196,9 @@ return {
                   severity = vim.diagnostic.severity.WARN,
                   message = message,
                 }
-
                 -- Append the new diagnostic to the existing ones
                 table.insert(existing_diagnostics, new_diagnostic)
               end
-
               -- Set the updated diagnostics for the current buffer
               vim.diagnostic.set(namespace_id, left_pane, existing_diagnostics)
             end,
