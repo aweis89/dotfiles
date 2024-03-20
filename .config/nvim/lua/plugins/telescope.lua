@@ -30,16 +30,9 @@ return {
         mappings = {
           i = {
             ["C-c"] = actions.close,
-            ["<c-t>"] = actions.open_with_trouble,
-            ["<a-t>"] = actions.open_selected_with_trouble,
-            ["<a-i>"] = actions.find_files_no_ignore,
-            ["<a-h>"] = actions.find_files_with_hidden,
-            ["<C-Down>"] = actions.cycle_history_next,
-            ["<C-Up>"] = actions.cycle_history_prev,
             ["<C-u>"] = actions.preview_scrolling_down,
             ["<C-d>"] = actions.preview_scrolling_up,
-            -- Custom mapping in insert mode
-            ["<C-a>"] = function(prompt_bufnr)
+            ["<C-a>"] = function(_)
               local selection = require("telescope.actions.state").get_selected_entry()
               local file_path = selection.value
               -- Git add command
