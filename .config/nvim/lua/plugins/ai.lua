@@ -16,6 +16,14 @@ local function visualORBuffer(source)
   return copilotSelect.visual(source) or copilotSelect.buffer(source)
 end
 
+local function last_code_block(response, lang)
+  if lang then
+    return response:match("```" .. lang .. "\n(.-)```[^```]*$")
+  else
+    return response:match("```.-\n(.-)```[^```]*$")
+  end
+end
+
 -- lazy.nvim
 return {
   {
@@ -46,7 +54,7 @@ return {
         },
         user_mappings = {
           ["<C-g>"] = function(response)
-            local message = response:match("```gitcommit\n(.-)```")
+            local message = last_code_block(response, "gitcommit")
             if message then
               local command = "Git commit -m " .. '"' .. message .. '"'
               vim.api.nvim_command(command)
@@ -56,7 +64,7 @@ return {
           end,
           ["<C-w>"] = function(response)
             vim.ui.input("Write to file: ", function(input)
-              local message = response:match("```.-\n(.-)```")
+              local message = last_code_block(response)
               local file, err = io.open(input, "a")
               if file and message then
                 file:write(message)
@@ -66,8 +74,9 @@ return {
               end
             end)
           end,
-          ["<C-c>"] = function(_) -- copy last code block
-            vim.api.nvim_feedkeys("?```<cr>nwdwjyi`u3<C-o><C-h>", "n", false)
+          ["<C-c>"] = function(response) -- copy last code block
+            local message = last_code_block(response)
+            vim.fn.setreg("+", message)
           end,
         },
         -- default selection (visual or line)
