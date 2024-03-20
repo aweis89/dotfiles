@@ -1,15 +1,9 @@
-local copilotChat
-local actions
-local copilotSelect
-local config
-local copilotTelescope
-
 local function load_requirements()
-  copilotSelect = require("CopilotChat.select")
-  actions = require("CopilotChat.actions")
-  copilotChat = require("CopilotChat")
-  config = require("CopilotChat.config")
-  copilotTelescope = require("CopilotChat.integrations.telescope")
+  CopilotSelect = require("CopilotChat.select")
+  CopilotActions = require("CopilotChat.actions")
+  CopilotChat = require("CopilotChat")
+  CopilotConfig = require("CopilotChat.config")
+  CopilotTelescope = require("CopilotChat.integrations.telescope")
 end
 
 local function buffer_with_lines(_)
@@ -54,7 +48,7 @@ end
 -- @param source The source to select from.
 -- @return The selected source.
 local function select_visual_or_buffer(source)
-  return copilotSelect.visual(source) or copilotSelect.buffer(source)
+  return CopilotSelect.visual(source) or CopilotSelect.buffer(source)
 end
 
 -- This function retrieves the last code block from the given response.
@@ -116,7 +110,7 @@ return {
           callback = function()
             vim.api.nvim_buf_set_keymap(0, "n", mapping, "", {
               callback = function()
-                val(copilotChat.response())
+                val(CopilotChat.response())
               end,
               noremap = true,
               silent = true,
@@ -209,8 +203,8 @@ return {
           return select_visual_or_buffer(source)
         end,
       }
-      local final_opts = vim.tbl_deep_extend("force", config, user_options)
-      copilotChat.setup(final_opts)
+      local final_opts = vim.tbl_deep_extend("force", CopilotConfig, user_options)
+      CopilotChat.setup(final_opts)
     end,
     event = "BufEnter",
     keys = {
@@ -218,7 +212,7 @@ return {
       {
         "<leader>ch",
         function()
-          copilotTelescope.pick(actions.help_actions())
+          CopilotTelescope.pick(CopilotActions.help_actions())
         end,
         desc = "CopilotChat - Help actions",
         remap = true,
@@ -226,7 +220,7 @@ return {
       {
         "<leader>cp",
         function()
-          copilotTelescope.pick(actions.prompt_actions())
+          CopilotTelescope.pick(CopilotActions.prompt_actions())
         end,
         desc = "CopilotChat - Prompt actions",
         remap = true,
@@ -237,7 +231,7 @@ return {
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
-            copilotChat.ask(input, { selection = copilotSelect.buffer })
+            CopilotChat.ask(input, { selection = CopilotSelect.buffer })
           end
         end,
         desc = "CopilotChat - Quick chat",
@@ -248,9 +242,9 @@ return {
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
-            copilotChat.ask(input, {
+            CopilotChat.ask(input, {
               context = get_content_of_all_buffers(),
-              selection = copilotSelect.buffer,
+              selection = CopilotSelect.buffer,
             })
           end
         end,
