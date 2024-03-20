@@ -27,6 +27,31 @@ return {
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     config = function()
+      local default_opts = require("CopilotChat.config")
+      local user_opts = {
+        context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
+        mappings = {
+          close = "q",
+          reset = "<C-l>",
+          complete = "<C-g>",
+          submit_prompt = "<C-s>",
+          accept_diff = "<C-y>",
+          show_diff = "<C-d>",
+        },
+        prompts = {
+          Improve = {
+            prompt = "/COPILOT_IMPROVE can this be improved?",
+            selection = require("CopilotChat.select").buffer,
+          },
+        },
+        -- default selection (visual or line)
+        selection = function(source)
+          return visualORBuffer(source)
+        end,
+      }
+      local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
+      require("CopilotChat").setup(final_opts)
+
       vim.api.nvim_create_autocmd("BufEnter", {
         pattern = "copilot-*",
         callback = function()
@@ -40,6 +65,7 @@ return {
         end,
       })
 
+      vim.api.nvim_del_user_command("CopilotChatCommit")
       vim.api.nvim_create_user_command("CopilotCommitStaged", function()
         local prompt = "Write commit message for the change with commitizen convention. "
           .. "Make sure the title has maximum 50 characters and message is wrapped "
@@ -49,6 +75,7 @@ return {
           print("No commit prompt found.")
           return
         end
+        vim.api.nvim_command("Git add %")
         require("CopilotChat").ask(prompt, {
           selection = function(source)
             return require("CopilotChat.select").gitdiff(source, true)
@@ -95,31 +122,6 @@ return {
         })
         vim.cmd("messages")
       end, {})
-
-      local default_opts = require("CopilotChat.config")
-      local user_opts = {
-        context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
-        mappings = {
-          close = "q",
-          reset = "<C-l>",
-          complete = "<C-g>",
-          submit_prompt = "<C-s>",
-          accept_diff = "<C-y>",
-          show_diff = "<C-d>",
-        },
-        prompts = {
-          Improve = {
-            prompt = "/COPILOT_IMPROVE can this be improved?",
-            selection = require("CopilotChat.select").buffer,
-          },
-        },
-        -- default selection (visual or line)
-        selection = function(source)
-          return visualORBuffer(source)
-        end,
-      }
-      local final_opts = vim.tbl_deep_extend("force", default_opts, user_opts)
-      require("CopilotChat").setup(final_opts)
     end,
     event = "BufEnter",
     keys = {
