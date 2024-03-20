@@ -2,12 +2,14 @@ local copilotChat
 local actions
 local copilotSelect
 local config
+local copilotTelescope
 
 local function load_requirements()
   copilotSelect = require("CopilotChat.select")
   actions = require("CopilotChat.actions")
   copilotChat = require("CopilotChat")
   config = require("CopilotChat.config")
+  copilotTelescope = require("CopilotChat.integrations.telescope")
 end
 
 -- This function retrieves the content of all buffers in the current Neovim session.
@@ -113,6 +115,7 @@ return {
           accept_diff = "<C-y>",
           show_diff = "<C-d>",
         },
+        auto_insert_mode = true,
         prompts = {
           Improve = {
             prompt = "/COPILOT_IMPROVE can this be improved?",
@@ -133,20 +136,20 @@ return {
       {
         "<leader>ch",
         function()
-          require("CopilotChat.integrations.telescope").pick(actions.help_actions())
+          copilotTelescope.pick(actions.help_actions())
         end,
         desc = "CopilotChat - Help actions",
         remap = true,
       },
-      -- Show prompts actions with telescope
       {
         "<leader>cp",
         function()
-          require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+          copilotTelescope.pick(actions.prompt_actions())
         end,
         desc = "CopilotChat - Prompt actions",
         remap = true,
       },
+
       {
         "<leader>cb",
         function()
