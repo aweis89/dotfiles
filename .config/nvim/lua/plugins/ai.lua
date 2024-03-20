@@ -56,7 +56,7 @@ return {
           end,
           ["<C-w>"] = function(response)
             vim.ui.input("Write to file: ", function(input)
-              local message = response:match(".*(```.-```)")
+              local message = response:match("```.-\n(.-)```")
               local file, err = io.open(input, "a")
               if file and message then
                 file:write(message)
