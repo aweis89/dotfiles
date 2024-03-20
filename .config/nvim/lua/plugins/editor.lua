@@ -36,7 +36,7 @@ return {
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
   { "akinsho/bufferline.nvim", enabled = false },
-  { "rcarriga/nvim-notify", enabled = false },
+  { "rcarriga/nvim-notify", enabled = true },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   { "echasnovski/mini.surround", version = "*" },
   {
