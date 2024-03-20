@@ -47,6 +47,50 @@ return {
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     config = function()
+      local user_mappings = {
+        ["<C-g>"] = function(response)
+          local message = last_code_block(response, "gitcommit")
+          if message then
+            local command = "Git commit -m " .. '"' .. message .. '" | Git push'
+            vim.notify("Running: " .. command)
+            vim.api.nvim_command(command)
+          else
+            print("No git commit message found in response.")
+          end
+        end,
+        ["<C-w>"] = function(response)
+          vim.ui.input("Write to file: ", function(input)
+            local message = last_code_block(response)
+            local file, err = io.open(input, "a")
+            if file and message then
+              file:write(message)
+              file:close()
+            else
+              print("Failed to write to file: " .. err)
+            end
+          end)
+        end,
+        ["<C-c>"] = function(response) -- copy last code block
+          local message = last_code_block(response)
+          vim.fn.setreg("+", message)
+        end,
+      }
+      for mapping, val in pairs(user_mappings) do
+        vim.api.nvim_create_autocmd("BufEnter", {
+          pattern = "copilot-*",
+          callback = function()
+            vim.api.nvim_buf_set_keymap(0, "n", mapping, "", {
+              callback = function()
+                local response = require("CopilotChat").get_last_response()
+                val(response)
+              end,
+              noremap = true,
+              silent = true,
+            })
+          end,
+        })
+      end
+
       local default_opts = require("CopilotChat.config")
       local user_opts = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
@@ -63,34 +107,6 @@ return {
             prompt = "/COPILOT_IMPROVE can this be improved?",
             selection = require("CopilotChat.select").buffer,
           },
-        },
-        user_mappings = {
-          ["<C-g>"] = function(response)
-            local message = last_code_block(response, "gitcommit")
-            if message then
-              local command = "Git commit -m " .. '"' .. message .. '" | Git push'
-              vim.notify("Running: " .. command)
-              vim.api.nvim_command(command)
-            else
-              print("No git commit message found in response.")
-            end
-          end,
-          ["<C-w>"] = function(response)
-            vim.ui.input("Write to file: ", function(input)
-              local message = last_code_block(response)
-              local file, err = io.open(input, "a")
-              if file and message then
-                file:write(message)
-                file:close()
-              else
-                print("Failed to write to file: " .. err)
-              end
-            end)
-          end,
-          ["<C-c>"] = function(response) -- copy last code block
-            local message = last_code_block(response)
-            vim.fn.setreg("+", message)
-          end,
         },
         -- default selection (visual or line)
         selection = function(source)
