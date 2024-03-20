@@ -1,3 +1,7 @@
+-- This function retrieves the content of all buffers in the current Neovim session.
+-- If `skip_current` is true, it will skip the content of the current buffer.
+-- @param skip_current A boolean value indicating whether to skip the current buffer.
+-- @return A string containing the content of all buffers (or all but the current buffer).
 local function get_all_buffers_content(skip_current)
   local buffers = vim.api.nvim_list_bufs()
   local current_buffer = vim.api.nvim_get_current_buf()
@@ -11,11 +15,19 @@ local function get_all_buffers_content(skip_current)
   return table.concat(context, "\n")
 end
 
+-- This function selects the visual or buffer source based on the CopilotChat selection.
+-- @param source The source to select from.
+-- @return The selected source.
 local function visualORBuffer(source)
   local copilotSelect = require("CopilotChat.select")
   return copilotSelect.visual(source) or copilotSelect.buffer(source)
 end
 
+-- This function retrieves the last code block from the given response.
+-- If `lang` is provided, it will match the last code block of that language.
+-- @param response The response to extract the code block from.
+-- @param lang The language of the code block to match.
+-- @return The matched code block, or nil if no match was found.
 local function last_code_block(response, lang)
   if lang then
     return response:match("```" .. lang .. "\n(.-)```[^```]*$")
@@ -57,6 +69,7 @@ return {
             local message = last_code_block(response, "gitcommit")
             if message then
               local command = "Git commit -m " .. '"' .. message .. '" | Git push'
+              vim.notify("Running: " .. command)
               vim.api.nvim_command(command)
             else
               print("No git commit message found in response.")

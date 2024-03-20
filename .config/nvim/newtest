@@ -1,0 +1,7 @@
+feat(ai.lua): add last_code_block function
+
+This commit introduces a new function called last_code_block. This
+function is used to extract the last code block from a response. It
+replaces the previous method of extracting code blocks using match
+function directly in the user_mappings. This makes the code cleaner
+and more maintainable.
