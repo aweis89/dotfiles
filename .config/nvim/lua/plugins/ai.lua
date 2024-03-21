@@ -177,38 +177,26 @@ return {
     - Use the specified format for all feedback.]],
             selection = buffer_with_lines,
             callback = function(response)
-              -- Namespace ID
               local namespace_id = vim.api.nvim_create_namespace("copilot")
-              -- Get the current tabpage
               local tabpage = vim.api.nvim_get_current_tabpage()
-              -- Get the list of windows in the current tabpage
               local windows = vim.api.nvim_tabpage_list_wins(tabpage)
-              -- Assuming the leftmost window is what you're looking for
               local leftmost_win = windows[1]
-              -- Get the buffer associated with the leftmost window
               local left_pane = vim.api.nvim_win_get_buf(leftmost_win)
-              -- Retrieve current diagnostics for the buffer
               local existing_diagnostics = vim.diagnostic.get(left_pane, { namespace = namespace_id })
-              -- Split the input into lines
               for line in response:gmatch("[^\r\n]+") do
-                -- Extract the line number and message from the input
                 local lnum, message = line:match("line=(%d+): (.*)")
-                -- Create a new diagnostic
                 local new_diagnostic = {
-                  lnum = tonumber(lnum) - 1, -- Lua is 1-indexed, but Neovim's diagnostics are 0-indexed
+                  lnum = tonumber(lnum) - 1,
                   col = 0,
                   severity = vim.diagnostic.severity.WARN,
                   message = message,
                 }
-                -- Append the new diagnostic to the existing ones
                 table.insert(existing_diagnostics, new_diagnostic)
               end
-              -- Set the updated diagnostics for the current buffer
               vim.diagnostic.set(namespace_id, left_pane, existing_diagnostics)
             end,
           },
         },
-        -- default selection (visual or line)
         selection = function(source)
           return select_visual_or_buffer(source)
         end,
@@ -218,7 +206,6 @@ return {
     end,
     event = "BufEnter",
     keys = {
-      -- Telescope shortcuts
       {
         "<leader>ch",
         function()
