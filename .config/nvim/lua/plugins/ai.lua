@@ -125,7 +125,7 @@ return {
       local user_options = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
-          complete = "<C-C>",
+          complete = "<tab>",
 
           show_diff = "<C-d>",
           close = "q",
