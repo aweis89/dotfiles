@@ -267,8 +267,7 @@ return {
       {
         "<leader>cg",
         function()
-          vim.api.nvim_command("Git add %")
-          vim.api.nvim_command("CopilotChatCommitStaged")
+          vim.api.nvim_command("Git add % | CopilotChatCommitStaged")
         end,
         desc = "CopilotChat - Commit",
         remap = true,
