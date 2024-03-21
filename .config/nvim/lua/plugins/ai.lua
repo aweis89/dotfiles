@@ -68,7 +68,7 @@ end
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    dir = "~/dev/CopilotChat.nvim",
+    -- dir = "~/dev/CopilotChat.nvim",
     branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
@@ -143,7 +143,7 @@ return {
         prompts = {
           Improve = {
             prompt = [[
-/COPILOT_IMPROVE Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
+/COPILOT_REVIEW Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
   Identify any issues related to:
     - Naming conventions that is unclear, misleading or doesn't follow conventions in ]]
               .. vim.bo.filetype
