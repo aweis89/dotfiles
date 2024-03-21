@@ -99,7 +99,7 @@ return {
             end
           end)
         end,
-        ["<C-c>"] = function(response) -- copy last code block
+        ["<C-y>"] = function(response) -- copy last code block
           local message = get_last_code_block(response)
           vim.fn.setreg("+", message)
         end,
@@ -108,13 +108,16 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
           pattern = "copilot-*",
           callback = function()
-            vim.api.nvim_buf_set_keymap(0, "n", mapping, "", {
-              callback = function()
-                val(CopilotChat.response())
-              end,
-              noremap = true,
-              silent = true,
-            })
+            local modes = { "n", "i" }
+            for _, mode in ipairs(modes) do
+              vim.api.nvim_buf_set_keymap(0, mode, mapping, "", {
+                callback = function()
+                  val(CopilotChat.response())
+                end,
+                noremap = true,
+                silent = true,
+              })
+            end
           end,
         })
       end
@@ -128,7 +131,7 @@ return {
           close = "q",
           reset = "<C-l>",
           submit_prompt = "<C-s>",
-          accept_diff = "<C-y>",
+          accept_diff = "<C-a>",
 
           -- show_diff = { "<C-d>", "<C-d>" },
           -- close = { "q", "<C-q>" },
