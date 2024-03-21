@@ -122,12 +122,19 @@ return {
       local user_options = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
-          -- complete = "<C-g>",
-          show_diff = {"<C-d>","<C-d>"}
-          close = { "q", "<C-q>" },
-          reset = { "<C-l>", "<C-l>" },
-          submit_prompt = { "<C-s>", "<C-s>" },
-          accept_diff = { "<C-y>", "<C-y>" },
+          complete = "<C-C>",
+
+          show_diff = "<C-d>",
+          close = "q",
+          reset = "<C-l>",
+          submit_prompt = "<C-s>",
+          accept_diff = "<C-y>",
+
+          -- show_diff = { "<C-d>", "<C-d>" },
+          -- close = { "q", "<C-q>" },
+          -- reset = { "<C-l>", "<C-l>" },
+          -- submit_prompt = { "<C-s>", "<C-s>" },
+          -- accept_diff = { "<C-y>", "<C-y>" },
         },
         auto_insert_mode = true,
         prompts = {
