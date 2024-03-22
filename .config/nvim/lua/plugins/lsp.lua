@@ -26,9 +26,9 @@ return {
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
-      opts.sources = cmp.config.sources({
-        { name = "nvim_lsp", group_index = 2 },
-        { name = "nvim_lsp_signature_help", group_index = 2 },
+      vim.list_extend(opts.sources, {
+        { name = "nvim_lsp", group_index = 1 },
+        { name = "nvim_lsp_signature_help", group_index = 1 },
         { name = "copilot", group_index = 2 },
         { name = "path", group_index = 2 },
         { name = "luasnip", group_index = 2 },
@@ -46,29 +46,6 @@ return {
       }
       opts.preselect = "None"
 
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.abort(),
-        ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-      })
-
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          { name = "cmdline" },
-        }),
-      })
-
       local has_words_before = function()
         unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -76,12 +53,19 @@ return {
       end
 
       local luasnip = require("luasnip")
+
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
+            -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
             cmp.select_next_item()
-            -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-            -- this way you will only jump inside the snippet region
+          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+          -- this way you will only jump inside the snippet region
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
           elseif has_words_before() then
@@ -100,15 +84,30 @@ return {
           end
         end, { "i", "s" }),
       })
+
+      cmp.setup.cmdline("/", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          { name = "cmdline" },
+        }),
+      })
     end,
   },
 
   {
     "neovim/nvim-lspconfig",
     ---@class PluginLspOpts
-    opts = {
-      ---@type lspconfig.options
-      servers = {
+    opts = function(_, opts)
+      local servers = {
+        -- Enable the following language servers
         taplo = {},
         cmake = {},
         jsonls = {},
@@ -170,58 +169,11 @@ return {
             },
           },
         },
-        tflint = {},
-        terraformls = {},
-        pyright = {},
-        rust_analyzer = {
-          settings = {
-            ["rust-analyzer"] = {
-              inlayHints = {
-                enable = true,
-              },
-              imports = {
-                granularity = {
-                  group = "module",
-                },
-                prefix = "self",
-              },
-              -- cargo = {
-              --   buildScripts = {
-              --     enable = true,
-              --   },
-              -- },
-              procMacro = {
-                enable = true,
-              },
-            },
-          },
-        },
         kotlin_language_server = {},
-        lua_ls = {
-          settings = {
-            Lua = {
-              runtime = {
-                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = "LuaJIT",
-              },
-              diagnostics = {
-                -- Get the language server to recognize the `vim` global
-                globals = { "vim", "hs" },
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
-              },
-              -- Do not send telemetry data containing a randomized but unique identifier
-              telemetry = {
-                enable = false,
-              },
-            },
-          },
-        },
         tsserver = {},
         -- helm_ls = {},
-      },
-    },
+      }
+      opts.servers = vim.tbl_extend("force", opts.servers, servers)
+    end,
   },
 }
