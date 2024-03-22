@@ -68,8 +68,9 @@ end
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    -- dir = "~/dev/CopilotChat.nvim",
-    branch = "canary",
+    dir = "~/dev/CopilotChat.nvim",
+    -- branch = "canary",
+
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
@@ -81,7 +82,7 @@ return {
         ["<C-g>"] = function(response)
           local message = get_last_code_block(response, "gitcommit")
           if message then
-            local command = "Git commit -m " .. '"' .. message .. '" | Git push'
+            local command = string.format("Git commit -m '%s' | Git push", message)
             vim.api.nvim_command(command)
           else
             print("No git commit message found in response.")
@@ -125,21 +126,38 @@ return {
       local user_options = {
         context = "buffer", -- Context to use, 'buffers', 'buffer' or 'manual'
         mappings = {
-          complete = "<tab>",
-
-          show_diff = "<C-d>",
-          close = "q",
-          reset = "<C-l>",
-          submit_prompt = "<C-s>",
-          accept_diff = "<C-a>",
-
-          -- show_diff = { "<C-d>", "<C-d>" },
-          -- close = { "q", "<C-q>" },
-          -- reset = { "<C-l>", "<C-l>" },
-          -- submit_prompt = { "<C-s>", "<C-s>" },
-          -- accept_diff = { "<C-y>", "<C-y>" },
+          complete = {
+            detail = "Use @<Tab> or /<Tab> for options.",
+            insert = "<Tab>",
+          },
+          close = {
+            normal = "<C-c>",
+            insert = "<C-c>",
+          },
+          reset = {
+            normal = "<C-l>",
+            insert = "<C-l>",
+          },
+          submit_prompt = {
+            normal = "<C-s>",
+            insert = "<C-s>",
+          },
+          accept_diff = {
+            normal = "<C-a>",
+            insert = "<C-a>",
+          },
+          show_diff = {
+            normal = "<C-d>",
+            insert = "<C-d>",
+          },
+          show_system_prompt = {
+            normal = "gp",
+          },
+          show_user_selection = {
+            normal = "gs",
+          },
         },
-        auto_insert_mode = true,
+        auto_insert_mode = false,
         prompts = {
           Improve = {
             prompt = [[
@@ -176,19 +194,16 @@ return {
     - Provide concise and actionable feedback.
     - Use the specified format for all feedback.]],
             selection = buffer_with_lines,
-            callback = function(response)
+            callback = function(response, source)
               local namespace_id = vim.api.nvim_create_namespace("copilot")
-              local tabpage = vim.api.nvim_get_current_tabpage()
-              local windows = vim.api.nvim_tabpage_list_wins(tabpage)
-              local leftmost_win = windows[1]
-              local left_pane = vim.api.nvim_win_get_buf(leftmost_win)
+              local left_pane = vim.api.nvim_win_get_buf(source.winnr)
               local existing_diagnostics = vim.diagnostic.get(left_pane, { namespace = namespace_id })
               for line in response:gmatch("[^\r\n]+") do
                 local lnum, message = line:match("line=(%d+): (.*)")
                 local new_diagnostic = {
                   lnum = tonumber(lnum) - 1,
                   col = 0,
-                  severity = vim.diagnostic.severity.WARN,
+                  severity = vim.diagnostic.severity.INFO,
                   message = message,
                 }
                 table.insert(existing_diagnostics, new_diagnostic)
