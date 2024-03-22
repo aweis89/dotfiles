@@ -113,6 +113,11 @@ return {
         end,
         desc = "Commands",
       },
+      {
+        "<leader>fgs",
+        "<cmd>Telescope git_signs<cr>",
+        desc = "Commands",
+      },
     },
   },
 }
