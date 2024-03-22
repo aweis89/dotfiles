@@ -40,15 +40,6 @@ return {
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   { "echasnovski/mini.surround", version = "*" },
   {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-neotest/nvim-nio",
-      "nvim-lua/plenary.nvim",
-      "antoinemadec/FixCursorHold.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-  },
-  {
     "alexghergh/nvim-tmux-navigation",
     config = function()
       local nvim_tmux_nav = require("nvim-tmux-navigation")
@@ -72,71 +63,24 @@ return {
       -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
     },
   },
-
-  {
-    "L3MON4D3/LuaSnip",
-    -- follow latest release.
-    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-    -- install jsregexp (optional!).
-    build = "make install_jsregexp",
-  },
-
-  {
-    "nvim-telescope/telescope.nvim",
-    optional = true,
-    opts = function(_, opts)
-      local function flash(prompt_bufnr)
-        require("flash").jump({
-          pattern = "^",
-          label = { after = { 0, 0 } },
-          modes = {
-            search = {
-              -- disable for regular search behavior (including not auto exiting)
-              enabled = false,
-              -- mode = "search",
-              -- exclude = {
-              --   function(win)
-              --     return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
-              --   end,
-              -- },
-            },
-          },
-          action = function(match)
-            local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-            picker:set_selection(match.pos[1] - 1)
-          end,
-        })
-      end
-      opts.defaults = vim.tbl_deep_extend("force", opts.defaults or {}, {
-        mappings = {
-          n = { s = flash },
-          i = { ["<c-s>"] = flash },
-        },
-      })
-    end,
-  },
-
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    opts = function()
-      return {
-        options = {
-          theme = "auto",
-          section_separators = { left = "", right = "" },
-          component_separators = { left = "", right = "" },
-        },
-      }
+    opts = function(_, opts)
+      opts.options = vim.tbl_deep_extend("force", opts.options, {
+        theme = "auto",
+        section_separators = { left = "", right = "" },
+        component_separators = { left = "", right = "" },
+      })
+      return opts
     end,
   },
-
   {
     "karb94/neoscroll.nvim",
     init = function()
       require("neoscroll").setup()
     end,
   },
-
   {
     "voldikss/vim-floaterm",
     keys = {
@@ -147,12 +91,10 @@ return {
       },
     },
   },
-
   {
     "ahmedkhalf/project.nvim",
     opts = {
       manual_mode = true,
-      exclude_dirs = { "~/dev/mobilecoin/*" },
       patterns = {
         "helmfile.yaml",
         "Chart.yaml",
@@ -173,7 +115,6 @@ return {
       },
     },
   },
-
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = function(_, opts)
@@ -190,14 +131,14 @@ return {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("lazyvim.util").get_root() })
+          require("neo-tree.command").execute({ toggle = true, dir = require("lazyvim.util").root.get() })
         end,
         desc = "Explorer NeoTree (root dir)",
       },
       {
         "<leader>fE",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd() })
+          require("neo-tree.command").execute({ toggle = true, dir = vim.fn.getcwd() })
         end,
         desc = "Explorer NeoTree (cwd)",
       },

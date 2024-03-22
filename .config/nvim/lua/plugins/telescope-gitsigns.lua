@@ -8,5 +8,12 @@ return {
     config = function()
       require("telescope").load_extension("git_signs")
     end,
+    keys = {
+      {
+        "<leader>fgs",
+        "<cmd>Telescope git_signs<cr>",
+        desc = "Commands",
+      },
+    },
   },
 }
