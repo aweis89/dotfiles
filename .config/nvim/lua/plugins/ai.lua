@@ -131,7 +131,7 @@ return {
             insert = "<Tab>",
           },
           close = {
-            normal = "<C-c>",
+            normal = "q",
             insert = "<C-c>",
           },
           reset = {
@@ -143,8 +143,8 @@ return {
             insert = "<C-s>",
           },
           accept_diff = {
-            normal = "<C-a>",
-            insert = "<C-a>",
+            normal = "<C-y>",
+            insert = "<C-y>",
           },
           show_diff = {
             normal = "<C-d>",

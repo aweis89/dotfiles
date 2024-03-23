@@ -1,25 +1,6 @@
 local actions = require("telescope.actions")
 
 -- Table to keep track of added files
-local added_files = {}
-
-function TelescopeGitAdd()
-  require("telescope.builtin").find_files({
-    attach_mappings = function(_, map)
-      map("i", "<C-a>", actions.select_default)
-      return true
-    end,
-    -- Modify the display to show if a file has been added
-    entry_maker = function(entry)
-      local display = entry.display
-      entry.display = function(entry)
-        local added = added_files[entry.value] and " [added]" or ""
-        return display(entry) .. added
-      end
-      return entry
-    end,
-  })
-end
 
 return {
   {
@@ -29,29 +10,38 @@ return {
         file_ignore_patterns = { "node_modules", "vendor" },
         mappings = {
           i = {
-            ["C-c"] = actions.close,
+            ["<C-c>"] = actions.close,
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
             ["<C-u>"] = actions.preview_scrolling_down,
             ["<C-d>"] = actions.preview_scrolling_up,
-            ["<C-a>"] = function(_)
+            ["<C-g>"] = function(_) -- only works Telescope git_status
               local selection = require("telescope.actions.state").get_selected_entry()
-              local file_path = selection.value
+              -- Git root command
+              local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
+              local file_path = git_root .. "/" .. selection.value
               -- Git add command
-              vim.cmd("!git add " .. file_path)
+              local result = vim.fn.system("git add " .. file_path)
+              if result == "" then
+                vim.notify("Added file: " .. file_path)
+              else
+                vim.notify("Failed to add file: " .. file_path .. ". Error: " .. result)
+              end
             end,
           },
         },
       },
     },
+
     keys = {
-      -- Git Add
-      {
-        "<leader>ga",
-        function()
-          TelescopeGitAdd()
-        end,
-        desc = "Git add with Telescope",
-      },
       -- LSP
+      {
+        "<leader>ll",
+        function()
+          require("telescope.builtin").lsp_document_symbols()
+        end,
+        desc = "LSP Types",
+      },
       {
         "<leader>ll",
         function()
