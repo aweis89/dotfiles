@@ -68,8 +68,8 @@ end
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    dir = "~/dev/CopilotChat.nvim",
-    -- branch = "canary",
+    -- dir = "~/dev/CopilotChat.nvim",
+    branch = "canary",
 
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
@@ -193,7 +193,7 @@ return {
     - Review the code for readability issues.
     - Provide concise and actionable feedback.
     - Use the specified format for all feedback.]],
-            selection = buffer_with_lines,
+            -- selection = buffer_with_lines,
             callback = function(response, source)
               local namespace_id = vim.api.nvim_create_namespace("copilot")
               local left_pane = vim.api.nvim_win_get_buf(source.winnr)
