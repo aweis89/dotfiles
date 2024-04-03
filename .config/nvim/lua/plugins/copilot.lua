@@ -83,6 +83,7 @@ return {
           local message = get_last_code_block(response, "gitcommit")
           if message then
             local command = string.format("Git commit -m '%s' | Git push", message)
+            vim.notify("Executing: " .. command)
             vim.api.nvim_command(command)
           else
             print("No git commit message found in response.")
