@@ -29,6 +29,7 @@ map("n", "<leader>h", "<cmd>lua GithubBrowse()<cr>", { desc = "Github open", rem
 map("i", "<C-l>", "<Right>", { desc = "Insert mode move right", remap = true })
 map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
+map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
 local settings = {
   [[set norelativenumber]],
