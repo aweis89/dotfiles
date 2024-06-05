@@ -24,18 +24,15 @@ if vim.fn.system("uname") == "Darwin\n" then
     vim.cmd("set background=light")
     COLORSCHEME = "catppuccin-latte"
   end
-  -- for reload explicitly set colorscheme
-  -- vim.cmd("colorscheme " .. COLORSCHEME)
 end
 
 return {
-  {
-    "LazyVim/LazyVim",
-    opts = function(_, opts)
-      opts.colorscheme = COLORSCHEME
-      return opts
-    end,
-  },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = function(_, opts)
+  --     opts.colorscheme = COLORSCHEME
+  --   end,
+  -- },
   { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
   { "mbbill/undotree" },
