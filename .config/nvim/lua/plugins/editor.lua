@@ -29,6 +29,13 @@ if vim.fn.system("uname") == "Darwin\n" then
 end
 
 return {
+  {
+    "LazyVim/LazyVim",
+    opts = function(_, opts)
+      opts.colorscheme = COLORSCHEME
+      return opts
+    end,
+  },
   { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
   { "mbbill/undotree" },
@@ -57,9 +64,9 @@ return {
     end,
   },
   {
-    "LazyVim/LazyVim",
+    "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      opts.colorscheme = COLORSCHEME
+      opts.ensure_installed = "all"
       return opts
     end,
   },

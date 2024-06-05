@@ -38,7 +38,7 @@ local settings = {
 }
 
 for _, value in ipairs(settings) do
-  vim.api.nvim_exec(value, nil)
+  vim.api.nvim_exec(value, false)
 end
 
 vim.diagnostic.config({
