@@ -58,10 +58,10 @@ return {
   },
   {
     "LazyVim/LazyVim",
-    opts = {
-      colorscheme = COLORSCHEME,
-      -- colorscheme catppuccin, catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
-    },
+    opts = function(_, opts)
+      opts.colorscheme = COLORSCHEME
+      return opts
+    end,
   },
   {
     "nvim-lualine/lualine.nvim",
