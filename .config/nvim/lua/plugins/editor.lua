@@ -27,22 +27,22 @@ if vim.fn.system("uname") == "Darwin\n" then
 end
 
 return {
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = function(_, opts)
-  --     opts.colorscheme = COLORSCHEME
-  --   end,
-  -- },
+  {
+    "LazyVim/LazyVim",
+    opts = function(_, opts)
+      opts.colorscheme = COLORSCHEME
+    end,
+  },
   { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
   { "mbbill/undotree" },
   { "tpope/vim-fugitive" },
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
-  { "akinsho/bufferline.nvim", enabled = false },
-  { "rcarriga/nvim-notify", enabled = true },
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-  { "echasnovski/mini.surround", version = "*" },
+  { "akinsho/bufferline.nvim",       enabled = false },
+  { "rcarriga/nvim-notify",          enabled = true },
+  { "catppuccin/nvim",               name = "catppuccin", priority = 1000 },
+  { "echasnovski/mini.surround",     version = "*" },
   {
     "alexghergh/nvim-tmux-navigation",
     config = function()
@@ -147,8 +147,8 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
-      { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
+      { "<C-n>",     "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
     },
   },
 }
