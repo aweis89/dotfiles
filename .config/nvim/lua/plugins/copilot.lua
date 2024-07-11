@@ -27,21 +27,24 @@ local function buffer_with_lines(_)
   }
 end
 
--- This function retrieves the content of all buffers in the current Neovim session.
--- If `skip_current` is true, it will skip the content of the current buffer.
--- @param skip_current A boolean value indicating whether to skip the current buffer.
--- @return A string containing the content of all buffers (or all but the current buffer).
-local function get_content_of_all_buffers(skip_current)
-  local buffers = vim.api.nvim_list_bufs()
-  local current_buffer = vim.api.nvim_get_current_buf()
-  local context = {}
-  for _, buf in ipairs(buffers) do
-    if not (skip_current and buf == current_buffer) then
-      local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-      table.insert(context, table.concat(content, "\n"))
+--- Select and process all buffers
+--- @return string|nil
+local function all_buffers()
+  local bufnrs = vim.api.nvim_list_bufs()
+  local all_buffers_content = {}
+
+  for _, bufnr in ipairs(bufnrs) do
+    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+    if lines and #lines > 0 then
+      table.insert(all_buffers_content, table.concat(lines, '\n'))
     end
   end
-  return table.concat(context, "\n")
+
+  if #all_buffers_content == 0 then
+    return nil
+  end
+
+  return table.concat(all_buffers_content, '\n')
 end
 
 -- This function selects the visual or buffer source based on the CopilotChat selection.
@@ -73,7 +76,7 @@ return {
 
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
     },
     config = function()
       load_requirements()
@@ -165,8 +168,8 @@ return {
 /COPILOT_REVIEW Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
   Identify any issues related to:
     - Naming conventions that is unclear, misleading or doesn't follow conventions in ]]
-              .. vim.bo.filetype
-              .. [[.
+                .. vim.bo.filetype
+                .. [[.
     - The presence of unnecessary comments, or the lack of necessary ones.
     - Overly complex expressions that could benefit from simplification.
     - High nesting levels that make the code difficult to follow.
@@ -178,17 +181,17 @@ return {
     - The specific line number(s) where the issue is found.
     - A clear description of the problem.
     - A concrete suggestion for how to improve or correct the issue.
-    
+
     Format your feedback as follows:
     "line=<line_number>: <issue_description>
-    
+
     If you find multiple issues on the same line, list each issue separately within the same feedback statement, using a semicolon to separate them.
     Example feedback:
-    
+
     line=3: The variable name 'x' is unclear. Comment next to variable declaration is unnecessary.
     line=8: Expression is overly complex. Break down the expression into simpler components.
     line=10: Using camel case here is unconventional for lua. Use snake case instead.
-    
+
     If the code snippet has no readability issues, simply confirm that the code is clear and well-written as is.
   instructions: |
     - Review the code for readability issues.
@@ -256,7 +259,7 @@ return {
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
             CopilotChat.ask(input, {
-              context = get_content_of_all_buffers(),
+              context = all_buffers(),
               selection = CopilotSelect.buffer,
             })
           end
