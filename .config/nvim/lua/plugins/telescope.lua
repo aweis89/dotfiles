@@ -77,7 +77,8 @@ return {
       {
         "<leader>ff",
         function()
-          require("telescope.builtin").find_files()
+          utils = require("telescope.utils")
+          require("telescope.builtin").find_files({ cwd = utils.buffer_dir() })
         end,
         desc = "Find Plugin File",
       },
