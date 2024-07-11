@@ -3,16 +3,13 @@ return {
     "mfussenegger/nvim-lint",
     init = function()
       vim.api.nvim_create_user_command("LintDisable", function(args)
+        local lint = require('lint')
         -- get filetype of current buffer
         local ft = vim.filetype.match({ buf = 0 })
-
-        -- check if 'lint' module and 'linters_by_ft' table exist
-        local lint = require('lint')
         if ft and lint.linters_by_ft[ft] then
           -- empty out the linter table for current filetype
           lint.linters_by_ft[ft] = {}
         end
-
         -- reset diagnostics
         vim.diagnostic.reset(nil, 0)
       end, {
