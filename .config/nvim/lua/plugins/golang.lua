@@ -15,9 +15,7 @@ return {
     },
     config = function()
       require("go").setup({
-        lsp_inlay_hints = {
-          enable = false,
-        },
+        diagnostic = false,
       })
 
       local format_sync_grp = vim.api.nvim_create_augroup("GoTest", {})
@@ -34,7 +32,7 @@ return {
     ft = { "go", "gomod" },
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
     keys = {
-      { "ga", "<cmd>GoAlt<cr>", desc = "GoAlt" },
+      { "ga",         "<cmd>GoAlt<cr>",       desc = "GoAlt" },
       { "<leader>re", "<cmd>GoGenReturn<cr>", desc = "GoGenReturn" },
     },
   },
