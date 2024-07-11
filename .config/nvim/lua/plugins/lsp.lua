@@ -36,14 +36,8 @@ return {
         { name = "buffer", group_index = 3, max_item_count = 3 },
         { name = "tmux", group_index = 3, max_item_count = 3 },
       })
-      opts.window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-      }
 
-      opts.completion = {
-        completeopt = "menu,menuone,noinsert,noselect",
-      }
+      opts.completion.completeopt = "menu,menuone,noinsert,noselect"
       opts.preselect = "None"
 
       local has_words_before = function()
