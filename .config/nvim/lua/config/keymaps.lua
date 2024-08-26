@@ -32,6 +32,7 @@ map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", r
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
 local settings = {
+  [[set wrap]],
   [[set norelativenumber]],
   [[au ColorScheme * hi Normal guibg=none]],
   [[highlight NormalFloat guibg=NONE]],
