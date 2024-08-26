@@ -31,16 +31,11 @@ map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
-local settings = {
-  [[set wrap]],
-  [[set norelativenumber]],
-  [[au ColorScheme * hi Normal guibg=none]],
-  [[highlight NormalFloat guibg=NONE]],
-}
-
-for _, value in ipairs(settings) do
-  vim.api.nvim_exec(value, false)
-end
+vim.api.nvim_exec2([[
+  set wrap |
+  set norelativenumber |
+  au colorscheme * hi normal guibg=none |
+  highlight normalfloat guibg=none]], {})
 
 vim.diagnostic.config({
   float = { border = "rounded" },
