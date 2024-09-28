@@ -2,8 +2,8 @@ return {
   {
     "mfussenegger/nvim-lint",
     init = function()
-      vim.api.nvim_create_user_command("LintDisable", function(args)
-        local lint = require('lint')
+      vim.api.nvim_create_user_command("LintDisable", function(_)
+        local lint = require("lint")
         -- get filetype of current buffer
         local ft = vim.filetype.match({ buf = 0 })
         if ft and lint.linters_by_ft[ft] then
