@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 local function load_requirements()
   CopilotSelect = require("CopilotChat.select")
   CopilotActions = require("CopilotChat.actions")
@@ -36,7 +40,7 @@ local function all_buffers()
   for _, bufnr in ipairs(bufnrs) do
     local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     if lines and #lines > 0 then
-      table.insert(all_buffers_content, table.concat(lines, '\n'))
+      table.insert(all_buffers_content, table.concat(lines, "\n"))
     end
   end
 
@@ -44,7 +48,7 @@ local function all_buffers()
     return nil
   end
 
-  return table.concat(all_buffers_content, '\n')
+  return table.concat(all_buffers_content, "\n")
 end
 
 -- This function selects the visual or buffer source based on the CopilotChat selection.
@@ -76,7 +80,7 @@ return {
 
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     config = function()
       load_requirements()
@@ -168,8 +172,8 @@ return {
 /COPILOT_REVIEW Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
   Identify any issues related to:
     - Naming conventions that is unclear, misleading or doesn't follow conventions in ]]
-                .. vim.bo.filetype
-                .. [[.
+              .. vim.bo.filetype
+              .. [[.
     - The presence of unnecessary comments, or the lack of necessary ones.
     - Overly complex expressions that could benefit from simplification.
     - High nesting levels that make the code difficult to follow.
