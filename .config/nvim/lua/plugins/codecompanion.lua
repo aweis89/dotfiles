@@ -10,7 +10,7 @@ return {
   config = true,
   init = function()
     vim.api.nvim_set_keymap("n", "<leader>ac", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap("n", "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>aa", "<cmd>CodeCompanionChat toggle<cr>", { noremap = true, silent = true })
 
     vim.api.nvim_set_keymap("v", "<leader>aa", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
@@ -18,4 +18,17 @@ return {
     -- Expand 'cc' into 'CodeCompanion' in the command line
     vim.cmd([[cab cc CodeCompanion]])
   end,
+  opts = {
+    strategies = {
+      chat = {
+        adapter = "copilot",
+      },
+      inline = {
+        adapter = "copilot",
+      },
+      agent = {
+        adapter = "anthropic",
+      },
+    },
+  },
 }
