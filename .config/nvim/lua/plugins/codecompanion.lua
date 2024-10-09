@@ -11,20 +11,38 @@ return {
   init = function()
     vim.api.nvim_set_keymap("n", "<leader>ac", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap("n", "<leader>aa", "<cmd>CodeCompanionChat toggle<cr>", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>aA", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
 
     vim.api.nvim_set_keymap("v", "<leader>aa", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
-    vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("v", "<leader>aa", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
     -- Expand 'cc' into 'CodeCompanion' in the command line
     vim.cmd([[cab cc CodeCompanion]])
   end,
   opts = {
+    keymaps = {
+      send = {
+        modes = {
+          n = { "<CR>", "<C-s>" },
+          i = "<C-s>",
+        },
+        index = 1,
+        callback = function(chat)
+          -- First, exit insert mode
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+          -- Then, call the send function
+          chat:submit()
+        end,
+        description = "Send and exit insert mode",
+      },
+    },
+
     strategies = {
       chat = {
-        adapter = "copilot",
+        adapter = "anthropic",
       },
       inline = {
-        adapter = "copilot",
+        adapter = "anthropic",
       },
       agent = {
         adapter = "anthropic",
