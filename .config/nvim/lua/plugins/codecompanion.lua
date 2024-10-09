@@ -13,7 +13,7 @@ return {
     vim.api.nvim_set_keymap("n", "<leader>aa", "<cmd>CodeCompanionChat toggle<cr>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap("n", "<leader>aA", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
 
-    vim.api.nvim_set_keymap("v", "<leader>aa", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("v", "<leader>aA", "<cmd>CodeCompanionChat<cr>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap("v", "<leader>aa", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
     -- Expand 'cc' into 'CodeCompanion' in the command line
