@@ -30,12 +30,16 @@ map("i", "<C-l>", "<Right>", { desc = "Insert mode move right", remap = true })
 map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
+map("i", "jj", "<esc>", { desc = "escape", remap = true })
 
-vim.api.nvim_exec2([[
+vim.api.nvim_exec2(
+  [[
   set wrap |
   set norelativenumber |
   au colorscheme * hi normal guibg=none |
-  highlight normalfloat guibg=none]], {})
+  highlight normalfloat guibg=none]],
+  {}
+)
 
 vim.diagnostic.config({
   float = { border = "rounded" },
