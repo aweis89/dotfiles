@@ -39,10 +39,10 @@ return {
   { "tpope/vim-fugitive" },
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
-  { "akinsho/bufferline.nvim",       enabled = false },
-  { "rcarriga/nvim-notify",          enabled = true },
-  { "catppuccin/nvim",               name = "catppuccin", priority = 1000 },
-  { "echasnovski/mini.surround",     version = "*" },
+  { "akinsho/bufferline.nvim", enabled = false },
+  { "rcarriga/nvim-notify", enabled = true },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "echasnovski/mini.surround", version = "*" },
   {
     "alexghergh/nvim-tmux-navigation",
     config = function()
@@ -60,6 +60,7 @@ return {
       vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
     end,
   },
+  { "karb94/neoscroll.nvim", enabled = false },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -154,8 +155,8 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
-      { "<C-n>",     "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<C-n>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
     },
   },
 }
