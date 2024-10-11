@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 return {
   "olimorris/codecompanion.nvim",
   dependencies = {
@@ -7,7 +11,6 @@ return {
     "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
     { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves the default Neovim UI
   },
-  config = true,
   init = function()
     vim.api.nvim_set_keymap("n", "<leader>ac", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
     vim.api.nvim_set_keymap("n", "<leader>aa", "<cmd>CodeCompanionChat toggle<cr>", { noremap = true, silent = true })
