@@ -1,8 +1,6 @@
 vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
 vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
 
-COLORSCHEME = "catppuccin-frappe"
-
 -- Check if the operating system is macOS
 if vim.fn.system("uname") == "Darwin\n" then
   -- Define a function to check if dark mode is enabled
@@ -18,10 +16,10 @@ if vim.fn.system("uname") == "Darwin\n" then
 
   -- Use the function to set the Neovim colorscheme based on dark mode
   if is_dark_mode_enabled() then
-    vim.cmd("set background=dark")
+    vim.o.background = "dark"
     COLORSCHEME = "catppuccin-mocha"
   else
-    vim.cmd("set background=light")
+    vim.o.background = "light"
     COLORSCHEME = "catppuccin-latte"
   end
 end
@@ -29,9 +27,9 @@ end
 return {
   {
     "LazyVim/LazyVim",
-    opts = function(_, opts)
-      opts.colorscheme = COLORSCHEME
-    end,
+    -- opts = function(_, opts)
+    --   opts.colorscheme = COLORSCHEME
+    -- end,
   },
   { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
@@ -60,7 +58,6 @@ return {
       vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
     end,
   },
-  { "karb94/neoscroll.nvim", enabled = false },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -80,12 +77,7 @@ return {
       return opts
     end,
   },
-  {
-    "karb94/neoscroll.nvim",
-    init = function()
-      require("neoscroll").setup()
-    end,
-  },
+  { "karb94/neoscroll.nvim", enabled = false },
   {
     "voldikss/vim-floaterm",
     keys = {
