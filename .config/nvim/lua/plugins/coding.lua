@@ -41,8 +41,8 @@ return {
       })
     end,
 
-    -- Expand 'cc' into 'CodeCompanion' in the command line
     init = function()
+      -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
       require("legendary").keymaps({
         {

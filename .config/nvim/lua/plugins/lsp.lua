@@ -27,14 +27,14 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       vim.list_extend(opts.sources, {
-        { name = "nvim_lsp",                group_index = 1 },
+        { name = "nvim_lsp", group_index = 1 },
         { name = "nvim_lsp_signature_help", group_index = 1 },
-        { name = "copilot",                 group_index = 2 },
-        { name = "path",                    group_index = 2 },
-        { name = "luasnip",                 group_index = 2 },
-        { name = "nvim_lua",                group_index = 2 },
-        { name = "buffer",                  group_index = 3, max_item_count = 3 },
-        { name = "tmux",                    group_index = 3, max_item_count = 3 },
+        { name = "copilot", group_index = 2 },
+        { name = "path", group_index = 2 },
+        { name = "luasnip", group_index = 2 },
+        { name = "nvim_lua", group_index = 2 },
+        { name = "buffer", group_index = 3, max_item_count = 3 },
+        { name = "tmux", group_index = 3, max_item_count = 3 },
       })
 
       opts.completion.completeopt = "menu,menuone,noinsert,noselect"
@@ -98,7 +98,9 @@ return {
   {
     "neovim/nvim-lspconfig",
     init = function()
-      vim.keymap.set('n', 'cd', function() vim.diagnostic.open_float() end, {})
+      vim.keymap.set("n", "cd", function()
+        vim.diagnostic.open_float()
+      end, {})
     end,
     ---@class PluginLspOpts
     opts = function(_, opts)
@@ -140,7 +142,7 @@ return {
                 fieldalignment = false,
               },
               codelenses = {
-                generate = true,    -- show the `go generate` lens.
+                generate = true, -- show the `go generate` lens.
                 gc_details = false, --  // Show a code lens toggling the display of gc's choices.
                 test = true,
                 tidy = true,
