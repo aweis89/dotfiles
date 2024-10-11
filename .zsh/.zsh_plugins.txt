@@ -8,7 +8,6 @@ ohmyzsh/ohmyzsh path:plugins/asdf
 ohmyzsh/ohmyzsh path:plugins/brew
 ohmyzsh/ohmyzsh path:plugins/docker
 ohmyzsh/ohmyzsh path:plugins/docker-compose
-ohmyzsh/ohmyzsh path:plugins/flutter
 ohmyzsh/ohmyzsh path:plugins/fzf
 ohmyzsh/ohmyzsh path:plugins/gcloud
 ohmyzsh/ohmyzsh path:plugins/gh

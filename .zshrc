@@ -1,5 +1,10 @@
 export EDITOR=nvim
 export VISUAL=nvim
+export GOEXPERIMENT=rangefunc
+# export PATH=$HOME/dev/flutter/bin:$PATH
+export PATH=$PATH:$HOME/kubectl-plugins
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export FZF_DEFAULT_OPTS='--layout=reverse'
 
 # Only suggest corrections for commands, not arguments
 setopt CORRECT
@@ -42,10 +47,27 @@ setopt HIST_VERIFY
 setopt SHARE_HISTORY
 
 goinit() {
-    local name=$1
-    [[ -d $name ]] || mkdir $name
-    cd $name
-    go mod init github.com/aweis89/$name
+  local name=$1
+  local org=${2:-aweis89}
+  [[ -d $name ]] || mkdir $name
+  cd $name
+  go mod init github.com/$org/$name
+}
+
+gomodrename() {
+  old=$1
+  new=$2
+  go mod edit -module $new
+  find . -type f -name '*.go' \
+    -exec sed -i '' -e "s|${old}|${new}|g" {} \;
+}
+
+fv() {
+  nvim $(fzf)
+}
+
+fbranch() {
+  git branch | fzf | xargs git checkout
 }
 
 ###############################################################################
@@ -83,8 +105,8 @@ export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # Lazy-load antidote and generate the static load file only when needed
 zsh_plugins=~/.zsh/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt || ! -e ${zsh_plugins}.zsh ]]; then
-    source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+  antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
 fi
 source ${zsh_plugins}.zsh
 
@@ -101,8 +123,8 @@ PROMPT="$PROMPT\$(vi_mode_prompt_info)"
 RPROMPT="\$(vi_mode_prompt_info)$RPROMPT"
 
 source_present() {
-	local -r file="$1"
-	test -r $file && . $file
+  local -r file="$1"
+  test -r $file && . $file
 }
 
 source_present $HOME/.zshrc.local
@@ -110,11 +132,11 @@ source_present $HOME/.zsh/kubectl.zsh
 source_present $HOME/.zsh/alias.zsh
 
 auto_start_tmux() {
-	session=${1:-default}
-	if test -z "$TMUX"; then
-		tmux new-session -ds $session
-		tmux attach -t $session
-	fi
+  session=${1:-default}
+  if test -z "$TMUX"; then
+    tmux new-session -ds $session
+    tmux attach -t $session
+  fi
 }
 
 auto_start_tmux
@@ -135,14 +157,15 @@ bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-comple
 # left arrow
 bindkey '^[OD' backward-char
 
-which copilot >/dev/null || brew install aws/tap/copilot-cli
 source <(kubebuilder completion zsh)
-source <(flyctl completion zsh)
-source <(regctl completion zsh)
-source <(copilot completion zsh)
+# source <(flyctl completion zsh)
+# source <(regctl completion zsh)
+# source <(copilot completion zsh)
+# source <(jira completion zsh)
+source <(istioctl completion zsh)
 
-test -f ~/.zfunc/_poetry || { \
-  mkdir -p ~/.zfunc && poetry completions zsh > ~/.zfunc/_poetry
+test -f ~/.zfunc/_poetry || {
+  mkdir -p ~/.zfunc && poetry completions zsh >~/.zfunc/_poetry
 }
 fpath+=~/.zfunc
 autoload -Uz compinit && compinit
@@ -158,6 +181,7 @@ kill-vims() {
 ###############################################################################
 # Aliases
 ###############################################################################
+alias ls="eza"
 alias b="bat"
 alias g="git"
 alias gd="diff2html -s side"
@@ -166,7 +190,7 @@ alias gos=go-search
 alias hf=helmfile
 alias int='curl -Ss https://google.com'
 alias k=kubectl
-alias kb=kubebuilder 
+alias kb=kubebuilder
 alias kcg='kubectl config get-contexts'
 alias kp=kube-prompt
 alias kw='watch kubectl'
@@ -176,7 +200,7 @@ alias rms='rm -rf ~/.local/share/nvim/swap/*'
 alias tmux="TERM=screen-256color tmux"
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
-alias vim='nvim'
+# alias vim='nvim'
 alias v='nvim'
 alias vims='vim ~/.config/nvim/lua'
 alias zshs='vim ~/.zshrc'
@@ -199,12 +223,30 @@ alias light='~/.config/theme-reactor/change_to.sh light &'
 alias dark='~/.config/theme-reactor/change_to.sh dark &'
 alias ag=rg
 
+# copilot aliases
+alias '??'='unset GITHUB_TOKEN; gh copilot suggest -t shell'
+alias 'git?'='unset GITHUB_TOKEN; gh copilot suggest -t git'
+alias 'gh?'='unset GITHUB_TOKEN; gh copilot suggest -t gh'
+alias 'explain'='unset GITHUB_TOKEN; gh copilot explain'
+
+fzf_vim() {
+  if [[ -d "$1" ]]; then
+    cd "$1"
+    nvim
+    cd -
+  else
+    nvim "$@"
+  fi
+}
+
+alias vim=fzf_vim
+
 aw() {
-    awk "{print \$$1}"
+  awk "{print \$$1}"
 }
 
 ecr-login() {
-  aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin  805478320556.dkr.ecr.us-west-2.amazonaws.com
+  aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 805478320556.dkr.ecr.us-west-2.amazonaws.com
 }
 
 # source ~/miniforge3/bin/activate  # commented out by conda initialize
@@ -219,16 +261,57 @@ source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
+## __conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+## if [ $? -eq 0 ]; then
+##     eval "$__conda_setup"
+## else
+##     if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
+##         . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
+##     else
+##         export PATH="/opt/homebrew/anaconda3/bin:$PATH"
+##     fi
+## fi
+## unset __conda_setup
 # <<< conda initialize <<<
 
+[[ -s "/Users/aaron/.gvm/scripts/gvm" ]] && source "/Users/aaron/.gvm/scripts/gvm"
+
+k-node-run() {
+  local node_name=$1
+  shift
+  local command=("$@")
+
+  local args_json=$(printf ', "%s"' "${command[@]}")
+  args_json="[${args_json:2}]"
+
+  kubectl run -it curl-pod --image=curlimages/curl --overrides="{
+    \"apiVersion\": \"v1\",
+    \"spec\": {
+      \"nodeSelector\": {
+        \"kubernetes.io/hostname\": \"${node_name}\"
+      },
+      \"containers\": [{
+        \"name\": \"curl-pod\",
+        \"image\": \"curlimages/curl\",
+        \"args\": ${args_json}
+      }]
+    }
+  }"
+  # kubectl delete pod curl-pod
+}
+
+pr-msg() {
+  local pr="$(gh pr view --json url,title,number,isDraft)"
+  local repo=$(basename -s .git $(git config --get remote.origin.url))
+  local title=$(echo $pr | jq -r '.title')
+  local number=$(echo $pr | jq -r '.number')
+  local url=$(echo $pr | jq -r '.url')
+  local isDraft=$(echo $pr | jq -r '.isDraft')
+  local msg="[${repo}#${number}: ${title}](${url})"
+
+  if [[ "$isDraft" = "true" ]]; then
+    msg=":draft-pr: ${msg}"
+  fi
+
+  echo ":pull-request: ${msg} :pray:" | tee >(pbcopy)
+}
