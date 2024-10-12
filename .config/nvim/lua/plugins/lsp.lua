@@ -3,12 +3,12 @@ vim.cmd([[set completeopt=menu,menuone,noselect]])
 vim.cmd([[set noswapfile]])
 
 return {
-  {
-    "zbirenbaum/copilot-cmp",
-    config = function()
-      require("copilot_cmp").setup({ fix_pairs = true })
-    end,
-  },
+  -- {
+  --   "zbirenbaum/copilot-cmp",
+  --   config = function()
+  --     require("copilot_cmp").setup({ fix_pairs = true })
+  --   end,
+  -- },
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -29,7 +29,7 @@ return {
       vim.list_extend(opts.sources, {
         { name = "nvim_lsp", group_index = 1 },
         { name = "nvim_lsp_signature_help", group_index = 1 },
-        { name = "copilot", group_index = 2 },
+        -- { name = "copilot", group_index = 2 },
         { name = "path", group_index = 2 },
         { name = "luasnip", group_index = 2 },
         { name = "nvim_lua", group_index = 2 },
