@@ -1,5 +1,5 @@
 return {
-  "tpope/vim-sleuth", -- Automatically detects which indents should be used in the current buffer
+  -- "tpope/vim-sleuth", -- Automatically detects which indents should be used in the current buffer
   {
     "echasnovski/mini.diff",
     config = function()
