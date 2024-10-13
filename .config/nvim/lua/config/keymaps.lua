@@ -34,10 +34,11 @@ map("i", "jj", "<esc>", { desc = "escape", remap = true })
 
 vim.api.nvim_exec2(
   [[
-  set wrap |
-  set norelativenumber |
-  au colorscheme * hi normal guibg=none |
-  highlight normalfloat guibg=none]],
+    set wrap |
+    set norelativenumber |
+    au colorscheme * hi normal guibg=none |
+    highlight normalfloat guibg=none
+  ]],
   {}
 )
 
