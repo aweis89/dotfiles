@@ -7,8 +7,8 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 export FZF_DEFAULT_OPTS='--layout=reverse'
 
 # Only suggest corrections for commands, not arguments
-setopt CORRECT
-unsetopt CORRECTALL
+# setopt CORRECT
+# unsetopt CORRECTALL
 
 # Don't print a '%' for partial lines (ones that don't end with a newline)
 # https://superuser.com/a/645612/922801
@@ -21,8 +21,6 @@ setopt INTERACTIVE_COMMENTS
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/dev/flutter/bin:$PATH"
 export PATH="$HOME/.krew/bin:$PATH"
-
-export AWS_PROFILE=pre-prod
 
 # If a command is a directory, cd to it
 setopt AUTO_CD
@@ -261,17 +259,17 @@ source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-## __conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-## if [ $? -eq 0 ]; then
-##     eval "$__conda_setup"
-## else
-##     if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
-##         . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
-##     else
-##         export PATH="/opt/homebrew/anaconda3/bin:$PATH"
-##     fi
-## fi
-## unset __conda_setup
+__conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+  eval "$__conda_setup"
+else
+  if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
+    . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
+  else
+    export PATH="/opt/homebrew/anaconda3/bin:$PATH"
+  fi
+fi
+unset __conda_setup
 # <<< conda initialize <<<
 
 [[ -s "/Users/aaron/.gvm/scripts/gvm" ]] && source "/Users/aaron/.gvm/scripts/gvm"
