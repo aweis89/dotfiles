@@ -4,7 +4,7 @@ export GOEXPERIMENT=rangefunc
 # export PATH=$HOME/dev/flutter/bin:$PATH
 export PATH=$PATH:$HOME/kubectl-plugins
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export FZF_DEFAULT_OPTS='--layout=reverse'
+export FZF_DEFAULT_OPTS='--layout=reverse --color=light'
 
 # Only suggest corrections for commands, not arguments
 # setopt CORRECT
@@ -176,6 +176,8 @@ kill-vims() {
   done
 }
 
+alias readdir='go run ~/git-project-reader/main.go'
+
 ###############################################################################
 # Aliases
 ###############################################################################
@@ -313,3 +315,63 @@ pr-msg() {
 
   echo ":pull-request: ${msg} :pray:" | tee >(pbcopy)
 }
+
+gcloud-project() {
+  projects=$(gcloud projects list)
+  selected=$(echo "$projects" | grep -v PROJECT_ID | fzf)
+  if [ -n "$selected" ]; then
+    project_id=$(echo "$selected" | awk '{print $1}')
+    gcloud config set project "$project_id"
+    gcloud config get project
+  else
+    echo "No project selected. Configuration unchanged."
+  fi
+}
+alias gp=gcloud-project
+
+gcloud-update-kubeconfig() {
+  cluster=$(gcloud container clusters list | grep -v NAME | fzf)
+  if [ -n "$cluster" ]; then
+    zone=$(echo "$cluster" | awk '{print $2}')
+    name=$(echo "$cluster" | awk '{print $1}')
+
+    set -x
+    gcloud container clusters get-credentials "$name" --zone "$zone" "$@"
+    set +x
+  else
+    echo "No cluster selected. Kubeconfig unchanged."
+  fi
+}
+alias guk=gcloud-update-kubeconfig
+alias guki='gcloud-update-kubeconfig --internal-ip'
+
+gcloud-account() {
+  gcloud auth list --format="table(account)" |
+    grep -v ACCOUNT | fzf | xargs gcloud config set account
+}
+
+plugin_source() {
+  local url_path=$1
+  local path_in_repo=$2
+  local branch=$3
+  local file_name=$(basename "$path_in_repo")
+  local local_file_path="$HOME/.${file_name}"
+
+  if [ ! -f "$local_file_path" ]; then
+    echo "Downloading ${file_name} plugin..."
+    local url="https://raw.githubusercontent.com/${url_path}/${branch}/${path_in_repo}"
+    wget "$url" -O "$local_file_path"
+  fi
+  source "$local_file_path"
+}
+
+plugin_source "bonnefoa/kubectl-fzf" "shell/kubectl_fzf.plugin.zsh" "main"
+plugin_source "mbhynes/fzf-gcloud" "fzf-gcloud.plugin.zsh" "main"
+bindkey '^g' fzf-gcloud-widget
+gcloud-fzf() {
+  cmd=$(__gcloud_sel)
+  if [[ -n "$cmd" ]]; then
+    eval "$cmd"
+  fi
+}
+alias fgc=gcloud-fzf
