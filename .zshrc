@@ -4,7 +4,7 @@ export GOEXPERIMENT=rangefunc
 # export PATH=$HOME/dev/flutter/bin:$PATH
 export PATH=$PATH:$HOME/kubectl-plugins
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export FZF_DEFAULT_OPTS='--layout=reverse --color=light'
+export FZF_DEFAULT_OPTS='--layout=reverse --color=light  --bind "ctrl-d:page-down,ctrl-u:page-up"'
 
 # Only suggest corrections for commands, not arguments
 # setopt CORRECT
@@ -139,28 +139,12 @@ auto_start_tmux() {
 
 auto_start_tmux
 
-# Use vi style key bindings instead of emacs
-bindkey -v
-bindkey '^w' forward-word
-bindkey "^r" fzf-history-widget
-# zsh-autosuggestions
-bindkey '^f' autosuggest-accept
-
-# zsh-autocomplete
-bindkey '\t' menu-select "${terminfo[kcbt]}" menu-select
-bindkey -M menuselect '\t' menu-complete "${terminfo[kcbt]}" reverse-menu-complete
-# make enter submit direct from menu
-# bindkey -M menuselect '\r' .accept-line
-
-# left arrow
-bindkey '^[OD' backward-char
-
 source <(kubebuilder completion zsh)
 # source <(flyctl completion zsh)
 # source <(regctl completion zsh)
 # source <(copilot completion zsh)
 # source <(jira completion zsh)
-source <(istioctl completion zsh)
+# source <(istioctl completion zsh)
 
 test -f ~/.zfunc/_poetry || {
   mkdir -p ~/.zfunc && poetry completions zsh >~/.zfunc/_poetry
@@ -367,7 +351,6 @@ plugin_source() {
 
 plugin_source "bonnefoa/kubectl-fzf" "shell/kubectl_fzf.plugin.zsh" "main"
 plugin_source "mbhynes/fzf-gcloud" "fzf-gcloud.plugin.zsh" "main"
-bindkey '^g' fzf-gcloud-widget
 gcloud-fzf() {
   cmd=$(__gcloud_sel)
   if [[ -n "$cmd" ]]; then
@@ -375,3 +358,24 @@ gcloud-fzf() {
   fi
 }
 alias fgc=gcloud-fzf
+
+# Use vi style key bindings instead of emacs
+bindkey -v
+bindkey '^w' forward-word
+bindkey "^r" fzf-history-widget
+# zsh-autosuggestions
+bindkey '^f' autosuggest-accept
+
+# left arrow
+bindkey '^[OD' backward-char
+
+# Keep kubectl_fzf_completion binding
+bindkey '^s' kubectl_fzf_completion
+
+# Bind Tab to act like Down arrow in menu selection
+bindkey '^I' menu-select
+bindkey -M menuselect '^I' down-line-or-history
+
+# Bind Shift-Tab to act like Up arrow in menu selection
+bindkey '^[[Z' reverse-menu-select
+bindkey -M menuselect '^[[Z' up-line-or-history
