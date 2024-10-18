@@ -77,7 +77,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 # Only regenerate compinit's cache once a day:
 # https://htr3n.github.io/2018/07/faster-zsh/
 autoload -Uz compinit
-if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
   compinit
 else
   compinit -C
@@ -140,6 +140,7 @@ auto_start_tmux() {
 auto_start_tmux
 
 source <(kubebuilder completion zsh)
+source <(temporal completion zsh)
 # source <(flyctl completion zsh)
 # source <(regctl completion zsh)
 # source <(copilot completion zsh)
