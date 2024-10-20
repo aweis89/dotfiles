@@ -189,6 +189,7 @@ alias tt=gotestsum
 alias v='nvim'
 alias vims='vim ~/.config/nvim/lua'
 alias zshs='vim ~/.zshrc'
+alias vimc='nvim -c "CodeCompanionChat"'
 # cd aliases
 alias c="cd"
 alias c-="cd -"

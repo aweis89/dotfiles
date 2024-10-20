@@ -1,9 +1,14 @@
 format = """
-$kubernetes$directory$git_branch$git_status $conda
+$kubernetes$directory$git_branch$git_status$gcloud
 $character"""
 
 # Sets user-defined palette
 palette = "catppuccin_latte"
+
+[gcloud]
+disabled = false
+format = 'on [$symbol$project]($style)'
+symbol = "🌥️  "
 
 [character]
 success_symbol = '[-->](green)'
