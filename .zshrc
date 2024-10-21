@@ -387,3 +387,5 @@ bindkey '^I' fzf_completion
 # Bind Shift-Tab to act like Up arrow in menu selection
 bindkey '^[[Z' reverse-menu-select
 bindkey -M menuselect '^[[Z' up-line-or-history
+
+zstyle ':completion:*' completer _complete _ignored _files
