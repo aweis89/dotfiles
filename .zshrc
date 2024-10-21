@@ -361,6 +361,10 @@ gcloud-fzf() {
 }
 alias fgc=gcloud-fzf
 
+llm() {
+  go run ~/p/llm-agent/ "$@" | bat --language=Markdown
+}
+
 # Use vi style key bindings instead of emacs
 bindkey -v
 bindkey '^w' forward-word
@@ -375,8 +379,10 @@ bindkey '^[OD' backward-char
 bindkey '^s' kubectl_fzf_completion
 
 # Bind Tab to act like Down arrow in menu selection
-bindkey '^I' menu-select
-bindkey -M menuselect '^I' down-line-or-history
+# bindkey '^I' menu-select
+# bindkey -M menuselect '^I' down-line-or-history
+
+bindkey '^I' fzf_completion
 
 # Bind Shift-Tab to act like Up arrow in menu selection
 bindkey '^[[Z' reverse-menu-select
