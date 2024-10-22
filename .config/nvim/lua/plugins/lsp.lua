@@ -3,12 +3,12 @@ vim.cmd([[set completeopt=menu,menuone,noselect]])
 vim.cmd([[set noswapfile]])
 
 return {
-  -- {
-  --   "zbirenbaum/copilot-cmp",
-  --   config = function()
-  --     require("copilot_cmp").setup({ fix_pairs = true })
-  --   end,
-  -- },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup({ fix_pairs = true })
+    end,
+  },
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -26,6 +26,28 @@ return {
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
+
+      -- Add the length comparator to prioritize shorter items
+      opts.sorting = {
+        priority_weight = 2,
+        comparators = {
+          cmp.config.compare.offset,
+          cmp.config.compare.exact,
+          cmp.config.compare.score,
+          function(entry1, entry2)
+            local len1 = string.len(entry1.completion_item.label)
+            local len2 = string.len(entry2.completion_item.label)
+            if len1 ~= len2 then
+              return len1 < len2
+            end
+          end,
+          cmp.config.compare.kind,
+          cmp.config.compare.sort_text,
+          cmp.config.compare.length,
+          cmp.config.compare.order,
+        },
+      }
+
       vim.list_extend(opts.sources, {
         { name = "nvim_lsp", group_index = 1 },
         { name = "nvim_lsp_signature_help", group_index = 1 },
@@ -54,7 +76,7 @@ return {
         ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            cmp.select_next_item()
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
           elseif vim.snippet.active({ direction = 1 }) then
             vim.schedule(function()
               vim.snippet.jump(1)
@@ -65,9 +87,10 @@ return {
             fallback()
           end
         end, { "i", "s" }),
+
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            cmp.select_prev_item()
+            cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
           elseif vim.snippet.active({ direction = -1 }) then
             vim.schedule(function()
               vim.snippet.jump(-1)
@@ -77,7 +100,6 @@ return {
           end
         end, { "i", "s" }),
       })
-
       cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
