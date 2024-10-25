@@ -7,6 +7,10 @@ return {
     "nvim-telescope/telescope.nvim",
     opts = {
       defaults = {
+        layout_config = {
+          width = 0.97, -- 97% of screen width
+          height = 0.97, -- 97% of screen height
+        },
         file_ignore_patterns = { "node_modules", "vendor" },
         mappings = {
           i = {
