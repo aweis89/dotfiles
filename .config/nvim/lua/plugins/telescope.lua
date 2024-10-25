@@ -36,11 +36,22 @@ return {
     keys = {
       -- LSP
       {
+        "<leader>ss",
+        function()
+          require("telescope.builtin").lsp_document_symbols({
+            symbols = LazyVim.config.get_kind_filter(),
+            symbol_width = 80, -- Increase this value to show more of the symbol name
+          })
+        end,
+        desc = "Goto Symbol",
+      },
+      {
         "<leader>ll",
         function()
           require("telescope.builtin").lsp_document_symbols()
         end,
         desc = "LSP Types",
+        remap = true,
       },
       {
         "<leader>ll",
