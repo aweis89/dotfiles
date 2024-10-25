@@ -161,7 +161,7 @@ kill-vims() {
   done
 }
 
-alias readdir='go run ~/git-project-reader/main.go'
+alias readdir='go run ~/p/git-project-reader/main.go'
 
 ###############################################################################
 # Aliases
