@@ -65,17 +65,17 @@ return {
         },
       },
 
-      adapters = {
-        anthropic = function()
-          return require("codecompanion.adapters").extend("anthropic", {
-            schema = {
-              model = {
-                default = "claude-3-5-sonnet-20241022",
-              },
-            },
-          })
-        end,
-      },
+      -- adapters = {
+      --   anthropic = function()
+      --     return require("codecompanion.adapters").extend("anthropic", {
+      --       schema = {
+      --         model = {
+      --           default = "claude-3-5-sonnet-20241022",
+      --         },
+      --       },
+      --     })
+      --   end,
+      -- },
 
       display = {
         diff = {
