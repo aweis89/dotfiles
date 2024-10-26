@@ -59,15 +59,14 @@ return {
               local display = require("telescope.pickers.entry_display").create({
                 separator = " ",
                 items = {
-                  { width = 40 }, -- symbol name
-                  { width = 10 }, -- symbol type
-                  { remaining = true }, -- file path
+                  { width = 80 }, -- symbol name
+                  { width = 20 }, -- path
                 },
               })
               -- Get the raw symbol data
               local symbol = entry.symbol or entry
               local name = symbol.text or symbol.name
-              local kind = vim.lsp.protocol.SymbolKind[symbol.kind] or ""
+              -- local kind = entry.kind
               local filename = symbol.filename or (symbol.location and vim.uri_to_fname(symbol.location.uri)) or ""
               local rel_filename = require("telescope.utils").transform_path({ cwd = vim.fn.getcwd() }, filename)
               return {
@@ -76,7 +75,6 @@ return {
                 display = function(_)
                   return display({
                     name,
-                    kind,
                     rel_filename,
                   })
                 end,
