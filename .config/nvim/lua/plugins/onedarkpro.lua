@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 -- Define a function to check if dark mode is enabled
 local function is_dark_mode_enabled()
   -- Check if the operating system is macOS

@@ -86,39 +86,32 @@ return {
     init = function()
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
-      require("legendary").keymaps({
-        {
-          itemgroup = "CodeCompanion",
-          icon = "",
-          description = "Use the power of AI...",
-          keymaps = {
-            {
-              "<leader>ac",
-              "<cmd>CodeCompanionActions<CR>",
-              description = "Open the CodeCompanion action picker",
-              mode = { "n", "v" },
-            },
-            {
-              "<leader>aa",
-              "<cmd>CodeCompanionChat toggle<CR>",
-              description = "Open CodeCompanion chat prompt",
-              mode = { "n", "v" },
-            },
-            {
-              "<leader>aA",
-              "<cmd>CodeCompanionChat<CR>",
-              description = "Open CodeCompanion chat prompt",
-              mode = { "n", "v" },
-            },
-            {
-              "ga",
-              "<cmd>CodeCompanionChat add<CR>",
-              description = "Add selected text to CodeCompanion",
-              mode = { "n", "v" },
-            },
-          },
-        },
-      })
     end,
+    keys = {
+      {
+        "<leader>ac",
+        "<cmd>CodeCompanionActions<CR>",
+        desc = "Open the CodeCompanion action picker",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>aa",
+        "<cmd>CodeCompanionChat toggle<CR>",
+        desc = "Open CodeCompanion chat prompt",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>aA",
+        "<cmd>CodeCompanionChat<CR>",
+        desc = "Open CodeCompanion chat prompt",
+        mode = { "n", "v" },
+      },
+      {
+        "ga",
+        "<cmd>CodeCompanionChat add<CR>",
+        desc = "Add selected text to CodeCompanion",
+        mode = { "n", "v" },
+      },
+    },
   },
 }
