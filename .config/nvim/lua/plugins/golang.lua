@@ -19,20 +19,20 @@ return {
       })
 
       local format_sync_grp = vim.api.nvim_create_augroup("GoTest", {})
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        pattern = "*.go",
-        callback = function()
-          -- require("go.gotest").test_file()
-          require("neotest").run.run(vim.fn.getcwd())
-        end,
-        group = format_sync_grp,
-      })
+      -- Too slow on large projects
+      -- vim.api.nvim_create_autocmd("BufWritePre", {
+      --   pattern = "*.go",
+      --   callback = function()
+      --     require("neotest").run.run(vim.fn.getcwd())
+      --   end,
+      --   group = format_sync_grp,
+      -- })
     end,
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
     keys = {
-      { "ga",         "<cmd>GoAlt<cr>",       desc = "GoAlt" },
+      { "ga", "<cmd>GoAlt<cr>", desc = "GoAlt" },
       { "<leader>re", "<cmd>GoGenReturn<cr>", desc = "GoGenReturn" },
     },
   },

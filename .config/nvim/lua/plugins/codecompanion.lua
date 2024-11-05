@@ -72,9 +72,9 @@ return {
         },
         chat = {
           window = {
-            layout = "float", -- float|vertical|horizontal|buffer
+            layout = "vertical", -- float|vertical|horizontal|buffer
             height = 100,
-            width = 100,
+            width = 150,
           },
         },
       },
