@@ -119,16 +119,9 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    init = function()
-      require("legendary").keymaps({
-        {
-          "cd",
-          vim.diagnostic.open_float,
-          mode = "n",
-          description = "Open diagnostic float window",
-        },
-      })
-    end,
+    keys = {
+      { "cd", "vim.diagnostic.open_float" },
+    },
     ---@class PluginLspOpts
     opts = function(_, opts)
       local servers = {
