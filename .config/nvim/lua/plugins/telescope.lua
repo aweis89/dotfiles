@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 local actions = require("telescope.actions")
 
 -- Table to keep track of added files
@@ -7,6 +11,9 @@ return {
     "nvim-telescope/telescope.nvim",
     opts = {
       defaults = {
+        preview = {
+          highlight_line = true, -- Enable line highlighting in preview
+        },
         layout_config = {
           width = 0.97, -- 97% of screen width
           height = 0.97, -- 97% of screen height

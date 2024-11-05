@@ -1,12 +1,39 @@
 vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
 vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
 
+-- Define a function to check if dark mode is enabled
+local function is_dark_mode_enabled()
+  -- Check if the operating system is macOS
+  -- if vim.fn.system("uname") == "Darwin\n" then
+  local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+  if handle == nil then
+    return
+  end
+  local result = handle:read("*a")
+  handle:close()
+  return result:match("^%s*Dark%s*$") ~= nil
+  -- end
+end
+
+if is_dark_mode_enabled() then
+  vim.cmd("set background=dark")
+else
+  vim.cmd("set background=light")
+end
+
 return {
   {
     "LazyVim/LazyVim",
-    -- opts = function(_, opts)
-    --   opts.colorscheme = COLORSCHEME
-    -- end,
+    opts = function(_, opts)
+      opts.colorscheme = "tokyonight"
+    end,
+  },
+  {
+    "ibhagwan/fzf-lua",
+    keys = {
+      { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
+      { "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
+    },
   },
   { "almo7aya/openingh.nvim" },
   { "christoomey/vim-tmux-navigator" },
