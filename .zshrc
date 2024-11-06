@@ -1,10 +1,14 @@
+if [[ "$PROFILE_STARTUP" == true ]]; then
+  zmodload zsh/zprof
+fi
+
 export EDITOR=nvim
 export VISUAL=nvim
 export GOEXPERIMENT=rangefunc
 # export PATH=$HOME/dev/flutter/bin:$PATH
 export PATH=$PATH:$HOME/kubectl-plugins
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export FZF_DEFAULT_OPTS='--layout=reverse --color=light  --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
+export FZF_DEFAULT_OPTS='--layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
 
 # Only suggest corrections for commands, not arguments
 # setopt CORRECT
@@ -228,30 +232,30 @@ ecr-login() {
   aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 805478320556.dkr.ecr.us-west-2.amazonaws.com
 }
 
-# source ~/miniforge3/bin/activate  # commented out by conda initialize
-export CONDA_DEFAULT_ENV='ai'
-
-# Created by `pipx` on 2023-12-26 02:59:09
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="/opt/homebrew/anaconda3/bin/:$PATH"
-
-source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-  eval "$__conda_setup"
-else
-  if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
-    . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
-  else
-    export PATH="/opt/homebrew/anaconda3/bin:$PATH"
-  fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# # source ~/miniforge3/bin/activate  # commented out by conda initialize
+# export CONDA_DEFAULT_ENV='ai'
+#
+# # Created by `pipx` on 2023-12-26 02:59:09
+# export PATH="$PATH:$HOME/.local/bin"
+# export PATH="/opt/homebrew/anaconda3/bin/:$PATH"
+#
+# source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+# source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+#
+# # >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/opt/homebrew/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+# if [ $? -eq 0 ]; then
+#   eval "$__conda_setup"
+# else
+#   if [ -f "/opt/homebrew/anaconda3/etc/profile.d/conda.sh" ]; then
+#     . "/opt/homebrew/anaconda3/etc/profile.d/conda.sh"
+#   else
+#     export PATH="/opt/homebrew/anaconda3/bin:$PATH"
+#   fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
 
 [[ -s "/Users/aaron/.gvm/scripts/gvm" ]] && source "/Users/aaron/.gvm/scripts/gvm"
 
@@ -415,3 +419,7 @@ zle -N fzf-file-widget
 bindkey '^F' fzf-file-widget
 
 zstyle ':completion:*' completer _complete _ignored _files
+
+if [[ "$PROFILE_STARTUP" == true ]]; then
+  zprof
+fi
