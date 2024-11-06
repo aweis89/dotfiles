@@ -27,6 +27,17 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
 
+      opts.window = {
+        completion = {
+          border = "rounded",
+          scrollbar = true,
+        },
+        documentation = {
+          border = "rounded",
+          scrollbar = false,
+        },
+      }
+
       -- Add the length comparator to prioritize shorter items
       opts.sorting = {
         priority_weight = 2,
@@ -192,6 +203,11 @@ return {
         -- helm_ls = {},
       }
       opts.servers = vim.tbl_extend("force", opts.servers, servers)
+      opts.diagnostics = {
+        float = {
+          border = "rounded",
+        },
+      }
     end,
   },
 }
