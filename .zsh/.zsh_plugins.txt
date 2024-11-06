@@ -1,3 +1,6 @@
+# Add zsh-defer at the top since other plugins might depend on it
+romkatv/zsh-defer
+
 # you can even use Oh My Zsh plugins
 ohmyzsh/ohmyzsh path:lib
 ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
@@ -14,7 +17,7 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:plugins/helm
 ohmyzsh/ohmyzsh path:plugins/istioctl
-# ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kustomize kind:fpath
 ohmyzsh/ohmyzsh path:plugins/n kind:fpath
 ohmyzsh/ohmyzsh path:plugins/rg kind:fpath
@@ -24,12 +27,14 @@ ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/xcode
 ohmyzsh/ohmyzsh path:plugins/z
 
-esc/conda-zsh-completion kind:fpath
+mroth/evalcache
 
+mbhynes/fzf-gcloud
+bonnefoa/kubectl-fzf path:shell
+
+esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
-
 zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
-
 lincheney/fzf-tab-completion path:zsh
