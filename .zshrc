@@ -218,18 +218,7 @@ alias '??'='unset GITHUB_TOKEN; gh copilot suggest -t shell'
 alias 'git?'='unset GITHUB_TOKEN; gh copilot suggest -t git'
 alias 'gh?'='unset GITHUB_TOKEN; gh copilot suggest -t gh'
 alias 'explain'='unset GITHUB_TOKEN; gh copilot explain'
-
-fzf_vim() {
-  if [[ -d "$1" ]]; then
-    cd "$1"
-    nvim
-    cd -
-  else
-    nvim "$@"
-  fi
-}
-
-alias vim=fzf_vim
+alias vim=nvim
 
 aw() {
   awk "{print \$$1}"
