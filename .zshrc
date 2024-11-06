@@ -35,7 +35,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 # Remove duplicates before unique commands
 setopt HIST_EXPIRE_DUPS_FIRST
-# Don't add entires that duplicate the previous command
+# Don't add entries that duplicate the previous command
 setopt HIST_IGNORE_DUPS
 # Remove commands when the first character is a space
 setopt HIST_IGNORE_SPACE
