@@ -77,10 +77,14 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 # Only regenerate compinit's cache once a day:
 # https://htr3n.github.io/2018/07/faster-zsh/
 autoload -Uz compinit
-if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
-  compinit
+if [[ -f ${ZDOTDIR:-$HOME}/.zcompdump ]]; then
+  if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+    compinit
+  else
+    compinit -C
+  fi
 else
-  compinit -C
+  compinit
 fi
 
 ###############################################################################
@@ -387,5 +391,16 @@ bindkey '^I' fzf_completion
 # Bind Shift-Tab to act like Up arrow in menu selection
 bindkey '^[[Z' reverse-menu-select
 bindkey -M menuselect '^[[Z' up-line-or-history
+
+# Create widget function to find file
+fzf-file-widget() {
+  local result=$(find . -type f | fzf)
+  zle reset-prompt
+  LBUFFER+=$result
+}
+
+# Bind Ctrl-F to fzf-file-widget
+zle -N fzf-file-widget
+bindkey '^F' fzf-file-widget
 
 zstyle ':completion:*' completer _complete _ignored _files
