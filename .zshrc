@@ -4,7 +4,7 @@ export GOEXPERIMENT=rangefunc
 # export PATH=$HOME/dev/flutter/bin:$PATH
 export PATH=$PATH:$HOME/kubectl-plugins
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export FZF_DEFAULT_OPTS='--layout=reverse --color=light  --bind "ctrl-d:page-down,ctrl-u:page-up"'
+export FZF_DEFAULT_OPTS='--layout=reverse --color=light  --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
 
 # Only suggest corrections for commands, not arguments
 # setopt CORRECT
@@ -324,6 +324,10 @@ gcloud-update-kubeconfig() {
 alias guk=gcloud-update-kubeconfig
 alias guki='gcloud-update-kubeconfig --internal-ip'
 
+capture-pane() {
+  local dest=${1:-~/tmux-buffer.txt}
+  tmux capture-pane -pS - >$dest
+}
 gcloud-account() {
   gcloud auth list --format="table(account)" |
     grep -v ACCOUNT | fzf | xargs gcloud config set account
@@ -381,11 +385,29 @@ bindkey '^I' fzf_completion
 bindkey '^[[Z' reverse-menu-select
 bindkey -M menuselect '^[[Z' up-line-or-history
 
-# Create widget function to find file
 fzf-file-widget() {
-  local result=$(find . -type f | fzf)
+  local partial="${LBUFFER##* }"
+  local search_dir="."
+
+  # If there's a partial path, use its directory as search base
+  if [[ -n "$partial" ]]; then
+    if [[ -d "$partial" ]]; then
+      search_dir="$partial"
+    elif [[ -d "$(dirname "$partial")" ]]; then
+      search_dir="$(dirname "$partial")"
+    fi
+  fi
+
+  local result=$(cd "$search_dir" 2>/dev/null && find . -type f 2>/dev/null | fzf)
+
+  if [[ -n "$result" ]]; then
+    # Remove ./ prefix from result
+    result="${result#./}"
+    # Replace partial path with full result
+    LBUFFER="${LBUFFER%$partial}$search_dir/$result"
+  fi
+
   zle reset-prompt
-  LBUFFER+=$result
 }
 
 # Bind Ctrl-F to fzf-file-widget
