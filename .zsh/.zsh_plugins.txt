@@ -1,3 +1,5 @@
+mattmc3/ez-compinit
+
 # Add zsh-defer at the top since other plugins might depend on it
 romkatv/zsh-defer
 
