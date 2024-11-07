@@ -8,11 +8,14 @@ fi
 # Core environment
 export EDITOR=nvim
 export VISUAL=nvim
-typeset -gx BREW_PREFIX=/opt/homebrew
-typeset -gx ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-typeset -gx FZF_BASE="$BREW_PREFIX/opt/fzf"
+export BREW_PREFIX=/opt/homebrew
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+export FZF_BASE="$BREW_PREFIX/opt/fzf"
 export FZF_DEFAULT_OPTS='--layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+export HISTFILE="$ZSH_CACHE_DIR/history"
+export HISTSIZE=10000
+export SAVEHIST=10000
 
 # Basic path
 typeset -U path
@@ -26,42 +29,18 @@ path=(
 )
 
 # Shell options
-setopt INTERACTIVE_COMMENTS AUTO_CD EXTENDED_GLOB
-setopt HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_VERIFY SHARE_HISTORY
-
-# History setup
-HISTFILE="$ZSH_CACHE_DIR/history"
-HISTSIZE=10000
-SAVEHIST=10000
-
-# Ensure cache directories exist
-() {
-    [[ -d $ZSH_CACHE_DIR ]] || mkdir -p $ZSH_CACHE_DIR/{plugins,completions}
-}
-
-# Completion system - load essential completions immediately
-# () {
-#     local zcd="$ZSH_CACHE_DIR/zcompdump"
-#     
-#     # Essential completion styles
-#     zstyle ':completion:*' use-cache on
-#     zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/completions"
-#     zstyle ':completion:*' menu select
-#     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-#     
-#     # Fast compinit
-#     autoload -Uz compinit
-#     if [[ -f "$zcd" ]] && [[ $(date +'%j') = $(stat -f '%Sm' -t '%j' "$zcd") ]]; then
-#         compinit -C -d "$zcd"
-#     else
-#         compinit -d "$zcd"
-#         { zcompile "$zcd" } &!
-#     fi
-# }
+setopt \
+  INTERACTIVE_COMMENTS \
+  AUTO_CD EXTENDED_GLOB \
+  HIST_EXPIRE_DUPS_FIRST \
+  HIST_IGNORE_DUPS \
+  HIST_IGNORE_SPACE \
+  HIST_VERIFY SHARE_HISTORY
 
 # vi-mode configuration
 bindkey -v
 
+# needs to go before plugin load
 zstyle ':completion:*' fzf-search-display true
 
 # Load plugins
@@ -73,6 +52,9 @@ zstyle ':completion:*' fzf-search-display true
     fi
     source ${zsh_plugins}.zsh
 }
+
+# needs to go after plugin load
+zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 
 # Initialize starship prompt
 _evalcache starship init zsh
