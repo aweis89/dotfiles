@@ -8,7 +8,6 @@ fi
 # Core environment
 export EDITOR=nvim
 export VISUAL=nvim
-export GOEXPERIMENT=rangefunc
 typeset -gx BREW_PREFIX=/opt/homebrew
 typeset -gx ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 typeset -gx FZF_BASE="$BREW_PREFIX/opt/fzf"
@@ -41,37 +40,34 @@ SAVEHIST=10000
 }
 
 # Completion system - load essential completions immediately
-() {
-    local zcd="$ZSH_CACHE_DIR/zcompdump"
-    
-    # Essential completion styles
-    zstyle ':completion:*' use-cache on
-    zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/completions"
-    zstyle ':completion:*' menu select
-    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-    
-    # Fast compinit
-    autoload -Uz compinit
-    if [[ -f "$zcd" ]] && [[ $(date +'%j') = $(stat -f '%Sm' -t '%j' "$zcd") ]]; then
-        compinit -C -d "$zcd"
-    else
-        compinit -d "$zcd"
-        { zcompile "$zcd" } &!
-    fi
-}
+# () {
+#     local zcd="$ZSH_CACHE_DIR/zcompdump"
+#     
+#     # Essential completion styles
+#     zstyle ':completion:*' use-cache on
+#     zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/completions"
+#     zstyle ':completion:*' menu select
+#     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+#     
+#     # Fast compinit
+#     autoload -Uz compinit
+#     if [[ -f "$zcd" ]] && [[ $(date +'%j') = $(stat -f '%Sm' -t '%j' "$zcd") ]]; then
+#         compinit -C -d "$zcd"
+#     else
+#         compinit -d "$zcd"
+#         { zcompile "$zcd" } &!
+#     fi
+# }
 
-# Essential FZF setup - load critical features immediately
-() {
-    if [[ -d "$FZF_BASE" ]]; then
-        source "$FZF_BASE/shell/completion.zsh" 2>/dev/null
-        source "$FZF_BASE/shell/key-bindings.zsh" 2>/dev/null
-    fi
-}
+# vi-mode configuration
+bindkey -v
 
-# Load critical plugins immediately
+zstyle ':completion:*' fzf-search-display true
+
+# Load plugins
 () {
     local zsh_plugins=~/.zsh/.zsh_plugins
-    if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt || ! -e ${zsh_plugins}.zsh ]]; then
+    if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
         source "$BREW_PREFIX/opt/antidote/share/antidote/antidote.zsh"
         antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
     fi
@@ -108,10 +104,7 @@ fzf-file-widget() {
     zle reset-prompt
 }
 
-# Essential key bindings
 zle -N fzf-file-widget
-# vi-mode configuration
-bindkey -v
 bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
@@ -123,18 +116,16 @@ bindkey -M menuselect '^[[Z' up-line-or-history
 bindkey '^F' fzf-file-widget
 bindkey '^g' fzf-gcloud-widget
 
-# Essential aliases
-
-# Initialize asdf
-source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
-
 # Source additional configs
-source "$HOME/.zshrc.local"
-source "$HOME/.zsh/kubectl.zsh"
+zsh-defer source "$HOME/.zshrc.local"
+zsh-defer source "$HOME/.zsh/kubectl.zsh"
+zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
 
+alias k=kubectl
+alias kcn=kubens
+alias kcu=kubectx
 alias ls="eza"
 alias g="git"
-alias k=kubectl
 alias v='nvim'
 alias vim='nvim'
 alias c="cd"
@@ -236,29 +227,6 @@ gcloud-account() {
 gcloud-fzf() {
     cmd=$(__gcloud_sel)
     [[ -n "$cmd" ]] && eval "$cmd"
-}
-
-# Kubernetes Functions
-k-node-run() {
-    local node_name=$1
-    shift
-    local command=("$@")
-    local args_json=$(printf ', "%s"' "${command[@]}")
-    args_json="[${args_json:2}]"
-
-    kubectl run -it curl-pod --image=curlimages/curl --overrides="{
-        \"apiVersion\": \"v1\",
-        \"spec\": {
-            \"nodeSelector\": {
-                \"kubernetes.io/hostname\": \"${node_name}\"
-            },
-            \"containers\": [{
-                \"name\": \"curl-pod\",
-                \"image\": \"curlimages/curl\",
-                \"args\": ${args_json}
-            }]
-        }
-    }"
 }
 
 # Utility Functions
