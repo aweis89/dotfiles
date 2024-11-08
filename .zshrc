@@ -85,13 +85,35 @@ fzf-file-widget() {
     
     zle reset-prompt
 }
-
 zle -N fzf-file-widget
+
+kubectl_or_alias_fzf() {
+    # Extract the first word of the buffer
+    local first_word="${BUFFER%% *}"
+
+    # Expand the alias if it exists
+    local expanded_command
+    expanded_command=$(alias "$first_word" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//')
+
+    # If there's no alias expansion, use the first word as-is
+    [[ -z "$expanded_command" ]] && expanded_command="$first_word"
+
+    # Check if the expanded command starts with "kubectl"
+    if [[ "$expanded_command" == kubectl* ]]; then
+        # Call kubectl_fzf_completion if it’s a kubectl command
+        zle kubectl_fzf_completion
+    else
+        # Otherwise, call the alternative function
+        zle fzf_alias
+    fi
+}
+zle -N kubectl_or_alias_fzf
+
 bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
-bindkey '^s' kubectl_fzf_completion
+bindkey '^s' kubectl_or_alias_fzf
 bindkey '^I' fzf_completion
 bindkey '^[[Z' reverse-menu-select
 bindkey -M menuselect '^[[Z' up-line-or-history
@@ -102,6 +124,7 @@ bindkey '^g' fzf-gcloud-widget
 zsh-defer source "$HOME/.zshrc.local"
 zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
+zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
 alias k=kubectl
 alias kcn=kubens
@@ -156,11 +179,11 @@ ggmain() {
 }
 
 goinit() {
-    local name=$1
-    local org=${2:-aweis89}
-    [[ -d $name ]] || mkdir $name
-    cd $name
-    go mod init github.com/$org/$name
+  local name=$1
+  local org=${2:-aweis89}
+  [[ -d $name ]] || mkdir $name
+  cd $name
+  go mod init github.com/$org/$name
 }
 
 gomodrename() {
