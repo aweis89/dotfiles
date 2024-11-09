@@ -31,7 +31,6 @@ ohmyzsh/ohmyzsh path:plugins/terraform
 # ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/xcode
 ohmyzsh/ohmyzsh path:plugins/z
-mroth/evalcache
 
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
