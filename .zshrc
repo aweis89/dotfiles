@@ -173,11 +173,8 @@ alias tfi='terraform init'
 alias light='~/.config/theme-reactor/change_to.sh light &'
 alias dark='~/.config/theme-reactor/change_to.sh dark &'
 alias ag=rg
-alias guk=gcloud-update-kubeconfig
-alias guki='gcloud-update-kubeconfig --internal-ip'
-alias fgc=gcloud-fzf
-alias explain='unset GITHUB_TOKEN; gh copilot explain'
-alias int='curl -Ss https://google.com'
+alias explain='unset github_token; gh copilot explain'
+alias int='curl -ss https://google.com'
 alias kb=kubebuilder
 alias kw='watch kubectl'
 alias rms='rm -rf ~/.local/share/nvim/swap/*'
@@ -187,9 +184,9 @@ alias vims='cd ~/.config/nvim/lua && vim'
 alias zshs='vim ~/.zshrc'
 alias ff='find . -type f -name'
 alias fd='find . -type d -name'
-alias '??'='unset GITHUB_TOKEN; gh copilot suggest -t shell'
-alias 'git?'='unset GITHUB_TOKEN; gh copilot suggest -t git'
-alias 'gh?'='unset GITHUB_TOKEN; gh copilot suggest -t gh'
+alias '??'='unset github_token; gh copilot suggest -t shell'
+alias 'git?'='unset github_token; gh copilot suggest -t git'
+alias 'gh?'='unset github_token; gh copilot suggest -t gh'
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
@@ -238,19 +235,23 @@ gcloud-update-kubeconfig() {
         set +x
     fi
 }
+alias guk=gcloud-update-kubeconfig
+alias guki='gcloud-update-kubeconfig --internal-ip'
 
-gcloud-account() {
+_gcloud_account() {
     gcloud auth list --format="table(account)" |
         grep -v ACCOUNT | fzf | xargs gcloud config set account
 }
+alias gcloud-account=_gcloud_account
 
 gcloud-fzf() {
     cmd=$(__gcloud_sel)
     [[ -n "$cmd" ]] && eval "$cmd"
 }
+alias fgc=gcloud-fzf
 
 # Utility Functions
-pr-msg() {
+slack-pr-msg() {
     local pr="$(gh pr view --json url,title,number,isDraft)"
     local repo=$(basename -s .git $(git config --get remote.origin.url))
     local title=$(echo $pr | jq -r '.title')
@@ -262,6 +263,7 @@ pr-msg() {
     [[ "$isDraft" = "true" ]] && msg=":draft-pr: ${msg}"
     echo ":pull-request: ${msg} :pray:" | tee >(pbcopy)
 }
+alias pr-msg=slack-pr-msg
 
 llm() {
     go run ~/p/llm-agent/ "$@" | bat --language=Markdown
