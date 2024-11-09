@@ -92,11 +92,13 @@ _fzf_file_widget() {
 zle -N _fzf_file_widget
 
 _kubectl_or_alias_fzf() {
-    # Extract the first word of the buffer
-    local first_word="${BUFFER%% *}"
+    # Trim leading/trailing whitespace from buffer
+    local trimmed_buffer="${BUFFER#"${BUFFER%%[![:space:]]*}"}"
+    # Extract the first word of the trimmed buffer
+    local first_word="${trimmed_buffer%% *}"
 
-    # Check if there's a space after the first word
-    if [[ "$BUFFER" =~ ^[^[:space:]]+[[:space:]] ]]; then
+    # Check if there's a space after the first word in the original buffer
+    if [[ "$BUFFER" =~ [^[:space:]]+[[:space:]] ]]; then
         # Expand the alias if it exists
         local expanded_command
         expanded_command=$(alias "$first_word" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//')
@@ -104,14 +106,13 @@ _kubectl_or_alias_fzf() {
         # If there's no alias expansion, use the first word as-is
         [[ -z "$expanded_command" ]] && expanded_command="$first_word"
 
-        # Check if the expanded command starts with "kubectl"
+        # Check if the expandejd command starts with "kubectl"
         if [[ "$expanded_command" == kubectl* ]]; then
             # Call kubectl_fzf_completion if it's a kubectl command
             zle kubectl_fzf_completion
             return
         fi
     fi
-
     # If no space after first word or not kubectl, search fzf aliases
     zle _fzf_alias
 }
