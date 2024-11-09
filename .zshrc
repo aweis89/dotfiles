@@ -117,7 +117,7 @@ _fzf_alias() {
     FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
     local selection
     if selection=$(alias |
-                       sed 's/=/\t/' |
+                       sed -e 's/=/\t/' -e "s/'//g" |
                        column -s '	' -t |
                        FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_ALIAS_OPTS" \
                          fzf --preview "echo {2..}" --query="$BUFFER" |
