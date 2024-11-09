@@ -91,23 +91,43 @@ kubectl_or_alias_fzf() {
     # Extract the first word of the buffer
     local first_word="${BUFFER%% *}"
 
-    # Expand the alias if it exists
-    local expanded_command
-    expanded_command=$(alias "$first_word" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//')
+    # Check if there's a space after the first word
+    if [[ "$BUFFER" =~ ^[^[:space:]]+[[:space:]] ]]; then
+        # Expand the alias if it exists
+        local expanded_command
+        expanded_command=$(alias "$first_word" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//')
 
-    # If there's no alias expansion, use the first word as-is
-    [[ -z "$expanded_command" ]] && expanded_command="$first_word"
+        # If there's no alias expansion, use the first word as-is
+        [[ -z "$expanded_command" ]] && expanded_command="$first_word"
 
-    # Check if the expanded command starts with "kubectl"
-    if [[ "$expanded_command" == kubectl* ]]; then
-        # Call kubectl_fzf_completion if it’s a kubectl command
-        zle kubectl_fzf_completion
-    else
-        # Otherwise, call the alternative function
-        zle fzf_alias
+        # Check if the expanded command starts with "kubectl"
+        if [[ "$expanded_command" == kubectl* ]]; then
+            # Call kubectl_fzf_completion if it's a kubectl command
+            zle kubectl_fzf_completion
+            return
+        fi
     fi
+
+    # If no space after first word or not kubectl, search fzf aliases
+    zle fzf_alias
 }
 zle -N kubectl_or_alias_fzf
+
+fzf_alias() {
+    FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
+    local selection
+    if selection=$(alias |
+                       sed 's/=/\t/' |
+                       column -s '	' -t |
+                       FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_ALIAS_OPTS" \
+                         fzf --preview "echo {2..}" --query="$BUFFER" |
+                       awk '{ print $1 }'); then
+        BUFFER="$selection "
+        CURSOR=$#BUFFER
+    fi
+    zle redisplay
+}
+zle -N fzf_alias
 
 bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
@@ -172,7 +192,6 @@ alias '??'='unset GITHUB_TOKEN; gh copilot suggest -t shell'
 alias 'git?'='unset GITHUB_TOKEN; gh copilot suggest -t git'
 alias 'gh?'='unset GITHUB_TOKEN; gh copilot suggest -t gh'
 
-# Development Functions
 ggmain() {
   git checkout main 2>/dev/null || git checkout master
   ggpull
@@ -194,15 +213,10 @@ gomodrename() {
         -exec sed -i '' -e "s|${old}|${new}|g" {} \;
 }
 
-fv() {
-    nvim $(fzf)
-}
-
 fbranch() {
     git branch | fzf | xargs git checkout
 }
 
-# Cloud Functions
 gcloud-project() {
     projects=$(gcloud projects list)
     selected=$(echo "$projects" | grep -v PROJECT_ID | fzf)
