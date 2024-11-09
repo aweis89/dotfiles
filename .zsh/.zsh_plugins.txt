@@ -14,7 +14,7 @@ ohmyzsh/ohmyzsh path:plugins/brew
 ohmyzsh/ohmyzsh path:plugins/docker
 ohmyzsh/ohmyzsh path:plugins/docker-compose
 ohmyzsh/ohmyzsh path:plugins/fzf
-# ohmyzsh/ohmyzsh path:plugins/gcloud kind:fpath
+ohmyzsh/ohmyzsh path:plugins/gcloud
 ohmyzsh/ohmyzsh path:plugins/gh
 ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/golang
@@ -34,7 +34,6 @@ mroth/evalcache
 
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
-thirteen37/fzf-alias
 
 esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
