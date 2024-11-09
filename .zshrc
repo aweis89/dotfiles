@@ -63,9 +63,6 @@ zstyle ':completion:*' fzf-search-display true
 # needs to go after plugin load
 zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 
-# Initialize starship prompt
-# _evalcache starship init zsh
-
 # Additional paths
 export ZFUNCDIR=~/.zsh/functions
 fpath=($fpath $HOME/.zsh/functions ~/.cache/oh-my-zsh/completions ~/.zfunc)
