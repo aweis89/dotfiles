@@ -7,6 +7,7 @@ return {
       ft.tf = { "terraform_fmt" }
       ft.yaml = {}
       ft.lua = { "stylua" }
+      ft.bash = { "bashls" }
       return opts
     end,
   },
