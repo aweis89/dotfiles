@@ -3,9 +3,10 @@ romkatv/zsh-defer
 
 mattmc3/ez-compinit
 
-# Oh My Zsh plugins
+romkatv/powerlevel10k
+
+# # Oh My Zsh plugins
 ohmyzsh/ohmyzsh path:lib
-ohmyzsh/ohmyzsh path:plugins/alias-finder
 ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
 ohmyzsh/ohmyzsh path:plugins/ag kind:fpath
 ohmyzsh/ohmyzsh path:plugins/azure
@@ -26,18 +27,20 @@ ohmyzsh/ohmyzsh path:plugins/n kind:fpath
 ohmyzsh/ohmyzsh path:plugins/rg kind:fpath
 ohmyzsh/ohmyzsh path:plugins/rust
 ohmyzsh/ohmyzsh path:plugins/terraform
-ohmyzsh/ohmyzsh path:plugins/vi-mode
+# breaks instant prompt
+# ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/xcode
 ohmyzsh/ohmyzsh path:plugins/z
-
 mroth/evalcache
 
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
+
+Aloxaf/fzf-tab path:fzf-tab.plugin.zsh
 
 esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
 zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
-lincheney/fzf-tab-completion path:zsh
+# # lincheney/fzf-tab-completion path:zsh

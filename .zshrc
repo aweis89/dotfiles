@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Skip global compinit
 skip_global_compinit=1
 
@@ -11,7 +18,7 @@ export VISUAL=nvim
 export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
-export FZF_DEFAULT_OPTS='--layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
+export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
@@ -57,7 +64,7 @@ zstyle ':completion:*' fzf-search-display true
 zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 
 # Initialize starship prompt
-_evalcache starship init zsh
+# _evalcache starship init zsh
 
 # Additional paths
 export ZFUNCDIR=~/.zsh/functions
@@ -134,9 +141,7 @@ bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
 bindkey '^s' _kubectl_or_alias_fzf
-bindkey '^I' fzf_completion
 bindkey '^[[Z' reverse-menu-select
-bindkey -M menuselect '^[[Z' up-line-or-history
 bindkey '^F' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
 
@@ -158,8 +163,6 @@ alias tmux="TERM=screen-256color tmux"
 alias tf=terraform
 alias tfa='terraform apply -auto-approve'
 alias tfi='terraform init'
-alias light='~/.config/theme-reactor/change_to.sh light &'
-alias dark='~/.config/theme-reactor/change_to.sh dark &'
 alias ag=rg
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
@@ -169,12 +172,14 @@ alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vims='cd ~/.config/nvim/lua && vim'
 alias zshs='vim ~/.zshrc'
+alias zshp='vim ~/.zsh/.zsh_plugins.txt'
 alias ff='find . -type f -name'
 alias fd='find . -type d -name'
 alias '??'='unset github_token; gh copilot suggest -t shell'
 alias 'git?'='unset github_token; gh copilot suggest -t git'
 alias 'gh?'='unset github_token; gh copilot suggest -t gh'
 alias explain='unset github_token; gh copilot explain'
+alias ggroot='cd $(git rev-parse --show-toplevel)'
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
@@ -281,3 +286,30 @@ temporal() {
 if [[ "$PROFILE_STARTUP" == true ]]; then
     zprof
 fi
+
+enable-fzf-tab
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences (like '%F{red}%d%f') here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# preview directory's content with eza when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# custom fzf flags
+# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
+# To make fzf-tab follow FZF_DEFAULT_OPTS.
+# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
+
+zstyle ':fzf-tab:*' show-group none
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
