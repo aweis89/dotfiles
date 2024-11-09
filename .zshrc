@@ -64,7 +64,7 @@ export ZFUNCDIR=~/.zsh/functions
 fpath=($fpath $HOME/.zsh/functions ~/.cache/oh-my-zsh/completions ~/.zfunc)
 
 # Custom file widget
-fzf-file-widget() {
+_fzf_file_widget() {
     local partial="${LBUFFER##* }"
     local search_dir="."
     
@@ -85,9 +85,9 @@ fzf-file-widget() {
     
     zle reset-prompt
 }
-zle -N fzf-file-widget
+zle -N _fzf_file_widget
 
-kubectl_or_alias_fzf() {
+_kubectl_or_alias_fzf() {
     # Extract the first word of the buffer
     local first_word="${BUFFER%% *}"
 
@@ -109,11 +109,11 @@ kubectl_or_alias_fzf() {
     fi
 
     # If no space after first word or not kubectl, search fzf aliases
-    zle fzf_alias
+    zle _fzf_alias
 }
-zle -N kubectl_or_alias_fzf
+zle -N _kubectl_or_alias_fzf
 
-fzf_alias() {
+_fzf_alias() {
     FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
     local selection
     if selection=$(alias |
@@ -127,17 +127,17 @@ fzf_alias() {
     fi
     zle redisplay
 }
-zle -N fzf_alias
+zle -N _fzf_alias
 
 bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
-bindkey '^s' kubectl_or_alias_fzf
+bindkey '^s' _kubectl_or_alias_fzf
 bindkey '^I' fzf_completion
 bindkey '^[[Z' reverse-menu-select
 bindkey -M menuselect '^[[Z' up-line-or-history
-bindkey '^F' fzf-file-widget
+bindkey '^F' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
 
 # Source additional configs
@@ -173,7 +173,6 @@ alias tfi='terraform init'
 alias light='~/.config/theme-reactor/change_to.sh light &'
 alias dark='~/.config/theme-reactor/change_to.sh dark &'
 alias ag=rg
-alias gp=gcloud-project
 alias guk=gcloud-update-kubeconfig
 alias guki='gcloud-update-kubeconfig --internal-ip'
 alias fgc=gcloud-fzf
@@ -192,10 +191,11 @@ alias '??'='unset GITHUB_TOKEN; gh copilot suggest -t shell'
 alias 'git?'='unset GITHUB_TOKEN; gh copilot suggest -t git'
 alias 'gh?'='unset GITHUB_TOKEN; gh copilot suggest -t gh'
 
-ggmain() {
+ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
   ggpull
 }
+alias ggmain='ggmain_or_master'
 
 goinit() {
   local name=$1
@@ -226,6 +226,7 @@ gcloud-project() {
         gcloud config get project
     fi
 }
+alias gp=gcloud-project
 
 gcloud-update-kubeconfig() {
     cluster=$(gcloud container clusters list | grep -v NAME | fzf)
