@@ -150,22 +150,10 @@ alias k=kubectl
 alias kcn=kubens
 alias kcu=kubectx
 alias ls="eza"
-alias g="git"
-alias v='nvim'
 alias vim='nvim'
-alias c="cd"
-alias ..="cd .."
-alias ...="cd ../.."
-alias b="bat"
-alias gd="diff2html -s side"
 alias d=z
-alias gos=go-search
-alias hf=helmfile
 alias kb=kubebuilder
-alias kcg='kubectl config get-contexts'
 alias kw='watch kubectl'
-alias ll="eza -l --git -h"
-alias os=operator-sdk
 alias tmux="TERM=screen-256color tmux"
 alias tf=terraform
 alias tfa='terraform apply -auto-approve'
@@ -173,7 +161,6 @@ alias tfi='terraform init'
 alias light='~/.config/theme-reactor/change_to.sh light &'
 alias dark='~/.config/theme-reactor/change_to.sh dark &'
 alias ag=rg
-alias explain='unset github_token; gh copilot explain'
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
 alias kw='watch kubectl'
@@ -187,6 +174,7 @@ alias fd='find . -type d -name'
 alias '??'='unset github_token; gh copilot suggest -t shell'
 alias 'git?'='unset github_token; gh copilot suggest -t git'
 alias 'gh?'='unset github_token; gh copilot suggest -t gh'
+alias explain='unset github_token; gh copilot explain'
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
