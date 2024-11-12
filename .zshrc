@@ -49,7 +49,6 @@ bindkey -v
 
 # needs to go before plugin load
 zstyle ':completion:*' fzf-search-display true
-
 # Load plugins
 () {
     local zsh_plugins=~/.zsh/.zsh_plugins
@@ -59,11 +58,19 @@ zstyle ':completion:*' fzf-search-display true
     fi
     source ${zsh_plugins}.zsh
 }
+# press ctrl-r to repeat completion *without* accepting i.e. reload the completion
+# press / to accept the completion and retrigger it
+keys=(
+    ctrl-r:'repeat-fzf-completion'
+    /:accept:'repeat-fzf-completion'
+)
+zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
+
 
 _evalcache liqoctl completion zsh
 
 # needs to go after plugin load
-zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
+# zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 
 # Additional paths
 export ZFUNCDIR=~/.zsh/functions
@@ -108,14 +115,18 @@ _kubectl_or_alias_fzf() {
         # If there's no alias expansion, use the first word as-is
         [[ -z "$expanded_command" ]] && expanded_command="$first_word"
 
-        # Check if the expandejd command starts with "kubectl"
+        # Check if the expanded command starts with "kubectl"
         if [[ "$expanded_command" == kubectl* ]]; then
             # Call kubectl_fzf_completion if it's a kubectl command
             zle kubectl_fzf_completion
             return
+        else
+            # If there's a space but not kubectl, use fzf-complete
+            zle fzf_completion
+            return
         fi
     fi
-    # If no space after first word or not kubectl, search fzf aliases
+    # If no space after first word, search fzf aliases
     zle _fzf_alias
 }
 zle -N _kubectl_or_alias_fzf
@@ -287,31 +298,6 @@ bindkey "$terminfo[kcbt]" reverse-menu-complete
 bindkey '^J' menu-complete
 bindkey '^K' reverse-menu-complete
 
-# enable-fzf-tab
-# # disable sort when completing `git checkout`
-# zstyle ':completion:*:git-checkout:*' sort false
-# # set descriptions format to enable group support
-# # NOTE: don't use escape sequences (like '%F{red}%d%f') here, fzf-tab will ignore them
-# zstyle ':completion:*:descriptions' format '[%d]'
-# # set list-colors to enable filename colorizing
-# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-# # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-# zstyle ':completion:*' menu no
-# # preview directory's content with eza when completing cd
-# # zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-# # custom fzf flags
-# # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
-# zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up
-# # To make fzf-tab follow FZF_DEFAULT_OPTS.
-# # NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-# zstyle ':fzf-tab:*' use-fzf-default-opts yes
-# # switch group using `<` and `>`
-# zstyle ':fzf-tab:*' switch-group '<' '>'
-# 
-# zstyle ':fzf-tab:*' show-group none
-# zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 if [[ "$PROFILE_STARTUP" == true ]]; then
