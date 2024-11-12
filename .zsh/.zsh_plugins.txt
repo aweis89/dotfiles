@@ -37,11 +37,11 @@ ohmyzsh/ohmyzsh path:plugins/z
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
 
-Aloxaf/fzf-tab path:fzf-tab.plugin.zsh
+# Aloxaf/fzf-tab path:fzf-tab.plugin.zsh
 
 esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
 zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
-# # lincheney/fzf-tab-completion path:zsh
+lincheney/fzf-tab-completion path:zsh
