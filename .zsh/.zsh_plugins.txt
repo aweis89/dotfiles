@@ -5,6 +5,8 @@ mattmc3/ez-compinit
 
 romkatv/powerlevel10k
 
+mroth/evalcache
+
 # # Oh My Zsh plugins
 ohmyzsh/ohmyzsh path:lib
 ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
