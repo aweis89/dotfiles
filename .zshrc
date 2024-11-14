@@ -19,7 +19,7 @@ export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
 export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
-export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+export ZSH_AUTOSUGGEST_STRATEGY=(completion)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
 export SAVEHIST=10000
@@ -65,12 +65,9 @@ keys=(
     /:accept:'repeat-fzf-completion'
 )
 zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
-
+zstyle ':autocomplete:*' delay 0.3  # don't slow down typing
 
 _evalcache liqoctl completion zsh
-
-# needs to go after plugin load
-# zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 
 # Additional paths
 export ZFUNCDIR=~/.zsh/functions
@@ -118,7 +115,7 @@ _kubectl_or_alias_fzf() {
         # Check if the expanded command starts with "kubectl"
         if [[ "$expanded_command" == kubectl* ]]; then
             # Call kubectl_fzf_completion if it's a kubectl command
-            zle kubectl_fzf_completion
+            zle kubectl_fzf_completion || zle fzf_completion
             return
         else
             # If there's a space but not kubectl, use fzf-complete
@@ -234,8 +231,10 @@ alias guk=gcloud-update-kubeconfig
 alias guki='gcloud-update-kubeconfig --internal-ip'
 
 _gcloud_account() {
-    gcloud auth list --format="table(account)" |
-        grep -v ACCOUNT | fzf | xargs gcloud config set account
+    account=$(gcloud auth list --format="table(account)" | grep -v ACCOUNT | fzf)
+    set -x
+    gcloud config set account $account
+    set +x
 }
 alias gcloud-account=_gcloud_account
 
