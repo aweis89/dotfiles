@@ -39,6 +39,8 @@ bonnefoa/kubectl-fzf path:shell
 
 # Aloxaf/fzf-tab path:fzf-tab.plugin.zsh
 
+junegunn/fzf-git.sh path:fzf-git.sh
+
 esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
