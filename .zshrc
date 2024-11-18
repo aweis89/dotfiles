@@ -19,7 +19,7 @@ export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
 export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
-export ZSH_AUTOSUGGEST_STRATEGY=(completion)
+export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
 export SAVEHIST=10000
