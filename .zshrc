@@ -76,28 +76,24 @@ fpath=($fpath $HOME/.zsh/functions ~/.cache/oh-my-zsh/completions ~/.zfunc)
 # Custom file widget
 _fzf_file_widget() {
     local partial="${LBUFFER##* }"
-    local search_dir="."
     
-    if [[ -n "$partial" ]]; then
-        if [[ -d "$partial" ]]; then
-            search_dir="$partial"
-        elif [[ -d "$(dirname "$partial")" ]]; then
-            search_dir="$(dirname "$partial")"
-        fi
+    local result
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        result=$(_fzf_git_files)
+    else
+        result=$(find . -type f 2>/dev/null | fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
     fi
-    
-    local result=$(cd "$search_dir" 2>/dev/null && find . -type f 2>/dev/null | fzf)
     
     if [[ -n "$result" ]]; then
         result="${result#./}"
-        LBUFFER="${LBUFFER%$partial}$search_dir/$result"
+        LBUFFER="${LBUFFER%$partial}$result"
     fi
     
     zle reset-prompt
 }
 zle -N _fzf_file_widget
 
-_kubectl_or_alias_fzf() {
+multi_fzf_completion() {
     # Trim leading/trailing whitespace from buffer
     local trimmed_buffer="${BUFFER#"${BUFFER%%[![:space:]]*}"}"
     # Extract the first word of the trimmed buffer
@@ -126,7 +122,7 @@ _kubectl_or_alias_fzf() {
     # If no space after first word, search fzf aliases
     zle _fzf_alias
 }
-zle -N _kubectl_or_alias_fzf
+zle -N multi_fzf_completion
 
 _fzf_alias() {
     FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
@@ -288,7 +284,7 @@ bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
-bindkey '^s' _kubectl_or_alias_fzf
+bindkey '^s' multi_fzf_completion
 bindkey '^F' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
 
