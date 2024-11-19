@@ -165,8 +165,6 @@ multi_fzf_completion() {
 zle -N multi_fzf_completion
 
 _fzf_alias() {
-    FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
-                       #FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_ALIAS_OPTS" \
     local selection
     if selection=$(alias |
                        sed -e 's/=/\t/' -e "s/'//g" |
@@ -328,10 +326,15 @@ bindkey '^s' multi_fzf_completion
 bindkey '^F' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
 
-bindkey              '^I'         menu-complete
-bindkey "$terminfo[kcbt]" reverse-menu-complete
-bindkey '^J' menu-complete
-bindkey '^K' reverse-menu-complete
+bindkey '^I' menu-select
+bindkey "$terminfo[kcbt]" menu-select
+bindkey -M menuselect '^I' menu-complete
+bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+
+bindkey '^J' menu-select
+bindkey '^K' menu-select
+bindkey -M menuselect '^J' menu-complete
+bindkey -M menuselect '^K' reverse-menu-complete
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
