@@ -131,7 +131,7 @@ _fzf_git_files() {
         _fzf_git_files
       else
         exec </dev/tty >/dev/tty 2>/dev/tty
-        command git commit -v && ggpush
+        git commit -v && ggpush
       fi
     fi
 }
