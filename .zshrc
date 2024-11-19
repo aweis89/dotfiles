@@ -121,7 +121,7 @@ _fzf_git_files() {
             $(__fzf_git_pager); $(__fzf_git_cat) {-1}" \
         "$@" | cut -c4- | sed 's/.* -> //'
 
-    # Check if we need to reload
+    # Check if we need to reload after git add
     if [[ -f /tmp/fzf_reload ]]; then
       rm /tmp/fzf_reload
       git diff-files --name-status | grep '^M'
@@ -129,6 +129,9 @@ _fzf_git_files() {
       untracked=$(git ls-files --others --exclude-standard)
       if [ -n "$unstaged" ] || [ -n "$untracked" ]; then
         _fzf_git_files
+      else
+        exec </dev/tty >/dev/tty 2>/dev/tty
+        command git commit -v
       fi
     fi
 }
