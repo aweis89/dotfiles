@@ -228,7 +228,7 @@ gomodrename() {
 }
 
 fbranch() {
-    git branch | fzf | xargs git checkout
+    _fzf_git_branches | xargs git checkout
 }
 alias fb=fbranch
 
