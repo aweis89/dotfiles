@@ -22,28 +22,35 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.tailwind" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.lang.toml" },
 
     { import = "lazyvim.plugins.extras.editor.outline" },
 
     { import = "lazyvim.plugins.extras.util.project" },
+    { import = "lazyvim.plugins.extras.util.dot" },
+    { import = "lazyvim.plugins.extras.util.octo" },
+
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
+
     { import = "lazyvim.plugins.extras.dap" },
     { import = "lazyvim.plugins.extras.test" },
     { import = "lazyvim.plugins.extras.test.core" },
-    -- { import = "lazyvim.plugins.extras.formatting.prettier" },
-    { import = "lazyvim.plugins.extras.coding.copilot" },
-    { import = "lazyvim.plugins.extras.coding.codeium" },
+    { import = "lazyvim.plugins.extras.coding.mini-surround" },
+    { import = "lazyvim.plugins.extras.coding.yanky" },
 
+    -- { import = "lazyvim.plugins.extras.formatting.prettier" },
+
+    { import = "lazyvim.plugins.extras.ai.codeium" },
+    { import = "lazyvim.plugins.extras.ai.copilot" },
+
+    -- { import = "lazyvim.plugins.extras.editor.telescope" },
     { import = "lazyvim.plugins.extras.editor.inc-rename" },
     { import = "lazyvim.plugins.extras.editor.fzf" },
-    -- { import = "lazyvim.plugins.extras.editor.telescope" },
     { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.illuminate" },
     { import = "lazyvim.plugins.extras.editor.navic" },
     { import = "lazyvim.plugins.extras.editor.refactoring" },
-    { import = "lazyvim.plugins.extras.coding.yanky" },
-    { import = "lazyvim.plugins.extras.util.octo" },
 
     -- import/override with your plugins
     { import = "plugins" },
