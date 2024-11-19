@@ -18,7 +18,7 @@ export VISUAL=nvim
 export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
-export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:page-down,ctrl-u:page-up"'
+export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
@@ -81,7 +81,12 @@ _fzf_file_widget() {
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         result=$(_fzf_git_files)
     else
-        result=$(find . -type f 2>/dev/null | fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
+        result=$(find . -type f 2>/dev/null | fzf \
+          --border-label '📁 Files' \
+          --header $'CTRL-O (open in editor)\n\n' \
+          --preview 'bat --style=numbers --color=always --line-range :500 {}' \
+          --bind "ctrl-o:execute:${EDITOR:-vim} {-1} > /dev/tty" \
+        )
     fi
     
     if [[ -n "$result" ]]; then
@@ -92,6 +97,30 @@ _fzf_file_widget() {
     zle reset-prompt
 }
 zle -N _fzf_file_widget
+
+_fzf_git_files() {
+    _fzf_git_check || return
+    
+    local root query
+    root=$(git rev-parse --show-toplevel)
+    [[ $root != "$PWD" ]] && query='!../ '
+    (
+        git -c color.status=$(__fzf_git_color) status --short --no-branch
+        git ls-files "$root" |
+            grep --color=auto --exclude-dir={.git,.venv,venv} -vxFf \
+                <(git status -s | grep '^[^?]' | cut -c4-; echo :) |
+            sed 's/^/   /'
+    ) | fzf -m --ansi --nth 2..,.. \
+        --query "$query" \
+        --border-label '📁 Files' \
+        --header $'CTRL-G (open in browser) ╱ CTRL-O (open in editor) / CTRL-A (git add)\n\n' \
+        --bind "ctrl-g:execute-silent:bash \"$__fzf_git\" file {-1}" \
+        --bind "ctrl-o:execute:${EDITOR:-vim} {-1} > /dev/tty" \
+        --bind "ctrl-a:execute:git add {-1} > /dev/tty" \
+        --preview "git diff --no-ext-diff --color=$(__fzf_git_color .) -- {-1} | \
+            $(__fzf_git_pager); $(__fzf_git_cat) {-1}" \
+        "$@" | cut -c4- | sed 's/.* -> //'
+}
 
 multi_fzf_completion() {
     # Trim leading/trailing whitespace from buffer
@@ -126,12 +155,12 @@ zle -N multi_fzf_completion
 
 _fzf_alias() {
     FZF_ALIAS_OPTS=${FZF_ALIAS_OPTS:-"--preview-window up:3:hidden:wrap"}
+                       #FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_ALIAS_OPTS" \
     local selection
     if selection=$(alias |
                        sed -e 's/=/\t/' -e "s/'//g" |
-                       column -s '	' -t |
-                       FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_ALIAS_OPTS" \
-                         fzf --preview "echo {2..}" --query="$BUFFER" |
+                       column -s '	' -t \
+                       | fzf --preview "echo {2..}" --query="$BUFFER" |
                        awk '{ print $1 }'); then
         BUFFER="$selection "
         CURSOR=$#BUFFER
@@ -201,6 +230,7 @@ gomodrename() {
 fbranch() {
     git branch | fzf | xargs git checkout
 }
+alias fb=fbranch
 
 gcloud-project() {
     projects=$(gcloud projects list)
