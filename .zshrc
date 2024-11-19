@@ -18,7 +18,7 @@ export VISUAL=nvim
 export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
-export FZF_DEFAULT_OPTS='--tmux 90% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
+export FZF_DEFAULT_OPTS='--tmux 95% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
