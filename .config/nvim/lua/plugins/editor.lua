@@ -39,7 +39,13 @@ return {
     },
   },
   { "sindrets/diffview.nvim" },
-  { "almo7aya/openingh.nvim" },
+  {
+    "almo7aya/openingh.nvim",
+    keys = {
+      { "<C-g>", "<cmd>OpenInGHFileLines<cr>", desc = "Open in Github (prefer branch)" },
+      { "<C-G>", "<cmd>OpenInGHFileLines!<cr>", desc = "Open in Github (prefer sha)" },
+    },
+  },
   { "christoomey/vim-tmux-navigator" },
   { "mbbill/undotree" },
   { "tpope/vim-fugitive" },
