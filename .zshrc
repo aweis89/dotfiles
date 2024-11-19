@@ -116,10 +116,21 @@ _fzf_git_files() {
         --header $'CTRL-G (open in browser) ╱ CTRL-O (open in editor) / CTRL-A (git add)\n\n' \
         --bind "ctrl-g:execute-silent:bash \"$__fzf_git\" file {-1}" \
         --bind "ctrl-o:execute:${EDITOR:-vim} {-1} > /dev/tty" \
-        --bind "ctrl-a:execute:git add {-1} > /dev/tty" \
+        --bind "ctrl-a:execute(git add {-1} && echo 'reload' > /tmp/fzf_reload)+abort" \
         --preview "git diff --no-ext-diff --color=$(__fzf_git_color .) -- {-1} | \
             $(__fzf_git_pager); $(__fzf_git_cat) {-1}" \
         "$@" | cut -c4- | sed 's/.* -> //'
+
+    # Check if we need to reload
+    if [[ -f /tmp/fzf_reload ]]; then
+      rm /tmp/fzf_reload
+      git diff-files --name-status | grep '^M'
+      unstaged=$(git diff-files --name-status)
+      untracked=$(git ls-files --others --exclude-standard)
+      if [ -n "$unstaged" ] || [ -n "$untracked" ]; then
+        _fzf_git_files
+      fi
+    fi
 }
 
 multi_fzf_completion() {
