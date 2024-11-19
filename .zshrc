@@ -205,6 +205,10 @@ alias 'gh?'='unset github_token; gh copilot suggest -t gh'
 alias explain='unset github_token; gh copilot explain'
 alias ggroot='cd $(git rev-parse --show-toplevel)'
 
+alias fb='_fzf_git_branches | xargs git checkout'
+alias freflog='_fzf_git_lreflogs | xargs git checkout'
+
+
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
   ggpull
@@ -226,11 +230,6 @@ gomodrename() {
     find . -type f -name '*.go' \
         -exec sed -i '' -e "s|${old}|${new}|g" {} \;
 }
-
-fbranch() {
-    _fzf_git_branches | xargs git checkout
-}
-alias fb=fbranch
 
 gcloud-project() {
     projects=$(gcloud projects list)
