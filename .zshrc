@@ -65,7 +65,7 @@ keys=(
     /:accept:'repeat-fzf-completion'
 )
 zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
-zstyle ':autocomplete:*' delay 0.3  # don't slow down typing
+zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
 
 _evalcache liqoctl completion zsh
 
@@ -193,6 +193,7 @@ alias kcu=kubectx
 alias ls="eza"
 alias vim='nvim'
 alias d=z
+alias dc=docker-compose
 alias kb=kubebuilder
 alias kw='watch kubectl'
 alias tmux="TERM=screen-256color tmux"
@@ -208,6 +209,7 @@ alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vims='cd ~/.config/nvim/lua && vim'
 alias zshs='vim ~/.zshrc'
+alias zshl='vim ~/.zshrc.local'
 alias zshp='vim ~/.zsh/.zsh_plugins.txt'
 alias ff='find . -type f -name'
 alias fd='find . -type d -name'
