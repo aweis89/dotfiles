@@ -20,6 +20,7 @@ map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "escape", remap = true })
 map("t", "jj", "<C-\\><C-n>", { desc = "escape", remap = true })
+map("t", ":", "<C-\\><C-n>:", { desc = "Enter command mode", remap = true })
 
 vim.api.nvim_exec2(
   [[
