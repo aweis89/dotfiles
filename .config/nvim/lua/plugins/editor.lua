@@ -1,3 +1,5 @@
+local actions = require("fzf-lua.actions")
+
 local function is_dark_mode_enabled()
   if vim.fn.system("uname") == "Darwin\n" then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
@@ -27,6 +29,21 @@ return {
         vim.cmd("!touch ~/.config/nvim/lua/plugins/editor.lua")
       end, { desc = "Reload config" })
     end,
+  },
+  {
+    "ibhagwan/fzf-lua",
+    keys = {
+      { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
+      { "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
+    },
+    opts = {
+      actions = {
+        files = {
+          -- open multi select in buffers instead of quickfix
+          ["default"] = actions.file_edit,
+        },
+      },
+    },
   },
   { "sindrets/diffview.nvim" },
   {
