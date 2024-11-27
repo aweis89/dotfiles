@@ -32,7 +32,6 @@
   "gotests.nvim": { "branch": "main", "commit": "1edbeb91364ab743b11be3ac4f63e498c9821fd7" },
   "grug-far.nvim": { "branch": "main", "commit": "9a2f78219390b47d67795ab09390d7f092e23976" },
   "guihua.lua": { "branch": "master", "commit": "d783191eaa75215beae0c80319fcce5e6b3beeda" },
-  "harpoon": { "branch": "harpoon2", "commit": "a84ab829eaf3678b586609888ef52f7779102263" },
   "helm-ls": { "branch": "master", "commit": "9bc4f54bce38114ab03514b29c913306771e6118" },
   "inc-rename.nvim": { "branch": "main", "commit": "b0d5b5bdd0a91eb47ff4a49b250bdc5a5eb45353" },
   "indent-blankline.nvim": { "branch": "master", "commit": "7871a88056f7144defca9c931e311a3134c5d509" },

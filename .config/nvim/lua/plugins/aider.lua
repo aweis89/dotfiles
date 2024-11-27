@@ -1,5 +1,5 @@
 return {
-  "joshuavial/aider.nvim",
+  "aweis89/aider.nvim",
   config = function()
     require("aider").setup({
       auto_manage_context = true,
