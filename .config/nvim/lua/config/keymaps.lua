@@ -8,14 +8,18 @@ local function map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+map("i", "<C-l>", "<Right>", { desc = "Insert mode move right", remap = true })
+map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
+map("i", "jj", "<Esc>", { desc = "escape", remap = true })
+
 map("n", "L", "$", { desc = "Go to end of line", remap = true })
 map("n", "H", "^", { desc = "Go to beginning of line", remap = true })
 map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })
-map("i", "<C-l>", "<Right>", { desc = "Insert mode move right", remap = true })
-map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
-map("i", "jj", "<esc>", { desc = "escape", remap = true })
+
+map("t", "<Esc>", "<C-\\><C-n>", { desc = "escape", remap = true })
+map("jj", "<Esc>", "<C-\\><C-n>", { desc = "escape", remap = true })
 
 vim.api.nvim_exec2(
   [[
