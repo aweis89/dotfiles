@@ -1,5 +1,10 @@
+if true then
+  return {}
+end
+
 return {
   "aweis89/aider.nvim",
+  dir = "/Users/aaron.weisberg/p/aider.nvim",
   config = function()
     require("aider").setup({
       auto_manage_context = true,
