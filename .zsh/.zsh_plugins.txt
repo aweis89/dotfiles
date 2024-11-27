@@ -23,7 +23,7 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:plugins/helm
 ohmyzsh/ohmyzsh path:plugins/istioctl
-ohmyzsh/ohmyzsh path:plugins/kubectl
+# ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kustomize kind:fpath
 ohmyzsh/ohmyzsh path:plugins/n kind:fpath
 ohmyzsh/ohmyzsh path:plugins/rg kind:fpath
@@ -36,6 +36,7 @@ ohmyzsh/ohmyzsh path:plugins/z
 
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
+stefanheule/zsh-llm-suggestions
 
 # Aloxaf/fzf-tab path:fzf-tab.plugin.zsh
 

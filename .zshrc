@@ -1,9 +1,15 @@
+#!/opt/homebrew/bin/zsh
+
+emulate zsh -c "$(direnv export zsh)"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+emulate zsh -c "$(direnv hook zsh)"
 
 # Skip global compinit
 skip_global_compinit=1
@@ -18,7 +24,7 @@ export VISUAL=nvim
 export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
-export FZF_DEFAULT_OPTS='--tmux 95% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
+export FZF_DEFAULT_OPTS='--tmux 80% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
@@ -37,8 +43,9 @@ path=(
 
 # Shell options
 setopt \
+  INC_APPEND_HISTORY \
+  SHARE_HISTORY \
   INTERACTIVE_COMMENTS \
-  AUTO_CD EXTENDED_GLOB \
   HIST_EXPIRE_DUPS_FIRST \
   HIST_IGNORE_DUPS \
   HIST_IGNORE_SPACE \
@@ -66,6 +73,7 @@ keys=(
 )
 zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
 zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
+zstyle ':autocomplete:*' async on
 
 _evalcache liqoctl completion zsh
 
@@ -75,7 +83,25 @@ fpath=($fpath $HOME/.zsh/functions ~/.cache/oh-my-zsh/completions ~/.zfunc)
 
 # Custom file widget
 _fzf_file_widget() {
-    local partial="${LBUFFER##* }"
+    local lbuffer="${LBUFFER##* }"
+    # Expand any environment variables on command line
+    local partial=$(eval echo "$lbuffer")
+    local query="$partial"
+    local dir=""
+    # If partial contains / and ends with /, extract dir and query
+    if [[ "$partial" =~ .*/$ ]]; then
+        dir="${partial%/*}"
+        query=""
+    # If partial contains / but doesn't end with /, extract dir and last component
+    elif [[ "$partial" =~ .*/.* ]]; then
+        dir="${partial%/*}"
+        query="${partial##*/}" # this isn't getting set correctly
+    fi
+    # Change to directory if specified
+    local orig_dir=$(pwd)
+    if [[ -n "$dir" ]]; then
+        cd "$dir" 2>/dev/null || return
+    fi
     
     local result
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -86,6 +112,7 @@ _fzf_file_widget() {
           --header $'CTRL-O (open in editor)\n\n' \
           --preview 'bat --style=numbers --color=always --line-range :500 {}' \
           --bind "ctrl-o:execute:${EDITOR:-vim} {-1} > /dev/tty" \
+          --query "$query"
         )
     fi
     
@@ -93,6 +120,9 @@ _fzf_file_widget() {
         result="${result#./}"
         LBUFFER="${LBUFFER%$partial}$result"
     fi
+
+    # Change back to original directory
+    cd "$orig_dir"
     
     zle reset-prompt
 }
@@ -101,7 +131,7 @@ zle -N _fzf_file_widget
 _fzf_git_files() {
     _fzf_git_check || return
     
-    local root query
+     local root query
     root=$(git rev-parse --show-toplevel)
     [[ $root != "$PWD" ]] && query='!../ '
     (
@@ -154,7 +184,7 @@ multi_fzf_completion() {
         # Check if the expanded command starts with "kubectl"
         if [[ "$expanded_command" == kubectl* ]]; then
             # Call kubectl_fzf_completion if it's a kubectl command
-            zle kubectl_fzf_completion || zle fzf_completion
+            zle kubectl_fzf_completion
             return
         else
             # If there's a space but not kubectl, use fzf-complete
@@ -187,11 +217,14 @@ zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
+alias ai=aichat
+alias '??'='aichat -e'
+
 alias k=kubectl
 alias kcn=kubens
 alias kcu=kubectx
-alias ls="eza"
 alias vim='nvim'
+alias c=clear
 alias d=z
 alias dc=docker-compose
 alias kb=kubebuilder
@@ -213,15 +246,23 @@ alias zshl='vim ~/.zshrc.local'
 alias zshp='vim ~/.zsh/.zsh_plugins.txt'
 alias ff='find . -type f -name'
 alias fd='find . -type d -name'
-alias '??'='unset github_token; gh copilot suggest -t shell'
-alias 'git?'='unset github_token; gh copilot suggest -t git'
-alias 'gh?'='unset github_token; gh copilot suggest -t gh'
 alias explain='unset github_token; gh copilot explain'
 alias ggroot='cd $(git rev-parse --show-toplevel)'
 
 alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
+alias fishs='vim ~/.config/fish/config.fish'
 
+aider() {
+  common_opts='--model anthropic/claude-3-5-sonnet-20241022'
+  mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+  if [[ "$mode" == "Dark" ]]; then
+    command aider --dark-mode $common_opts "$@"
+  else
+    command aider $common_opts "$@"
+  fi
+}
+compdef aider=_aider
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
@@ -283,6 +324,33 @@ gcloud-fzf() {
 }
 alias fgc=gcloud-fzf
 
+gcloud-update-kubeconfig() {
+    cluster=$(gcloud container clusters list | grep -v NAME | fzf)
+    if [[ -n "$cluster" ]]; then
+        zone=$(echo "$cluster" | awk '{print $2}')
+        name=$(echo "$cluster" | awk '{print $1}')
+        set -x
+        gcloud container clusters get-credentials "$name" --zone "$zone" "$@"
+        set +x
+    fi
+}
+alias guk=gcloud-update-kubeconfig
+alias guki='gcloud-update-kubeconfig --internal-ip'
+
+_gcloud_account() {
+    account=$(gcloud auth list --format="table(account)" | grep -v ACCOUNT | fzf)
+    set -x
+    gcloud config set account $account
+    set +x
+}
+alias gcloud-account=_gcloud_account
+
+gcloud-fzf() {
+    cmd=$(__gcloud_sel)
+    [[ -n "$cmd" ]] && eval "$cmd"
+}
+alias fgc=gcloud-fzf
+
 # Utility Functions
 slack-pr-msg() {
     local pr="$(gh pr view --json url,title,number,isDraft)"
@@ -315,14 +383,13 @@ temporal() {
     $0 "$@"
 }
 
-# Auto tmux
-() {
-    [[ -z "$TMUX" ]] && {
-        tmux new-session -ds default
-        tmux attach -t default
-    }
+pass-to-aichat-widget() {
+    BUFFER="aichat -e $BUFFER"
+    zle accept-line
 }
+zle -N pass-to-aichat-widget
 
+bindkey '^o' pass-to-aichat-widget
 bindkey '^w' forward-word
 bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
@@ -337,12 +404,38 @@ bindkey -M menuselect '^I' menu-complete
 bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
 
 bindkey '^J' menu-select
-bindkey '^K' menu-select
 bindkey -M menuselect '^J' menu-complete
 bindkey -M menuselect '^K' reverse-menu-complete
+
+bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
+
+# argc-completions
+export ARGC_COMPLETIONS_ROOT="$HOME/.local/argc-completions"
+if [[ ! -d "$ARGC_COMPLETIONS_ROOT" ]]; then
+  mkdir -p $ARGC_COMPLETIONS_ROOT
+  git clone https://github.com/sigoden/argc-completions.git $ARGC_COMPLETIONS_ROOT
+  $ARGC_COMPLETIONS_ROOT/scripts/download-tools.sh
+  $ARGC_COMPLETIONS_ROOT/scripts/setup-shell.sh zsh
+fi
+export ARGC_COMPLETIONS_PATH="$ARGC_COMPLETIONS_ROOT/completions/macos:$ARGC_COMPLETIONS_ROOT/completions"
+export PATH="$ARGC_COMPLETIONS_ROOT/bin:$PATH"
+# To add completions for only the specified command, modify next line e.g. argc_scripts=( cargo git )
+argc_scripts=( $(ls -p -1 "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions" | sed -n 's/\.sh$//p') )
+source <(argc --argc-completions zsh $argc_scripts)
+
+# Auto tmux
+() {
+    [[ -z "$TMUX" ]] && {
+        tmux new-session -ds default
+        tmux attach -t default
+    }
+}
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 if [[ "$PROFILE_STARTUP" == true ]]; then
     zprof
 fi
+
+# Created by `pipx` on 2024-11-26 01:38:49
+export PATH="$PATH:/Users/aaron.weisberg/.local/bin"
