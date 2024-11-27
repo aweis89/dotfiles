@@ -18,7 +18,7 @@ local load_in_aider = function(selected, opts)
     return
   end
 
-  local command = "aider " .. paths
+  local command = "aider --cache-prompts " .. paths
   vim.api.nvim_command("vnew")
   aider.job_id = vim.fn.termopen(command, {
     on_exit = function()
