@@ -3,7 +3,7 @@ return {
   config = function()
     require("aider").setup({
       auto_manage_context = true,
-      default_bindings = false,
+      default_bindings = true,
     })
   end,
   keys = {
