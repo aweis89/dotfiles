@@ -1,4 +1,5 @@
 # brew "bitwarden-cli"
+brew "aichat"
 brew "antidote"
 brew "argocd"
 brew "asdf"

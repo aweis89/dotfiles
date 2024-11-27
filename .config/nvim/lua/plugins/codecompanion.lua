@@ -97,13 +97,13 @@ return {
       {
         "<leader>aa",
         "<cmd>CodeCompanionChat toggle<CR>",
-        desc = "Open CodeCompanion chat prompt",
+        desc = "Toggle CodeCompanion chat prompt",
         mode = { "n", "v" },
       },
       {
         "<leader>aA",
         "<cmd>CodeCompanionChat<CR>",
-        desc = "Open CodeCompanion chat prompt",
+        desc = "Open new CodeCompanion chat prompt",
         mode = { "n", "v" },
       },
       {

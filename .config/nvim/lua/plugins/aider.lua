@@ -17,7 +17,7 @@ return {
     {
       "<leader>ob",
       function()
-        require("aider").AiderBackground()
+        require("aider").AiderBackground("--no-auto-commits")
       end,
       desc = "Aider Background",
     },
