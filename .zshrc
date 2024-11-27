@@ -261,8 +261,7 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
-export AIDER_EDITOR='tmux popup -E nvim'
-aider() {
+opts() {
   model=claude-3-5-sonnet-20241022
   common_opts=(
     --model "$model"
@@ -272,11 +271,9 @@ aider() {
     --no-attribute-committer
   )
   mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-  if [[ "$mode" == "Dark" ]]; then
-    command aider --dark-mode "${common_opts[@]}" "$@"
-  else
-    command aider "${common_opts[@]}" "$@"
-  fi
+  [[ "$mode" == "Dark" ]] && common_opts+=(--dark-mode)
+  
+  command aider "${common_opts[@]}" "$@"
 }
 compdef aider=_aider
 
