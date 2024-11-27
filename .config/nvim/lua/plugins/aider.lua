@@ -10,7 +10,7 @@ return {
     {
       "<leader>oa",
       function()
-        require("aider").AiderOpen()
+        require("aider").AiderOpen("--no-auto-commits")
       end,
       desc = "Aider Open",
     },
