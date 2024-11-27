@@ -34,3 +34,6 @@ vim.api.nvim_exec2(
 vim.diagnostic.config({
   float = { border = "rounded" },
 })
+
+vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
+vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
