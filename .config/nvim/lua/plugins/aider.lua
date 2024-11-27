@@ -23,7 +23,7 @@ return {
       desc = "Aider Background",
     },
     {
-      "<leader>cb",
+      "<leader>cb", -- Close hidden buffers except terminals
       function()
         local curr_buf_num = vim.api.nvim_get_current_buf()
         local all_buf_nums = vim.api.nvim_list_bufs()
