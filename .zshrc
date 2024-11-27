@@ -168,32 +168,39 @@ _fzf_git_files() {
 }
 
 multi_fzf_completion() {
-    # Trim leading/trailing whitespace from buffer
-    local trimmed_buffer="${BUFFER#"${BUFFER%%[![:space:]]*}"}"
-    # Extract the first word of the trimmed buffer
-    local first_word="${trimmed_buffer%% *}"
+    # Helper function to expand aliases
+    expand_alias() {
+        local cmd="$1"
+        alias "$cmd" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//'
+    }
 
-    # Check if there's a space after the first word in the original buffer
-    if [[ "$BUFFER" =~ [^[:space:]]+[[:space:]] ]]; then
-        # Expand the alias if it exists
+    # Helper function to check if buffer has space after first word
+    has_space_after_first_word() {
+        [[ "$BUFFER" =~ [^[:space:]]+[[:space:]] ]]
+    }
+
+    # Trim leading/trailing whitespace and get first word
+    local trimmed_buffer="${BUFFER#"${BUFFER%%[![:space:]]_}"}"
+    local first_word="${trimmed_buffer%% _}"
+
+    if has_space_after_first_word; then
+        # Get expanded command or use first_word if no alias exists
         local expanded_command
-        expanded_command=$(alias "$first_word" 2>/dev/null | sed -E 's/^[^=]+=//; s/^["'\''"]//; s/["'\''"]$//')
+        expanded_command=$(expand_alias "$first_word")
+        : ${expanded_command:=$first_word}
 
-        # If there's no alias expansion, use the first word as-is
-        [[ -z "$expanded_command" ]] && expanded_command="$first_word"
-
-        # Check if the expanded command starts with "kubectl"
+        # Handle kubectl commands specially
         if [[ "$expanded_command" == kubectl* ]]; then
-            # Call kubectl_fzf_completion if it's a kubectl command
             zle kubectl_fzf_completion
             return
-        else
-            # If there's a space but not kubectl, use fzf-complete
-            zle fzf_completion
-            return
         fi
+
+        # Default to regular fzf completion
+        zle fzf_completion
+        return
     fi
-    # If no space after first word, search fzf aliases
+
+    # No space after first word, use alias completion
     zle _fzf_alias
 }
 zle -N multi_fzf_completion
@@ -255,7 +262,8 @@ alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
 aider() {
-  common_opts='--model anthropic/claude-3-5-sonnet-20241022'
+  model=anthropic/claude-3-5-sonnet-20241022
+  common_opts="--model $model --cache-prompts --vim"
   mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   if [[ "$mode" == "Dark" ]]; then
     command aider --dark-mode $common_opts "$@"
