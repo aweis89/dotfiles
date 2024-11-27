@@ -8,14 +8,15 @@ return {
   end,
   keys = {
     {
-      "<leader>oa",
+      "<leader>a<space>",
       function()
         require("aider").AiderOpen("--no-auto-commits")
+        vim.api.nvim_input("A")
       end,
       desc = "Aider Open",
     },
     {
-      "<leader>ob",
+      "<leader>ab",
       function()
         require("aider").AiderBackground("--no-auto-commits")
       end,
