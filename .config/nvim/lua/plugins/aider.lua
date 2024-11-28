@@ -2,9 +2,16 @@ return {
   {
     "aweis89/aider.nvim",
     dependencies = { "ibhagwan/fzf-lua" },
-    -- dir = "/Users/aaron.weisberg/p/aider.nvim",
+    dir = "/Users/aaron.weisberg/p/aider.nvim",
     init = function()
-      require("aider").setup()
+      require("aider").setup({
+        window = {
+          layout = "float",
+          width = 0.9,
+          height = 0.9,
+          border = "rounded",
+        },
+      })
     end,
     keys = {
       {
