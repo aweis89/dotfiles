@@ -36,14 +36,6 @@ return {
       { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
       { "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
     },
-    opts = {
-      actions = {
-        files = {
-          -- open multi select in buffers instead of quickfix
-          ["default"] = actions.file_edit,
-        },
-      },
-    },
   },
   { "sindrets/diffview.nvim" },
   {
