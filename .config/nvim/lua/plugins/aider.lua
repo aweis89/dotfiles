@@ -2,7 +2,10 @@ return {
   {
     "aweis89/aider.nvim",
     dependencies = { "ibhagwan/fzf-lua" },
-    config = true,
+    -- dir = "/Users/aaron.weisberg/p/aider.nvim",
+    init = function()
+      require("aider").setup()
+    end,
     keys = {
       {
         "<leader>a<space>",
