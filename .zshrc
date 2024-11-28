@@ -274,14 +274,9 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
-export AIDER_OPTS=(
-  --cache-prompts
-  --vim --no-attribute-author
-  --no-attribute-committer)
-
 aider() {
-  local opts=("${AIDER_OPTS[@]}")
-  mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+  opts=()
+  local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
   
   command aider "${opts[@]}" "$@"
