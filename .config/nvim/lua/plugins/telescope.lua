@@ -5,6 +5,7 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
+    priority = 100, -- Higher priority to load later
     opts = {
       defaults = {
         preview = {
