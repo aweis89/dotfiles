@@ -25,7 +25,20 @@ export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
 # export FZF_DEFAULT_OPTS='-m --bind 'ctrl-s:toggle+down' --tmux 80% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
-export FZF_DEFAULT_OPTS='-m --bind 'ctrl-s:toggle+down' --tmux 80% --layout=reverse --color=light --bind "ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
+
+fzf_default_opts=(
+  --multi
+  --tmux=80%
+  --layout=reverse 
+  --color=light
+  "--bind='ctrl-s:toggle+down'"
+  "--bind='ctrl-y:select-all'"
+  "--bind='ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
+  "--bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)'"
+)
+export FZF_DEFAULT_OPTS="${(j: :)fzf_default_opts}"
+export FZF_DEFAULT_OPTS="${(j: :)fzf_default_opts}"
+
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
 export HISTSIZE=10000
@@ -261,15 +274,13 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
+export AIDER_OPTS=(
+  --cache-prompts
+  --vim --no-attribute-author
+  --no-attribute-committer)
+
 aider() {
-  model=claude-3-5-sonnet-20241022
-  opts=(
-    --model "$model"
-    --cache-prompts
-    --vim
-    --no-attribute-author
-    --no-attribute-committer
-  )
+  local opts=("${AIDER_OPTS[@]}")
   mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
   
