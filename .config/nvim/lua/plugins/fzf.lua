@@ -17,6 +17,21 @@ return {
       }
     end,
     init = function()
+      vim.api.nvim_create_user_command("Chdir", function(opts)
+        local fzf_lua = require("fzf-lua")
+        opts = opts or {}
+        opts.prompt = "Directories> "
+        opts.fn_transform = function(x)
+          return fzf_lua.utils.ansi_codes.magenta(x)
+        end
+        opts.actions = {
+          ["default"] = function(selected)
+            vim.cmd("cd " .. selected[1])
+          end,
+        }
+        fzf_lua.fzf_exec("fd --type d", opts)
+      end, {})
+
       vim.api.nvim_create_user_command("ListFilesFromBranch", function(opts)
         require("fzf-lua").files({
           cmd = "git ls-tree -r --name-only " .. opts.args,
