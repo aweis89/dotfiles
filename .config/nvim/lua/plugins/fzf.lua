@@ -9,9 +9,11 @@ return {
         keymap = {
           builtin = {
             ["<C-w>"] = "toggle-preview",
+            ["<C-p>"] = "toggle-preview",
           },
           fzf = {
             ["ctrl-w"] = "toggle-preview",
+            ["ctrl-p"] = "toggle-preview",
           },
         },
       }
