@@ -1,14 +1,14 @@
 return {
   {
     "aweis89/aider.nvim",
-    dependencies = { "ibhagwan/fzf-lua" },
+    dependencies = { "ibhagwan/fzf-lua", "nvim-telescope/telescope.nvim" },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     init = function()
       require("aider").setup({
         window = {
           layout = "float",
-          width = 0.9,
-          height = 0.9,
+          width = 1,
+          height = 1,
           border = "rounded",
         },
       })

@@ -194,7 +194,7 @@ cache-prompts: true
 #code-theme: default
 
 ## Show diffs when committing changes (default: False)
-#show-diffs: false
+show-diffs: true
 
 ###############
 # Git Settings:
