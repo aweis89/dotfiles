@@ -16,8 +16,7 @@ return {
         },
       }
     end,
-    config = function()
-      -- TODO add as custom picker
+    init = function()
       vim.api.nvim_create_user_command("ListFilesFromBranch", function(opts)
         require("fzf-lua").files({
           cmd = "git ls-tree -r --name-only " .. opts.args,
