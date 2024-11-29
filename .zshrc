@@ -30,6 +30,7 @@ fzf_default_opts=(
   --tmux=80%
   --layout=reverse 
   --color=light
+  "--bind='ctrl-p:toggle-preview'"
   "--bind='ctrl-s:toggle+down'"
   "--bind='ctrl-y:select-all'"
   "--bind='ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
@@ -413,6 +414,7 @@ bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
 bindkey '^s' multi_fzf_completion
 bindkey '^F' _fzf_file_widget
+bindkey '^b' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
 
 bindkey '^I' menu-select

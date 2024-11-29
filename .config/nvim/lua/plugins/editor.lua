@@ -24,20 +24,7 @@ return {
     opts = function(_, opts)
       opts.colorscheme = "tokyonight"
     end,
-    init = function()
-      vim.api.nvim_create_user_command("Reload", function()
-        vim.cmd("!touch ~/.config/nvim/lua/plugins/editor.lua")
-      end, { desc = "Reload config" })
-    end,
   },
-  {
-    "ibhagwan/fzf-lua",
-    keys = {
-      { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
-      { "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf live_grep" },
-    },
-  },
-  { "sindrets/diffview.nvim" },
   {
     "almo7aya/openingh.nvim",
     keys = {
