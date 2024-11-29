@@ -6,14 +6,12 @@ return {
         winopts = {
           fullscreen = true,
         },
-        defaults = {
-          keymap = {
-            builtin = {
-              ["ctrl-w"] = "toggle-preview",
-            },
-            fzf = {
-              ["ctrl-w"] = "toggle-preview",
-            },
+        keymap = {
+          builtin = {
+            ["<C-w>"] = "toggle-preview",
+          },
+          fzf = {
+            ["<C-w>"] = "toggle-preview",
           },
         },
       }
