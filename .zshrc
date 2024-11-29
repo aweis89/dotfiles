@@ -33,10 +33,11 @@ fzf_default_opts=(
   "--bind='ctrl-p:toggle-preview'"
   "--bind='ctrl-s:toggle+down'"
   "--bind='ctrl-y:select-all'"
-  "--bind='ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up'"
+  "--bind='ctrl-d:half-page-down,ctrl-u:half-page-up'"
+  "--bind='ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up'"
   "--bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)'"
 )
-export FZF_DEFAULT_OPTS="${(j: :)fzf_default_opts}"
+export FZF_DEFAULT_OPTS="${fzf_default_opts[*]}"
 
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export HISTFILE="$ZSH_CACHE_DIR/history"
