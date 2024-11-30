@@ -14,9 +14,10 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 	openURLInArc(fullURL, "Arc")
 end
 
+local kittyTheme = require("kitty-theme-watcher")
 themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
-	os.execute(os.getenv("HOME") .. "/.config/kitty/sync-theme")
-end, dn)
+    kittyTheme.updateKittyTheme()
+end, "AppleInterfaceThemeChangedNotification")
 themeWatcher:start()
 
 -- hs.loadSpoon("ControlEscape"):start()
