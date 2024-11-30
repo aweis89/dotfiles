@@ -24,22 +24,29 @@ map("t", ":", "<C-\\><C-n>:", { desc = "Enter command mode", remap = true })
 map("t", "<C-u>", "<C-\\><C-n><C-u>i", { noremap = true, silent = true })
 map("t", "<C-d>", "<C-\\><C-n><C-d>i", { noremap = true, silent = true })
 
-vim.api.nvim_exec2(
-  [[
-    set wrap |
-    set norelativenumber |
-    au colorscheme * hi normal guibg=none |
-    highlight normalfloat guibg=none
-  ]],
-  {}
-)
+vim.opt.wrap = true
+vim.opt.relativenumber = false
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+  end,
+})
 
 vim.diagnostic.config({
   float = { border = "rounded" },
 })
 
 -- Create command mode alias for git=Git
-vim.cmd('cnoreabbrev git Git')
+vim.cmd("cnoreabbrev git Git")
 
-vim.api.nvim_command([[command! TmuxSplitV silent execute '!tmux split-window -v -e "cd %:p:h"']])
-vim.api.nvim_command([[command! TmuxSplitH silent execute '!tmux split-window -h -e "cd %:p:h"']])
+local function create_tmux_split_command(direction)
+  vim.api.nvim_create_user_command("TmuxSplit" .. direction, function()
+    vim.cmd(
+      string.format('silent !tmux split-window -%s -e "cd %s"', direction == "H" and "h" or "v", vim.fn.expand("%:p:h"))
+    )
+  end, {})
+end
+create_tmux_split_command("V")
+create_tmux_split_command("H")
