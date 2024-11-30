@@ -14,4 +14,9 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 	openURLInArc(fullURL, "Arc")
 end
 
+themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
+	os.execute(os.getenv("HOME") .. "/.config/kitty/sync-theme")
+end, dn)
+themeWatcher:start()
+
 -- hs.loadSpoon("ControlEscape"):start()
