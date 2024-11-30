@@ -1,23 +1,23 @@
 return {
   {
     "ibhagwan/fzf-lua",
-    opts = function()
-      return {
-        winopts = {
-          fullscreen = true,
+    opts = {
+      winopts = {
+        fullscreen = true,
+      },
+      keymap = {
+        builtin = {
+          ["<C-p>"] = "toggle-preview",
+          ["<c-f>"] = "preview-page-down",
+          ["<c-b>"] = "preview-page-up",
         },
-        keymap = {
-          builtin = {
-            ["<C-w>"] = "toggle-preview",
-            ["<C-p>"] = "toggle-preview",
-          },
-          fzf = {
-            ["ctrl-w"] = "toggle-preview",
-            ["ctrl-p"] = "toggle-preview",
-          },
+        fzf = {
+          ["ctrl-p"] = "toggle-preview",
+          ["ctrl-f"] = "preview-page-down",
+          ["ctrl-b"] = "preview-page-up",
         },
-      }
-    end,
+      },
+    },
     init = function()
       vim.api.nvim_create_user_command("Chdir", function(opts)
         local fzf_lua = require("fzf-lua")

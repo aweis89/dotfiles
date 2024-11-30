@@ -67,7 +67,7 @@ return {
       return opts
     end,
   },
-  { "karb94/neoscroll.nvim", enabled = false },
+  { "karb94/neoscroll.nvim", enabled = true },
   {
     "ahmedkhalf/project.nvim",
     opts = {
