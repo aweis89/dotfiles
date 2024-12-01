@@ -39,7 +39,7 @@ vim.diagnostic.config({
 })
 
 -- Create command mode alias for git=Git
-vim.cmd("cnoreabbrev git Git")
+vim.cmd("cnoreabbrev git Neogit")
 
 local function create_tmux_split_command(direction)
   vim.api.nvim_create_user_command("TmuxSplit" .. direction, function()
