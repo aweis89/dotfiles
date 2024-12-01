@@ -1,5 +1,11 @@
 #!/opt/homebrew/bin/zsh
 
+# Auto tmux
+[[ -z "$TMUX" ]] && {
+    tmux new-session -ds default
+    tmux attach -t default
+}
+
 emulate zsh -c "$(direnv export zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -442,14 +448,6 @@ export PATH="$ARGC_COMPLETIONS_ROOT/bin:$PATH"
 # To add completions for only the specified command, modify next line e.g. argc_scripts=( cargo git )
 argc_scripts=( $(ls -p -1 "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions" | sed -n 's/\.sh$//p') )
 source <(argc --argc-completions zsh $argc_scripts)
-
-# Auto tmux
-() {
-    [[ -z "$TMUX" ]] && {
-        tmux new-session -ds default
-        tmux attach -t default
-    }
-}
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
