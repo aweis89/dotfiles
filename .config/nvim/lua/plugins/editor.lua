@@ -3,50 +3,26 @@ local lighttheme = "onelight"
 
 return {
   {
-    "LazyVim/LazyVim",
-    opts = function(_, opts)
-      local function is_dark_mode_enabled()
-        if vim.fn.system("uname") == "Darwin\n" then
-          local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
-          if handle == nil then
-            return
-          end
-          local result = handle:read("*a")
-          handle:close()
-          return result:match("^%s*Dark%s*$") ~= nil
-        end
-      end
-
-      if is_dark_mode_enabled() then
-        vim.cmd("set background=dark")
-        opts.colorscheme = darktheme
-      else
-        vim.cmd("set background=light")
-        opts.colorscheme = lighttheme
-      end
-    end,
+    "olimorris/onedarkpro.nvim",
+    priority = 1000, -- Ensure it loads first
   },
   {
     "f-person/auto-dark-mode.nvim",
     opts = {
       update_interval = 5000,
       set_dark_mode = function()
-        vim.cmd("set background=dark")
+        vim.api.nvim_set_option_value("background", "dark", {})
         if darktheme ~= lighttheme then
           vim.cmd("colorscheme " .. darktheme)
         end
       end,
       set_light_mode = function()
-        vim.cmd("set background=light")
+        vim.api.nvim_set_option_value("background", "light", {})
         if darktheme ~= lighttheme then
           vim.cmd("colorscheme " .. lighttheme)
         end
       end,
     },
-  },
-  {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000, -- Ensure it loads first
   },
   {
     "almo7aya/openingh.nvim",
