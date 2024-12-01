@@ -19,16 +19,30 @@ return {
 
       if is_dark_mode_enabled() then
         vim.cmd("set background=dark")
-      else
-        vim.cmd("set background=light")
-      end
-
-      if is_dark_mode_enabled() then
         opts.colorscheme = darktheme
       else
+        vim.cmd("set background=light")
         opts.colorscheme = lighttheme
       end
     end,
+  },
+  {
+    "f-person/auto-dark-mode.nvim",
+    opts = {
+      update_interval = 5000,
+      set_dark_mode = function()
+        vim.cmd("set background=dark")
+        if darktheme ~= lighttheme then
+          vim.cmd("colorscheme " .. darktheme)
+        end
+      end,
+      set_light_mode = function()
+        vim.cmd("set background=light")
+        if darktheme ~= lighttheme then
+          vim.cmd("colorscheme " .. lighttheme)
+        end
+      end,
+    },
   },
   {
     "olimorris/onedarkpro.nvim",
@@ -41,8 +55,16 @@ return {
       { "<C-G>", "<cmd>OpenInGHFileLines!<cr>", desc = "Open in Github (prefer sha)" },
     },
   },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "ibhagwan/fzf-lua",
+    },
+    config = true,
+  },
   { "mbbill/undotree" },
-  { "tpope/vim-fugitive" },
   { "towolf/vim-helm" },
   { "mrjosh/helm-ls" },
   { "akinsho/bufferline.nvim", enabled = false },

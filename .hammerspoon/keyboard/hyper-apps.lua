@@ -6,7 +6,7 @@ return {
 	{ "b", "Arc" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"
-	{ "t", "iterm" }, -- "T" for "Terminal"
+	{ "t", "kitty" }, -- "T" for "Terminal"
 	{ "c", "calendar" }, -- "C" for "Calendar"
 	{ "z", "zoom.us" }, -- "Z" for "Zoom"
 	{ "a", "ChatGPT" }, -- "A" for "AI"
