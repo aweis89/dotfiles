@@ -1,7 +1,7 @@
 #!/opt/homebrew/bin/zsh
 
 # Auto tmux
-[[ -z "$TMUX" ]] && {
+[[ -z "$TMUX" ]] && [[ -z "$NVIM" ]] && {
     tmux new-session -ds default
     tmux attach -t default
 }
@@ -70,6 +70,12 @@ setopt \
   HIST_IGNORE_DUPS \
   HIST_IGNORE_SPACE \
   HIST_VERIFY SHARE_HISTORY
+
+# Line wrapping for pane resizing
+setopt \
+  PROMPT_SP \
+  PROMPT_CR \
+  PROMPT_SUBST
 
 # vi-mode configuration
 bindkey -v
