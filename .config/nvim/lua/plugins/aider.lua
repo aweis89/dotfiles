@@ -1,6 +1,25 @@
 return {
   { "willothy/flatten.nvim", config = true },
-  { "akinsho/toggleterm.nvim", config = true },
+  {
+    "akinsho/toggleterm.nvim",
+    opts = {
+      shade_terminals = false,
+      direction = "float",
+      float_opts = {
+        border = "curved",
+        title_pos = "center",
+      },
+      open_mapping = [[<c-\>]],
+      close_on_exit = true,
+      size = function(term)
+        if term.direction == "horizontal" then
+          return vim.o.lines * 0.4
+        elseif term.direction == "vertical" then
+          return vim.o.columns * 0.4
+        end
+      end,
+    },
+  },
   {
     "aweis89/aider.nvim",
     dependencies = {
