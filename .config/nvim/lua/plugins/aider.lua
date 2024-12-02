@@ -29,15 +29,7 @@ return {
       "willothy/flatten.nvim",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
-    init = function()
-      require("aider").setup({
-        -- window = {
-        --   layout = "current",
-        --   width = 1,
-        --   height = 1,
-        -- },
-      })
-    end,
+    config = true,
     keys = {
       {
         "<leader>a<space>",
