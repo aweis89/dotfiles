@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
     tmap("jj", "<C-\\><C-n>")
     vim.wo.number = false
     vim.wo.relativenumber = false
-    print("Mappings applied for terminal buffer " .. vim.api.nvim_get_current_buf())
   end,
 })
 
