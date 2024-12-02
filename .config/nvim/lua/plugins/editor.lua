@@ -7,6 +7,12 @@ return {
     priority = 1000, -- Ensure it loads first
   },
   {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy", -- Or `LspAttach`
+    priority = 1000, -- needs to be loaded in first
+    config = true,
+  },
+  {
     "f-person/auto-dark-mode.nvim",
     opts = {
       update_interval = 5000,
