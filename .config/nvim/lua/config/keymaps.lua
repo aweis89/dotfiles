@@ -24,13 +24,19 @@ vim.api.nvim_create_autocmd("TermOpen", {
     local function tmap(key, val)
       vim.api.nvim_buf_set_keymap(0, "t", key, val, { noremap = true, silent = true })
     end
+    -- exit insert mode
     tmap("<Esc>", "<C-\\><C-n>")
+    tmap("jj", "<C-\\><C-n>")
+    -- enter command mode
     tmap(":", "<C-\\><C-n>:")
+    -- scrolling up/down
     tmap("<C-u>", "<C-\\><C-n><C-u>")
     tmap("<C-d>", "<C-\\><C-n><C-d>")
-    tmap("jj", "<C-\\><C-n>")
+    -- remove line numbers
     vim.wo.number = false
     vim.wo.relativenumber = false
+    -- auto start terminal in insert mode
+    vim.cmd("startinsert")
   end,
 })
 
