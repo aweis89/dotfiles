@@ -1,8 +1,10 @@
 return {
   { "willothy/flatten.nvim", config = true },
+  { "akinsho/toggleterm.nvim", config = true },
   {
     "aweis89/aider.nvim",
     dependencies = {
+      "akinsho/toggleterm.nvim",
       "ibhagwan/fzf-lua",
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
@@ -10,11 +12,11 @@ return {
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     init = function()
       require("aider").setup({
-        window = {
-          layout = "current",
-          width = 1,
-          height = 1,
-        },
+        -- window = {
+        --   layout = "current",
+        --   width = 1,
+        --   height = 1,
+        -- },
       })
     end,
     keys = {
