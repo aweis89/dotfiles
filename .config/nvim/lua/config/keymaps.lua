@@ -18,19 +18,20 @@ map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
-map("t", "<Esc>", "<C-\\><C-n>", { desc = "escape", remap = true })
-map("t", "jj", "<C-\\><C-n>", { desc = "escape", remap = true })
-map("t", ":", "<C-\\><C-n>:", { desc = "Enter command mode", remap = true })
-map("t", "<C-u>", "<C-\\><C-n><C-u>i", { noremap = true, silent = true })
-map("t", "<C-d>", "<C-\\><C-n><C-d>i", { noremap = true, silent = true })
-
-vim.opt.wrap = true
-vim.opt.relativenumber = false
-vim.api.nvim_create_autocmd("ColorScheme", {
-  pattern = "*",
+-- In-order to work in floats as well, we need to use TermOpen autocmd
+vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
-    vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+    local function tmap(key, val)
+      vim.api.nvim_buf_set_keymap(0, "t", key, val, { noremap = true, silent = true })
+    end
+    tmap("<Esc>", "<C-\\><C-n>")
+    tmap(":", "<C-\\><C-n>:")
+    tmap("<C-u>", "<C-\\><C-n><C-u>")
+    tmap("<C-d>", "<C-\\><C-n><C-d>")
+    tmap("jj", "<C-\\><C-n>")
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    print("Mappings applied for terminal buffer " .. vim.api.nvim_get_current_buf())
   end,
 })
 
