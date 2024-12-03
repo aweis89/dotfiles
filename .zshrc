@@ -270,7 +270,7 @@ alias ag=rg
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
 alias kw='watch kubectl'
-alias rms='rm -rf ~/.local/share/nvim/swap/*'
+alias rms='rm -rf ~/.local/state/nvim/swap/*'
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vims='cd ~/.config/nvim/lua && vim'
@@ -294,6 +294,18 @@ aider() {
   command aider "${opts[@]}" "$@"
 }
 compdef aider=_aider
+
+daider() {
+  docker run -it --rm \
+    --env OPENAI_API_KEY \
+    --env ANTHROPIC_API_KEY \
+    --env GEMINI_API_KEY \
+    -v $PWD:/workdir \
+    -v $HOME/.aider:/root/.aider \
+    -v $HOME/.aider.conf.yml:/root/.aider.conf.yml \
+    --workdir /workdir aider "$@"
+}
+compdef daider=_aider
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master

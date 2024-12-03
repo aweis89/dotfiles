@@ -2,15 +2,19 @@
 
 kitty_dir="${0:a:h}"
 theme="$kitty_dir/current-theme.conf"
-theme_dir="$HOME/.local/share/nvim/lazy/onedarkpro.nvim/extras/kitty"
 
-[[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] &&
-  target="$theme_dir/onedarkpro_onedark.conf" ||
-  target="$theme_dir/onedarkpro_onelight.conf"
+# theme_dir="$HOME/.local/share/nvim/lazy/onedarkpro.nvim/extras/kitty"
+# [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
+#     && target="$theme_dir/onedarkpro_onedark.conf" \
+#     || target="$theme_dir/onedarkpro_onelight.conf"
+
+[[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
+    && target="$kitty_dir/themes/mocha.conf" \
+    || target="$kitty_dir/themes/latte.conf"
 
 rm -rf "$theme"
 ln -s "$target" "$theme"
 
 for pid in "$(ps -x | grep '/Applications/kitty.app/Contents/MacOS/kitty' | grep -v grep | awk '{ print $1 }')"; do
-  kill -SIGUSR1 $pid
+    kill -SIGUSR1 $pid
 done

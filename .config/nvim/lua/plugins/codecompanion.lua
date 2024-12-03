@@ -1,7 +1,3 @@
-if true then
-  return {}
-end
-
 return {
   {
     "echasnovski/mini.diff",
@@ -37,7 +33,7 @@ return {
           window = {
             layout = "vertical", -- float|vertical|horizontal|buffer
             height = 100,
-            width = 150,
+            width = 60,
           },
         },
       },

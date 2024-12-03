@@ -1,7 +1,11 @@
-local darktheme = "onedark"
-local lighttheme = "onelight"
-
 return {
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     "olimorris/onedarkpro.nvim",
     priority = 1000, -- Ensure it loads first
@@ -18,15 +22,9 @@ return {
       update_interval = 5000,
       set_dark_mode = function()
         vim.api.nvim_set_option_value("background", "dark", {})
-        if darktheme ~= lighttheme then
-          vim.cmd("colorscheme " .. darktheme)
-        end
       end,
       set_light_mode = function()
         vim.api.nvim_set_option_value("background", "light", {})
-        if darktheme ~= lighttheme then
-          vim.cmd("colorscheme " .. lighttheme)
-        end
       end,
     },
   },

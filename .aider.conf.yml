@@ -8,6 +8,11 @@
 # config file. Keys for all APIs can be stored in a .env file
 # https://aider.chat/docs/config/dotenv.html
 
+alias:
+  - "fast:claude-3-5-haiku-20241022"
+  - "flash:gemini/gemini-1.5-flash-latest"
+  - "pro:gemini/gemini-pro"
+
 ##########
 # options:
 
@@ -30,7 +35,7 @@
 #opus: false
 
 ## Use claude-3-5-sonnet-20241022 model for the main chat
-sonnet: true
+#sonnet: true
 ## Use claude-3-5-haiku-20241022 model for the main chat
 #haiku: false
 
