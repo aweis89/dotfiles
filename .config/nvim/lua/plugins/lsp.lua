@@ -1,3 +1,7 @@
+if true then
+  return {}
+end
+
 -- Don't auto select first item
 vim.cmd([[set completeopt=menu,menuone,noselect]])
 vim.cmd([[set noswapfile]])

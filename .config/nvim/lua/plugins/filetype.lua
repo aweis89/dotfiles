@@ -16,7 +16,7 @@ return {
         },
         -- The same as the ones above except the keys map to functions
         function_extensions = {
-          ["keymap"] = function()
+          keymap = function()
             vim.cmd("set syntax=dts")
           end,
         },

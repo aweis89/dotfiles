@@ -5,7 +5,7 @@ return {
     opts = {
       shade_terminals = false,
       -- default direction when none specified in arg to AiderToggle
-      direction = "float",
+      direction = "horizontal",
       float_opts = {
         border = "curved",
         title_pos = "center",
