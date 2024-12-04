@@ -135,6 +135,9 @@ return {
         bang = true,
       })
     end,
+    keys = {
+      { "<leader>lt", "<cmd>LintToggle<cr>", desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
+    },
     opts = {
       linters_by_ft = {
         go = { "golangcilint" },
