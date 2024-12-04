@@ -13,10 +13,10 @@ return {
           settings = {
             gopls = {
               analyses = {
-                unusedparams = true, -- Enable/disable specific analyses
-                unusedwrite = false, -- Disable static analysis that overlaps with golangci-lint
+                -- Disable static analysis that overlaps with golangci-lint
+                unusedwrite = false,
               },
-              staticcheck = false, -- Disable built-in static chec
+              staticcheck = false,
               hints = {
                 assignVariableTypes = false,
                 compositeLiteralFields = false,
