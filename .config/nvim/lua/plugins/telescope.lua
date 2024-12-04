@@ -7,6 +7,9 @@ return {
         defaults = {
           mappings = {
             i = {
+              ["<C-j>"] = "move_selection_next",
+              ["<C-k>"] = "move_selection_previous",
+
               ["<C-h>"] = "which_key",
               ["<C-p>"] = require("telescope.actions.layout").toggle_preview,
               ["<C-g>"] = function(_) -- only works Telescope git_status
@@ -30,7 +33,9 @@ return {
           layout_config = {
             width = 0.97, -- 97% of screen width
             height = 0.97, -- 97% of screen height
+            prompt_position = "top", -- Place the prompt at the top
           },
+          sorting_strategy = "ascending", -- Display results from top to bottom
           file_ignore_patterns = { "node_modules", "vendor" },
           pickers = {
             find_files = {
