@@ -15,6 +15,7 @@ return {
     "neovim/nvim-lspconfig",
     keys = {
       { "cd", "vim.diagnostic.open_float" },
+      { "<leader>lt", "<cmd>LintToggle<cr>", desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
     },
     ---@class PluginLspOpts
     opts = function(_, opts)

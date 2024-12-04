@@ -126,8 +126,5 @@ return {
         ["*"] = { "codespell" },
       },
     },
-    keys = {
-      { "<leader>lt", "<cmd>LintToggle<cr>", desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
-    },
   },
 }
