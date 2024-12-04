@@ -106,6 +106,8 @@ local golangci_always_linters = {
   -- "wsl", -- add or remove empty lines
 }
 
+local custom_golangci_linter = "custom_golangci_linter"
+
 return {
   {
     "mfussenegger/nvim-lint",
@@ -116,7 +118,7 @@ return {
         table.insert(golangcilint.args, #golangcilint.args, "--enable")
         table.insert(golangcilint.args, #golangcilint.args, arg)
       end
-      require("lint").linters.golangcilint = golangcilint
+      require("lint").linters[custom_golangci_linter] = golangcilint
 
       -- Store original diagnostic config and ensure signs are configured
       local orig_config = vim.diagnostic.config()
@@ -166,7 +168,7 @@ return {
     },
     opts = {
       linters_by_ft = {
-        go = { "golangcilint" },
+        go = { custom_golangci_linter },
         ["*"] = { "codespell" },
       },
     },
