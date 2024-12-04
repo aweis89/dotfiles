@@ -8,6 +8,11 @@ return {
     opts = {
       options = {
         show_source = true,
+        use_icons_from_diagnostic = true,
+        break_line = {
+          enabled = true,
+          after = 70,
+        },
       },
     },
   },
@@ -45,7 +50,6 @@ return {
         servers = {
           gopls = {
             filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
-            hints = false,
             settings = {
               gopls = {
                 analyses = {
