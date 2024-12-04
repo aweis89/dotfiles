@@ -15,6 +15,8 @@ return {
               analyses = {
                 -- Disable static analysis that overlaps with golangci-lint
                 unusedwrite = false,
+                fieldalignment = false,
+                unusedparams = false,
               },
               staticcheck = false,
               hints = {
