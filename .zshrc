@@ -274,6 +274,7 @@ alias rms='rm -rf ~/.local/state/nvim/swap/*'
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
 alias vims='cd ~/.config/nvim/lua && vim'
+alias kittys='vim ~/.config/kitty/kitty.conf'
 alias zshs='vim ~/.zshrc'
 alias zshl='vim ~/.zshrc.local'
 alias zshp='vim ~/.zsh/.zsh_plugins.txt'
@@ -285,6 +286,14 @@ alias ggroot='cd $(git rev-parse --show-toplevel)'
 alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
+
+kubectl() {
+    if [[ "$@" == *"-o yaml"* ]]; then
+        command kubectl "$@" | bat --language yaml --style plain
+    else
+        command kubectl "$@"
+    fi
+}
 
 aider() {
   opts=()
