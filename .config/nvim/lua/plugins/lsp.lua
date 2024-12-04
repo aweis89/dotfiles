@@ -1,29 +1,35 @@
 -- needs to match initial state in lspconfig
 return {
   {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy", -- Or `LspAttach`
+    priority = 1000, -- needs to be loaded in first
+    config = true,
+    opts = {
+      options = {
+        show_source = true,
+      },
+    },
+  },
+  {
     "neovim/nvim-lspconfig",
     keys = {
       { "cd", "vim.diagnostic.open_float" },
     },
     ---@class PluginLspOpts
     opts = function(_, opts)
-      local diagnostic = opts.diagnostics
       local lint = {
-        visible = false,
+        visible = true,
       }
       vim.api.nvim_create_user_command("LintToggle", function(_)
+        local inline_diagnostic = require("tiny-inline-diagnostic")
         if lint.visible then
-          -- Switch to signs-only mode while preserving LazyVim's sign configuration
-          vim.diagnostic.config(vim.tbl_extend("force", diagnostic, {
-            virtual_text = false,
-            underline = false,
-            float = { show = false },
-          }))
+          vim.diagnostic.hide(nil, 0)
+          inline_diagnostic.disable()
           lint.visible = false
         else
-          -- Restore original configuration
-          vim.diagnostic.config(diagnostic)
           vim.diagnostic.show(nil, 0)
+          inline_diagnostic.enable()
           lint.visible = true
         end
       end, {
