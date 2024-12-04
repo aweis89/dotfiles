@@ -7,26 +7,10 @@ return {
     },
     ---@class PluginLspOpts
     opts = function(_, opts)
-      -- Store original diagnostic config and ensure signs are configured
-      -- local orig_config = vim.diagnostic.config()
-      -- local signs = {
-      --   { name = "DiagnosticSignError", text = require("lazyvim.config").icons.diagnostics.Error },
-      --   { name = "DiagnosticSignWarn", text = require("lazyvim.config").icons.diagnostics.Warn },
-      --   { name = "DiagnosticSignHint", text = require("lazyvim.config").icons.diagnostics.Hint },
-      --   { name = "DiagnosticSignInfo", text = require("lazyvim.config").icons.diagnostics.Info },
-      -- }
-
-      -- local signs = opts.diagnostic.signs.text
-      -- for _, sign in ipairs(signs) do
-      --   vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = sign.name })
-      -- end
-
       local diagnostic = opts.diagnostics
-
       local lint = {
         visible = false,
       }
-
       vim.api.nvim_create_user_command("LintToggle", function(_)
         if lint.visible then
           -- Switch to signs-only mode while preserving LazyVim's sign configuration
