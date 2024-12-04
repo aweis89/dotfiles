@@ -12,6 +12,11 @@ return {
           hints = false,
           settings = {
             gopls = {
+              analyses = {
+                unusedparams = true, -- Enable/disable specific analyses
+                unusedwrite = false, -- Disable static analysis that overlaps with golangci-lint
+              },
+              staticcheck = false, -- Disable built-in static chec
               hints = {
                 assignVariableTypes = false,
                 compositeLiteralFields = false,

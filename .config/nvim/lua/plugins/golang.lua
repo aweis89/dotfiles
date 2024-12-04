@@ -1,12 +1,5 @@
 return {
   {
-    "yanskun/gotests.nvim",
-    ft = "go",
-    config = function()
-      require("gotests").setup()
-    end,
-  },
-  {
     "ray-x/go.nvim",
     dependencies = { -- optional packages
       "ray-x/guihua.lua",
