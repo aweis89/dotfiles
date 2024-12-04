@@ -19,7 +19,7 @@ local golangci_always_linters = {
   "errname", -- Checks that sentinel errors are prefixed with the `Err` and error types are suffixed with the `Error`
   "errorlint", -- finds code that will cause problems with the error wrapping scheme in Go 1.13
   "exhaustive", -- check exhaustiveness of enum switch statements
-  "exhaustruct", -- Checks if all structure fields are initialized
+  -- "exhaustruct", -- Checks if all structure fields are initialized
   "fatcontext", -- detects nested contexts in loops and function literals
   "forbidigo", -- Forbids identifiers
   "forcetypeassert", -- finds forced type assertions
@@ -54,7 +54,7 @@ local golangci_always_linters = {
   "ineffassign", -- Detects when assignments to existing variables are not used
   "interfacebloat", -- Checks the number of methods inside an interface
   "intrange", -- finds places where for loops could make use of an integer range
-  "ireturn", -- Accept Interfaces, Return Concrete Types
+  -- "ireturn", -- Accept Interfaces, Return Concrete Types
   "lll", -- Reports long lines
   "loggercheck", -- Checks key value pairs for common logger libraries
   "maintidx", -- measures the maintainability index of each function
@@ -103,7 +103,7 @@ local golangci_always_linters = {
   "wastedassign", -- Finds wasted assignment statements
   "whitespace", -- checks for unnecessary newlines at the start and end of functions
   "wrapcheck", -- Checks that errors returned from external packages are wrapped
-  "wsl", -- add or remove empty lines
+  -- "wsl", -- add or remove empty lines
 }
 
 return {
@@ -113,25 +113,51 @@ return {
       -- Import the existing golangci-lint configuration
       local golangcilint = require("lint.linters.golangcilint")
       for _, arg in ipairs(golangci_always_linters) do
-        -- Insert all new arguments before the last (path) argument
         table.insert(golangcilint.args, #golangcilint.args, "--enable")
         table.insert(golangcilint.args, #golangcilint.args, arg)
       end
       require("lint").linters.golangcilint = golangcilint
 
+      -- Store original diagnostic config and ensure signs are configured
+      local orig_config = vim.diagnostic.config()
+      local signs = {
+        { name = "DiagnosticSignError", text = require("lazyvim.config").icons.diagnostics.Error },
+        { name = "DiagnosticSignWarn", text = require("lazyvim.config").icons.diagnostics.Warn },
+        { name = "DiagnosticSignHint", text = require("lazyvim.config").icons.diagnostics.Hint },
+        { name = "DiagnosticSignInfo", text = require("lazyvim.config").icons.diagnostics.Info },
+      }
+      for _, sign in ipairs(signs) do
+        vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = sign.name })
+      end
+
       local lint = {
         visible = true,
+        signs_only = false,
       }
+
       vim.api.nvim_create_user_command("LintToggle", function(_)
         if lint.visible then
-          vim.diagnostic.hide(nil, 0)
+          -- Switch to signs-only mode while preserving LazyVim's sign configuration
+          vim.diagnostic.config(vim.tbl_extend("force", orig_config, {
+            virtual_text = false,
+            underline = false,
+            float = { show = false },
+            signs = true,
+          }))
           lint.visible = false
+          lint.signs_only = true
+        elseif lint.signs_only then
+          -- Hide everything including signs
+          vim.diagnostic.hide(nil, 0)
+          lint.signs_only = false
         else
+          -- Restore original configuration
+          vim.diagnostic.config(orig_config)
           vim.diagnostic.show(nil, 0)
           lint.visible = true
         end
       end, {
-        desc = "Disable autoformat-on-save",
+        desc = "Toggle between full diagnostics, signs-only, and hidden",
         bang = true,
       })
     end,
