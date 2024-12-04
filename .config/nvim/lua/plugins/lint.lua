@@ -28,14 +28,14 @@ local golangci_always_linters = {
   "ginkgolinter", -- enforces standards of using ginkgo and gomega
   "gocheckcompilerdirectives", -- Checks that go compiler directive comments are valid
   "gochecknoglobals", -- Check that no global variables exist
-  "gochecknoinits", -- Checks that no init functions are present in Go code
+  -- "gochecknoinits", -- Checks that no init functions are present in Go code
   "gochecksumtype", -- Run exhaustiveness checks on Go "sum types"
   "gocognit", -- Computes and checks the cognitive complexity of functions
   "goconst", -- Finds repeated strings that could be replaced by a constant
   "gocritic", -- Provides diagnostics that check for bugs, performance and style issues
   "gocyclo", -- Computes and checks the cyclomatic complexity of functions
   "godot", -- Check if comments end in a period
-  "godox", -- Tool for detection of FIXME, TODO and other comment keywords
+  -- "godox", -- Tool for detection of FIXME, TODO and other comment keywords
   "gofmt", -- Checks whether code was gofmt-ed
   "gofumpt", -- Checks whether code was gofumpt-ed
   "goheader", -- Checks if file header matches to pattern
@@ -55,22 +55,22 @@ local golangci_always_linters = {
   "interfacebloat", -- Checks the number of methods inside an interface
   "intrange", -- finds places where for loops could make use of an integer range
   -- "ireturn", -- Accept Interfaces, Return Concrete Types
-  "lll", -- Reports long lines
+  -- "lll", -- Reports long lines
   "loggercheck", -- Checks key value pairs for common logger libraries
   "maintidx", -- measures the maintainability index of each function
   "makezero", -- Finds slice declarations with non-zero initial length
   "mirror", -- reports wrong mirror patterns of bytes/strings usage
   "misspell", -- Finds commonly misspelled English words
-  "mnd", -- An analyzer to detect magic numbers
+  -- "mnd", -- An analyzer to detect magic numbers
   "musttag", -- enforce field tags in (un)marshaled structs
   "nakedret", -- Checks functions with naked returns are not longer than maximum size
   "nestif", -- Reports deeply nested if statements
   "nilerr", -- Finds code that returns nil even if it checks that the error is not nil
   "nilnil", -- Checks for simultaneous return of `nil` error and invalid value
-  "nlreturn", -- checks for a new line before return and branch statements
+  -- "nlreturn", -- checks for a new line before return and branch statements
   "noctx", -- Finds sending http request without context.Context
   "nolintlint", -- Reports ill-formed or insufficient nolint directives
-  "nonamedreturns", -- Reports all named returns
+  -- "nonamedreturns", -- Reports all named returns
   "nosprintfhostport", -- Checks for misuse of Sprintf to construct a host with port in a URL
   "paralleltest", -- Detects missing usage of t.Parallel() method in Go test
   "perfsprint", -- Checks that fmt.Sprintf can be replaced with a faster alternative
@@ -92,14 +92,14 @@ local golangci_always_linters = {
   "tenv", -- detects using os.Setenv instead of t.Setenv since Go1.17
   "testableexamples", -- checks if examples are testable
   "testifylint", -- Checks usage of github.com/stretchr/testify
-  "testpackage", -- makes you use a separate _test package
+  -- "testpackage", -- makes you use a separate _test package
   "thelper", -- detects tests helpers which is not start with t.Helper() method
   "tparallel", -- detects inappropriate usage of t.Parallel() method in Go test codes
   "unconvert", -- Remove unnecessary type conversions
   "unparam", -- Reports unused function parameters
   "unused", -- Checks Go code for unused constants, variables, functions and types
   "usestdlibvars", -- detect the possibility to use variables/constants from the Go standard library
-  "varnamelen", -- checks that the length of a variable's name matches its scope
+  -- "varnamelen", -- checks that the length of a variable's name matches its scope
   "wastedassign", -- Finds wasted assignment statements
   "whitespace", -- checks for unnecessary newlines at the start and end of functions
   "wrapcheck", -- Checks that errors returned from external packages are wrapped
