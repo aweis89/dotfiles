@@ -3,13 +3,15 @@ return {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     opts = function()
+      local actions = require("telescope.actions")
       require("telescope").setup({
         defaults = {
           mappings = {
             i = {
+              ["<C-b>"] = actions.preview_scrolling_up,
+              ["<C-f>"] = actions.preview_scrolling_down,
               ["<C-j>"] = "move_selection_next",
               ["<C-k>"] = "move_selection_previous",
-
               ["<C-h>"] = "which_key",
               ["<C-p>"] = require("telescope.actions.layout").toggle_preview,
               ["<C-g>"] = function(_) -- only works Telescope git_status
