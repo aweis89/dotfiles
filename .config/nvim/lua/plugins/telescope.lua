@@ -10,9 +10,9 @@ return {
             i = {
               ["<C-b>"] = actions.preview_scrolling_up,
               ["<C-f>"] = actions.preview_scrolling_down,
-              ["<C-j>"] = "move_selection_next",
-              ["<C-k>"] = "move_selection_previous",
-              ["<C-h>"] = "which_key",
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-h>"] = actions.which_key,
               ["<C-p>"] = require("telescope.actions.layout").toggle_preview,
               ["<C-g>"] = function(_) -- only works Telescope git_status
                 local selection = require("telescope.actions.state").get_selected_entry()
