@@ -3,7 +3,7 @@ return {
     "ibhagwan/fzf-lua",
     keys = { { "<leader><space>", false } },
     opts = {
-      winopts = { height = 0.97, width = 0.97 },
+      winopts = { height = 1.00, width = 1.00 },
       keymap = {
         builtin = {
           ["<C-p>"] = "toggle-preview",
