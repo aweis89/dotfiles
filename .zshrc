@@ -287,6 +287,15 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
+delta() {
+  local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+  if [[ "$mode" == "Dark" ]];then
+    command delta --dark "$@"
+    return
+  fi
+  command delta "$@"
+}
+
 rg() {
   command rg --json -C 2 "$@" | delta
 }
