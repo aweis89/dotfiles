@@ -16,13 +16,8 @@ return {
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
       },
-      accept = {
-        auto_brackets = {
-          enable = true,
-        },
-      },
       completion = {
-        enabled_providers = { "ripgrep" }, -- add "ripgrep" here
+        enabled_providers = { "ripgrep" },
         documentation = {
           auto_show = true,
         },
