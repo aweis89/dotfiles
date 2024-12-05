@@ -287,6 +287,10 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
+rg() {
+  command rg --json -C 2 "$@" | delta
+}
+
 kubectl() {
     if [[ "$@" == *"-o yaml"* ]]; then
         command kubectl "$@" | bat --language yaml --style plain
