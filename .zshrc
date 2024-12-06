@@ -287,7 +287,34 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
+pr-diff() {
+  set -e
+  local pr="${1##*/}"
+  if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
+    echo "Invalid PR number or URL format"
+    return 1
+  fi
+
+  local orig_branch=$(git branch --show-current)
+  local base=$(gh pr view "$pr" --json baseRefName --jq '.baseRefName') || return 1
+  local git fetch origin "$base"
+  local gh pr checkout "$pr"
+  local git diff "origin/$base"
+
+  local user_input
+  printf "Approve (y/n)? "
+  read user_input
+  if [[ "$user_input" == "y" ]]; then
+    if gh pr review --approve; then
+      echo "PR $pr approved"
+    fi
+  fi
+
+  git checkout "$orig_branch"
+}
+
 delta() {
+  set +x
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   if [[ "$mode" == "Dark" ]];then
     command delta --dark "$@"

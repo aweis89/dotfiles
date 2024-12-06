@@ -9,6 +9,7 @@ return {
           sh = "bash",
           env = "bash",
           html = "html",
+          h = "cpp",
         },
         literal = {
           config = "toml",
