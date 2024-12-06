@@ -1,42 +1,3 @@
--- Integrate delta as the diff previewrs for git commmands
-local diffview_ref = function()
-  local action_state = require("telescope.actions.state")
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry.value
-  -- close Telescope window properly prior to switching windows
-  vim.api.nvim_win_close(0, true)
-  vim.cmd("stopinsert")
-  vim.schedule(function()
-    vim.cmd(("DiffviewOpen %s^!"):format(value))
-  end)
-end
-local previewers = require("telescope.previewers")
-local git_ref_delta_previewer = previewers.new_termopen_previewer({
-  get_command = function(entry)
-    -- note we can't use pipes
-    -- this command is for git_commits and git_bcommits
-    return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
-  end,
-})
-local git_file_delta_previewer = previewers.new_termopen_previewer({
-  get_command = function(entry)
-    -- Check if the file is staged (first character of status)
-    local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
-    local is_unstaged = entry.status:sub(2, 2) ~= " "
-
-    if is_staged then
-      -- Show staged changes
-      return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--cached", "--", entry.value }
-    elseif is_unstaged then
-      -- Show unstaged changes
-      return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
-    else
-      -- For untracked files, try to show file content
-      return { "bat", entry.value }
-    end
-  end,
-})
-
 return {
   {
     "danielfalk/smart-open.nvim",
@@ -56,17 +17,65 @@ return {
       { "nvim-telescope/telescope-fzy-native.nvim" },
     },
   },
+
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     opts = function(_, opts)
+      local git_ref_diffview_action = function()
+        local action_state = require("telescope.actions.state")
+        local selected_entry = action_state.get_selected_entry()
+        local value = selected_entry.value
+        -- close Telescope window properly prior to switching windows
+        vim.api.nvim_win_close(0, true)
+        vim.cmd("stopinsert")
+        vim.schedule(function()
+          vim.cmd(("DiffviewOpen %s^!"):format(value))
+        end)
+      end
+
+      local previewers = require("telescope.previewers")
+      local git_ref_delta_previewer = previewers.new_termopen_previewer({
+        get_command = function(entry)
+          return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
+        end,
+      })
+      local git_file_delta_previewer = previewers.new_termopen_previewer({
+        get_command = function(entry)
+          -- Check if the file is staged (first character of status)
+          local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
+          local is_unstaged = entry.status:sub(2, 2) ~= " "
+
+          if is_staged then
+            -- Show staged changes
+            return {
+              "git",
+              "-c",
+              "core.pager=delta",
+              "-c",
+              "delta.side-by-side=false",
+              "diff",
+              "--cached",
+              "--",
+              entry.value,
+            }
+          elseif is_unstaged then
+            -- Show unstaged changes
+            return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
+          else
+            -- For untracked files, try to show file content
+            return { "bat", entry.value }
+          end
+        end,
+      })
+
       local actions = require("telescope.actions")
 
       local git_ref_mappings = {
         previewer = git_ref_delta_previewer,
         mappings = {
           i = {
-            ["<C-v>"] = diffview_ref,
+            ["<C-v>"] = git_ref_diffview_action,
           },
         },
       }
