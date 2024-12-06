@@ -1,8 +1,46 @@
+local diffview_ref = function()
+  local action_state = require("telescope.actions.state")
+  local selected_entry = action_state.get_selected_entry()
+  local value = selected_entry.value
+  -- close Telescope window properly prior to switching windows
+  vim.api.nvim_win_close(0, true)
+  vim.cmd("stopinsert")
+  vim.schedule(function()
+    vim.cmd(("DiffviewOpen %s^!"):format(value))
+  end)
+end
+
+local previewers = require("telescope.previewers")
+local git_ref_delta_previewer = previewers.new_termopen_previewer({
+  get_command = function(entry)
+    -- note we can't use pipes
+    -- this command is for git_commits and git_bcommits
+    return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
+  end,
+})
+
+local git_file_delta_previewer = previewers.new_termopen_previewer({
+  get_command = function(entry)
+    -- this is for status
+    -- You can get the AM things in entry.status. So we are displaying file if entry.status == '??' or 'A '
+    -- just do an if and return a different command
+    return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value }
+  end,
+})
+
+local git_ref_mappings = {
+  previewer = git_ref_delta_previewer,
+  mappings = {
+    i = {
+      ["<C-v>"] = diffview_ref,
+    },
+  },
+}
+
 return {
   {
     "danielfalk/smart-open.nvim",
     branch = "0.2.x",
-    priority = 1000, -- Ensure it loads first
     config = function()
       require("telescope").load_extension("smart_open")
     end,
@@ -21,9 +59,39 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    opts = function()
+    opts = function(_, opts)
       local actions = require("telescope.actions")
-      require("telescope").setup({
+      local action_state = require("telescope.actions.state")
+
+      return vim.tbl_deep_extend("force", opts, {
+        pickers = {
+          git_status = {
+            previewer = git_file_delta_previewer,
+            mappings = {
+              i = {
+                -- git add file
+                ["<C-g>"] = function(_)
+                  local selection = require("telescope.actions.state").get_selected_entry()
+                  -- Git root command
+                  local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
+                  local file_path = git_root .. "/" .. selection.value
+                  -- Git add command
+                  local result = vim.fn.system("git add " .. file_path)
+                  if result == "" then
+                    vim.notify("Added file: " .. file_path)
+                  else
+                    vim.notify("Failed to add file: " .. file_path .. ". Error: " .. result)
+                  end
+                end,
+              },
+            },
+          },
+
+          git_commits = git_ref_mappings,
+          git_bcommits = git_ref_mappings,
+          git_branches = git_ref_mappings,
+        },
+
         defaults = {
           mappings = {
             i = {
@@ -33,19 +101,6 @@ return {
               ["<C-k>"] = actions.move_selection_previous,
               ["<C-h>"] = actions.which_key,
               ["<C-p>"] = require("telescope.actions.layout").toggle_preview,
-              ["<C-g>"] = function(_) -- only works Telescope git_status
-                local selection = require("telescope.actions.state").get_selected_entry()
-                -- Git root command
-                local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
-                local file_path = git_root .. "/" .. selection.value
-                -- Git add command
-                local result = vim.fn.system("git add " .. file_path)
-                if result == "" then
-                  vim.notify("Added file: " .. file_path)
-                else
-                  vim.notify("Failed to add file: " .. file_path .. ". Error: " .. result)
-                end
-              end,
             },
           },
           preview = {
@@ -58,14 +113,6 @@ return {
           },
           sorting_strategy = "ascending", -- Display results from top to bottom
           file_ignore_patterns = { "node_modules", "vendor" },
-          pickers = {
-            find_files = {
-              i = {
-                ["<C-h>"] = "which_key",
-                ["<C-p>"] = require("telescope.actions.layout").toggle_preview,
-              },
-            },
-          },
         },
       })
     end,
