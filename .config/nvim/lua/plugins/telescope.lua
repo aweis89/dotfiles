@@ -1,3 +1,6 @@
+local actions = require("telescope.actions")
+local git = require("plugins.telescope.git")
+
 return {
   {
     "danielfalk/smart-open.nvim",
@@ -11,9 +14,7 @@ return {
     dependencies = {
       "kkharji/sqlite.lua",
       "nvim-telescope/telescope.nvim",
-      -- Only required if using match_algorithm fzf
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-      -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
       { "nvim-telescope/telescope-fzy-native.nvim" },
     },
   },
@@ -22,93 +23,33 @@ return {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     opts = function(_, opts)
-      local git_ref_diffview_action = function()
-        local action_state = require("telescope.actions.state")
-        local selected_entry = action_state.get_selected_entry()
-        local value = selected_entry.value
-        -- close Telescope window properly prior to switching windows
-        vim.api.nvim_win_close(0, true)
-        vim.cmd("stopinsert")
-        vim.schedule(function()
-          vim.cmd(("DiffviewOpen %s^!"):format(value))
-        end)
-      end
-
-      local previewers = require("telescope.previewers")
-      local git_ref_delta_previewer = previewers.new_termopen_previewer({
-        get_command = function(entry)
-          return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
-        end,
-      })
-      local git_file_delta_previewer = previewers.new_termopen_previewer({
-        get_command = function(entry)
-          -- Check if the file is staged (first character of status)
-          local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
-          local is_unstaged = entry.status:sub(2, 2) ~= " "
-
-          if is_staged then
-            -- Show staged changes
-            return {
-              "git",
-              "-c",
-              "core.pager=delta",
-              "-c",
-              "delta.side-by-side=false",
-              "diff",
-              "--cached",
-              "--",
-              entry.value,
-            }
-          elseif is_unstaged then
-            -- Show unstaged changes
-            return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
-          else
-            -- For untracked files, try to show file content
-            return { "bat", entry.value }
-          end
-        end,
-      })
-
-      local actions = require("telescope.actions")
-
+      -- Git reference mappings configuration
       local git_ref_mappings = {
-        previewer = git_ref_delta_previewer,
+        previewer = git.git_ref_delta_previewer,
         mappings = {
           i = {
-            ["<C-v>"] = git_ref_diffview_action,
+            ["<C-v>"] = git.git_ref_diffview_action,
           },
         },
       }
 
       return vim.tbl_deep_extend("force", opts, {
+        -- Git-related pickers configuration
         pickers = {
           git_status = {
-            previewer = git_file_delta_previewer,
+            previewer = git.git_file_delta_previewer,
             mappings = {
               i = {
-                -- git add file
-                ["<C-g>"] = function(_)
-                  local selection = require("telescope.actions.state").get_selected_entry()
-                  -- Git root command
-                  local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
-                  local file_path = git_root .. "/" .. selection.value
-                  -- Git add command
-                  local result = vim.fn.system("git add " .. file_path)
-                  if result == "" then
-                    vim.notify("Added file: " .. file_path)
-                  else
-                    vim.notify("Failed to add file: " .. file_path .. ". Error: " .. result)
-                  end
-                end,
+                ["<C-g>"] = git.git_add_file,
               },
             },
           },
-
           git_commits = git_ref_mappings,
           git_bcommits = git_ref_mappings,
           git_branches = git_ref_mappings,
         },
 
+        -- Default configurations
         defaults = {
           mappings = {
             i = {
@@ -121,14 +62,14 @@ return {
             },
           },
           preview = {
-            highlight_line = true, -- Enable line highlighting in preview
+            highlight_line = true,
           },
           layout_config = {
-            width = 0.97, -- 97% of screen width
-            height = 0.97, -- 97% of screen height
-            prompt_position = "top", -- Place the prompt at the top
+            width = 0.97,
+            height = 0.97,
+            prompt_position = "top",
           },
-          sorting_strategy = "ascending", -- Display results from top to bottom
+          sorting_strategy = "ascending",
           file_ignore_patterns = { "node_modules", "vendor" },
         },
       })
