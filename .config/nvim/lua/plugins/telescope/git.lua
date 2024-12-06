@@ -43,8 +43,10 @@ M.git_file_delta_previewer = previewers.new_termopen_previewer({
     local is_unstaged = entry.status:sub(2, 2) ~= " "
 
     if is_staged then
+      vim.notify("Staged " .. entry.value, vim.log.levels.INFO)
       return git_cmd("diff", "--cached", "--", entry.value)
     elseif is_unstaged then
+      vim.notify("UnStaged " .. entry.value, vim.log.levels.INFO)
       return git_cmd("diff", "--", entry.value)
     else
       return { "bat", entry.value }
