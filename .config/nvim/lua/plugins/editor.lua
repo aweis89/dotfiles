@@ -43,6 +43,13 @@ return {
   { "rcarriga/nvim-notify", enabled = true },
   { "karb94/neoscroll.nvim", enabled = true },
   {
+    "ahmedkhalf/project.nvim",
+    opts = {
+      manual_mode = false,
+    },
+    event = "VeryLazy",
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       opts.ensure_installed = "all"
