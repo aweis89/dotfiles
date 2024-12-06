@@ -2,6 +2,21 @@ local M = {}
 
 local previewers = require("telescope.previewers")
 
+-- Common git command configuration
+local git_cmd_config = {
+  "git",
+  "-c", "core.pager=delta",
+  "-c", "delta.side-by-side=false",
+}
+
+local function make_git_cmd(...)
+  local cmd = vim.deepcopy(git_cmd_config)
+  for _, arg in ipairs({...}) do
+    table.insert(cmd, arg)
+  end
+  return cmd
+end
+
 -- Git reference diffview action
 M.git_ref_diffview_action = function()
   local action_state = require("telescope.actions.state")
@@ -17,7 +32,7 @@ end
 -- Git reference delta previewer
 M.git_ref_delta_previewer = previewers.new_termopen_previewer({
   get_command = function(entry)
-    return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
+    return make_git_cmd("diff", entry.value .. "^!")
   end,
 })
 
@@ -28,19 +43,9 @@ M.git_file_delta_previewer = previewers.new_termopen_previewer({
     local is_unstaged = entry.status:sub(2, 2) ~= " "
 
     if is_staged then
-      return {
-        "git",
-        "-c",
-        "core.pager=delta",
-        "-c",
-        "delta.side-by-side=false",
-        "diff",
-        "--cached",
-        "--",
-        entry.value,
-      }
+      return make_git_cmd("diff", "--cached", "--", entry.value)
     elseif is_unstaged then
-      return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
+      return make_git_cmd("diff", "--", entry.value)
     else
       return { "bat", entry.value }
     end
