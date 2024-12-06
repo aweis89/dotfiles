@@ -14,33 +14,31 @@ M.git_ref_diffview_action = function()
   end)
 end
 
--- Git reference delta previewer
-M.git_ref_delta_previewer = previewers.new_termopen_previewer({
-  get_command = function(entry)
-    return git_cmd("diff", entry.value .. "^!")
-  end,
-})
-
 local function git_cmd(...)
   local build = {
     "git",
     "-c",
-    "core.pager=delta",
+    "delta.paging=always",
     "-c",
     "delta.side-by-side=false",
-    -- Force git to always pipe through the pager
     "-c",
     "pager.diff=delta",
-    "-c",
-    "delta.paging=never",
     "-c",
     "color.diff=always",
   }
   for _, arg in ipairs({ ... }) do
     table.insert(build, arg)
   end
+  vim.notify("running: " .. table.concat(build, " "))
   return build
 end
+
+-- Git reference delta previewer
+M.git_ref_delta_previewer = previewers.new_termopen_previewer({
+  get_command = function(entry)
+    return git_cmd("diff", entry.value .. "^!")
+  end,
+})
 
 local function get_git_root()
   local output = vim.fn.systemlist("git rev-parse --show-toplevel")
@@ -57,6 +55,14 @@ M.git_file_delta_previewer = previewers.new_termopen_previewer({
       return { "echo", "Invalid entry" }
     end
 
+    local git_root = get_git_root()
+    if not git_root then
+      return { "echo", "Not in a git repository" }
+    end
+
+    -- Change to git root directory
+    vim.fn.chdir(git_root)
+
     local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
     local is_unstaged = entry.status:sub(2, 2) ~= " "
 
@@ -65,12 +71,16 @@ M.git_file_delta_previewer = previewers.new_termopen_previewer({
     elseif is_unstaged then
       return git_cmd("diff", "--", entry.value)
     else
-      return { "bat", "--style=numbers,changes", "--color=always", entry.value }
+      return { "bat", "--style=numbers,changes", "--color=always", "--paging=always", "--pager=less", entry.value }
     end
   end,
   opts = {
     hide_exit_code = true,
-    cwd = get_git_root(),
+  },
+  env = {
+    LESS = "",
+    DELTA_PAGER = "less",
+    BAT_PAGER = "less",
   },
 })
 

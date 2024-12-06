@@ -22,6 +22,9 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
+    keys = {
+      { "<leader><space>", false },
+    },
     opts = function(_, opts)
       -- Git reference mappings configuration
       local git_ref_mappings = {
