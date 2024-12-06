@@ -1,3 +1,4 @@
+-- Integrate delta as the diff previewrs for git commmands
 local diffview_ref = function()
   local action_state = require("telescope.actions.state")
   local selected_entry = action_state.get_selected_entry()
@@ -9,7 +10,6 @@ local diffview_ref = function()
     vim.cmd(("DiffviewOpen %s^!"):format(value))
   end)
 end
-
 local previewers = require("telescope.previewers")
 local git_ref_delta_previewer = previewers.new_termopen_previewer({
   get_command = function(entry)
@@ -18,13 +18,12 @@ local git_ref_delta_previewer = previewers.new_termopen_previewer({
     return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value .. "^!" }
   end,
 })
-
 local git_file_delta_previewer = previewers.new_termopen_previewer({
   get_command = function(entry)
     -- Check if the file is staged (first character of status)
-    local is_staged = entry.status:sub(1,1) ~= " " and entry.status:sub(1,1) ~= "?"
-    local is_unstaged = entry.status:sub(2,2) ~= " "
-    
+    local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
+    local is_unstaged = entry.status:sub(2, 2) ~= " "
+
     if is_staged then
       -- Show staged changes
       return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--cached", "--", entry.value }
@@ -33,19 +32,10 @@ local git_file_delta_previewer = previewers.new_termopen_previewer({
       return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
     else
       -- For untracked files, try to show file content
-      return { "cat", entry.value }
+      return { "bat", entry.value }
     end
   end,
 })
-
-local git_ref_mappings = {
-  previewer = git_ref_delta_previewer,
-  mappings = {
-    i = {
-      ["<C-v>"] = diffview_ref,
-    },
-  },
-}
 
 return {
   {
@@ -71,7 +61,15 @@ return {
     cmd = "Telescope",
     opts = function(_, opts)
       local actions = require("telescope.actions")
-      local action_state = require("telescope.actions.state")
+
+      local git_ref_mappings = {
+        previewer = git_ref_delta_previewer,
+        mappings = {
+          i = {
+            ["<C-v>"] = diffview_ref,
+          },
+        },
+      }
 
       return vim.tbl_deep_extend("force", opts, {
         pickers = {
