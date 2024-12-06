@@ -21,10 +21,20 @@ local git_ref_delta_previewer = previewers.new_termopen_previewer({
 
 local git_file_delta_previewer = previewers.new_termopen_previewer({
   get_command = function(entry)
-    -- this is for status
-    -- You can get the AM things in entry.status. So we are displaying file if entry.status == '??' or 'A '
-    -- just do an if and return a different command
-    return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", entry.value }
+    -- Check if the file is staged (first character of status)
+    local is_staged = entry.status:sub(1,1) ~= " " and entry.status:sub(1,1) ~= "?"
+    local is_unstaged = entry.status:sub(2,2) ~= " "
+    
+    if is_staged then
+      -- Show staged changes
+      return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--cached", "--", entry.value }
+    elseif is_unstaged then
+      -- Show unstaged changes
+      return { "git", "-c", "core.pager=delta", "-c", "delta.side-by-side=false", "diff", "--", entry.value }
+    else
+      -- For untracked files, try to show file content
+      return { "cat", entry.value }
+    end
   end,
 })
 
