@@ -31,11 +31,13 @@ return {
       "willothy/flatten.nvim",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
-    config = true,
+    opts = {
+      aider_args = "--watch-files",
+    },
     keys = {
       {
         "<leader>a<space>",
-        "<cmd>AiderToggle<CR>",
+        "<cmd>AiderToggle float<CR>",
         desc = "Toggle Aider",
       },
       {

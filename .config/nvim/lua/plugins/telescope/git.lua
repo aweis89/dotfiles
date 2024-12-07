@@ -40,50 +40,6 @@ M.git_ref_delta_previewer = previewers.new_termopen_previewer({
   end,
 })
 
-local function get_git_root()
-  local output = vim.fn.systemlist("git rev-parse --show-toplevel")
-  if vim.v.shell_error ~= 0 then
-    return vim.fn.getcwd()
-  end
-  return output[1]
-end
-
--- Git file delta previewer
-M.git_file_delta_previewer = previewers.new_termopen_previewer({
-  get_command = function(entry)
-    if not entry or not entry.status then
-      return { "echo", "Invalid entry" }
-    end
-
-    local git_root = get_git_root()
-    if not git_root then
-      return { "echo", "Not in a git repository" }
-    end
-
-    -- Change to git root directory
-    vim.fn.chdir(git_root)
-
-    local is_staged = entry.status:sub(1, 1) ~= " " and entry.status:sub(1, 1) ~= "?"
-    local is_unstaged = entry.status:sub(2, 2) ~= " "
-
-    if is_staged then
-      return git_cmd("diff", "--cached", "--", entry.value)
-    elseif is_unstaged then
-      return git_cmd("diff", "--", entry.value)
-    else
-      return { "bat", "--style=numbers,changes", "--color=always", "--paging=always", "--pager=less", entry.value }
-    end
-  end,
-  opts = {
-    hide_exit_code = true,
-  },
-  env = {
-    LESS = "",
-    DELTA_PAGER = "less",
-    BAT_PAGER = "less",
-  },
-})
-
 -- Git add file action
 M.git_add_file = function(_)
   local selection = require("telescope.actions.state").get_selected_entry()
