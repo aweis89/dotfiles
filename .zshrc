@@ -288,7 +288,7 @@ alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
 pr-review() {
-  set -ex
+  set -e
 
   # Extract PR number from argument
   local pr="${1##*/}"
@@ -330,7 +330,7 @@ pr-review() {
 
   # Return to original branch
   git checkout "$orig_branch"
-  set +ex
+  set +e
 }
 
 delta() {
