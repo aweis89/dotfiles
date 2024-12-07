@@ -308,7 +308,12 @@ pr-review() {
   # Fetch, checkout and diff
   git fetch origin "$base"
 
-  # check if the PR is already merged AI!
+  # Check if PR is already merged
+  if gh pr view "$pr" --json state --jq '.state' | grep -q "MERGED"; then
+    echo "PR $pr is already merged"
+    return 0
+  fi
+  
   gh pr checkout "$pr"
   git diff "origin/$base"
 
