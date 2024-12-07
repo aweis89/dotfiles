@@ -101,7 +101,7 @@ zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
 zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
 zstyle ':autocomplete:*' async on
 
-_evalcache liqoctl completion zsh
+_evalcache zoxide init zsh
 
 # Additional paths
 export ZFUNCDIR=~/.zsh/functions
