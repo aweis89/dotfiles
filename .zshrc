@@ -288,6 +288,8 @@ alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
 pr-review() {
+  set -ex
+
   # Extract PR number from argument
   local pr="${1##*/}"
   if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
@@ -304,9 +306,11 @@ pr-review() {
   base=$(gh pr view "$pr" --json baseRefName --jq '.baseRefName') || return 1
 
   # Fetch, checkout and diff
-  git fetch origin "$base" || return 1
-  gh pr checkout "$pr" || return 1
-  git diff "origin/$base" || return 1
+  git fetch origin "$base"
+
+  # check if the PR is already merged AI!
+  gh pr checkout "$pr"
+  git diff "origin/$base"
 
   # Prompt for approval
   local user_input
@@ -321,6 +325,7 @@ pr-review() {
 
   # Return to original branch
   git checkout "$orig_branch"
+  set +ex
 }
 
 delta() {
