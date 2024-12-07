@@ -14,3 +14,5 @@
     dark = true      # or light = true, or omit for auto-detection
 [merge]
     conflictstyle = zdiff3
+[pager]
+	diff = delta
