@@ -22,6 +22,8 @@ return {
       end,
     },
   },
+
+  -- remove the dir arg here AI!
   {
     "aweis89/aider.nvim",
     dependencies = {
@@ -35,6 +37,11 @@ return {
       aider_args = "--watch-files",
     },
     keys = {
+      {
+        "<leader>as",
+        "<cmd>AiderSpawn<CR>",
+        desc = "Toggle Aider (default)",
+      },
       {
         "<leader>a<space>",
         "<cmd>AiderToggle float<CR>",
