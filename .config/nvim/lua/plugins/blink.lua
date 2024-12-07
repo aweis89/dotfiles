@@ -17,7 +17,7 @@ return {
         ["<C-j>"] = { "select_next", "fallback" },
       },
       completion = {
-        enabled_providers = { "ripgrep" },
+        -- enabled_providers = { "ripgrep" },
         documentation = {
           auto_show = true,
         },

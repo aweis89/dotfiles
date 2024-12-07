@@ -22,7 +22,6 @@ return {
       end,
     },
   },
-
   {
     "aweis89/aider.nvim",
     dependencies = {
@@ -31,6 +30,7 @@ return {
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
     },
+    dir = "/Users/aaron.weisberg/p/aider.nvim",
     opts = {
       aider_args = "--watch-files",
     },
