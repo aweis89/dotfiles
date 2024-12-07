@@ -287,7 +287,8 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
-pr-diff() {
+# this does not work can you fix this functoin AI!
+pr-review() {
   set -e
   local pr="${1##*/}"
   if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
@@ -347,8 +348,10 @@ aider() {
   opts=()
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
-  command aider "${opts[@]}" "$@"
+  ~/p/aider/venv/bin/aider "${opts[@]}" "$@"
+  # command aider "${opts[@]}" "$@"
 }
+compdef aider=_aider
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
