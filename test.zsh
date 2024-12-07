@@ -287,30 +287,43 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
-# this doesn't work, fix it. AI!
 pr-review() {
-  set -e
   local pr="${1##*/}"
   if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
     echo "Invalid PR number or URL format"
     return 1
   fi
 
-  local orig_branch=$(git branch --show-current)
-  local base=$(gh pr view "$pr" --json baseRefName --jq '.baseRefName') || return 1
-  local git fetch origin "$base"
-  local gh pr checkout "$pr"
-  local git diff "origin/$base"
+  # Store current branch
+  local orig_branch
+  orig_branch=$(git branch --show-current) || return 1
 
+  # Get PR base branch
+  local base
+  base=$(gh pr view "$pr" --json baseRefName --jq '.baseRefName') || return 1
+  
+  # Fetch and checkout
+  git fetch origin "$base" || return 1
+  gh pr checkout "$pr" || {
+    echo "Failed to checkout PR"
+    return 1
+  }
+
+  # Show diff
+  git diff "origin/$base"
+
+  # Prompt for approval
   local user_input
   printf "Approve (y/n)? "
-  read user_input
+  read -r user_input
+  
   if [[ "$user_input" == "y" ]]; then
     if gh pr review --approve; then
       echo "PR $pr approved"
     fi
   fi
 
+  # Return to original branch
   git checkout "$orig_branch"
 }
 
