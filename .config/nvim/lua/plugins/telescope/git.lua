@@ -29,7 +29,6 @@ local function git_cmd(...)
   for _, arg in ipairs({ ... }) do
     table.insert(build, arg)
   end
-  vim.notify("running: " .. table.concat(build, " "))
   return build
 end
 

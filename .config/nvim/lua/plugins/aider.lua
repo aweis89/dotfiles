@@ -30,6 +30,7 @@ return {
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
     },
+    dir = "/Users/aaron.weisberg/p/aider.nvim",
     opts = {
       aider_args = "--watch-files",
       update_hook_cmd = "DiffviewOpen HEAD^",
