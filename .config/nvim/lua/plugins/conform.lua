@@ -8,6 +8,7 @@ return {
       ft.yaml = {}
       ft.lua = { "stylua" }
       ft.bash = { "bashls" }
+      ft.python = {}
       return opts
     end,
   },

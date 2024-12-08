@@ -32,7 +32,7 @@ ohmyzsh/ohmyzsh path:plugins/terraform
 # breaks instant prompt
 # ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/xcode
-# ohmyzsh/ohmyzsh path:plugins/z
+ohmyzsh/ohmyzsh path:plugins/z
 
 mbhynes/fzf-gcloud
 bonnefoa/kubectl-fzf path:shell
