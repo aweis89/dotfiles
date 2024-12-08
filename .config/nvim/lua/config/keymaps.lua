@@ -18,7 +18,7 @@ map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
--- In-order to work in floats as well, we need to use TermOpen autocmd
+-- this doesn't work when terminal starts automatically on startup, maybe use event for enterinig terminal instead of openeing ai!
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
     local function tmap(key, val)
