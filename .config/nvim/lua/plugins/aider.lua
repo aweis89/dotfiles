@@ -36,8 +36,7 @@ return {
     opts = {
       aider_args = "--watch-files",
       update_hook_cmd = "DiffviewOpen HEAD^",
-      -- set this to true ai!
-      spawn_on_startup = false,
+      spawn_on_startup = true,
     },
     keys = {
       {
