@@ -47,9 +47,10 @@ vim.diagnostic.config({
   float = { border = "rounded" },
 })
 
--- Create command mode alias for git=Git
--- make this only work when git is the first word in the command ai!
-vim.cmd("cnoreabbrev git Neogit")
+-- Create command mode alias for git=Git only when it's the first word
+vim.cmd([[
+  cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Neogit' : 'git'
+]])
 
 local function create_tmux_split_command(direction)
   vim.api.nvim_create_user_command("TmuxSplit" .. direction, function()
