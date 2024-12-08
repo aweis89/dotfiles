@@ -22,6 +22,7 @@ return {
       end,
     },
   },
+  -- add docs to this ai!
   {
     "aweis89/aider.nvim",
     dependencies = {
@@ -30,6 +31,7 @@ return {
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
     },
+    dir = "/Users/aaron.weisberg/p/aider.nvim",
     cmd = { "AiderSpawn", "AiderToggle", "AiderLoad" },
     lazy = false,
     opts = {
