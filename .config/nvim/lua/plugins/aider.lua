@@ -37,16 +37,19 @@ return {
       aider_args = "--watch-files",
       update_hook_cmd = "DiffviewOpen HEAD^",
       spawn_on_startup = true,
+      after_update_hook = function()
+        require("diffview").open({ "HEAD^" })
+      end,
     },
     keys = {
       {
         "<leader>as",
         "<cmd>AiderSpawn<CR>",
-        desc = "Toggle Aider (default)",
+        desc = "Toggle Aidper (default)",
       },
       {
         "<leader>a<space>",
-        "<cmd>AiderToggle float<CR>",
+        "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
       },
       {

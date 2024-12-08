@@ -39,6 +39,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.util.octo" },
 
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
+    { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
 
     { import = "lazyvim.plugins.extras.dap" },
     { import = "lazyvim.plugins.extras.test" },
