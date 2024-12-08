@@ -30,10 +30,14 @@ return {
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
     },
+    -- remove dir here ai!
     dir = "/Users/aaron.weisberg/p/aider.nvim",
+    cmd = { "AiderSpawn", "AiderToggle", "AiderLoad" },
+    lazy = false,
     opts = {
       aider_args = "--watch-files",
       update_hook_cmd = "DiffviewOpen HEAD^",
+      spawn_on_startup = false,
     },
     keys = {
       {
