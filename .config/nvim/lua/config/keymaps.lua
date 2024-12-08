@@ -48,6 +48,7 @@ vim.diagnostic.config({
 })
 
 -- Create command mode alias for git=Git
+-- make this only work when git is the first word in the command ai!
 vim.cmd("cnoreabbrev git Neogit")
 
 local function create_tmux_split_command(direction)
