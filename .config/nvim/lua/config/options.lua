@@ -17,3 +17,9 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt.number = false
   end,
 })
+
+-- Enable line wrapping with visual indicator
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
+vim.opt.showbreak = '↪ '
