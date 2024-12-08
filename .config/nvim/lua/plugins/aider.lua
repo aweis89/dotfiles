@@ -23,9 +23,7 @@ return {
     },
   },
   {
-    "aweis89/aider.nvim", -- AI-powered code editing and collaboration plugin
-    -- Provides seamless integration with the Aider CLI tool for AI-assisted coding
-    -- Features include spawning an Aider terminal, toggling visibility, and loading files
+    "aweis89/aider.nvim",
     dependencies = {
       "akinsho/toggleterm.nvim",
       "ibhagwan/fzf-lua",
