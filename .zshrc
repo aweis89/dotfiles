@@ -364,7 +364,7 @@ helm() {
 }
 
 aider() {
-  opts=()
+  opts=(--show-diffs)
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
   ~/p/aider/venv/bin/aider "${opts[@]}" "$@"
