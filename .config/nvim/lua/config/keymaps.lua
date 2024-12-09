@@ -18,29 +18,26 @@ map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
 
--- make available for termtoggle see aider.lua
-_G.set_terminal_keymaps = function()
-  local function tmap(key, val)
-    local opts = { buffer = 0 }
-    vim.keymap.set("t", key, val, opts)
-  end
-  -- exit insert mode
-  tmap("<Esc>", "<C-\\><C-n>")
-  tmap("jj", "<C-\\><C-n>")
-  -- enter command mode
-  tmap(":", "<C-\\><C-n>:")
-  -- scrolling up/down
-  tmap("<C-u>", "<C-\\><C-n><C-u>")
-  tmap("<C-d>", "<C-\\><C-n><C-d>")
-  -- remove line numbers
-  -- vim.wo.number = false
-  -- vim.wo.relativenumber = false
-  -- auto start terminal in insert mode
-  vim.cmd("startinsert")
-end
-
 vim.api.nvim_create_autocmd("TermOpen", {
-  callback = _G.set_terminal_keymaps,
+  callback = function()
+    local function tmap(key, val)
+      local opts = { buffer = 0 }
+      vim.keymap.set("t", key, val, opts)
+    end
+    -- exit insert mode
+    tmap("<Esc>", "<C-\\><C-n>")
+    tmap("jj", "<C-\\><C-n>")
+    -- enter command mode
+    tmap(":", "<C-\\><C-n>:")
+    -- scrolling up/down
+    tmap("<C-u>", "<C-\\><C-n><C-u>")
+    tmap("<C-d>", "<C-\\><C-n><C-d>")
+    -- remove line numbers
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    -- auto start terminal in insert mode
+    vim.cmd("startinsert")
+  end,
 })
 
 vim.diagnostic.config({
