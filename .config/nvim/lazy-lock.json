@@ -16,6 +16,7 @@
   "crates.nvim": { "branch": "main", "commit": "8bf8358ee326d5d8c11dcd7ac0bcc9ff97dbc785" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dressing.nvim": { "branch": "master", "commit": "fc78a3ca96f4db9f8893bb7e2fd9823e0780451b" },
+  "fidget.nvim": { "branch": "main", "commit": "e2a175c2abe2d4f65357da1c98c59a5cfb2b543f" },
   "filetype.nvim": { "branch": "main", "commit": "15891eb2b138d54b08aef793c43901910ec6879f" },
   "flash.nvim": { "branch": "main", "commit": "34c7be146a91fec3555c33fe89c7d643f6ef5cf1" },
   "flatten.nvim": { "branch": "main", "commit": "e420e531d2ab24aebcf7b3c9fca28e6c5c34964d" },
