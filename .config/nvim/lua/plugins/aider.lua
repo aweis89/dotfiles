@@ -11,15 +11,17 @@ return {
     lazy = false,
     opts = {
       update_hook_cmd = "DiffviewOpen HEAD^",
-      notify = function(msg, level, opts)
-        require("fidget").notify(msg, level, opts)
+      notify = function(...)
+        require("fidget").notify(...)
       end,
       after_update_hook = function()
-        require("diffview").open({ "HEAD^" })
+        require("diffview").open({})
       end,
       toggleterm = {
         direction = "tab",
       },
+      aider_args = "--no-auto-commits",
+      confirm_with_vim_ui = true,
     },
     keys = {
       {
