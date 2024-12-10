@@ -87,6 +87,7 @@ return {
         defaults = {
           mappings = {
             i = {
+              -- add these mappings to the other pickers above as well ai!
               ["<C-b>"] = actions.preview_scrolling_up,
               ["<C-f>"] = actions.preview_scrolling_down,
               ["<C-j>"] = actions.move_selection_next,
