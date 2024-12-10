@@ -13,7 +13,6 @@ vim.opt.splitkeep = "screen"
 vim.api.nvim_create_autocmd("TermOpen", {
   pattern = "*",
   callback = function()
-    vim.cmd("startinsert")
     vim.opt.number = false
   end,
 })
@@ -22,4 +21,4 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.breakindent = true
-vim.opt.showbreak = '↪ '
+vim.opt.showbreak = "↪ "

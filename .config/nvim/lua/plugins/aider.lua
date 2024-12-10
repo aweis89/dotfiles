@@ -17,13 +17,20 @@ return {
       after_update_hook = function()
         require("diffview").open({})
       end,
-      toggleterm = {
-        direction = "tab",
-      },
       aider_args = "--no-auto-commits",
-      confirm_with_vim_ui = true,
     },
     keys = {
+      {
+        "<leader>a<space>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+      },
+      {
+        "<C-x>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+        mode = { "i", "t", "n" },
+      },
       {
         "<leader>as",
         "<cmd>AiderSpawn<CR>",
@@ -33,11 +40,6 @@ return {
         "<leader>ac",
         "<cmd>AiderSend /commit<CR>",
         desc = "Aider commit",
-      },
-      {
-        "<leader>a<space>",
-        "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider",
       },
       {
         "<leader>al",
