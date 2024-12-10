@@ -15,9 +15,9 @@ return {
         require("fidget").notify(...)
       end,
       after_update_hook = function()
-        require("diffview").open({})
+        require("diffview").open({ "HEAD^" })
       end,
-      aider_args = "--no-auto-commits",
+      -- aider_args = "--no-auto-commits",
     },
     keys = {
       {
