@@ -1,26 +1,47 @@
+local function is_macos()
+  local handle = io.popen("uname")
+  local os_name = handle:read("*a"):gsub("%s+", "")
+  handle:close()
+  return os_name == "Darwin"
+end
+
+local function set_background()
+  if is_macos() then
+    local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+    local result = handle:read("*a")
+    handle:close()
+
+    if result:find("Dark") then
+      vim.api.nvim_set_option_value("background", "dark", {})
+    else
+      vim.api.nvim_set_option_value("background", "light", {})
+    end
+  end
+end
+
 return {
   {
     "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
+    opts = function(_, opts)
+      set_background()
+
+      vim.loop.new_timer():start(
+        5000,
+        5000,
+        vim.schedule_wrap(function()
+          set_background()
+        end)
+      )
+
+      return {
+        colorscheme = "catppuccin",
+      }
+    end,
   },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     "olimorris/onedarkpro.nvim",
     priority = 1000, -- Ensure it loads first
-  },
-  {
-    "f-person/auto-dark-mode.nvim",
-    opts = {
-      update_interval = 5000,
-      set_dark_mode = function()
-        vim.api.nvim_set_option_value("background", "dark", {})
-      end,
-      set_light_mode = function()
-        vim.api.nvim_set_option_value("background", "light", {})
-      end,
-    },
   },
   {
     "almo7aya/openingh.nvim",
