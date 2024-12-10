@@ -99,9 +99,12 @@ return {
             highlight_line = true,
           },
           layout_config = {
-            width = 0.97,
-            height = 0.97,
+            width = 0.99,
+            height = 0.99,
             prompt_position = "top",
+            horizontal = {
+              preview_width = 0.55,
+            },
           },
           sorting_strategy = "ascending",
           file_ignore_patterns = { "node_modules", "vendor" },
