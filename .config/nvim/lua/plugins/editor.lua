@@ -38,16 +38,38 @@ return {
       }
     end,
   },
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      integrations = {
+        telescope = {
+          enabled = true,
+          style = "nvchad",
+        },
+      },
+    },
+  },
   {
     "olimorris/onedarkpro.nvim",
     priority = 1000, -- Ensure it loads first
   },
   {
-    "almo7aya/openingh.nvim",
-    keys = {
-      { "<C-g>", "<cmd>OpenInGHFileLines<cr>", desc = "Open in Github (prefer branch)" },
-      { "<C-G>", "<cmd>OpenInGHFileLines!<cr>", desc = "Open in Github (prefer sha)" },
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        preset = {
+          header = [[
+_____.___.           /\                   _____                                             
+\__  |   | ____  __ _)/______   ____     /  _  \__  _  __ ____   __________   _____   ____  
+ /   |   |/  _ \|  |  \_  __ \_/ __ \   /  /_\  \ \/ \/ // __ \ /  ___/  _ \ /     \_/ __ \ 
+ \____   (  <_> )  |  /|  | \/\  ___/  /    |    \     /\  ___/ \___ (  <_> )  Y Y  \  ___/ 
+ / ______|\____/|____/ |__|    \___  > \____|__  /\/\_/  \___  >____  >____/|__|_|  /\___  >
+ \/                                \/          \/            \/     \/            \/     \/ 
+          ]],
+        },
+      },
     },
   },
   {

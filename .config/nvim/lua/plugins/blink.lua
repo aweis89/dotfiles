@@ -12,6 +12,14 @@ return {
     "saghen/blink.cmp",
     dependencies = { "niuiic/blink-cmp-rg" },
     opts = {
+      default = { "lsp", "path", "snippets", "buffer", "ripgrep" },
+      providers = {
+        -- other sources
+        ripgrep = {
+          module = "blink-cmp-rg",
+          name = "Ripgrep",
+        },
+      },
       keymap = {
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
@@ -24,7 +32,7 @@ return {
         menu = {
           max_height = math.floor(vim.o.lines / 2),
           draw = {
-            columns = { { "label", "source_name", gap = 1 }, { "kind_icon", "kind" } },
+            columns = { { "label", "source_name", gap = 1 }, { "kind" } },
           },
         },
       },
