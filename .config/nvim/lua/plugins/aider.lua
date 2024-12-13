@@ -11,6 +11,7 @@ return {
     lazy = false,
     opts = {
       update_hook_cmd = "DiffviewOpen HEAD^",
+      spawn_on_startup = false,
       notify = function(...)
         require("fidget").notify(...)
       end,
@@ -24,6 +25,20 @@ return {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
+      },
+      {
+        "<leader>am",
+        desc = "Change model",
+      },
+      {
+        "<leader>ams",
+        "<cmd>AiderSend /model sonnet<CR>",
+        desc = "Switch to sonnet",
+      },
+      {
+        "<leader>amh",
+        "<cmd>AiderSend /model haiku<CR>",
+        desc = "Switch to haiku",
       },
       {
         "<C-x>",
