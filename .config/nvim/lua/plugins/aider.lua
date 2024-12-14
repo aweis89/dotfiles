@@ -18,7 +18,7 @@ return {
       after_update_hook = function()
         require("diffview").open({ "HEAD^" })
       end,
-      -- aider_args = "--no-auto-commits",
+      aider_args = "--no-auto-commits",
     },
     keys = {
       {
