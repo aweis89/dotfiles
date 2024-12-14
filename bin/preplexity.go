@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -38,14 +39,17 @@ type Message struct {
 }
 
 func main() {
+	modelFlag := flag.String("model", "llama-3.1-sonar-huge-128k-online", "AI model to use")
+	flag.Parse()
+
 	perplexityToken := os.Getenv("PREPLEXITY_TOKEN")
 	if perplexityToken == "" {
 		fmt.Println("Error: PREPLEXITY_TOKEN environment variable not set.")
 		return
 	}
 
-	// accept a -model flag to be used in the bellow json in addition to the current os.Args it should default to llama-3.1-sonar-huge-128k-online ai!
-	if len(os.Args) < 2 {
+	args := flag.Args()
+	if len(args) < 1 {
 		fmt.Println("Error: Please provide a question as an argument.")
 		return
 	}
@@ -53,7 +57,7 @@ func main() {
 	url := "https://api.perplexity.ai/chat/completions"
 
 	payload := strings.NewReader(`{
-   "model": "llama-3.1-sonar-small-128k-online",
+   "model": "` + *modelFlag + `",
    "messages": [
      {
        "role": "system",
@@ -61,7 +65,7 @@ func main() {
      },
      {
        "role": "user",
-       "content": "` + os.Args[1] + `"
+       "content": "` + args[0] + `"
      }
    ],
    "max_tokens": 500,
