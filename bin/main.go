@@ -44,9 +44,13 @@ func main() {
 		return
 	}
 
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Please provide a question as an argument.")
+		return
+	}
+
 	url := "https://api.perplexity.ai/chat/completions"
 
-	// make content bellow the first arg being passed to this binary ai!
 	payload := strings.NewReader(`{
    "model": "llama-3.1-sonar-small-128k-online",
    "messages": [
@@ -56,7 +60,7 @@ func main() {
      },
      {
        "role": "user",
-       "content": "How many stars are there in our galaxy?"
+       "content": "` + os.Args[1] + `"
      }
    ],
    "max_tokens": 500,
