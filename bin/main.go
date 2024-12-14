@@ -10,13 +10,13 @@ import (
 )
 
 type PerplexityResponse struct {
-	ID        string    `json:"id"`
-	Model     string    `json:"model"`
-	Created   int64     `json:"created"`
-	Usage     Usage     `json:"usage"`
-	Citations []string  `json:"citations"`
-	Object    string    `json:"object"`
-	Choices   []Choice  `json:"choices"`
+	ID        string   `json:"id"`
+	Model     string   `json:"model"`
+	Created   int64    `json:"created"`
+	Usage     Usage    `json:"usage"`
+	Citations []string `json:"citations"`
+	Object    string   `json:"object"`
+	Choices   []Choice `json:"choices"`
 }
 
 type Usage struct {
@@ -46,6 +46,7 @@ func main() {
 
 	url := "https://api.perplexity.ai/chat/completions"
 
+	// make content bellow the first arg being passed to this binary ai!
 	payload := strings.NewReader(`{
    "model": "llama-3.1-sonar-small-128k-online",
    "messages": [
