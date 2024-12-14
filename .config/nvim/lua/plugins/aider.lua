@@ -41,6 +41,11 @@ return {
         desc = "Switch to haiku",
       },
       {
+        "<leader>amg",
+        "<cmd>AiderSend /model gemini/gemini-exp-1206<CR>",
+        desc = "Switch to haiku",
+      },
+      {
         "<C-x>",
         "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
