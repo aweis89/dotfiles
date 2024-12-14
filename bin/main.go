@@ -1,12 +1,41 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 )
+
+type PerplexityResponse struct {
+	ID        string    `json:"id"`
+	Model     string    `json:"model"`
+	Created   int64     `json:"created"`
+	Usage     Usage     `json:"usage"`
+	Citations []string  `json:"citations"`
+	Object    string    `json:"object"`
+	Choices   []Choice  `json:"choices"`
+}
+
+type Usage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
+type Choice struct {
+	Index        int     `json:"index"`
+	FinishReason string  `json:"finish_reason"`
+	Message      Message `json:"message"`
+	Delta        Message `json:"delta"`
+}
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
 
 func main() {
 	perplexityToken := os.Getenv("PREPLEXITY_TOKEN")
@@ -59,8 +88,6 @@ func main() {
 		return
 	}
 
-	// parse the resposne from this format ai!
-	// Response: {"id": "f2b95836-b457-4e20-8637-4f5301c8f9fa", "model": "llama-3.1-sonar-small-128k-online", "created": 1734134338, "usage": {"prompt_tokens": 14, "completion_tokens": 26, "total_tokens": 40}, "citations": ["https://dev.schoolsobservatory.org/learn/space/galaxies", "https://en.wikipedia.org/wiki/Galaxy", "https://science.nasa.gov/missions/hubble/hubble-uncovers-thousands-of-globular-star-clusters-scattered-among-galaxies/", "https://www.youtube.com/watch?v=vtv7Ok-19eU", "https://www.sciencenews.org/article/first-close-image-star-beyond-galaxy"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "Our galaxy, the Milky Way, contains approximately 200 billion (2\u00d710^11) stars[2][4]."}, "delta": {"role": "assistant", "content": ""}}]}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -68,6 +95,18 @@ func main() {
 		return
 	}
 
+	var response PerplexityResponse
+	if err := json.Unmarshal(body, &response); err != nil {
+		fmt.Println("Error parsing response:", err)
+		return
+	}
+
 	fmt.Println("Status:", res.Status)
-	fmt.Println("Response:", string(body))
+	if len(response.Choices) > 0 {
+		fmt.Println("Answer:", response.Choices[0].Message.Content)
+		fmt.Println("\nCitations:")
+		for _, citation := range response.Citations {
+			fmt.Println("-", citation)
+		}
+	}
 }
