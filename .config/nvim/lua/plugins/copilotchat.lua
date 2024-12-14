@@ -1,11 +1,3 @@
-local function get_last_code_block(response, lang)
-  if lang then
-    return response:match("```" .. lang .. "\n(.-)```[^```]*$")
-  else
-    return response:match("```.-\n(.-)```[^```]*$")
-  end
-end
-
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -15,6 +7,14 @@ return {
     },
 
     config = function(_, opts)
+      local function get_last_code_block(response, lang)
+        if lang then
+          return response:match("```" .. lang .. "\n(.-)```[^```]*$")
+        else
+          return response:match("```.-\n(.-)```[^```]*$")
+        end
+      end
+
       local user_key_mappings = {
         ["<C-g>"] = function(response)
           local message = get_last_code_block(response, "gitcommit")
@@ -26,7 +26,7 @@ return {
             print("No git commit message found in response.")
           end
         end,
-        ["<C-w>"] = function(response)
+        ["<C-f>"] = function(response)
           vim.ui.input({ prompt = "Write to file: " }, function(input)
             local message = get_last_code_block(response)
             local file, err = io.open(input, "a")
