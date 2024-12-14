@@ -345,7 +345,7 @@ delta() {
     command delta --dark "$@"
     return
   fi
-  command delta "$@"
+  command delta --light "$@"
 }
 
 rg() {
@@ -353,19 +353,19 @@ rg() {
 }
 
 kubectl() {
-    if [[ "$@" == *"-o yaml"* ]]; then
-        command kubectl "$@" | bat --language yaml --style plain
-    else
-        command kubectl "$@"
-    fi
+  if [[ "$@" == *"-o yaml"* ]]; then
+    command kubectl "$@" | bat --language yaml --style plain
+  else
+    command kubectl "$@"
+  fi
 }
 
 helm() {
-    if [[ "$@" == *"template"* ]]; then
-        command helm "$@" | bat --language yaml --style plain
-    else
-        command helm "$@"
-    fi
+  if [[ "$@" == *"template"* ]]; then
+    command helm "$@" | bat --language yaml --style plain
+  else
+    command helm "$@"
+  fi
 }
 
 p() {
