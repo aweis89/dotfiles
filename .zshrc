@@ -249,6 +249,12 @@ zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
+aichat() {
+  command aichat \
+    --model claude:claude-3-5-sonnet-latest \
+    "$@"
+}
+
 alias ai=aichat
 alias '??'='aichat -e'
 

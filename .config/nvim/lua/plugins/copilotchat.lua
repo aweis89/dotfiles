@@ -19,7 +19,7 @@ return {
         ["<C-g>"] = function(response)
           local message = get_last_code_block(response, "gitcommit")
           if message then
-            local command = string.format("Git commit -m '%s' | Git push", message)
+            local command = string.format("Git commit -m %s | Git push", vim.fn.shellescape(message))
             vim.notify("Executing: " .. command)
             vim.api.nvim_command(command)
           else

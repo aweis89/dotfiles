@@ -10,7 +10,6 @@ return {
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     lazy = false,
     opts = {
-      update_hook_cmd = "DiffviewOpen HEAD^",
       spawn_on_startup = false,
       notify = function(...)
         require("fidget").notify(...)
@@ -18,7 +17,7 @@ return {
       after_update_hook = function()
         require("diffview").open({ "HEAD^" })
       end,
-      aider_args = "--no-auto-commits",
+      -- aider_args = "--no-auto-commits",
     },
     keys = {
       {
@@ -55,11 +54,6 @@ return {
         "<leader>as",
         "<cmd>AiderSpawn<CR>",
         desc = "Toggle Aidper (default)",
-      },
-      {
-        "<leader>ac",
-        "<cmd>AiderSend /commit<CR>",
-        desc = "Aider commit",
       },
       {
         "<leader>al",
