@@ -272,6 +272,7 @@ alias tf=terraform
 alias tfa='terraform apply -auto-approve'
 alias tfi='terraform init'
 alias ag=rg
+alias rgh="rg --hidden --glob '!**/.git/**'"
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
 alias kw='watch kubectl'
