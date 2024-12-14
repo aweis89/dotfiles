@@ -362,12 +362,17 @@ helm() {
     fi
 }
 
+p() {
+  set -x
+  go run $HOME/dotfiles/bin/perplexity.go "$@"
+}
+
 aider() {
   opts=(--show-diffs)
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
   [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
-  ~/p/aider/venv/bin/aider "${opts[@]}" "$@"
-  # command aider "${opts[@]}" "$@"
+  # ~/p/aider/venv/bin/aider "${opts[@]}" "$@"
+  command aider "${opts[@]}" "$@"
 }
 compdef aider=_aider
 

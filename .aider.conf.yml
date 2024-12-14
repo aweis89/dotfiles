@@ -10,7 +10,7 @@
 
 alias:
   - "fast:claude-3-5-haiku-20241022"
-  - "flash:gemini/gemini-1.5-flash-latest"
+  - "gem:gemini/gemini-exp-1206"
   - "pro:gemini/gemini-pro"
 
 ##########
@@ -35,9 +35,9 @@ alias:
 #opus: false
 
 ## Use claude-3-5-sonnet-20241022 model for the main chat
-#sonnet: true
+# sonnet: true
 ## Use claude-3-5-haiku-20241022 model for the main chat
-haiku: true
+# haiku: true
 
 ## Use gpt-4-0613 model for the main chat
 #4: false
