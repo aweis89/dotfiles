@@ -44,7 +44,7 @@ vim.diagnostic.config({
 
 -- Create command mode alias for git=Git only when it's the first word
 vim.cmd([[
-  cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Neogit' : 'git'
+  cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Git' : 'git'
 ]])
 
 local function create_tmux_split_command(direction)

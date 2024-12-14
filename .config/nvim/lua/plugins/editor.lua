@@ -52,8 +52,7 @@ return {
     },
   },
   {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000, -- Ensure it loads first
+    "tpope/vim-fugitive",
   },
   {
     "folke/snacks.nvim",
