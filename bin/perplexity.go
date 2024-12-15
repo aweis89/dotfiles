@@ -50,11 +50,10 @@ func main() {
 
 	args := flag.Args()
 	if len(args) < 1 {
-		fmt.Println("Error: Please provide a question as an argument.")
+		fmt.Println("Error: Please provide a question as arguments.")
 		return
 	}
-
-	url := "https://api.perplexity.ai/chat/completions"
+	prompt := strings.Join(args, " ")
 
 	payload := strings.NewReader(`{
    "model": "` + *modelFlag + `",
@@ -65,7 +64,7 @@ func main() {
      },
      {
        "role": "user",
-       "content": "` + args[0] + `"
+       "content": "` + prompt + `"
      }
    ],
    "max_tokens": 500,
@@ -83,6 +82,7 @@ func main() {
    "frequency_penalty": 1
  }`)
 
+	url := "https://api.perplexity.ai/chat/completions"
 	req, err := http.NewRequest("POST", url, payload)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
