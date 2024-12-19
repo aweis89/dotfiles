@@ -32,7 +32,7 @@ return {
         menu = {
           max_height = math.floor(vim.o.lines / 2),
           draw = {
-            columns = { { "label", "source_name", gap = 1 }, { "kind" } },
+            columns = { { "label", "source_name", gap = 1 }, { "kind_icon" } },
           },
         },
       },

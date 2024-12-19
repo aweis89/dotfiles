@@ -34,7 +34,7 @@ return {
       )
 
       return {
-        colorscheme = "catppuccin",
+        colorscheme = "tokyonight",
       }
     end,
   },
@@ -46,7 +46,7 @@ return {
       integrations = {
         telescope = {
           enabled = true,
-          style = "nvchad",
+          -- style = "nvchad",
         },
       },
     },
