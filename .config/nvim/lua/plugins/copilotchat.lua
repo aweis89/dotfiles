@@ -40,7 +40,7 @@ return {
         end,
         ["<C-y>"] = function(response) -- copy last code block
           local message = get_last_code_block(response)
-          vim.fn.setreg("+", message)
+          vim.fn.setreg('"', message)
         end,
       }
       for mapping, val in pairs(user_key_mappings) do
