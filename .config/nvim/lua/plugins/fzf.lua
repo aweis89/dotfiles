@@ -53,6 +53,18 @@ return {
         end,
       })
 
+      local function git_status_actions(selected, o)
+        local action = o.mods:match(":(.)$")
+        local file = require("fzf-lua").path.entry_to_file(selected[1], o)
+        if action == "s" then
+          vim.fn.system("git add " .. file.path)
+          vim.cmd("FzfLua git_status")
+        elseif action == "u" then
+          vim.fn.system("git restore --staged " .. file.path)
+          vim.cmd("FzfLua git_status")
+        end
+      end
+
       return {
         winopts = { height = 1.00, width = 1.00 },
         keymap = {
@@ -67,7 +79,23 @@ return {
             ["ctrl-b"] = "preview-page-up",
           },
         },
+        ["git_status"] = {
+          previewer = "git_delta",
+          actions = {
+            ["default"] = git_status_actions,
+            ["ctrl-s"] = git_status_actions,
+            ["ctrl-u"] = git_status_actions,
+          },
+        },
       }
+    end,
+  },
+  {
+    "ibhagwan/fzf-lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    optional = true,
+    opts = function(_, opts)
+      opts.previewers = require("plugins.fzf.git_delta_previewer")
     end,
   },
 }
