@@ -42,6 +42,7 @@
   "mini.animate": { "branch": "main", "commit": "d14190ac3040116540889e2ebc25f488b195799e" },
   "mini.comment": { "branch": "main", "commit": "a56581c40c19fa26f2b39da72504398de3173c5a" },
   "mini.files": { "branch": "main", "commit": "72cc9045c1011f2c158117bd5a0d339792b7f34a" },
+  "mini.hipatterns": { "branch": "main", "commit": "f34975103a38b3f608219a1324cdfc58ea660b8b" },
   "mini.icons": { "branch": "main", "commit": "44c0160526f7ae17ca8e8eab9ab235d047fcf7a6" },
   "mini.indentscope": { "branch": "main", "commit": "da9af64649e114aa79480c238fd23f6524bc0903" },
   "mini.pairs": { "branch": "main", "commit": "7e834c5937d95364cc1740e20d673afe2d034cdb" },
