@@ -32,6 +32,8 @@ local function git_cmd(...)
   return build
 end
 
+-- craete another delta preview that will work for Telescope git_status ai!
+
 -- Git reference delta previewer
 M.git_ref_delta_previewer = previewers.new_termopen_previewer({
   get_command = function(entry)
