@@ -72,6 +72,7 @@ return {
         -- Git-related pickers configuration
         pickers = {
           git_status = {
+            previewer = git.git_status_delta_previewer,
             mappings = {
               i = {
                 ["<C-g>"] = git.git_add_file,
