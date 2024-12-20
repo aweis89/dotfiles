@@ -29,7 +29,7 @@ alias:
 #anthropic-api-key: xxx
 
 ## Specify the model to use for the main chat
-#model: xxx
+model: gemini/gemini-exp-1206
 
 ## Use claude-3-opus-20240229 model for the main chat
 #opus: false
