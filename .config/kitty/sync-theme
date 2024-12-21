@@ -3,13 +3,13 @@
 kitty_dir="${0:a:h}"
 theme="$kitty_dir/current-theme.conf"
 
-# cattpuccin colors
-dark="$kitty_dir/themes/mocha.conf"
-light="$kitty_dir/themes/latte.conf"
-
 tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
 light="$tokyonight_dir/tokyonight_day.conf"
 dark="$tokyonight_dir/tokyonight_moon.conf"
+
+# cattpuccin colors
+dark="$kitty_dir/themes/mocha.conf"
+light="$kitty_dir/themes/latte.conf"
 
 [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
   && target="$dark" || target="$light"

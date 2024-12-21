@@ -34,7 +34,7 @@ return {
       )
 
       return {
-        colorscheme = "tokyonight",
+        colorscheme = "catppuccin",
       }
     end,
   },
