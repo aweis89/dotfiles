@@ -20,8 +20,6 @@ local function git_cmd(...)
     "-c",
     "delta.paging=always",
     "-c",
-    "delta.side-by-side=false",
-    "-c",
     "pager.diff=delta",
     "-c",
     "color.diff=always",

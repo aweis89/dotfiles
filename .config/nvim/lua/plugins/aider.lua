@@ -13,9 +13,9 @@ return {
         -- direction = "tab",
       },
       after_update_hook = function()
-        require("telescope.command").load_command("git_commits")
+        -- require("telescope.command").load_command("git_commits")
 
-        -- require("diffview").open({ "HEAD^" })
+        require("diffview").open({ "HEAD^" })
       end,
       -- aider_args = "--no-auto-commits",
     },
