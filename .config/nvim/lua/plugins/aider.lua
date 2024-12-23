@@ -17,24 +17,6 @@ return {
 
         -- require("diffview").open({ "HEAD^" })
       end,
-      -- remove these comments ai!
-      -- on_term_open = function()
-      --   local function tmap(key, val)
-      --     local opt = { buffer = 0 }
-      --     vim.keymap.set("t", key, val, opt)
-      --   end
-      --   -- exit insert mode
-      --   tmap("<Esc>", "<C-\\><C-n>")
-      --   tmap("jj", "<C-\\><C-n>")
-      --   -- enter command mode
-      --   tmap(":", "<C-\\><C-n>:")
-      --   -- scrolling up/down
-      --   tmap("<C-u>", "<C-\\><C-n><C-u>")
-      --   tmap("<C-d>", "<C-\\><C-n><C-d>")
-      --   -- remove line numbers
-      --   vim.wo.number = false
-      --   vim.wo.relativenumber = false
-      -- end,
       -- aider_args = "--no-auto-commits",
     },
     keys = {
