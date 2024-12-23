@@ -4,39 +4,37 @@ return {
     dependencies = {
       "akinsho/toggleterm.nvim",
       "nvim-telescope/telescope.nvim",
-      "willothy/flatten.nvim",
       "j-hui/fidget.nvim",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     lazy = false,
     opts = {
-      toggleterm = {
-        direction = "tab",
+      win = {
+        -- direction = "tab",
       },
-      spawn_on_startup = false,
-      notify = function(...)
-        require("fidget").notify(...)
-      end,
       after_update_hook = function()
-        require("diffview").open({ "HEAD^" })
+        require("telescope.command").load_command("git_commits")
+
+        -- require("diffview").open({ "HEAD^" })
       end,
-      on_term_open = function()
-        local function tmap(key, val)
-          local opt = { buffer = 0 }
-          vim.keymap.set("t", key, val, opt)
-        end
-        -- exit insert mode
-        tmap("<Esc>", "<C-\\><C-n>")
-        tmap("jj", "<C-\\><C-n>")
-        -- enter command mode
-        tmap(":", "<C-\\><C-n>:")
-        -- scrolling up/down
-        tmap("<C-u>", "<C-\\><C-n><C-u>")
-        tmap("<C-d>", "<C-\\><C-n><C-d>")
-        -- remove line numbers
-        vim.wo.number = false
-        vim.wo.relativenumber = false
-      end,
+      -- remove these comments ai!
+      -- on_term_open = function()
+      --   local function tmap(key, val)
+      --     local opt = { buffer = 0 }
+      --     vim.keymap.set("t", key, val, opt)
+      --   end
+      --   -- exit insert mode
+      --   tmap("<Esc>", "<C-\\><C-n>")
+      --   tmap("jj", "<C-\\><C-n>")
+      --   -- enter command mode
+      --   tmap(":", "<C-\\><C-n>:")
+      --   -- scrolling up/down
+      --   tmap("<C-u>", "<C-\\><C-n><C-u>")
+      --   tmap("<C-d>", "<C-\\><C-n><C-d>")
+      --   -- remove line numbers
+      --   vim.wo.number = false
+      --   vim.wo.relativenumber = false
+      -- end,
       -- aider_args = "--no-auto-commits",
     },
     keys = {
