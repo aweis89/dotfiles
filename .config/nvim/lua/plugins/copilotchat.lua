@@ -67,6 +67,9 @@ return {
       model = "claude-3.5-sonnet",
     },
     keys = {
+
+      -- fix the below error ai!
+      -- E488: Trailing characters: | bdelete:  CopilotChatCommitStaged | bdelete
       { "<leader>ac", ":Git add % <bar> CopilotChatCommitStaged <bar> bdelete<cr>", desc = "Commit staged" },
     },
   },
