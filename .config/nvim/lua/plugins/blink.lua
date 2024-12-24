@@ -11,6 +11,8 @@ return {
   {
     "saghen/blink.cmp",
     dependencies = { "niuiic/blink-cmp-rg" },
+    -- specify version 0.*.* using proper lazy package manager syntax ai!
+    enabled = false,
     opts = {
       -- default = { "lsp", "path", "snippets", "buffer", "ripgrep" },
       -- providers = {
