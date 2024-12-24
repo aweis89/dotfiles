@@ -19,7 +19,7 @@ return {
         ["<C-g>"] = function(response)
           local message = get_last_code_block(response, "gitcommit")
           if message then
-            local command = string.format("Git commit -m %s | Git push", vim.fn.shellescape(message))
+            local command = string.format("Git commit -m %s | Git push | bdelete", vim.fn.shellescape(message))
             vim.notify("Executing: " .. command)
             vim.api.nvim_command(command)
           else
@@ -67,7 +67,6 @@ return {
       model = "claude-3.5-sonnet",
     },
     keys = {
-      -- add a command here after commit to close the current buffer ai!
       { "<leader>ac", "<cmd>Git add % | CopilotChatCommitStaged<cr>", desc = "Commit staged" },
     },
   },
