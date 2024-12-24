@@ -6,6 +6,7 @@ local function git_action(command_template)
   local action_state = require("telescope.actions.state")
   local selected_entry = action_state.get_selected_entry()
   local value = selected_entry.value
+  value = value:gsub("@$", "")
   vim.api.nvim_win_close(0, true)
   vim.cmd("stopinsert")
   vim.schedule(function()
@@ -20,12 +21,12 @@ end
 
 -- Git reference diffview action
 M.git_ref_reset_soft = function()
-  git_action("Git reset --soft %s!")
+  git_action("Git reset --soft %s")
 end
 
 -- Git reference diffview action
 M.git_ref_reset_hard = function()
-  git_action("Git reset %s!")
+  git_action("Git reset %s")
 end
 
 local function git_cmd(...)
