@@ -53,6 +53,8 @@ return {
         mappings = {
           i = {
             ["<C-v>"] = git.git_ref_diffview_action,
+            ["<C-r>"] = git.git_ref_reset_soft,
+            ["<C-R>"] = git.git_ref_reset_hard,
           },
         },
       }
