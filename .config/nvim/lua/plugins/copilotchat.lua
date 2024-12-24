@@ -67,8 +67,7 @@ return {
       model = "claude-3.5-sonnet",
     },
     keys = {
-      -- what is the correct sytnax for this ai!
-      { "<leader>ac", "<cmd>Git add % <bar> CopilotChatCommitStaged <bar> bdelete<cr>", desc = "Commit staged" },
+      { "<leader>ac", ":Git add % <bar> CopilotChatCommitStaged <bar> bdelete<cr>", desc = "Commit staged" },
     },
   },
 }
