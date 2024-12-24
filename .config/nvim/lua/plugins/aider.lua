@@ -15,11 +15,16 @@ return {
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")
 
-        require("diffview").open({ "HEAD^" })
+        vim.cmd("DiffviewOpen HEAD^ | DiffviewToggleFiles")
       end,
       -- aider_args = "--no-auto-commits",
     },
     keys = {
+      {
+        "<leader>ghh",
+        "<cmd>Gitsigns change_base HEAD^<CR>",
+        desc = "Gitsigns pick reversals",
+      },
       {
         "<leader>dvh",
         "<cmd>DiffviewOpen HEAD^<CR>",
@@ -39,6 +44,16 @@ return {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
+      },
+      {
+        "<leader>af",
+        "<cmd>AiderToggle float<CR>",
+        desc = "Toggle Aider Float",
+      },
+      {
+        "<leader>av",
+        "<cmd>AiderToggle vertical<CR>",
+        desc = "Toggle Aider Float",
       },
       {
         "<leader>am",
