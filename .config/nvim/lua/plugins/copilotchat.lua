@@ -67,11 +67,8 @@ return {
       model = "claude-3.5-sonnet",
     },
     keys = {
-      {
-        "<leader>ac",
-        "<cmd>Git add % | CopilotChatCommitStaged<cr><cmd>bdelete<cr>",
-        desc = "Commit staged",
-      },
+      -- add a command here after commit to close the current buffer ai!
+      { "<leader>ac", "<cmd>Git add % | CopilotChatCommitStaged<cr>", desc = "Commit staged" },
     },
   },
 }
