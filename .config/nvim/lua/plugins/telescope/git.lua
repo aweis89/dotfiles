@@ -2,41 +2,30 @@ local M = {}
 
 local previewers = require("telescope.previewers")
 
--- refactor the bellow 3 functoins to reduce duplication ai!
--- Git reference diffview action
-M.git_ref_diffview_action = function()
+local function git_action(command_template)
   local action_state = require("telescope.actions.state")
   local selected_entry = action_state.get_selected_entry()
   local value = selected_entry.value
   vim.api.nvim_win_close(0, true)
   vim.cmd("stopinsert")
   vim.schedule(function()
-    vim.cmd(("DiffviewOpen %s^!"):format(value))
+    vim.cmd(command_template:format(value))
   end)
+end
+
+-- Git reference diffview action
+M.git_ref_diffview_action = function()
+  git_action("DiffviewOpen %s^!")
 end
 
 -- Git reference diffview action
 M.git_ref_reset_soft = function()
-  local action_state = require("telescope.actions.state")
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry.value
-  vim.api.nvim_win_close(0, true)
-  vim.cmd("stopinsert")
-  vim.schedule(function()
-    vim.cmd(("Git reset --soft %s!"):format(value))
-  end)
+  git_action("Git reset --soft %s!")
 end
 
 -- Git reference diffview action
 M.git_ref_reset_hard = function()
-  local action_state = require("telescope.actions.state")
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry.value
-  vim.api.nvim_win_close(0, true)
-  vim.cmd("stopinsert")
-  vim.schedule(function()
-    vim.cmd(("Git reset %s!"):format(value))
-  end)
+  git_action("Git reset %s!")
 end
 
 local function git_cmd(...)
