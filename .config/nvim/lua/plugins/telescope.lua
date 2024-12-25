@@ -78,6 +78,7 @@ return {
             mappings = {
               i = {
                 ["<C-g>"] = git.git_add_file,
+                ["<C-r>"] = git.git_checkout_file,
               },
             },
           },
