@@ -59,32 +59,27 @@ M.git_ref_delta_previewer = previewers.new_termopen_previewer({
   end,
 })
 
--- refacotr the below two funcs to reduce duplicatoin ai!
--- Git add file action
-M.git_add_file = function(_)
+local function git_file_action(action)
   local selection = require("telescope.actions.state").get_selected_entry()
   local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
   local file_path = git_root .. "/" .. selection.value
-  local result = vim.fn.system("git add " .. file_path)
-  if result == "" then
-    vim.notify("Added file: " .. file_path)
-  else
-    vim.notify("Failed to add file: " .. file_path .. ". Error: " .. result)
-  end
-end
-
--- Git checkout file
-M.git_checkout_file = function(_)
-  local selection = require("telescope.actions.state").get_selected_entry()
-  local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "")
-  local file_path = git_root .. "/" .. selection.value
-  local cmd = "git checkout -- " .. file_path
+  local cmd = "git " .. action .. " " .. file_path
   local result = vim.fn.system(cmd)
   if result == "" then
     vim.notify("Ran: " .. cmd)
   else
-    vim.notify("Faile to run: " .. cmd .. ". Error: " .. result)
+    vim.notify("Failed to run: " .. cmd .. ". Error: " .. result)
   end
+end
+
+-- Git add file action
+M.git_add_file = function(_)
+  git_file_action("add")
+end
+
+-- Git checkout file
+M.git_checkout_file = function(_)
+  git_file_action("checkout --")
 end
 
 return M
