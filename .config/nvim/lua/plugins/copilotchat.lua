@@ -64,7 +64,24 @@ return {
     end,
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {
+      system_prompt = [[
+You are an AI programming assistant.
+Keep your answers short and impersonal.
+The user works in an IDE called Neovim which has a concept for editors with open files, integrated unit test support, an output pane that shows the output of running the code as well as an integrated terminal.
+The user is working on a Darwin machine. Please respond with system specific commands if applicable.
+      ]],
       model = "claude-3.5-sonnet",
+      context = nil,
+      -- default selection
+      selection = function(source)
+        local select = require("CopilotChat.select")
+        return select.visual(source) or nil
+      end,
+      window = {
+        layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
+        height = vim.api.nvim_win_get_height(0),
+        width = vim.api.nvim_win_get_width(0),
+      },
     },
     keys = {
       { "<leader>ac", "<cmd>Git add % | CopilotChatCommitStaged<cr>", desc = "Commit staged" },
