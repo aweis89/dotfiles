@@ -483,10 +483,6 @@ slack-pr-msg() {
 }
 alias pr-msg=slack-pr-msg
 
-llm() {
-    go run ~/p/llm-agent/ "$@" | bat --language=Markdown
-}
-
 # Lazy completions
 kubebuilder() {
     unfunction "$0"
