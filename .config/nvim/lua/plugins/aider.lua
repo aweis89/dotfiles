@@ -27,11 +27,6 @@ return {
         "<cmd>Gitsigns change_base HEAD^<CR>",
         desc = "Gitsigns pick reversals",
       },
-      -- {
-      --   "<leader>dvh",
-      --   "<cmd>DiffviewOpen HEAD^<CR>",
-      --   desc = "Diffview HEAD^",
-      -- },
       {
         "<leader>dvh",
         "<cmd>DiffviewFileHistory<CR>",
@@ -63,25 +58,6 @@ return {
         desc = "Toggle Aider Float",
       },
       {
-        "<leader>am",
-        desc = "Change model",
-      },
-      {
-        "<leader>ams",
-        "<cmd>AiderSend /model sonnet<CR>",
-        desc = "Switch to sonnet",
-      },
-      {
-        "<leader>amh",
-        "<cmd>AiderSend /model haiku<CR>",
-        desc = "Switch to haiku",
-      },
-      {
-        "<leader>amg",
-        "<cmd>AiderSend /model gemini/gemini-exp-1206<CR>",
-        desc = "Switch to haiku",
-      },
-      {
         "<C-x>",
         "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
@@ -102,6 +78,27 @@ return {
         "<cmd>AiderAsk<CR>",
         desc = "Ask with selection",
         mode = { "v", "n" },
+      },
+
+      {
+        "<leader>ams",
+        "<cmd>AiderSend /model sonnet<CR>",
+        desc = "Switch to sonnet",
+      },
+      {
+        "<leader>amh",
+        "<cmd>AiderSend /model haiku<CR>",
+        desc = "Switch to haiku",
+      },
+      {
+        "<leader>amd",
+        "<cmd>AiderSend /model deepseek/deepseek-chat<CR>",
+        desc = "Switch to haiku",
+      },
+      {
+        "<leader>amg",
+        "<cmd>AiderSend /model gemini/gemini-exp-1206<CR>",
+        desc = "Switch to haiku",
       },
     },
   },
