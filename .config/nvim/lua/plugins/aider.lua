@@ -5,17 +5,19 @@ return {
       "akinsho/toggleterm.nvim",
       "nvim-telescope/telescope.nvim",
       "j-hui/fidget.nvim",
+      "willothy/flatten.nvim",
+      "ibhagwan/fzf-lua",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     lazy = false,
     opts = {
-      win = {
-        -- direction = "tab",
-      },
+      -- win = {
+      --   direction = "float",
+      -- },
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")
 
-        vim.cmd("DiffviewOpen HEAD^ | DiffviewToggleFiles")
+        vim.cmd("DiffviewFileHistory")
       end,
       -- aider_args = "--no-auto-commits",
     },
@@ -25,10 +27,15 @@ return {
         "<cmd>Gitsigns change_base HEAD^<CR>",
         desc = "Gitsigns pick reversals",
       },
+      -- {
+      --   "<leader>dvh",
+      --   "<cmd>DiffviewOpen HEAD^<CR>",
+      --   desc = "Diffview HEAD^",
+      -- },
       {
         "<leader>dvh",
-        "<cmd>DiffviewOpen HEAD^<CR>",
-        desc = "Diffview HEAD^",
+        "<cmd>DiffviewFileHistory<CR>",
+        desc = "Diffview History Log",
       },
       {
         "<leader>dvo",

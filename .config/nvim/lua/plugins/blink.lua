@@ -11,8 +11,8 @@ return {
   {
     "saghen/blink.cmp",
     dependencies = { "niuiic/blink-cmp-rg" },
-    version = "0.*.*",
-    enabled = false,
+    version = "*",
+    -- enabled = false,
     opts = {
       -- default = { "lsp", "path", "snippets", "buffer", "ripgrep" },
       -- providers = {
