@@ -45,6 +45,7 @@ return {
     },
     opts = function(_, opts)
       local actions = require("telescope.actions")
+      local previewers = require("telescope.previewers")
       local git = require("plugins.telescope.git")
 
       -- Git reference mappings configuration
@@ -53,8 +54,7 @@ return {
         mappings = {
           i = {
             ["<C-v>"] = git.git_ref_diffview_action,
-            ["<C-r>"] = git.git_ref_reset_soft,
-            ["<C-R>"] = git.git_ref_reset_hard,
+            ["<C-r>"] = actions.git_reset_soft,
           },
         },
       }
@@ -77,8 +77,9 @@ return {
             previewer = git.git_status_delta_previewer,
             mappings = {
               i = {
-                ["<C-g>"] = git.git_add_file,
-                ["<C-r>"] = git.git_checkout_file,
+                ["<C-g>"] = actions.git_staging_toggle,
+                ["<C-s>"] = actions.git_staging_toggle,
+                ["<C-r>"] = actions.git_checkout,
               },
             },
           },
