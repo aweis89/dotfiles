@@ -1,4 +1,8 @@
 local function create_user_commands()
+  vim.api.nvim_create_user_command("LazySource", function()
+    require('fzf-lua-lazy').search()
+  end, {})
+
   vim.api.nvim_create_user_command("Chdir", function(opt)
     local fzf_lua = require("fzf-lua")
     opt = opt or {}
@@ -84,7 +88,9 @@ return {
       { "<leader>l", "<cmd>FzfLua lines<cr>" },
       { "<leader>bl", "<cmd>FzfLua blines<cr>" },
       { "<leader>fk", "<cmd>FzfLua keymaps <cr>" },
+      { "<leader>fs", "<cmd>LazySource<cr>" },
     },
+    cmd = { "LazySource" },
     opts = function(_, opts)
       create_user_commands()
 
