@@ -6,6 +6,17 @@ return {
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
     },
 
+    cmd = {
+      "CopilotChat",
+      "CopilotChatCommit",
+      "CopilotChatCommitStaged",
+      "CopilotChatDocs",
+      "CopilotChatExplain",
+      "CopilotChatFix",
+      "CopilotChatFixDiagnostic",
+      "CopilotChatModels",
+      "CopilotChatOptimize",
+    },
     config = function(_, opts)
       local function get_last_code_block(response, lang)
         if lang then

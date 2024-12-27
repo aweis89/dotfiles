@@ -77,6 +77,7 @@ end
 return {
   {
     "ibhagwan/fzf-lua",
+    dependencies = "roginfarrer/fzf-lua-lazy.nvim",
     keys = {
       { "<leader><space>", false }, -- used for smart-open
       { "<leader>gb", "<cmd>FzfLua git_branches<cr>" },
@@ -119,12 +120,19 @@ return {
         grep = {
           rg_glob = true,
           rg_opts = table.concat(rg_opts, " "),
+          ["ctrl-i"] = { fn = actions.toggle_ignore, reload = true },
+          ["ctrl-s"] = { fn = actions.toggle_hidden, reload = true },
         },
         git = {
           status = {
             actions = {
               ["ctrl-s"] = { fn = actions.git_stage_unstage, reload = true },
               ["ctrl-r"] = { fn = actions.git_reset, reload = true },
+              ["ctrl-g"] = {
+                fn = function()
+                  vim.cmd("CopilotChatCommitStaged")
+                end,
+              },
             },
           },
           commits = {
