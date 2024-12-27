@@ -103,7 +103,7 @@ return {
 
       local actions = require("fzf-lua.actions")
       return {
-        winopts = { fullscreen = true },
+        winopts = { height = 1.00, width = 1.00 },
         keymap = {
           builtin = {
             ["<C-p>"] = "toggle-preview",
