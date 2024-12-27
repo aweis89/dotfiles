@@ -80,13 +80,15 @@ return {
     keys = {
       { "<leader><space>", false }, -- used for smart-open
       { "<leader>gb", "<cmd>FzfLua git_branches<cr>" },
+      { "<leader>l", "<cmd>FzfLua lines<cr>" },
+      { "<leader>bl", "<cmd>FzfLua blines<cr>" },
     },
     opts = function(_, _)
       create_user_commands()
 
       local actions = require("fzf-lua.actions")
       return {
-        winopts = { height = 1.00, width = 1.00 },
+        winopts = { fullscreen = true },
         keymap = {
           builtin = {
             ["<C-p>"] = "toggle-preview",
@@ -99,6 +101,9 @@ return {
             ["ctrl-f"] = "preview-page-down",
             ["ctrl-b"] = "preview-page-up",
           },
+        },
+        grep = {
+          rg_glob = true,
         },
         git = {
           status = {
@@ -119,14 +124,6 @@ return {
           },
         },
       }
-    end,
-  },
-  {
-    "ibhagwan/fzf-lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    optional = true,
-    opts = function(_, opts)
-      opts.previewers = require("plugins.fzf.git_delta_previewer")
     end,
   },
 }
