@@ -82,9 +82,23 @@ return {
       { "<leader>gb", "<cmd>FzfLua git_branches<cr>" },
       { "<leader>l", "<cmd>FzfLua lines<cr>" },
       { "<leader>bl", "<cmd>FzfLua blines<cr>" },
+      { "<leader>fk", "<cmd>FzfLua keymaps <cr>" },
     },
-    opts = function(_, _)
+    opts = function(_, opts)
       create_user_commands()
+
+      local rg_opts = {
+        "--hidden",
+        "--glob",
+        "!.git",
+        "--column",
+        "--line-number",
+        "--no-heading",
+        "--color=always",
+        "--smart-case",
+        "--max-columns=4096",
+        "-e",
+      }
 
       local actions = require("fzf-lua.actions")
       return {
@@ -104,6 +118,7 @@ return {
         },
         grep = {
           rg_glob = true,
+          rg_opts = table.concat(rg_opts, " "),
         },
         git = {
           status = {
