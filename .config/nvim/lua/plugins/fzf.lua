@@ -117,11 +117,22 @@ return {
             ["ctrl-b"] = "preview-page-up",
           },
         },
+        buffers = {
+          actions = {
+            ["ctrl-e"] = {
+              fn = function()
+                vim.cmd("FzfLua files")
+              end,
+            },
+          },
+        },
         grep = {
           rg_glob = true,
           rg_opts = table.concat(rg_opts, " "),
-          ["ctrl-i"] = { fn = actions.toggle_ignore, reload = true },
-          ["ctrl-s"] = { fn = actions.toggle_hidden, reload = true },
+          actions = {
+            ["ctrl-i"] = { fn = actions.toggle_ignore, reload = true },
+            ["ctrl-s"] = { fn = actions.toggle_hidden, reload = true },
+          },
         },
         git = {
           status = {
