@@ -14,7 +14,7 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 	openURLInArc(fullURL, "Arc")
 end
 
-themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
+local themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
 	os.execute(os.getenv("HOME") .. "/.config/kitty/sync-theme")
 end, "AppleInterfaceThemeChangedNotification")
 themeWatcher:start()
