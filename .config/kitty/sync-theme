@@ -3,10 +3,9 @@
 kitty_dir="${0:a:h}"
 theme="$kitty_dir/current-theme.conf"
 
-tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
-
 case "$1" in
   "tokyonight")
+    tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
     light="$tokyonight_dir/tokyonight_day.conf"
     dark="$tokyonight_dir/tokyonight_moon.conf"
     ;;
