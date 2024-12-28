@@ -7,9 +7,13 @@ tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
 light="$tokyonight_dir/tokyonight_day.conf"
 dark="$tokyonight_dir/tokyonight_moon.conf"
 
-# cattpuccin colors
+# cattpuccin themes
 dark="$kitty_dir/themes/mocha.conf"
 light="$kitty_dir/themes/latte.conf"
+
+# gruvbox themes
+dark="$kitty_dir/themes/gruvbox_dark.conf"
+light="$kitty_dir/themes/gruvbox_light.conf"
 
 [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
   && target="$dark" || target="$light"
