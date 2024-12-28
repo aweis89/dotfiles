@@ -4,16 +4,21 @@ kitty_dir="${0:a:h}"
 theme="$kitty_dir/current-theme.conf"
 
 tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
-light="$tokyonight_dir/tokyonight_day.conf"
-dark="$tokyonight_dir/tokyonight_moon.conf"
 
-# cattpuccin themes
-dark="$kitty_dir/themes/mocha.conf"
-light="$kitty_dir/themes/latte.conf"
-
-# gruvbox themes
-dark="$kitty_dir/themes/gruvbox_dark.conf"
-light="$kitty_dir/themes/gruvbox_light.conf"
+case "$1" in
+  "tokyonight")
+    light="$tokyonight_dir/tokyonight_day.conf"
+    dark="$tokyonight_dir/tokyonight_moon.conf"
+    ;;
+  "catppuccin")
+    dark="$kitty_dir/themes/mocha.conf"
+    light="$kitty_dir/themes/latte.conf"
+    ;;
+  *)
+    dark="$kitty_dir/themes/gruvbox_dark.conf"
+    light="$kitty_dir/themes/gruvbox_light.conf"
+    ;;
+esac
 
 [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
   && target="$dark" || target="$light"
