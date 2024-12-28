@@ -19,6 +19,8 @@ case "$1" in
     ;;
 esac
 
+tmux source-file $HOME/.config/tmux/tmux.conf 
+
 [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
   && target="$dark" || target="$light"
 
