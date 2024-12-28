@@ -34,22 +34,15 @@ return {
       )
 
       return {
-        colorscheme = "catppuccin",
+        colorscheme = "gruvbox",
       }
     end,
   },
+  { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
   {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
-    opts = {
-      integrations = {
-        telescope = {
-          enabled = true,
-          -- style = "nvchad",
-        },
-      },
-    },
   },
   {
     "tpope/vim-fugitive",
