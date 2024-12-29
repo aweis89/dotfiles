@@ -23,39 +23,19 @@ return {
     },
     keys = {
       {
-        "<leader>ghh",
-        "<cmd>Gitsigns change_base HEAD^<CR>",
-        desc = "Gitsigns pick reversals",
-      },
-      {
-        "<leader>dvh",
-        "<cmd>DiffviewFileHistory<CR>",
-        desc = "Diffview History Log",
-      },
-      {
-        "<leader>dvo",
-        "<cmd>DiffviewOpen<CR>",
-        desc = "Diffview",
-      },
-      {
-        "<leader>dvc",
-        "<cmd>DiffviewClose!<CR>",
-        desc = "Diffview close",
-      },
-      {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider",
+        desc = "Toggle Aider (last window format)",
       },
       {
         "<leader>af",
-        "<cmd>AiderToggle float<CR>",
-        desc = "Toggle Aider Float",
+        "<cmd>AiderToggle tab<CR>",
+        desc = "Toggle Aider FullScreen",
       },
       {
         "<leader>av",
         "<cmd>AiderToggle vertical<CR>",
-        desc = "Toggle Aider Float",
+        desc = "Toggle Aider vertical",
       },
       {
         "<C-x>",
@@ -93,12 +73,28 @@ return {
       {
         "<leader>amd",
         "<cmd>AiderSend /model deepseek/deepseek-chat<CR>",
-        desc = "Switch to haiku",
+        desc = "Switch to deepseek",
       },
       {
         "<leader>amg",
         "<cmd>AiderSend /model gemini/gemini-exp-1206<CR>",
-        desc = "Switch to haiku",
+        desc = "Switch to gemini",
+      },
+      -- Useful git diff integrations
+      {
+        "<leader>ghh",
+        "<cmd>Gitsigns change_base HEAD^<CR>",
+        desc = "Gitsigns pick reversals",
+      },
+      {
+        "<leader>dvh",
+        "<cmd>DiffviewFileHistory<CR>",
+        desc = "Diffview History Log",
+      },
+      {
+        "<leader>dvc",
+        "<cmd>DiffviewClose!<CR>",
+        desc = "Diffview close",
       },
     },
   },

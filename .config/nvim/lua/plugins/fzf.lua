@@ -1,6 +1,6 @@
 local function create_user_commands()
   vim.api.nvim_create_user_command("LazySource", function()
-    require('fzf-lua-lazy').search()
+    require("fzf-lua-lazy").search()
   end, {})
 
   vim.api.nvim_create_user_command("Chdir", function(opt)
@@ -109,6 +109,7 @@ return {
 
       local actions = require("fzf-lua.actions")
       return {
+        header = false,
         winopts = { height = 1.00, width = 1.00 },
         keymap = {
           builtin = {
@@ -133,6 +134,7 @@ return {
           },
         },
         grep = {
+          header = "C-i: toggle ignore, C-s: toggle hidden",
           rg_glob = true,
           rg_opts = table.concat(rg_opts, " "),
           actions = {
@@ -142,6 +144,7 @@ return {
         },
         git = {
           status = {
+            header = "C-s: toggle stage, C-r: undo, C-g: AI commit",
             actions = {
               ["ctrl-s"] = { fn = actions.git_stage_unstage, reload = true },
               ["ctrl-r"] = { fn = actions.git_reset, reload = true },
