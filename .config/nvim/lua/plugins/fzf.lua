@@ -86,8 +86,7 @@ return {
       {
         "<leader><space>",
         function()
-          -- make this work ai!
-          local is_git_repo
+          -- run a git comand to check if we're in a git repo ai!
           if is_git_repo then
             vim.cmd("FzfLua git_files")
           else
@@ -166,7 +165,7 @@ return {
             header = "C-s: toggle stage, C-x: git-reset, C-g: AI commit",
             actions = {
               ["ctrl-s"] = { fn = actions.git_stage_unstage, reload = true },
-              ["ctrl-x"] = { fn = actions.git_reset, reload = true },
+              ["ctrl-r"] = { fn = actions.git_reset, reload = true },
               ["ctrl-g"] = {
                 fn = function()
                   vim.cmd("CopilotChatCommitStaged")
@@ -176,12 +175,12 @@ return {
           },
           commits = {
             actions = {
-              ["ctrl-x"] = { fn = git_reset_soft, reload = true },
+              ["ctrl-r"] = { fn = git_reset_soft, reload = true },
             },
           },
           bcommits = {
             actions = {
-              ["ctrl-x"] = { fn = git_reset_soft, reload = true },
+              ["ctrl-r"] = { fn = git_reset_soft, reload = true },
             },
           },
         },
