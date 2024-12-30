@@ -83,9 +83,20 @@ return {
     "ibhagwan/fzf-lua",
     dependencies = "roginfarrer/fzf-lua-lazy.nvim",
     keys = {
-      { "<leader><space>", false }, -- used for smart-open
+      {
+        "<leader><space>",
+        function()
+          -- make this work ai!
+          local is_git_repo
+          if is_git_repo then
+            vim.cmd("FzfLua git_files")
+          else
+            vim.cmd("FzfLua files")
+          end
+        end,
+      },
       { "<leader>gb", "<cmd>FzfLua git_branches<cr>" },
-      { "<leader>l", "<cmd>FzfLua lines<cr>" },
+      { "<leader>l",  "<cmd>FzfLua lines<cr>" },
       { "<leader>bl", "<cmd>FzfLua blines<cr>" },
       { "<leader>fk", "<cmd>FzfLua keymaps <cr>" },
       { "<leader>fs", "<cmd>LazySource<cr>" },
@@ -108,7 +119,10 @@ return {
       }
 
       local actions = require("fzf-lua.actions")
+      local config = require("fzf-lua.config")
+
       return {
+        -- "borderless_full",
         header = false,
         winopts = { height = 1.00, width = 1.00 },
         keymap = {
@@ -133,6 +147,11 @@ return {
             },
           },
         },
+        files = {
+          actions = {
+            ["ctrl-x"] = { fn = actions.git_reset, reload = true },
+          },
+        },
         grep = {
           header = "C-i: toggle ignore, C-s: toggle hidden",
           rg_glob = true,
@@ -144,10 +163,10 @@ return {
         },
         git = {
           status = {
-            header = "C-s: toggle stage, C-r: undo, C-g: AI commit",
+            header = "C-s: toggle stage, C-x: git-reset, C-g: AI commit",
             actions = {
               ["ctrl-s"] = { fn = actions.git_stage_unstage, reload = true },
-              ["ctrl-r"] = { fn = actions.git_reset, reload = true },
+              ["ctrl-x"] = { fn = actions.git_reset, reload = true },
               ["ctrl-g"] = {
                 fn = function()
                   vim.cmd("CopilotChatCommitStaged")
@@ -157,12 +176,12 @@ return {
           },
           commits = {
             actions = {
-              ["ctrl-r"] = { fn = git_reset_soft, reload = true },
+              ["ctrl-x"] = { fn = git_reset_soft, reload = true },
             },
           },
           bcommits = {
             actions = {
-              ["ctrl-r"] = { fn = git_reset_soft, reload = true },
+              ["ctrl-x"] = { fn = git_reset_soft, reload = true },
             },
           },
         },
