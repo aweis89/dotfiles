@@ -4,6 +4,18 @@ return {
     ---@param opts ConformOpts
     init = function(_, opts)
       local disable_format_file = "disable-format"
+      vim.api.nvim_create_user_command("ConformToggle", function()
+        LazyVim.ls(vim.fn.getcwd(), function(path, name, type)
+          if name == disable_format_file then
+            vim.cmd("!rm " .. disable_format_file)
+            LazyVim.format.enable(true)
+          else
+            vim.cmd("!touch " .. disable_format_file)
+            LazyVim.format.enable(false)
+          end
+        end)
+      end, { desc = "Persistently enable/disable formatting" })
+
       LazyVim.ls(vim.fn.getcwd(), function(path, name, type)
         if name == disable_format_file then
           LazyVim.format.enable(false)
