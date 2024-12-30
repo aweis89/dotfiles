@@ -86,8 +86,16 @@ return {
       {
         "<leader><space>",
         function()
-          local is_git_repo = vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
-          if is_git_repo then
+          local cwd = vim.fn.getcwd()
+          if not _G.git_repo_cache then
+            _G.git_repo_cache = {}
+          end
+          
+          if _G.git_repo_cache[cwd] == nil then
+            _G.git_repo_cache[cwd] = vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
+          end
+          
+          if _G.git_repo_cache[cwd] then
             vim.cmd("FzfLua git_files")
           else
             vim.cmd("FzfLua files")
