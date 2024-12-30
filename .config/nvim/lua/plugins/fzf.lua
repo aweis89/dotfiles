@@ -91,7 +91,8 @@ return {
             _G.fzf_git_cache = {}
           end
           if _G.fzf_git_cache[cwd] == nil then
-            _G.fzf_git_cache[cwd] = vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
+            _G.fzf_git_cache[cwd] =
+                vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
           end
           if _G.fzf_git_cache[cwd] then
             vim.cmd("FzfLua git_files")
@@ -124,10 +125,8 @@ return {
       }
 
       local actions = require("fzf-lua.actions")
-      local config = require("fzf-lua.config")
 
       return {
-        -- "borderless_full",
         header = false,
         winopts = { height = 1.00, width = 1.00 },
         keymap = {
