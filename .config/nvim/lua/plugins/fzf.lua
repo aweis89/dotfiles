@@ -86,7 +86,7 @@ return {
       {
         "<leader><space>",
         function()
-          -- run a git comand to check if we're in a git repo ai!
+          local is_git_repo = vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
           if is_git_repo then
             vim.cmd("FzfLua git_files")
           else
