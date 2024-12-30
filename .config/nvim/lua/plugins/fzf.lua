@@ -86,7 +86,6 @@ return {
       {
         "<leader><space>",
         function()
-          -- let's cache the result using the cwd as the key ai!
           local cwd = vim.fn.getcwd()
           if not _G.git_repo_cache then
             _G.git_repo_cache = {}
