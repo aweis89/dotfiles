@@ -128,7 +128,11 @@ return {
 
       return {
         header = false,
-        winopts = { height = 1.00, width = 1.00 },
+        winopts = {
+          height = 1.00,
+          width = 1.00,
+          preview = { wrap = "wrap" }
+        },
         keymap = {
           builtin = {
             ["<C-p>"] = "toggle-preview",
