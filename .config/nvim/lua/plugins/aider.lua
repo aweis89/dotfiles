@@ -14,6 +14,7 @@ return {
       -- win = {
       --   direction = "float",
       -- },
+      --
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")
 
@@ -50,8 +51,13 @@ return {
       },
       {
         "<leader>al",
-        "<cmd>AiderLoad<CR>",
+        "<cmd>AiderAdd<CR>",
         desc = "Add file to aider",
+      },
+      {
+        "<leader>ar",
+        "<cmd>AiderReadOnly<CR>",
+        desc = "Add read-only file to aider",
       },
       {
         "<leader>ad",

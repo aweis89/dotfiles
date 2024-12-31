@@ -36,7 +36,7 @@ local function create_user_commands()
         type = "cmd",
         fn = function(items)
           local file = require("fzf-lua").path.entry_to_file(items[1])
-          return string.format("git diff %s HEAD -- %s | delta", opt.args, file.path)
+          return string.format("git diff %s HEAD -- %s", opt.args, file.path)
         end,
       },
     })
