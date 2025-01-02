@@ -48,6 +48,14 @@ return {
     "tpope/vim-fugitive",
   },
   {
+    "nvim-neotest/neotest",
+    opts = {
+      neotest = {
+        diagnostic = true,
+      },
+    }
+  },
+  {
     "folke/snacks.nvim",
     opts = {
       dashboard = {
@@ -67,9 +75,9 @@ return {
     config = true,
   },
   { "mbbill/undotree" },
-  { "akinsho/bufferline.nvim", enabled = false },
-  { "rcarriga/nvim-notify", enabled = true },
-  { "karb94/neoscroll.nvim", enabled = true },
+  { "akinsho/bufferline.nvim",  enabled = false },
+  { "rcarriga/nvim-notify",     enabled = true },
+  { "karb94/neoscroll.nvim",    enabled = true },
   {
     "ahmedkhalf/project.nvim",
     opts = {

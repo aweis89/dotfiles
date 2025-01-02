@@ -19,7 +19,7 @@ local function create_user_commands()
   end, {})
 
   vim.api.nvim_create_user_command("ListFilesFromBranch", function(opt)
-    require("fzf-lua").files({
+    equire("fzf-lua").files({
       cmd = "git ls-tree -r --name-only " .. opt.args,
       prompt = opt.args .. "> ",
       actions = {
@@ -172,6 +172,9 @@ return {
         git = {
           status = {
             header = "C-s: toggle stage, C-x: git-reset, C-g: AI commit",
+            winopts = {
+              preview = { layout = "vertical", vertical = 'down:80%' }
+            },
             actions = {
               ["ctrl-s"] = { fn = actions.git_stage_unstage, reload = true },
               ["ctrl-r"] = { fn = actions.git_reset, reload = true },
@@ -183,11 +186,17 @@ return {
             },
           },
           commits = {
+            winopts = {
+              preview = { layout = "vertical", vertical = 'down:80%' }
+            },
             actions = {
               ["ctrl-r"] = { fn = git_reset_soft, reload = true },
             },
           },
           bcommits = {
+            winopts = {
+              preview = { layout = "vertical", vertical = 'down:80%' }
+            },
             actions = {
               ["ctrl-r"] = { fn = git_reset_soft, reload = true },
             },
