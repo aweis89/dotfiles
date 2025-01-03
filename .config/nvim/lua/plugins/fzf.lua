@@ -125,6 +125,7 @@ return {
       }
 
       local actions = require("fzf-lua.actions")
+      local delta_pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]]
 
       return {
         header = false,
@@ -172,6 +173,7 @@ return {
         git = {
           status = {
             header = "C-s: toggle stage, C-x: git-reset, C-g: AI commit",
+            preview_pager = delta_pager,
             winopts = {
               preview = { layout = "vertical", vertical = 'down:80%' }
             },
@@ -186,6 +188,7 @@ return {
             },
           },
           commits = {
+            preview_pager = delta_pager,
             winopts = {
               preview = { layout = "vertical", vertical = 'down:80%' }
             },
@@ -194,6 +197,7 @@ return {
             },
           },
           bcommits = {
+            preview_pager = delta_pager,
             winopts = {
               preview = { layout = "vertical", vertical = 'down:80%' }
             },
