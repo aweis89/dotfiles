@@ -33,6 +33,7 @@ export FZF_BASE="$BREW_PREFIX/opt/fzf"
 
 fzf_default_opts=(
   --multi
+  --keep-right
   --layout=reverse 
   --color=light
   "--bind='ctrl-p:toggle-preview'"
