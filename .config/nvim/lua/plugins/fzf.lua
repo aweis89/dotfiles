@@ -65,7 +65,7 @@ local function git_reset_soft(selected, opts)
 
   local path = require("fzf-lua.path")
   local utils = require("fzf-lua.utils")
-  local commit_hash = match_commit_hash(selected[1], opts) .. "^"
+  local commit_hash = match_commit_hash(selected[1], opts)
   if vim.fn.confirm("Reset to commit " .. commit_hash .. "?", "&Yes\n&No") == 1 then
     local cmd_reset = path.git_cwd({ "git", "reset", "--soft" }, opts) or {}
     table.insert(cmd_reset, commit_hash)

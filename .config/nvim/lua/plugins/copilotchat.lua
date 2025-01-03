@@ -2,7 +2,7 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or zbirenbaum/copilot.lua
+      { "zbirenbaum/copilot.lua" },                   -- or zbirenbaum/copilot.lua
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
     },
 
@@ -30,7 +30,7 @@ return {
         ["<C-g>"] = function(response)
           local message = get_last_code_block(response, "gitcommit")
           if message then
-            local command = string.format("Git commit -m %s | Git push | bdelete", vim.fn.shellescape(message))
+            local command = string.format("Git commit -m %s | bdelete", vim.fn.shellescape(message))
             vim.notify("Executing: " .. command)
             vim.api.nvim_command(command)
           else
