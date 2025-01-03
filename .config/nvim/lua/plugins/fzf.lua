@@ -19,7 +19,7 @@ local function create_user_commands()
   end, {})
 
   vim.api.nvim_create_user_command("ListFilesFromBranch", function(opt)
-    equire("fzf-lua").files({
+    require("fzf-lua").files({
       cmd = "git ls-tree -r --name-only " .. opt.args,
       prompt = opt.args .. "> ",
       actions = {
@@ -128,6 +128,7 @@ return {
       local delta_pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]]
 
       return {
+        fzf_opts = { ['--keep-right'] = '' },
         header = false,
         winopts = {
           height = 1.00,
