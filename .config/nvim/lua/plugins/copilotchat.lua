@@ -1,3 +1,25 @@
+local function get_last_code_block(response, lang)
+  if lang then
+    return response:match("```" .. lang .. "\n(.-)```[^```]*$")
+  else
+    return response:match("```.-\n(.-)```[^```]*$")
+  end
+end
+
+local function git_commit(response, push)
+  local message = get_last_code_block(response, "gitcommit")
+  if message then
+    local command = string.format("Git commit -m %s | bdelete", vim.fn.shellescape(message))
+    if push then
+      command = command .. " | Git push"
+    end
+    vim.notify("Executing: " .. command)
+    vim.api.nvim_command(command)
+  else
+    print("No git commit message found in response.")
+  end
+end
+
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -18,25 +40,9 @@ return {
       "CopilotChatOptimize",
     },
     config = function(_, opts)
-      local function get_last_code_block(response, lang)
-        if lang then
-          return response:match("```" .. lang .. "\n(.-)```[^```]*$")
-        else
-          return response:match("```.-\n(.-)```[^```]*$")
-        end
-      end
-
       local user_key_mappings = {
-        ["<C-g>"] = function(response)
-          local message = get_last_code_block(response, "gitcommit")
-          if message then
-            local command = string.format("Git commit -m %s | bdelete", vim.fn.shellescape(message))
-            vim.notify("Executing: " .. command)
-            vim.api.nvim_command(command)
-          else
-            print("No git commit message found in response.")
-          end
-        end,
+        ["<C-g>"] = git_commit,
+        ["<C-p>"] = function(res) git_commit(res, true) end,
         ["<C-f>"] = function(response)
           vim.ui.input({ prompt = "Write to file: " }, function(input)
             local message = get_last_code_block(response)
