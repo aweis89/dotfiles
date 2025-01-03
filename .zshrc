@@ -502,7 +502,7 @@ pass-to-aichat-widget() {
 }
 zle -N pass-to-aichat-widget
 
-# unbind key '^t' ai!
+bindkey -r '^t'
 
 bindkey '^o' pass-to-aichat-widget
 bindkey '^w' forward-word

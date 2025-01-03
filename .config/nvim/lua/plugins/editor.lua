@@ -49,14 +49,42 @@ return {
   },
   {
     "nvim-neotest/neotest",
+    dependencies = { "nvim-neotest/neotest-plenary" },
     opts = {
       neotest = {
         diagnostic = true,
+      },
+      adapters = { "neotest-plenary" },
+      icons = {
+        expanded = "",
+        child_prefix = "",
+        child_indent = "",
+        final_child_prefix = "",
+        non_collapsible = "",
+        collapsed = "",
+
+        passed = "",
+        running = "",
+        failed = "",
+        unknown = ""
       },
     }
   },
   {
     "folke/snacks.nvim",
+    keys = { {
+      "<C-t>",
+      function()
+        Snacks.terminal(vim.env.SHELL or "zsh", {
+          win = {
+            height = 0.95,
+            width = 0.95,
+          }
+        })
+      end,
+      desc = "Opent terminal",
+      mode = { "n", "t" },
+    } },
     opts = {
       dashboard = {
         preset = {
@@ -79,9 +107,15 @@ return {
   { "rcarriga/nvim-notify",     enabled = true },
   { "karb94/neoscroll.nvim",    enabled = true },
   {
+    "airblade/vim-rooter",
+    init = function()
+      vim.g.rooter_patterns = { '.git', '=nvim' }
+    end
+  },
+  {
     "ahmedkhalf/project.nvim",
     opts = {
-      manual_mode = false,
+      manual_mode = true,
     },
     event = "VeryLazy",
   },
