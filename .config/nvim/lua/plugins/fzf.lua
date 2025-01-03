@@ -54,6 +54,62 @@ local function create_user_commands()
   })
 end
 
+
+pick = function()
+  local fzf_lua = require("fzf-lua")
+  local project = require("project_nvim.project")
+  local history = require("project_nvim.utils.history")
+  local results = history.get_recent_projects()
+  local utils = require("fzf-lua.utils")
+
+  local function hl_validate(hl)
+    return not utils.is_hl_cleared(hl) and hl or nil
+  end
+
+  local function ansi_from_hl(hl, s)
+    return utils.ansi_from_hl(hl_validate(hl), s)
+  end
+
+  local opts = {
+    fzf_opts = {
+      ["--header"] = string.format(
+        ":: <%s> to %s | <%s> to %s | <%s> to %s",
+        ansi_from_hl("FzfLuaHeaderBind", "ctrl-s"),
+        ansi_from_hl("FzfLuaHeaderText", "live_grep"),
+        ansi_from_hl("FzfLuaHeaderBind", "ctrl-o"),
+        ansi_from_hl("FzfLuaHeaderText", "oldfiles"),
+        ansi_from_hl("FzfLuaHeaderBind", "ctrl-r"),
+        ansi_from_hl("FzfLuaHeaderText", "delete")
+      ),
+    },
+    fzf_colors = true,
+    actions = {
+      ["default"] = {
+        function(selected)
+          fzf_lua.files({ cwd = selected[1] })
+        end,
+      },
+      ["ctrl-s"] = {
+        function(selected)
+          fzf_lua.live_grep({ cwd = selected[1] })
+        end,
+      },
+      ["ctrl-o"] = {
+        function(selected)
+          fzf_lua.oldfiles({ cwd = selected[1] })
+        end,
+      },
+      ["ctrl-r"] = function(selected)
+        local path = selected[1]
+        history.delete_project({ value = path })
+        pick()
+      end,
+    },
+  }
+
+  fzf_lua.fzf_exec(results, opts)
+end
+
 local function git_reset_soft(selected, opts)
   local match_commit_hash = function(line, opt)
     if type(opt.fn_match_commit_hash) == "function" then
@@ -80,9 +136,22 @@ end
 
 return {
   {
+    "folke/snacks.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.dashboard.preset.keys[3] = {
+        action = pick,
+        desc = "Projects",
+        icon = " ",
+        key = "p",
+      }
+    end,
+  },
+  {
     "ibhagwan/fzf-lua",
     dependencies = "roginfarrer/fzf-lua-lazy.nvim",
     keys = {
+      { "<leader>fp", pick,                          desc = "Projects" },
       {
         "<leader><space>",
         function()
