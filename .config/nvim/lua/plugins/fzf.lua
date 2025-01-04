@@ -99,6 +99,11 @@ pick = function()
           fzf_lua.oldfiles({ cwd = selected[1] })
         end,
       },
+      ["ctrl-g"] = {
+        function(selected)
+          fzf_lua.git_status({ cwd = selected[1] })
+        end,
+      },
       ["ctrl-r"] = function(selected)
         local path = selected[1]
         history.delete_project({ value = path })
