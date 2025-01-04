@@ -71,30 +71,6 @@ return {
     }
   },
   {
-    "folke/snacks.nvim",
-    keys = { {
-      "<C-t>",
-      function()
-        Snacks.terminal(vim.env.SHELL or "zsh", {
-          win = {
-            height = 0.95,
-            width = 0.95,
-          }
-        })
-      end,
-      desc = "Opent terminal",
-      mode = { "n", "t" },
-    } },
-    opts = {
-      dashboard = {
-        preset = {
-          header = [[
-          ]],
-        },
-      },
-    },
-  },
-  {
     "NeogitOrg/neogit",
     dependencies = {
       "nvim-lua/plenary.nvim",

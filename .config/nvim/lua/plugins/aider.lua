@@ -4,23 +4,31 @@ return {
     dependencies = {
       "akinsho/toggleterm.nvim",
       "nvim-telescope/telescope.nvim",
-      "j-hui/fidget.nvim",
       "willothy/flatten.nvim",
       "ibhagwan/fzf-lua",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     lazy = false,
     opts = {
-      -- win = {
-      --   direction = "float",
-      -- },
-      --
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")
 
         vim.cmd("DiffviewFileHistory")
       end,
-      -- aider_args = "--no-auto-commits",
+      on_term_open = function()
+        local function tmap(key, val)
+          local opt = { buffer = 0 }
+          vim.keymap.set("t", key, val, opt)
+        end
+        -- exit insert mode
+        tmap("<Esc>", "<C-\\><C-n>")
+        tmap("jj", "<C-\\><C-n>")
+        -- enter command mode
+        tmap(":", "<C-\\><C-n>:")
+        -- scrolling up/down
+        tmap("<C-u>", "<C-\\><C-n><C-u>")
+        tmap("<C-d>", "<C-\\><C-n><C-d>")
+      end,
     },
     keys = {
       {
