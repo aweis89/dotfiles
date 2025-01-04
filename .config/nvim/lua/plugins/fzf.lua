@@ -139,6 +139,9 @@ return {
     "folke/snacks.nvim",
     optional = true,
     opts = function(_, opts)
+      if not opts.dashboard.preset.keys[3] then
+        return
+      end
       opts.dashboard.preset.keys[3] = {
         action = pick,
         desc = "Projects",
@@ -198,6 +201,7 @@ return {
 
       return {
         fzf_opts = { ['--keep-right'] = '' },
+        fzf_colors = true,
         header = false,
         winopts = {
           height = 1.00,
