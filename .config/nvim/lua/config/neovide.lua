@@ -66,8 +66,9 @@ vim.g.neovide_cursor_vfx_particle_speed = 40.0
 vim.g.neovide_cursor_vfx_particle_phase = 1.3
 vim.g.neovide_cursor_vfx_particle_curl = 1.3
 
+vim.g.neovide_fullscreen = true
 
-vim.o.guifont = "Operator Mono Book:h19"
+vim.o.guifont = "Operator Mono Book:h20"
 vim.g.neovide_theme = 'gruvybox'
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -82,5 +83,6 @@ vim.keymap.set('n', '<D-v>', '"+P')    -- Paste normal mode
 vim.keymap.set('v', '<D-v>', '"+P')    -- Paste visual mode
 vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
 vim.keymap.set('i', '<D-v>', '<C-R>+') -- Paste insert mode
+vim.keymap.set('t', '<C-v>', '"+P')    -- Paste terminal mode
 
 dofile(vim.env.HOME .. "/.neovide_local.lua")

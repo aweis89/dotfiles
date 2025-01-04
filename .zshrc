@@ -39,9 +39,9 @@ fzf_default_opts=(
   "--bind='ctrl-p:toggle-preview'"
   "--bind='ctrl-s:toggle+down'"
   "--bind='ctrl-y:select-all'"
-  "--bind='ctrl-d:half-page-down,ctrl-u:half-page-up'"
   "--bind='ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up'"
   "--bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)'"
+  # "--bind='ctrl-d:half-page-down,ctrl-u:half-page-up'"
 )
 export FZF_DEFAULT_OPTS="${fzf_default_opts[*]}"
 

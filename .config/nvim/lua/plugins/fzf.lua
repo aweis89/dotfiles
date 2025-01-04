@@ -55,7 +55,7 @@ local function create_user_commands()
 end
 
 
-pick = function()
+ProjectPicker = function()
   local fzf_lua = require("fzf-lua")
   local project = require("project_nvim.project")
   local history = require("project_nvim.utils.history")
@@ -102,12 +102,13 @@ pick = function()
       ["ctrl-g"] = {
         function(selected)
           fzf_lua.git_status({ cwd = selected[1] })
+          vim.cmd("cd " .. selected[1])
         end,
       },
       ["ctrl-r"] = function(selected)
         local path = selected[1]
         history.delete_project({ value = path })
-        pick()
+        ProjectPicker()
       end,
     },
   }
@@ -148,7 +149,7 @@ return {
         return
       end
       opts.dashboard.preset.keys[3] = {
-        action = pick,
+        action = ProjectPicker,
         desc = "Projects",
         icon = " ",
         key = "p",
@@ -159,7 +160,7 @@ return {
     "ibhagwan/fzf-lua",
     dependencies = "roginfarrer/fzf-lua-lazy.nvim",
     keys = {
-      { "<leader>fp", pick,                          desc = "Projects" },
+      { "<leader>fp", ProjectPicker,                 desc = "Projects" },
       {
         "<leader><space>",
         function()
