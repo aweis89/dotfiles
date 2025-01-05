@@ -101,8 +101,8 @@ ProjectPicker = function()
       },
       ["ctrl-g"] = {
         function(selected)
-          fzf_lua.git_status({ cwd = selected[1] })
           vim.cmd("cd " .. selected[1])
+          fzf_lua.git_status()
         end,
       },
       ["ctrl-r"] = function(selected)
@@ -203,7 +203,7 @@ return {
       }
 
       local actions = require("fzf-lua.actions")
-      local delta_pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]]
+      local delta_pager = [[delta --width=$COLUMNS --hunk-header-style="omit"]]
 
       return {
         fzf_opts = { ['--keep-right'] = '' },
@@ -253,7 +253,7 @@ return {
         git = {
           status = {
             header = "C-s: toggle stage, C-x: git-reset, C-g: AI commit",
-            preview_pager = delta_pager,
+            preview_pager = delta_pager .. [[ --file-style="omit"]],
             winopts = {
               preview = { layout = "vertical", vertical = 'down:80%' }
             },
