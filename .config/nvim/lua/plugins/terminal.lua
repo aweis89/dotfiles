@@ -21,7 +21,7 @@ return {
     "folke/snacks.nvim",
     optional = true,
     opts = function(_, opts)
-      table.insert(opts.dashboard.preset.keys, 3, {
+      table.insert(opts.dashboard.preset.keys, 2, {
         action = function()
           toggle(nil, "tab")
         end,
