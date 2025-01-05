@@ -101,7 +101,8 @@ ProjectPicker = function()
       },
       ["ctrl-g"] = {
         function(selected)
-          vim.cmd("cd " .. selected[1])
+          -- is this the best way to do this ai?
+          vim.api.nvim_set_current_dir(selected[1])
           fzf_lua.git_status()
         end,
       },
