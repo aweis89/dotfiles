@@ -33,7 +33,6 @@ return {
   },
   {
     "toggleterm/toggleterm.nvim",
-    config = true,
     keys = {
       {
         "<C-a>v",
