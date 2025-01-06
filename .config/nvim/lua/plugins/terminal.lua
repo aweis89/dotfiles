@@ -1,22 +1,6 @@
 local terms = {}
 
-local function toggle(size, direction, name)
-  local terminal = require("toggleterm.terminal").Terminal
-
-  name = name or "scratch"
-  if not terms[name] then
-    local term = terminal:new({
-      cmd = "zsh",
-      close_on_exit = true,
-      auto_scroll = false,
-    })
-    terms[name] = term
-  end
-  local running = terms[name]
-  running:toggle(size, direction)
-end
-
-local function togglep(position)
+local function terminal(position)
   return function()
     Snacks.terminal.toggle("zsh", {
       env = {
@@ -39,7 +23,7 @@ return {
     opts = function(_, opts)
       table.insert(opts.dashboard.preset.keys, 2, {
         action = function()
-          toggle(nil, "tab")
+          terminal("float")
         end,
         desc = "Terminal",
         icon = " ",
@@ -48,45 +32,42 @@ return {
     end,
   },
   {
-    "toggleterm/toggleterm.nvim",
+    "folke/snacks.nvim",
     keys = {
       {
+        "<C-t>",
+        function()
+          Snacks.terminal(vim.env.SHELL or "zsh", {
+            win = {
+              height = 0.99,
+              width = 0.99,
+            }
+          })
+        end,
+        desc = "Opent terminal",
+        mode = { "n", "t" },
+      },
+      {
         "<C-a>h",
-        togglep("left"),
+        terminal("left"),
         mode = { "n", "t", "i" },
       },
       {
         "<C-a>l",
-        togglep("right"),
+        terminal("right"),
         mode = { "n", "t", "i" },
       },
       {
         "<C-a>j",
-        togglep("bottom"),
+        terminal("bottom"),
         mode = { "n", "t", "i" },
       },
       {
         "<C-a>k",
-        togglep("top"),
+        terminal("top"),
         mode = { "n", "t", "i" },
       },
     },
-  },
-  {
-    "folke/snacks.nvim",
-    keys = { {
-      "<C-t>",
-      function()
-        Snacks.terminal(vim.env.SHELL or "zsh", {
-          win = {
-            height = 0.99,
-            width = 0.99,
-          }
-        })
-      end,
-      desc = "Opent terminal",
-      mode = { "n", "t" },
-    } },
     opts = {
       dashboard = {
         preset = {
