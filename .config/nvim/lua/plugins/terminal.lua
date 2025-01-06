@@ -16,6 +16,22 @@ local function toggle(size, direction, name)
   running:toggle(size, direction)
 end
 
+local function togglep(position)
+  return function()
+    Snacks.terminal.toggle("zsh", {
+      env = {
+        id = position,
+      },
+      win = {
+        --@field position? "float"|"bottom"|"top"|"left"|"right"
+        position = position,
+        width = 0.5,
+        height = 0.5,
+      }
+    })
+  end
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -26,7 +42,7 @@ return {
           toggle(nil, "tab")
         end,
         desc = "Terminal",
-        icon = " ",
+        icon = " ",
         key = "t",
       })
     end,
@@ -35,40 +51,23 @@ return {
     "toggleterm/toggleterm.nvim",
     keys = {
       {
-        "<C-a>v",
-        function()
-          toggle(vim.o.columns * 0.5, "vertical")
-        end,
-        mode = { "n", "t", "i" },
-      },
-      {
-        "<C-a>\\",
-        function()
-          toggle(vim.o.columns * 0.5, "vertical")
-        end,
-        mode = { "n", "t", "i" },
-      },
-      {
-        "<C-a>-",
-        function()
-          local size = math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-          toggle(size, "horizontal")
-        end,
-        mode = { "n", "t", "i" },
-      },
-      {
         "<C-a>h",
-        function()
-          local size = math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-          toggle(size, "horizontal")
-        end,
+        togglep("left"),
         mode = { "n", "t", "i" },
       },
       {
-        "<C-a>t",
-        function()
-          toggle(nil, "tab")
-        end,
+        "<C-a>l",
+        togglep("right"),
+        mode = { "n", "t", "i" },
+      },
+      {
+        "<C-a>j",
+        togglep("bottom"),
+        mode = { "n", "t", "i" },
+      },
+      {
+        "<C-a>k",
+        togglep("top"),
         mode = { "n", "t", "i" },
       },
     },
