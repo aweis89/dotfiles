@@ -15,6 +15,8 @@ vim.opt.linebreak = true
 vim.opt.breakindent = true
 vim.opt.showbreak = "↪ "
 
+vim.opt.timeoutlen = 1000
+
 -- Set up key remaps
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }

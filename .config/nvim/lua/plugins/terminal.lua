@@ -1,7 +1,11 @@
-local terms = {}
-
 local function terminal(position)
   return function()
+    local width = {
+      float = 0.97
+    }
+    local height = {
+      float = 0.97
+    }
     Snacks.terminal.toggle("zsh", {
       env = {
         id = position,
@@ -9,8 +13,8 @@ local function terminal(position)
       win = {
         --@field position? "float"|"bottom"|"top"|"left"|"right"
         position = position,
-        width = 0.5,
-        height = 0.5,
+        height = height[position] or 0.5,
+        width = width[position] or 0.5,
       }
     })
   end
@@ -22,9 +26,7 @@ return {
     optional = true,
     opts = function(_, opts)
       table.insert(opts.dashboard.preset.keys, 2, {
-        action = function()
-          terminal("float")
-        end,
+        action = terminal("float"),
         desc = "Terminal",
         icon = " ",
         key = "t",
@@ -65,6 +67,11 @@ return {
       {
         "<C-a>k",
         terminal("top"),
+        mode = { "n", "t", "i" },
+      },
+      {
+        "<C-a>f",
+        terminal("float"),
         mode = { "n", "t", "i" },
       },
     },
