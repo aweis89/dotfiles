@@ -26,7 +26,7 @@ local function changeScaleFactor(delta)
   local opts = { id = "scale_factor", icon = icon, title = "Scale factor" }
   vim.notify(tostring(vim.g.neovide_scale_factor), nil, opts)
 end
-keymap({ "n", "x", "i" }, "<D-+>", function() changeScaleFactor(0.01) end, { desc = " Zoom" })
+keymap({ "n", "x", "i" }, "<D-=>", function() changeScaleFactor(0.01) end, { desc = " Zoom" })
 keymap({ "n", "x", "i" }, "<D-->", function() changeScaleFactor(-0.01) end, { desc = " Zoom" })
 
 --------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ vim.g.neovide_input_macos_option_key_is_meta = "none" -- disable, so `{@~` etc. 
 vim.g.neovide_underline_stroke_scale = 1.5 -- fix underline thickness
 vim.g.neovide_remember_window_size = true
 vim.g.neovide_hide_mouse_when_typing = true
-vim.opt.linespace = -2 -- less line height
+vim.opt.linespace = -1 -- less line height
 
 --------------------------------------------------------------------------------
 -- CURSOR
@@ -68,7 +68,7 @@ vim.g.neovide_cursor_vfx_particle_curl = 1.3
 
 vim.g.neovide_fullscreen = true
 
-vim.o.guifont = "Operator Mono Book:h20"
+vim.o.guifont = "Operator Mono:h20"
 vim.g.neovide_theme = 'gruvybox'
 
 vim.api.nvim_create_autocmd("VimEnter", {
