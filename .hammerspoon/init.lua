@@ -2,20 +2,22 @@ require("keyboard")
 
 -- Function to open URL in specified browser
 function openURLInArc(url, browser)
-	-- Use 'open' command to specifically launch URL in Arc
-	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
-	hs.execute(command)
+  -- Use 'open' command to specifically launch URL in Arc
+  local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
+  hs.execute(command)
 end
 
 -- force browser focus when opening links
 -- fixes issues with slack where the link is opened, but focus doesn't change
 -- requires hammerspoon to be the default browser
 hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
-	openURLInArc(fullURL, "Arc")
+  openURLInArc(fullURL, "Arc")
 end
 
 local themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
-	os.execute(os.getenv("HOME") .. "/.config/kitty/sync-theme")
+  local script = os.getenv("HOME") .. "/.config/kitty/sync-theme"
+  print("Running: " .. script)
+  os.execute(script)
 end, "AppleInterfaceThemeChangedNotification")
 themeWatcher:start()
 

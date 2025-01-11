@@ -31,6 +31,10 @@ export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
 
+if [[ -n "$NVIM" ]]; then
+  EDITOR="nvim --cmd 'let g:flatten_wait=1'"
+fi
+
 fzf_default_opts=(
   --multi
   --keep-right
