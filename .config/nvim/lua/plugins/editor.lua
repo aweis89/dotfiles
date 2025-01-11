@@ -35,10 +35,25 @@ return {
 
       return {
         colorscheme = "gruvbox",
+        -- colorscheme = "onedark",
       }
     end,
   },
-  { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
+  {
+    "willothy/flatten.nvim",
+    config = true,
+    lazy = false,
+    priority = 1001,
+  },
+  {
+    "ellisonleao/gruvbox.nvim",
+    priority = 1000,
+    config = true,
+  },
+  {
+    "olimorris/onedarkpro.nvim",
+    priority = 1000,
+  },
   {
     "catppuccin/nvim",
     name = "catppuccin",
@@ -79,9 +94,9 @@ return {
     config = true,
   },
   { "mbbill/undotree" },
-  { "akinsho/bufferline.nvim",  enabled = false },
-  { "rcarriga/nvim-notify",     enabled = true },
-  { "karb94/neoscroll.nvim",    enabled = true },
+  { "akinsho/bufferline.nvim", enabled = false },
+  { "rcarriga/nvim-notify",    enabled = true },
+  { "karb94/neoscroll.nvim",   enabled = true },
   {
     "airblade/vim-rooter",
     init = function()
