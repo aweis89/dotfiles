@@ -10,7 +10,7 @@ return {
         gs.nav_hunk(direction)
         vim.defer_fn(function()
           gs.preview_hunk_inline()
-        end, 1)
+        end, 500)
       end
 
       opts.on_attach = function(bufnr)
