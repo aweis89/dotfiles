@@ -15,9 +15,8 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 end
 
 local themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
-  local script = os.getenv("HOME") .. "/.config/kitty/sync-theme"
-  print("Running: " .. script)
-  os.execute(script)
+  os.execute("~/.config/kitty/sync-theme")
+  os.execute("/opt/homebrew/bin/tmux source-file ~/.config/tmux/tmux.conf")
 end, "AppleInterfaceThemeChangedNotification")
 themeWatcher:start()
 
