@@ -1,6 +1,7 @@
-font-family = Operator Mono Book
+font-family = Operator Mono Bold
 font-size = 21
 theme = light:GruvboxLight,dark:GruvboxDark
 window-padding-y = 0
 fullscreen = true
 confirm-close-surface = false
+mouse-hide-while-typing = true
