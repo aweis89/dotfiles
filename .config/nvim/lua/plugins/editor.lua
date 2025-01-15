@@ -96,7 +96,7 @@ return {
   { "mbbill/undotree" },
   { "akinsho/bufferline.nvim", enabled = false },
   { "rcarriga/nvim-notify",    enabled = true },
-  { "karb94/neoscroll.nvim",   enabled = true },
+  { "karb94/neoscroll.nvim",   enabled = true, config = true },
   {
     "airblade/vim-rooter",
     init = function()
