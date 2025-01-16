@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/zsh
+ a #!/opt/homebrew/bin/zsh
 
 # Auto tmux
 [[ -z "$TMUX" ]] && [[ -z "$NVIM" ]] && {
@@ -254,7 +254,7 @@ zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
-alias aig='aichat --model "gemini:gemini-exp-1206"'
+alias aig='aichat --model "gemini:gemini-exp-1206" --session'
 alias ais='aichat --model "claude:claude-3-5-sonnet-latest"'
 alias ai1='aichat --model "openai:o1-preview"'
 
@@ -380,8 +380,31 @@ p() {
 aider() {
   opts=(--show-diffs)
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-  [[ "$mode" == "Dark" ]] && opts+=(--dark-mode)
-  # ~/p/aider/venv/bin/aider "${opts[@]}" "$@"
+  if [[ "$mode" == "Dark" ]]; then
+    opts+=(
+      --completion-menu-current-bg-color "#7c6f64" \
+      --completion-menu-current-color "#a89984" \
+      --completion-menu-bg-color "#3c3836" \
+      --completion-menu-color "#ebdbb2" \
+      --assistant-output-color "#d3869b" \
+      --tool-warning-color "#fe8019" \
+      --tool-error-color "#fb4934" \
+      --tool-output-color "#83a598" \
+      --user-input-color "#b8bb26" \
+      --code-theme gruvbox-dark)
+  else
+    opts+=(
+     --assistant-output-color "#8f3f71" \
+     --tool-warning-color "#af3a03" \
+     --tool-error-color "#9d0006" \
+     --tool-output-color "#076678" \
+     --user-input-color "#79740e" \
+     --completion-menu-current-bg-color "#a89984" \
+     --completion-menu-current-color "#7c6f64" \
+     --completion-menu-bg-color "#ebdbb2" \
+     --completion-menu-color "#3c3836" \
+     --code-theme gruvbox-light)
+  fi
   command aider "${opts[@]}" "$@"
 }
 compdef aider=_aider
