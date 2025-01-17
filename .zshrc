@@ -1,4 +1,4 @@
- a #!/opt/homebrew/bin/zsh
+#!/opt/homebrew/bin/zsh
 
 # Auto tmux
 [[ -z "$TMUX" ]] && [[ -z "$NVIM" ]] && {

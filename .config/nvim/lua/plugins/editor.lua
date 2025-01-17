@@ -49,6 +49,13 @@ return {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = true,
+    opts = {
+      overrides = {
+        LspReferenceRead = { link = "Underlined" },
+        LspReferenceText = { link = "Underlined" },
+        LspReferenceWrite = { link = "GruvboxGreenUnderline" },
+      }
+    }
   },
   {
     "olimorris/onedarkpro.nvim",
@@ -96,7 +103,6 @@ return {
   { "mbbill/undotree" },
   { "akinsho/bufferline.nvim", enabled = false },
   { "rcarriga/nvim-notify",    enabled = true },
-  { "karb94/neoscroll.nvim",   enabled = true, config = true },
   {
     "airblade/vim-rooter",
     init = function()

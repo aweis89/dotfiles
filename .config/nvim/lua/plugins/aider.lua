@@ -12,9 +12,21 @@ return {
     opts = {
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")
-
-        vim.cmd("DiffviewFileHistory")
+        -- vim.cmd("DiffviewFileHistory")
+        -- vim.cmd("FzfLua git_status")
+        vim.cmd("DiffviewOpen")
       end,
+      -- watch_files = true,
+      aider_args = {
+        '--no-auto-commit',
+        -- '--chat-mode',
+        -- 'architect',
+      },
+
+      on_ask_cmd = "/chat-mode ask",
+      on_change_req_cmd = "/chat-mode architect",
+
+      restart_on_chdir = true,
       on_term_open = function()
         local function tmap(key, val)
           local opt = { buffer = 0 }
@@ -24,13 +36,15 @@ return {
         tmap("<Esc>", "<C-\\><C-n>")
         tmap("jj", "<C-\\><C-n>")
         -- enter command mode
-        tmap(":", "<C-\\><C-n>:")
+        tmap("<C-;>", "<C-\\><C-n>:")
         -- scrolling up/down
         tmap("<C-u>", "<C-\\><C-n><C-u>")
         tmap("<C-d>", "<C-\\><C-n><C-d>")
       end,
     },
     keys = {
+      { "<leader>ac", "<cmd>AiderCommentAsk<cr>", desc = "Aider comment ask" },
+      { "<leader>aC", "<cmd>AiderComment!<cr>",   desc = "Aider comment make change" },
       {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
