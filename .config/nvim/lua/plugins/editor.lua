@@ -30,7 +30,7 @@ return {
     opts = function(_, opts)
       set_background()
 
-      vim.loop.new_timer():start(
+      vim.uv.new_timer():start(
         5000,
         5000,
         vim.schedule_wrap(function()
