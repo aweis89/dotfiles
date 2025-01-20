@@ -13,8 +13,10 @@ local function set_background()
 
     if result:find("Dark") then
       vim.api.nvim_set_option_value("background", "dark", {})
+      vim.cmd.colorscheme("onedark_dark")
     else
       vim.api.nvim_set_option_value("background", "light", {})
+      vim.cmd.colorscheme("gruvbox")
     end
   end
 end
@@ -34,8 +36,7 @@ return {
       )
 
       return {
-        colorscheme = "gruvbox",
-        -- colorscheme = "onedark",
+        colorscheme = vim.g.colors_name,
       }
     end,
   },
@@ -53,7 +54,7 @@ return {
       overrides = {
         LspReferenceRead = { link = "Underlined" },
         LspReferenceText = { link = "Underlined" },
-        LspReferenceWrite = { link = "GruvboxGreenUnderline" },
+        LspReferenceWrite = { link = "Underlined" },
       }
     }
   },
