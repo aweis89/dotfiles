@@ -4,13 +4,15 @@ local dark_theme = "onedark_dark"
 local function set_background()
   local function is_macos()
     local handle = io.popen("uname")
-    local os_name = handle:read("*a"):gsub("%s+", "")
+    if not handle then return false end
+    local os_name = handle:read("*a")
     handle:close()
-    return os_name == "Darwin"
+    return os_name and os_name:gsub("%s+", "") == "Darwin"
   end
 
   if is_macos() then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+    if not handle then return end
     local result = handle:read("*a")
     handle:close()
 
