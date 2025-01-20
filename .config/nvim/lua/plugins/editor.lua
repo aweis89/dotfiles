@@ -1,11 +1,14 @@
-local function is_macos()
-  local handle = io.popen("uname")
-  local os_name = handle:read("*a"):gsub("%s+", "")
-  handle:close()
-  return os_name == "Darwin"
-end
+local light_theme = "gruvbox"
+local dark_theme = "onedark_dark"
 
 local function set_background()
+  local function is_macos()
+    local handle = io.popen("uname")
+    local os_name = handle:read("*a"):gsub("%s+", "")
+    handle:close()
+    return os_name == "Darwin"
+  end
+
   if is_macos() then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
     local result = handle:read("*a")
@@ -13,10 +16,10 @@ local function set_background()
 
     if result:find("Dark") then
       vim.api.nvim_set_option_value("background", "dark", {})
-      vim.cmd.colorscheme("onedark_dark")
+      vim.cmd.colorscheme(dark_theme)
     else
       vim.api.nvim_set_option_value("background", "light", {})
-      vim.cmd.colorscheme("gruvbox")
+      vim.cmd.colorscheme(light_theme)
     end
   end
 end
