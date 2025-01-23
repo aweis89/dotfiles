@@ -1,5 +1,24 @@
-local light_theme = "gruvbox"
-local dark_theme = "onedark_dark"
+local themes = {
+  catppuccin = {
+    light = "catppuccin",
+    dark = "catppuccin",
+  },
+  onedark = {
+    light = "onelight",
+    dark = "onedark",
+  },
+  tokyonight = {
+    light = "tokyonight-day",
+    dark = "tokyonight",
+  },
+  gruvbox = {
+    light = "gruvbox",
+    dark = "gruvbox",
+  },
+}
+
+local light_theme = themes.gruvbox.light
+local dark_theme = themes.gruvbox.dark
 
 local function set_background()
   local function is_macos()
@@ -23,6 +42,9 @@ local function set_background()
       vim.api.nvim_set_option_value("background", "light", {})
       vim.cmd.colorscheme(light_theme)
     end
+  else
+    vim.api.nvim_set_option_value("background", "dark", {})
+    vim.cmd.colorscheme(dark_theme)
   end
 end
 
@@ -52,20 +74,40 @@ return {
     priority = 1001,
   },
   {
-    "ellisonleao/gruvbox.nvim",
+    "aweis89/gruvbox.nvim",
     priority = 1000,
-    config = true,
     opts = {
       overrides = {
         LspReferenceRead = { link = "Underlined" },
         LspReferenceText = { link = "Underlined" },
         LspReferenceWrite = { link = "Underlined" },
-      }
-    }
+      },
+      italic = {
+        emphasis = true,
+        operators = false,
+        folds = true,
+        strings = true,
+        comments = true,
+        keywords = true,
+      },
+    },
   },
   {
     "olimorris/onedarkpro.nvim",
     priority = 1000,
+    opts = function(_, opts)
+      opts.highlights = {
+        PmenuSel = {
+          underline = true,
+          -- bg = "#181818",
+        },
+      }
+      opts.styles = {            -- For example, to apply bold and italic, use "bold,italic"
+        virtual_text = "italic", -- Style that is applied to virtual text
+        keywords = "italic",     -- Style that is applied to keywords
+        operators = "italic",    -- Style that is applied to operators
+      }
+    end,
   },
   {
     "catppuccin/nvim",
@@ -112,7 +154,7 @@ return {
   {
     "airblade/vim-rooter",
     init = function()
-      vim.g.rooter_patterns = { '.git', '=nvim' }
+      vim.g.rooter_patterns = { '.git', '=nvim', '=src' }
     end
   },
   {
