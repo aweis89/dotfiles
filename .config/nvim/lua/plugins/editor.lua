@@ -51,7 +51,7 @@ end
 return {
   {
     "LazyVim/LazyVim",
-    opts = function(_, opts)
+    opts = function()
       set_background()
 
       vim.uv.new_timer():start(
@@ -164,21 +164,12 @@ return {
     },
     event = "VeryLazy",
   },
-  -- {
-  --   "nvim-treesitter/nvim-treesitter",
-  --   opts = function(_, opts)
-  --     opts.ensure_installed = "all"
-  --     return opts
-  --   end,
-  -- },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function(_, opts)
       opts.options = vim.tbl_deep_extend("force", opts.options, {
         theme = "auto",
-        -- section_separators = { left = "", right = "" },
-        -- component_separators = { left = "", right = "" },
       })
       return opts
     end,
