@@ -2,16 +2,22 @@
 
 kitty_dir="${0:a:h}"
 theme="$kitty_dir/current-theme.conf"
+nvim_lazy_dir=$HOME/.local/share/nvim/lazy
 
 case "$1" in
   "tokyonight")
-    tokyonight_dir="$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
-    light="$tokyonight_dir/tokyonight_day.conf"
-    dark="$tokyonight_dir/tokyonight_moon.conf"
+    dir="$nvim_lazy_dir/tokyonight.nvim/extras/kitty"
+    light="$dir/tokyonight_day.conf"
+    dark="$dir/tokyonight_moon.conf"
     ;;
   "catppuccin")
     dark="$kitty_dir/themes/mocha.conf"
     light="$kitty_dir/themes/latte.conf"
+    ;;
+  "onedark")
+    dir="$nvim_lazy_dir/onedarkpro.nvim/extras/kitty"
+    dark="$dir/onedarkpro_onedark.conf"
+    light="$dir/onedarkpro_onelight.conf"
     ;;
   *)
     dark="$kitty_dir/themes/gruvbox_dark.conf"

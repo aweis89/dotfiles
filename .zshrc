@@ -8,6 +8,8 @@
 
 emulate zsh -c "$(direnv export zsh)"
 
+typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}/${P9K_KUBECONTEXT_NAMESPACE}@${P9K_KUBECONTEXT_CLUSTER}'
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -576,3 +578,5 @@ fi
 
 # Created by `pipx` on 2024-11-26 01:38:49
 export PATH="$PATH:/Users/aaron.weisberg/.local/bin"
+
+typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
