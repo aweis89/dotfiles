@@ -164,13 +164,13 @@ return {
     },
     event = "VeryLazy",
   },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      opts.ensure_installed = "all"
-      return opts
-    end,
-  },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter",
+  --   opts = function(_, opts)
+  --     opts.ensure_installed = "all"
+  --     return opts
+  --   end,
+  -- },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
