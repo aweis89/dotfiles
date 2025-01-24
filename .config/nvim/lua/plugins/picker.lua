@@ -58,17 +58,9 @@ return {
                 vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
           end
           if _G.picker_git_cwd[cwd] then
-            if vim.g.lazyvim_picker == "snacks" then
-              require("snacks").picker.git_files()
-            else
-              vim.cmd("FzfLua git_files")
-            end
+            require("snacks").picker.git_files()
           else
-            if vim.g.lazyvim_picker == "snacks" then
-              require("snacks").picker.files()
-            else
-              vim.cmd("FzfLua files")
-            end
+            require("snacks").picker.files()
           end
         end,
         desc = "Files or Git Files",
