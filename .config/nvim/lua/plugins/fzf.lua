@@ -168,14 +168,14 @@ return {
         "<leader><space>",
         function()
           local cwd = vim.fn.getcwd()
-          if not _G.fzf_git_cache then
-            _G.fzf_git_cache = {}
+          if not _G.picker_git_cwd then
+            _G.picker_git_cwd = {}
           end
-          if _G.fzf_git_cache[cwd] == nil then
-            _G.fzf_git_cache[cwd] =
+          if _G.picker_git_cwd[cwd] == nil then
+            _G.picker_git_cwd[cwd] =
                 vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
           end
-          if _G.fzf_git_cache[cwd] then
+          if _G.picker_git_cwd[cwd] then
             vim.cmd("FzfLua git_files")
           else
             vim.cmd("FzfLua files")
