@@ -1,6 +1,7 @@
-if not vim.g.lazyvim_picker == "fzf" then
+if true then
   return {}
 end
+
 local function create_user_commands()
   vim.api.nvim_create_user_command("LazySource", function()
     require("fzf-lua-lazy").search()
