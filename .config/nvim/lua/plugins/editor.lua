@@ -29,6 +29,9 @@ local function set_background()
     return os_name and os_name:gsub("%s+", "") == "Darwin"
   end
 
+  if vim.o.buftype == 'prompt' then
+    return
+  end
   if is_macos() then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
     if not handle then return end
