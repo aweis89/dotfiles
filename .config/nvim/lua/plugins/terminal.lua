@@ -1,3 +1,7 @@
+if vim.env.TMUX then
+  return {}
+end
+
 local function terminal(position)
   return function()
     local width = {
