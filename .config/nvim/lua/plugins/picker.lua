@@ -1,4 +1,4 @@
----@param cmd table
+---@param args table
 local function git_exec(args)
   local root = Snacks.git.get_root()
   local cmd = { "git", "-C", root }
