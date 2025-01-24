@@ -29,9 +29,6 @@ local function set_background()
     return os_name and os_name:gsub("%s+", "") == "Darwin"
   end
 
-  if vim.o.buftype == 'prompt' then
-    return
-  end
   if is_macos() then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
     if not handle then return end
@@ -39,9 +36,15 @@ local function set_background()
     handle:close()
 
     if result:find("Dark") then
+      if vim.g.colors_name == dark_theme and vim.o.background == "dark" then
+        return
+      end
       vim.api.nvim_set_option_value("background", "dark", {})
       vim.cmd.colorscheme(dark_theme)
     else
+      if vim.g.colors_name == light_theme and vim.o.background == "light" then
+        return
+      end
       vim.api.nvim_set_option_value("background", "light", {})
       vim.cmd.colorscheme(light_theme)
     end

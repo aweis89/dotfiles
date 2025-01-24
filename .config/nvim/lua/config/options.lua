@@ -26,11 +26,13 @@ keymap('v', 'y', 'ygv<Esc>', opts)
 -- Prevent selecting and pasting from overwriting what you originally copied.
 keymap('x', 'p', 'pgvy', opts)
 
--- add an autoccommand to set terminal to startinsert
-vim.api.nvim_create_autocmd("TermOpen", {
-  callback = function()
-    vim.cmd.startinsert()
-  end
-})
+vim.g.lazyvim_picker = "snacks"
+
+-- -- add an autoccommand to set terminal to startinsert
+-- vim.api.nvim_create_autocmd("TermOpen", {
+--   callback = function()
+--     vim.cmd.startinsert()
+--   end
+-- })
 
 require("config.neovide")
