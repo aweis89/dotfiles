@@ -31,6 +31,16 @@ local function git_reset_soft(selected)
   git_exec { "reset", "--soft", commit_hash }
 end
 
+---@param selected snacks.picker.Item[]
+local function aider_add(selected)
+  local files = {}
+  for _, s in ipairs(selected) do
+    table.insert(files, s.file)
+  end
+  require("aider.terminal").add(files)
+end
+
+vim.env.DELTA_FEATURES = '+nvim'
 
 return {
   {
@@ -69,6 +79,9 @@ return {
     ---@type snacks.Config
     opts = {
       picker = {
+        previewers = {
+          git = { native = true },
+        },
         actions = {
           ["copilot_commit"] = function()
             vim.cmd("CopilotChatCommit")
@@ -80,6 +93,9 @@ return {
           end,
           ["git_reset_soft"] = function(picker)
             git_reset_soft(picker:selected({ fallback = true }))
+          end,
+          ["aider_add"] = function(picker)
+            aider_add(picker:selected({ fallback = true }))
           end,
         },
         layout = {
@@ -111,6 +127,13 @@ return {
           },
           files = {
             hidden = true,
+            win = {
+              input = {
+                keys = {
+                  ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                },
+              },
+            },
           },
           grep = {
             hidden = true,
