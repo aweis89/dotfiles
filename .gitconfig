@@ -25,4 +25,4 @@
 
 [delta "nvim"]
   file-style = omit
-  hunk-header-style= omit
+  # hunk-header-style= omit
