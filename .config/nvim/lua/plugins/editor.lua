@@ -164,13 +164,6 @@ return {
     end
   },
   {
-    "ahmedkhalf/project.nvim",
-    opts = {
-      manual_mode = false,
-    },
-    event = "VeryLazy",
-  },
-  {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function(_, opts)

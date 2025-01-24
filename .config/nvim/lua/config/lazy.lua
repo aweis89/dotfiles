@@ -37,7 +37,6 @@ require("lazy").setup({
 
     { import = "lazyvim.plugins.extras.editor.outline" },
 
-    { import = "lazyvim.plugins.extras.util.project" },
     { import = "lazyvim.plugins.extras.util.dot" },
     { import = "lazyvim.plugins.extras.util.octo" },
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
