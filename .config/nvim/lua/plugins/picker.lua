@@ -71,7 +71,7 @@ return {
       picker = {
         actions = {
           ["copilot_commit"] = function()
-            vim.cmd("CopilotChatCommitStaged")
+            vim.cmd("CopilotChatCommit")
           end,
           ---@param picker snacks.Picker
           ["git_reset_file"] = function(picker)
