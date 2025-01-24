@@ -93,9 +93,9 @@ return {
             win = {
               input = {
                 keys = {
-                  ["<leader>s"] = { "git_stage", mode = { "n" } },
-                  ["<leader>g"] = { "copilot_commit", mode = { "n" } },
-                  ["<leader>r"] = { "git_reset_file", mode = { "n", "i" } },
+                  ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
+                  ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
+                  ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
                 },
               },
             },
@@ -104,7 +104,7 @@ return {
             win = {
               input = {
                 keys = {
-                  ["<leader>r"] = { "git_reset_soft", mode = { "n", "i" } },
+                  ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
                 },
               },
             },
