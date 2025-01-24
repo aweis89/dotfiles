@@ -76,78 +76,85 @@ return {
         desc = "Files or Git Files",
       },
     },
-    ---@type snacks.Config
-    opts = {
-      picker = {
-        previewers = {
-          git = { native = true },
-        },
-        actions = {
-          ["copilot_commit"] = function()
-            vim.cmd("CopilotChatCommit")
-          end,
-          ---@param picker snacks.Picker
-          ["git_reset_file"] = function(picker)
-            git_reset_file(picker:selected({ fallback = true }))
-            require("snacks").picker.git_status()
-          end,
-          ["git_reset_soft"] = function(picker)
-            git_reset_soft(picker:selected({ fallback = true }))
-          end,
-          ["aider_add"] = function(picker)
-            aider_add(picker:selected({ fallback = true }))
-          end,
-        },
-        layout = {
+    ---@type fun(_, opts): snacks.Config
+    ---@param opts snacks.Config
+    opts = function(_, opts)
+      opts.dashboard.preset.header = ""
+      table.insert(opts.dashboard.preset.keys, 3, {
+        icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()",
+      })
+      return vim.tbl_deep_extend("force", opts or {}, {
+        picker = {
+          previewers = {
+            git = { native = true },
+          },
+          actions = {
+            ["copilot_commit"] = function()
+              vim.cmd("CopilotChatCommit")
+            end,
+            ---@param picker snacks.Picker
+            ["git_reset_file"] = function(picker)
+              git_reset_file(picker:selected({ fallback = true }))
+              require("snacks").picker.git_status()
+            end,
+            ["git_reset_soft"] = function(picker)
+              git_reset_soft(picker:selected({ fallback = true }))
+            end,
+            ["aider_add"] = function(picker)
+              aider_add(picker:selected({ fallback = true }))
+            end,
+          },
           layout = {
-            width = 0.9,
-            height = 0.9,
-          }
-        },
-        sources = {
-          git_status = {
-            win = {
-              input = {
-                keys = {
-                  ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
-                  ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
-                  ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
-                },
-              },
-            },
-          },
-          git_log = {
-            win = {
-              input = {
-                keys = {
-                  ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
-                },
-              },
-            },
-          },
-          files = {
-            hidden = true,
-            win = {
-              input = {
-                keys = {
-                  ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                },
-              },
-            },
-          },
-          grep = {
-            hidden = true,
-          },
-          lines = {
             layout = {
+              width = 0.9,
+              height = 0.9,
+            }
+          },
+          sources = {
+            git_status = {
+              win = {
+                input = {
+                  keys = {
+                    ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
+                    ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
+                    ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
+                  },
+                },
+              },
+            },
+            git_log = {
+              win = {
+                input = {
+                  keys = {
+                    ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
+                  },
+                },
+              },
+            },
+            files = {
+              hidden = true,
+              win = {
+                input = {
+                  keys = {
+                    ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                  },
+                },
+              },
+            },
+            grep = {
+              hidden = true,
+            },
+            lines = {
               layout = {
-                width = 0,
-                height = 0.4,
+                layout = {
+                  width = 0,
+                  height = 0.4,
+                },
               },
             },
           },
         }
-      }
-    }
+      })
+    end
   },
 }
