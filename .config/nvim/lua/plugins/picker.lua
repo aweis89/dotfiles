@@ -101,7 +101,6 @@ ProjectPicker = function()
       },
       ["ctrl-g"] = {
         function(selected)
-          -- is this the best way to do this ai?
           vim.api.nvim_set_current_dir(selected[1])
           fzf_lua.git_status()
         end,
@@ -144,6 +143,9 @@ end
 return {
   {
     "folke/snacks.nvim",
+    keys = {
+      { "<leader>ff", function() require("snacks").picker.files({ hidden = true }) end },
+    },
     optional = true,
     opts = function(_, opts)
       if not opts.dashboard.preset.keys[3] then
