@@ -56,3 +56,18 @@ local function create_tmux_split_command(direction)
 end
 create_tmux_split_command("V")
 create_tmux_split_command("H")
+
+
+vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
+
+local set_root = function()
+  local root = LazyVim.root.get()
+  if root == vim.fn.getcwd() then
+    return
+  end
+  vim.notify('Root directory: ' .. root)
+  vim.fn.chdir(root)
+end
+
+local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
+vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })

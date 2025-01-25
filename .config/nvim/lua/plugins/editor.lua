@@ -191,12 +191,6 @@ return {
     },
   },
   {
-    "airblade/vim-rooter",
-    init = function()
-      vim.g.rooter_patterns = { '.git', '=nvim', '=src' }
-    end
-  },
-  {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function(_, opts)
