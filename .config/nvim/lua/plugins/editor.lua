@@ -19,6 +19,7 @@ local themes = {
 
 local light_theme = themes.gruvbox.light
 local dark_theme = themes.gruvbox.dark
+local reload_theme_path = "~/tmp/theme-reload"
 
 local function set_background()
   local function is_macos()
@@ -60,13 +61,13 @@ return {
     opts = function()
       set_background()
 
-      vim.uv.new_timer():start(
-        5000,
-        5000,
-        vim.schedule_wrap(function()
+      local theme_reload_path = vim.fn.expand(reload_theme_path)
+      local watcher = vim.uv.new_fs_event()
+      watcher:start(theme_reload_path, {}, function()
+        vim.schedule(function()
           set_background()
         end)
-      )
+      end)
 
       return {
         colorscheme = vim.g.colors_name,

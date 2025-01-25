@@ -96,14 +96,15 @@ return {
     ---@param opts snacks.Config
     opts = function(_, opts)
       opts.dashboard.preset.header = ""
-      table.insert(opts.dashboard.preset.keys, 3, {
+      table.insert(opts.dashboard.preset.keys, 4, {
         icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()",
       })
       ---@type snacks.Config
       local overrides = {
         picker = {
           previewers = {
-            git = { native = true },
+            -- uncomment to use delta for git diff
+            -- git = { native = true },
           },
           actions = {
             ["copilot_commit"] = function()
@@ -112,7 +113,7 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
-              picker:find()
+              require("snacks.picker").resume()
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))

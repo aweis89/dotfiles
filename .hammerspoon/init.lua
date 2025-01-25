@@ -1,4 +1,5 @@
 require("keyboard")
+local reload_theme_path = "~/tmp/theme-reload"
 
 -- Function to open URL in specified browser
 function openURLInArc(url, browser)
@@ -15,9 +16,9 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 end
 
 local themeWatcher = hs.distributednotifications.new(function(name, object, userInfo)
-  local theme = "gruvbox"
-  os.execute("~/.config/kitty/sync-theme " .. theme)
+  os.execute("~/.config/kitty/sync-theme")
   os.execute("/opt/homebrew/bin/tmux source-file ~/.config/tmux/tmux.conf")
+  os.execute("touch " .. reload_theme_path)
 end, "AppleInterfaceThemeChangedNotification")
 themeWatcher:start()
 
