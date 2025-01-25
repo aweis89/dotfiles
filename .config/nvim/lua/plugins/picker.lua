@@ -116,8 +116,7 @@ return {
       local overrides = {
         picker = {
           previewers = {
-            -- uncomment to use delta for git diff
-            -- git = { native = true },
+            git = { native = true },
           },
           actions = {
             ["copilot_commit"] = function()
