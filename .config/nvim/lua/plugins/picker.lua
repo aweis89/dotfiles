@@ -52,11 +52,32 @@ local function git_diff(ctx)
     "--",
     ctx.item.file,
   }
-  local exec = require("snacks.picker").preview.cmd
-  exec(cmd, ctx, { ft = not native and "diff" or nil })
+  local exec = Snacks.picker.preview.cmd(
+    cmd, ctx, { ft = not native and "diff" or nil }
+  )
 end
 
 vim.env.DELTA_FEATURES = '+nvim'
+
+---@return boolean
+local function is_git_dir()
+  local cwd = vim.fn.getcwd()
+  _G.picker_git_cwd = _G.picker_git_cwd or {}
+
+  if _G.picker_git_cwd[cwd] == nil then
+    _G.picker_git_cwd[cwd] =
+        vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
+  end
+  return _G.picker_git_cwd[cwd]
+end
+
+---@param selected snacks.picker.preview.ctx
+local function rm_file(selected)
+  for _, s in ipairs(selected) do
+    vim.fn.delete(s.file)
+    vim.notify("Deleted: " .. s.file)
+  end
+end
 
 return {
   {
@@ -66,7 +87,7 @@ return {
         "<leader>fs",
         function()
           local lazypath = vim.fn.stdpath("data") .. "/lazy/"
-          require("snacks").picker.files({
+          Snacks.picker.files({
             dirs = { lazypath },
           })
         end,
@@ -75,18 +96,10 @@ return {
       {
         "<leader><space>",
         function()
-          local cwd = vim.fn.getcwd()
-          if not _G.picker_git_cwd then
-            _G.picker_git_cwd = {}
-          end
-          if _G.picker_git_cwd[cwd] == nil then
-            _G.picker_git_cwd[cwd] =
-                vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
-          end
-          if _G.picker_git_cwd[cwd] then
-            require("snacks").picker.git_files()
+          if is_git_dir() then
+            Snacks.picker.git_status()
           else
-            require("snacks").picker.files()
+            Snacks.picker.files()
           end
         end,
         desc = "Files or Git Files",
@@ -113,7 +126,7 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
-              require("snacks.picker").resume()
+              Snacks.picker.resume()
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
@@ -121,11 +134,16 @@ return {
             ["aider_add"] = function(picker)
               aider_add(picker:selected({ fallback = true }))
             end,
+            ["rm_file"] = function(picker)
+              rm_file(picker:selected({ fallback = true }))
+              Snacks.picker.resume()
+            end,
           },
           layout = {
+            preset = "ivy",
             layout = {
-              width = 0.9,
-              height = 0.9,
+              width = 0,
+              height = 0,
             }
           },
           sources = {
@@ -137,6 +155,9 @@ return {
                     ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
                     ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
                     ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
+
+                    ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                    ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
                   },
                 },
               },
@@ -156,6 +177,7 @@ return {
                 input = {
                   keys = {
                     ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                    ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
                   },
                 },
               },
