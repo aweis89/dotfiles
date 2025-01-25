@@ -95,7 +95,7 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
-              require("snacks").picker.git_status()
+              picker:find()
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
