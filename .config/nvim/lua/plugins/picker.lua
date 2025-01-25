@@ -40,6 +40,22 @@ local function aider_add(selected)
   require("aider.terminal").add(files)
 end
 
+---@param ctx snacks.picker.preview.ctx
+local function git_diff(ctx)
+  local native = ctx.picker.opts.previewers.git.native
+  local cmd = {
+    "git",
+    "-c",
+    "delta." .. vim.o.background .. "=true",
+    "diff",
+    "HEAD",
+    "--",
+    ctx.item.file,
+  }
+  local exec = require("snacks.picker").preview.cmd
+  exec(cmd, ctx, { ft = not native and "diff" or nil })
+end
+
 vim.env.DELTA_FEATURES = '+nvim'
 
 return {
@@ -83,7 +99,8 @@ return {
       table.insert(opts.dashboard.preset.keys, 3, {
         icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()",
       })
-      return vim.tbl_deep_extend("force", opts or {}, {
+      ---@type snacks.Config
+      local overrides = {
         picker = {
           previewers = {
             git = { native = true },
@@ -112,6 +129,7 @@ return {
           },
           sources = {
             git_status = {
+              preview = git_diff,
               win = {
                 input = {
                   keys = {
@@ -153,8 +171,10 @@ return {
               },
             },
           },
-        }
-      })
+        },
+      }
+
+      return vim.tbl_deep_extend("force", opts or {}, overrides)
     end
   },
 }
