@@ -31,15 +31,6 @@ local function git_reset_soft(selected)
   git_exec { "reset", "--soft", commit_hash }
 end
 
----@param selected snacks.picker.Item[]
-local function aider_add(selected)
-  local files = {}
-  for _, s in ipairs(selected) do
-    table.insert(files, s.file)
-  end
-  require("aider.terminal").add(files)
-end
-
 ---@param ctx snacks.picker.preview.ctx
 local function git_diff(ctx)
   local native = ctx.picker.opts.previewers.git.native
@@ -130,9 +121,6 @@ return {
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
             end,
-            ["aider_add"] = function(picker)
-              aider_add(picker:selected({ fallback = true }))
-            end,
             ["rm_file"] = function(picker)
               rm_file(picker:selected({ fallback = true }))
               Snacks.picker.resume()
@@ -154,9 +142,6 @@ return {
                     ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
                     ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
                     ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
-
-                    ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                    ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
                   },
                 },
               },
@@ -166,17 +151,6 @@ return {
                 input = {
                   keys = {
                     ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
-                  },
-                },
-              },
-            },
-            files = {
-              hidden = true,
-              win = {
-                input = {
-                  keys = {
-                    ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                    ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
                   },
                 },
               },
@@ -195,6 +169,23 @@ return {
           },
         },
       }
+
+      local file_pickers = { "files", "recent", "buffers", "git_files", "git_status" }
+      for _, fp in ipairs(file_pickers) do
+        overrides.picker.sources = overrides.picker.sources or {}
+        overrides.picker.sources[fp] = overrides.picker.sources[fp] or {}
+        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp], {
+          hidden = true,
+          win = {
+            input = {
+              keys = {
+                ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
+              },
+            },
+          },
+        })
+      end
 
       return vim.tbl_deep_extend("force", opts or {}, overrides)
     end
