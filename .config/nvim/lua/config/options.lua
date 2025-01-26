@@ -17,22 +17,4 @@ vim.opt.showbreak = "↪ "
 
 vim.opt.timeoutlen = 1000
 
--- Set up key remaps
-local keymap = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
-
--- Keep cursor at the bottom of the visual selection after you yank it.
-keymap('v', 'y', 'ygv<Esc>', opts)
--- Prevent selecting and pasting from overwriting what you originally copied.
-keymap('x', 'p', 'pgvy', opts)
-
 vim.g.lazyvim_picker = "snacks"
-
--- -- add an autoccommand to set terminal to startinsert
--- vim.api.nvim_create_autocmd("TermOpen", {
---   callback = function()
---     vim.cmd.startinsert()
---   end
--- })
-
-require("config.neovide")
