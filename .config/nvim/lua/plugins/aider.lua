@@ -8,7 +8,7 @@ return {
       "ibhagwan/fzf-lua",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
-    lazy = false,
+    event = "VeryLazy",
     opts = {
       after_update_hook = function()
         -- require("telescope.command").load_command("git_commits")

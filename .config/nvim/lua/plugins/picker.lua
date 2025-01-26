@@ -97,7 +97,7 @@ return {
         "<leader><space>",
         function()
           if is_git_dir() then
-            Snacks.picker.git_status()
+            Snacks.picker.git_files()
           else
             Snacks.picker.files()
           end
