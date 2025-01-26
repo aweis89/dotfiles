@@ -6,6 +6,8 @@ return {
       "nvim-telescope/telescope.nvim",
       "willothy/flatten.nvim",
       "ibhagwan/fzf-lua",
+      "folke/snacks.nvim",
+      "sindrets/diffview.nvim",
     },
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     event = "VeryLazy",
