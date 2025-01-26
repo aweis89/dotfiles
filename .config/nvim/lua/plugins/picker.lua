@@ -74,6 +74,7 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
+      { "<leader>gL", function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
       {
         "<leader>fs",
         function()
@@ -170,21 +171,25 @@ return {
         },
       }
 
-      local file_pickers = { "files", "recent", "buffers", "git_files", "git_status" }
-      for _, fp in ipairs(file_pickers) do
-        overrides.picker.sources = overrides.picker.sources or {}
-        overrides.picker.sources[fp] = overrides.picker.sources[fp] or {}
-        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp], {
-          hidden = true,
-          win = {
-            input = {
-              keys = {
-                ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
-              },
+      local file_sources = { "files", "recent", "buffers", "git_files", "git_status" }
+      local common_file_picker_settings = {
+        hidden = true,
+        win = {
+          input = {
+            keys = {
+              ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+              ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
             },
           },
-        })
+        },
+      }
+
+      overrides.picker.sources = overrides.picker.sources or {}
+      for _, fp in ipairs(file_sources) do
+        overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
+          overrides.picker.sources[fp] or {},
+          common_file_picker_settings
+        )
       end
 
       return vim.tbl_deep_extend("force", opts or {}, overrides)
