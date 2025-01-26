@@ -3,20 +3,23 @@
 -- Add any additional keymaps here
 
 local function map(mode, lhs, rhs, opts)
-  opts = opts or {}
-  opts.silent = opts.silent ~= false
-  vim.keymap.set(mode, lhs, rhs, opts)
+  opts = opts or { noremap = true, silent = true }
+  vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
 end
 
-map("i", "<C-l>", "<Right>", { desc = "Insert mode move right", remap = true })
-map("i", "<C-h>", "<Left>", { desc = "Insert mode move left", remap = true })
-map("i", "jj", "<Esc>", { desc = "escape", remap = true })
+map("i", "<C-l>", "<Right>", { desc = "Insert mode move right" })
+map("i", "<C-h>", "<Left>", { desc = "Insert mode move left" })
+map("i", "jj", "<Esc>", { desc = "escape" })
 
-map("n", "L", "$", { desc = "Go to end of line", remap = true })
-map("n", "H", "^", { desc = "Go to beginning of line", remap = true })
-map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit", remap = true })
-map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen", remap = true })
-map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file", remap = true })
+map("n", "L", "$", { desc = "Go to end of line" })
+map("n", "H", "^", { desc = "Go to beginning of line" })
+map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
+map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen" })
+map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
+-- Keep cursor at the bottom of the visual selection after you yank it.
+map('v', 'y', 'ygv<Esc>', opts)
+-- Prevent selecting and pasting from overwriting what you originally copied.
+map('x', 'p', 'pgvy', opts)
 
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
@@ -71,3 +74,7 @@ end
 
 local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
 vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })
+
+if vim.g.neovide then
+  require("config.neovide")
+end
