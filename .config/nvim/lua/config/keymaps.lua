@@ -65,7 +65,7 @@ local set_root = function()
   if root == vim.fn.getcwd() then
     return
   end
-  vim.notify('Root directory: ' .. root)
+  vim.notify('CWD: ' .. root)
   vim.fn.chdir(root)
 end
 
