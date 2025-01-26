@@ -75,6 +75,7 @@ return {
     "folke/snacks.nvim",
     keys = {
       { "<leader>gL", function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
+      { "<leader>sp", function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
       {
         "<leader>fs",
         function()
