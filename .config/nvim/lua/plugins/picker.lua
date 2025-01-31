@@ -32,22 +32,6 @@ local function git_reset_soft(selected)
 end
 
 ---@param ctx snacks.picker.preview.ctx
-local function git_diff(ctx)
-  local native = ctx.picker.opts.previewers.git.native
-  local cmd = {
-    "git",
-    "-c",
-    "delta." .. vim.o.background .. "=true",
-    "diff",
-    "HEAD",
-    "--",
-    ctx.item.file,
-  }
-  local exec = Snacks.picker.preview.cmd(
-    cmd, ctx, { ft = not native and "diff" or nil }
-  )
-end
-
 vim.env.DELTA_FEATURES = '+nvim'
 
 ---@return boolean
@@ -76,6 +60,7 @@ return {
     keys = {
       { "<leader>gL", function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
       { "<leader>sp", function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
+      { "<leader>gS", function() Snacks.picker.git_stash() end,    desc = "Snacks git_stash" },
       {
         "<leader>fs",
         function()
@@ -137,7 +122,6 @@ return {
           },
           sources = {
             git_status = {
-              preview = git_diff,
               win = {
                 input = {
                   keys = {
@@ -179,6 +163,7 @@ return {
           input = {
             keys = {
               ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+              ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
               ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
             },
           },

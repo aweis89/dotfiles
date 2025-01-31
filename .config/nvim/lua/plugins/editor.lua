@@ -26,6 +26,26 @@ return {
     },
   },
   {
+    "echasnovski/mini.snippets",
+    opts = function()
+      local gen_loader = require('mini.snippets').gen_loader
+      return {
+        snippets = {
+          gen_loader.from_lang({
+            lang_patterns = {
+              yaml = { -- Map 'yaml' filetype to 'kubernetes'
+                '**/kubernetes.json',
+                '**/kubernetes.lua',
+                'kubernetes/**/*.json',
+                'kubernetes/**/*.lua',
+              },
+            },
+          }),
+        },
+      }
+    end,
+  },
+  {
     "echasnovski/mini.files",
     opts = {
       options = {

@@ -259,6 +259,8 @@ zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 alias aig='aichat --model "gemini:gemini-exp-1206" --session'
 alias ais='aichat --model "claude:claude-3-5-sonnet-latest"'
 alias ai1='aichat --model "openai:o1-preview"'
+alias air='aichat --model deepseek:deepseek-reasoner'
+alias aid='aichat --model deepseek:deepseek-chat'
 
 alias ai=aichat
 alias '??'='aichat -e'
@@ -580,3 +582,6 @@ fi
 export PATH="$PATH:/Users/aaron.weisberg/.local/bin"
 
 typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
