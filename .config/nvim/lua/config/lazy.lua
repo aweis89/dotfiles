@@ -42,7 +42,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
 
     { import = "lazyvim.plugins.extras.ui.treesitter-context" },
-    { import = "lazyvim.plugins.extras.ui.smear-cursor" },
+    -- { import = "lazyvim.plugins.extras.ui.smear-cursor" },
     -- { import = "lazyvim.plugins.extras.ui.mini-animate" },
 
     { import = "lazyvim.plugins.extras.dap" },
@@ -54,6 +54,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.coding.luasnip" },
     { import = "lazyvim.plugins.extras.coding.mini-comment" },
     { import = "lazyvim.plugins.extras.coding.mini-surround" },
+    { import = "lazyvim.plugins.extras.coding.mini-snippets" },
 
     -- { import = "lazyvim.plugins.extras.formatting.prettier" },
 

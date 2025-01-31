@@ -9,7 +9,7 @@ local themes = {
   },
   tokyonight = {
     light = "tokyonight-day",
-    dark = "tokyonight",
+    dark = "tokyonight-night",
   },
   gruvbox = {
     light = "gruvbox",
@@ -17,8 +17,8 @@ local themes = {
   },
 }
 
-local light_theme = themes.gruvbox.light
-local dark_theme = themes.gruvbox.dark
+local light_theme = themes.tokyonight.light
+local dark_theme = themes.tokyonight.dark
 local reload_theme_path = "~/tmp/theme-reload"
 
 local function set_background()
