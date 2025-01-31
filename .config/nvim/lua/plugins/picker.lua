@@ -34,18 +34,6 @@ end
 ---@param ctx snacks.picker.preview.ctx
 vim.env.DELTA_FEATURES = '+nvim'
 
----@return boolean
-local function is_git_dir()
-  local cwd = vim.fn.getcwd()
-  _G.picker_git_cwd = _G.picker_git_cwd or {}
-
-  if _G.picker_git_cwd[cwd] == nil then
-    _G.picker_git_cwd[cwd] =
-        vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] == "true"
-  end
-  return _G.picker_git_cwd[cwd]
-end
-
 ---@param selected snacks.picker.preview.ctx
 local function rm_file(selected)
   for _, s in ipairs(selected) do
@@ -58,29 +46,17 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader>gL", function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
-      { "<leader>sp", function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
-      { "<leader>gS", function() Snacks.picker.git_stash() end,    desc = "Snacks git_stash" },
+      { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Files or Git Files", },
+      { "<leader>gL",      function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
+      { "<leader>sp",      function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
+      { "<leader>gS",      function() Snacks.picker.git_stash() end,    desc = "Snacks git_stash" },
       {
         "<leader>fs",
         function()
           local lazypath = vim.fn.stdpath("data") .. "/lazy/"
-          Snacks.picker.files({
-            dirs = { lazypath },
-          })
+          Snacks.picker.files({ dirs = { lazypath } })
         end,
         desc = "Lazy Sources",
-      },
-      {
-        "<leader><space>",
-        function()
-          if is_git_dir() then
-            Snacks.picker.git_files()
-          else
-            Snacks.picker.files()
-          end
-        end,
-        desc = "Files or Git Files",
       },
     },
     ---@type fun(_, opts): snacks.Config
@@ -149,6 +125,14 @@ return {
                 layout = {
                   width = 0,
                   height = 0.4,
+                },
+              },
+            },
+            explorer = {
+              layout = {
+                layout = {
+                  width = 0.3,
+                  -- height = 0.4,
                 },
               },
             },
