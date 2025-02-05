@@ -126,12 +126,12 @@ return {
       keymap = {
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
-        -- ["<c-g>"] = {
-        --   function()
-        --     -- invoke manually, requires blink >v0.8.0
-        --     require("blink-cmp").show({ providers = { "ripgrep" } })
-        --   end,
-        -- },
+        ["<c-g>"] = {
+          function()
+            -- invoke manually, requires blink >v0.8.0
+            require("blink-cmp").show({ providers = { "ripgrep" } })
+          end,
+        },
       },
       signature = {
         enabled = true,
