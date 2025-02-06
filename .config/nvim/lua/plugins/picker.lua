@@ -137,7 +137,7 @@ return {
         },
       }
 
-      local file_sources = { "files", "recent", "buffers", "git_files", "git_status" }
+      local file_sources = { "smart", "files", "recent", "buffers", "git_files", "git_status" }
       local common_file_picker_settings = {
         layout = {
           layout = {
