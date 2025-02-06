@@ -73,7 +73,8 @@ return {
             git = { native = true },
           },
           actions = {
-            ["copilot_commit"] = function()
+            ["copilot_commit"] = function(picker)
+              picker:close()
               vim.cmd("CopilotChatCommit")
             end,
             ---@param picker snacks.Picker
@@ -91,10 +92,6 @@ return {
           },
           layout = {
             preset = "ivy",
-            layout = {
-              width = 0,
-              height = 0,
-            }
           },
           sources = {
             git_status = {
@@ -142,6 +139,12 @@ return {
 
       local file_sources = { "files", "recent", "buffers", "git_files", "git_status" }
       local common_file_picker_settings = {
+        layout = {
+          layout = {
+            width = 0,
+            height = 0,
+          },
+        },
         hidden = true,
         win = {
           input = {
