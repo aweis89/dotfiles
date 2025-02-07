@@ -125,12 +125,12 @@ return {
 
       overrides.picker.sources = overrides.picker.sources or {}
       local file_sources = {
-        "smart",
-        "files",
-        "recent",
         "buffers",
+        "files",
         "git_files",
         "git_status",
+        "recent",
+        "smart",
       }
       for _, fp in ipairs(file_sources) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
@@ -152,14 +152,17 @@ return {
       end
 
       local fullscreen = {
-        "smart",
-        "files",
-        "recent",
         "buffers",
+        "files",
         "git_files",
-        "git_status",
         "git_log",
         "git_log_file",
+        "git_status",
+        "grep",
+        "grep_buffers",
+        "grep_word",
+        "recent",
+        "smart",
       }
       for _, fp in ipairs(fullscreen) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
