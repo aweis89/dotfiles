@@ -124,7 +124,14 @@ return {
       }
 
       overrides.picker.sources = overrides.picker.sources or {}
-      local file_sources = { "smart", "files", "recent", "buffers", "git_files", "git_status" }
+      local file_sources = {
+        "smart",
+        "files",
+        "recent",
+        "buffers",
+        "git_files",
+        "git_status",
+      }
       for _, fp in ipairs(file_sources) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
           overrides.picker.sources[fp] or {},
@@ -144,11 +151,19 @@ return {
         )
       end
 
-      local fullscreen = { "smart", "files", "recent", "buffers", "git_files", "git_status", "git_log", "git_log_file" }
+      local fullscreen = {
+        "smart",
+        "files",
+        "recent",
+        "buffers",
+        "git_files",
+        "git_status",
+        "git_log",
+        "git_log_file",
+      }
       for _, fp in ipairs(fullscreen) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
-          overrides.picker.sources[fp] or {},
-          {
+          overrides.picker.sources[fp] or {}, {
             layout = {
               layout = {
                 width = 0,
