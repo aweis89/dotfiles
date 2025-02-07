@@ -46,8 +46,8 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Files or Git Files", },
-      { "<leader>gL",      function() Snacks.picker.git_log_file() end, desc = "Git Log (cwd)" },
+      { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Smart Find Files" },
+      { "<leader>gL",      function() Snacks.picker.git_log_file() end, desc = "Git Log (file)" },
       { "<leader>sp",      function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
       { "<leader>gS",      function() Snacks.picker.git_stash() end,    desc = "Snacks git_stash" },
       {
@@ -66,6 +66,15 @@ return {
       table.insert(opts.dashboard.preset.keys, 4, {
         icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()",
       })
+      local git_log_settings = {
+        win = {
+          input = {
+            keys = {
+              ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
+            },
+          },
+        },
+      }
       ---@type snacks.Config
       local overrides = {
         picker = {
@@ -105,63 +114,48 @@ return {
                 },
               },
             },
-            git_log = {
-              win = {
-                input = {
-                  keys = {
-                    ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
-                  },
-                },
-              },
-            },
+            git_log = git_log_settings,
+            git_log_file = git_log_settings,
             grep = {
               hidden = true,
-            },
-            lines = {
-              layout = {
-                layout = {
-                  width = 0,
-                  height = 0.4,
-                },
-              },
-            },
-            explorer = {
-              layout = {
-                layout = {
-                  width = 0.3,
-                  -- height = 0.4,
-                },
-              },
-            },
-          },
-        },
-      }
-
-      local file_sources = { "smart", "files", "recent", "buffers", "git_files", "git_status" }
-      local common_file_picker_settings = {
-        layout = {
-          layout = {
-            width = 0,
-            height = 0,
-          },
-        },
-        hidden = true,
-        win = {
-          input = {
-            keys = {
-              ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-              ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
-              ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
             },
           },
         },
       }
 
       overrides.picker.sources = overrides.picker.sources or {}
+      local file_sources = { "smart", "files", "recent", "buffers", "git_files", "git_status" }
       for _, fp in ipairs(file_sources) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
           overrides.picker.sources[fp] or {},
-          common_file_picker_settings
+          {
+            hidden = true,
+            win = {
+              input = {
+                keys = {
+                  ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                  ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
+                  ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
+                },
+              },
+            },
+          }
+
+        )
+      end
+
+      local fullscreen = { "smart", "files", "recent", "buffers", "git_files", "git_status", "git_log", "git_log_file" }
+      for _, fp in ipairs(fullscreen) do
+        overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
+          overrides.picker.sources[fp] or {},
+          {
+            layout = {
+              layout = {
+                width = 0,
+                height = 0,
+              },
+            },
+          }
         )
       end
 
