@@ -63,9 +63,6 @@ return {
     ---@param opts snacks.Config
     opts = function(_, opts)
       opts.dashboard.preset.header = ""
-      table.insert(opts.dashboard.preset.keys, 4, {
-        icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()",
-      })
       local git_log_settings = {
         win = {
           input = {
@@ -163,6 +160,7 @@ return {
         "grep_word",
         "recent",
         "smart",
+        "projects",
       }
       for _, fp in ipairs(fullscreen) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
