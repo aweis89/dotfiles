@@ -49,7 +49,6 @@ return {
       { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Smart Find Files" },
       { "<leader>gL",      function() Snacks.picker.git_log_file() end, desc = "Git Log (file)" },
       { "<leader>sp",      function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
-      { "<leader>gS",      function() Snacks.picker.git_stash() end,    desc = "Snacks git_stash" },
       {
         "<leader>fs",
         function()

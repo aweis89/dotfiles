@@ -3,7 +3,6 @@ return {
     "tpope/vim-fugitive",
     event = "VeryLazy",
   },
-  { "akinsho/bufferline.nvim", enabled = true },
   {
     "nvim-neotest/neotest",
     opts = {
