@@ -2,26 +2,75 @@ local themes = {
   catppuccin = {
     light = "catppuccin",
     dark = "catppuccin",
+    plugin = {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000,
+      opts = {
+        styles = {
+          keywords = { "italic" },
+        }
+      },
+    },
   },
   onedark = {
     light = "onelight",
     dark = "onedark",
+    plugin = {
+      "olimorris/onedarkpro.nvim",
+      priority = 1000,
+      opts = function(_, opts)
+        opts.highlights = {
+          PmenuSel = {
+            underline = true,
+          },
+        }
+        opts.styles = {            -- For example, to apply bold and italic, use "bold,italic"
+          virtual_text = "italic", -- Style that is applied to virtual text
+          keywords = "italic",     -- Style that is applied to keywords
+          operators = "italic",    -- Style that is applied to operators
+        }
+      end,
+    },
   },
   tokyonight = {
     light = "tokyonight-day",
     dark = "tokyonight-night",
+    plugin = {},
   },
   gruvbox = {
     light = "gruvbox",
     dark = "gruvbox",
+    plugin = {
+      "aweis89/gruvbox.nvim",
+      priority = 1000,
+      opts = {
+        overrides = {
+          LspReferenceRead = { link = "Underlined" },
+          LspReferenceText = { link = "Underlined" },
+          LspReferenceWrite = { link = "Underlined" },
+        },
+        italic = {
+          emphasis = true,
+          operators = false,
+          folds = true,
+          strings = true,
+          comments = true,
+          keywords = true,
+        },
+      },
+    },
   },
+  kanagawa = {
+    light = "kanagawa",
+    dark = "kanagawa",
+    plugin = { "rebelot/kanagawa.nvim" },
+  }
 }
 
-local light_theme = themes.tokyonight.light
-local dark_theme = themes.tokyonight.dark
 local reload_theme_path = "~/tmp/theme-reload"
 
-local function set_background()
+local function set_background(light_theme, dark_theme)
   local function is_macos()
     local handle = io.popen("uname")
     if not handle then return false end
@@ -55,11 +104,14 @@ local function set_background()
   end
 end
 
-return {
+local light_theme = themes.catppuccin
+local dark_theme = themes.tokyonight
+
+local plugins =  {
   {
     "LazyVim/LazyVim",
     opts = function()
-      set_background()
+      set_background(light_theme.light, dark_theme.dark)
 
       local theme_reload_path = vim.fn.expand(reload_theme_path)
       local watcher = vim.uv.new_fs_event()
@@ -76,51 +128,9 @@ return {
       }
     end,
   },
-  {
-    "willothy/flatten.nvim",
-    config = true,
-    lazy = false,
-    priority = 1001,
-  },
-  {
-    "aweis89/gruvbox.nvim",
-    priority = 1000,
-    opts = {
-      overrides = {
-        LspReferenceRead = { link = "Underlined" },
-        LspReferenceText = { link = "Underlined" },
-        LspReferenceWrite = { link = "Underlined" },
-      },
-      italic = {
-        emphasis = true,
-        operators = false,
-        folds = true,
-        strings = true,
-        comments = true,
-        keywords = true,
-      },
-    },
-  },
-  {
-    "olimorris/onedarkpro.nvim",
-    priority = 1000,
-    opts = function(_, opts)
-      opts.highlights = {
-        PmenuSel = {
-          underline = true,
-          -- bg = "#181818",
-        },
-      }
-      opts.styles = {            -- For example, to apply bold and italic, use "bold,italic"
-        virtual_text = "italic", -- Style that is applied to virtual text
-        keywords = "italic",     -- Style that is applied to keywords
-        operators = "italic",    -- Style that is applied to operators
-      }
-    end,
-  },
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-  },
 }
+
+table.insert(plugins, light_theme.plugin)
+table.insert(plugins, dark_theme.plugin)
+
+return plugins
