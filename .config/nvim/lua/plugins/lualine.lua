@@ -1,3 +1,4 @@
+-- use lualine as bufferline
 return {
   { "akinsho/bufferline.nvim", enabled = false },
   {
