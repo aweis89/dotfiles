@@ -4,7 +4,6 @@ return {
     "nvim-lualine/lualine.nvim",
     opts = {
       sections = {
-
         lualine_c = {
           LazyVim.lualine.root_dir(),
           {
@@ -19,6 +18,8 @@ return {
           { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
           { "buffers" },
         },
+        -- remove progress and location
+        lualine_y = {},
       },
     },
   },
