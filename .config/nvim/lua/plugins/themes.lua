@@ -1,3 +1,7 @@
+if vim.g.vscode then
+  return {}
+end
+
 local themes = {
   catppuccin = {
     light = "catppuccin",
@@ -107,7 +111,7 @@ end
 local light_theme = themes.catppuccin
 local dark_theme = themes.tokyonight
 
-local plugins =  {
+local plugins = {
   {
     "LazyVim/LazyVim",
     opts = function()
