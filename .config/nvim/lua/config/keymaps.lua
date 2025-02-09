@@ -17,9 +17,9 @@ map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen" })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
 -- Keep cursor at the bottom of the visual selection after you yank it.
-map('v', 'y', 'ygv<Esc>', opts)
+map('v', 'y', 'ygv<Esc>')
 -- Prevent selecting and pasting from overwriting what you originally copied.
-map('x', 'p', 'pgvy', opts)
+map('x', 'p', 'pgvy')
 
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
