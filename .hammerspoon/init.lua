@@ -17,7 +17,7 @@ end
 
 -- Set up theme sync for system theme changes
 local function syncTheme()
-  os.execute("~/.config/kitty/sync-theme " .. "tokyonight")
+  os.execute("~/.config/kitty/sync-theme " .. "catppuccin")
   os.execute("/opt/homebrew/bin/tmux source-file ~/.config/tmux/tmux.conf")
   os.execute("touch " .. reload_theme_path)
 end
