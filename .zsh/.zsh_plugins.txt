@@ -15,7 +15,7 @@ ohmyzsh/ohmyzsh path:plugins/azure
 ohmyzsh/ohmyzsh path:plugins/asdf
 ohmyzsh/ohmyzsh path:plugins/brew
 ohmyzsh/ohmyzsh path:plugins/docker
-ohmyzsh/ohmyzsh path:plugins/docker-compose
+# ohmyzsh/ohmyzsh path:plugins/docker-compose
 ohmyzsh/ohmyzsh path:plugins/fzf
 ohmyzsh/ohmyzsh path:plugins/gcloud
 ohmyzsh/ohmyzsh path:plugins/gh
@@ -35,7 +35,7 @@ ohmyzsh/ohmyzsh path:plugins/xcode
 ohmyzsh/ohmyzsh path:plugins/z
 
 mbhynes/fzf-gcloud
-bonnefoa/kubectl-fzf path:shell
+# bonnefoa/kubectl-fzf path:shell
 stefanheule/zsh-llm-suggestions
 
 # Aloxaf/fzf-tab path:fzf-tab.plugin.zsh

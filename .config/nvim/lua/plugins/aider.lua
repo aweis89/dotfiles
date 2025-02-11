@@ -12,17 +12,8 @@ return {
     dir = "/Users/aaron.weisberg/p/aider.nvim",
     event = "VeryLazy",
     opts = {
-      after_update_hook = function()
-        -- require("telescope.command").load_command("git_commits")
-        -- vim.cmd("DiffviewFileHistory")
-        -- vim.cmd("FzfLua git_status")
-        vim.cmd("DiffviewOpen")
-      end,
-      -- watch_files = true,
       aider_args = {
         '--no-auto-commit',
-        -- '--chat-mode',
-        -- 'architect',
       },
 
       on_ask_cmd = "/chat-mode ask",
@@ -45,8 +36,9 @@ return {
       end,
     },
     keys = {
-      { "<leader>ac", "<cmd>AiderCommentAsk<cr>", desc = "Aider comment ask" },
-      { "<leader>aC", "<cmd>AiderComment!<cr>",   desc = "Aider comment make change" },
+      { "<leader>ah", function() require("aider.snacks_picker").aider_changes() end, desc = "Aider history" },
+      { "<leader>ac", "<cmd>AiderCommentAsk<cr>",                                    desc = "Aider comment ask" },
+      { "<leader>aC", "<cmd>AiderComment!<cr>",                                      desc = "Aider comment make change" },
       {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
@@ -89,21 +81,30 @@ return {
         desc = "Ask with selection",
         mode = { "v", "n" },
       },
-
+      {
+        "<leader>ama",
+        "<cmd>AiderSend /architect <bar> AiderSend /model r1 <bar> AiderSend /editor-model sonnet<CR>",
+        desc = "Switch to sonnet",
+      },
       {
         "<leader>ams",
         "<cmd>AiderSend /model sonnet<CR>",
         desc = "Switch to sonnet",
       },
       {
-        "<leader>amh",
-        "<cmd>AiderSend /model haiku<CR>",
-        desc = "Switch to haiku",
-      },
-      {
         "<leader>amd",
         "<cmd>AiderSend /model deepseek/deepseek-chat<CR>",
         desc = "Switch to deepseek",
+      },
+      {
+        "<leader>amr",
+        "<cmd>AiderSend /model deepseek/deepseek-reasoner<CR>",
+        desc = "Switch to deepseek reasoner",
+      },
+      {
+        "<leader>amR",
+        "<cmd>AiderSend /model openrouter/deepseek/deepseek-r1<CR>",
+        desc = "Switch to deepseek reasoner",
       },
       {
         "<leader>amg",

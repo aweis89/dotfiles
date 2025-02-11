@@ -108,7 +108,7 @@ local function set_background(light_theme, dark_theme)
   end
 end
 
-local light_theme = themes.catppuccin
+local light_theme = themes.tokyonight
 local dark_theme = themes.tokyonight
 
 local plugins = {

@@ -95,9 +95,6 @@ return {
               Snacks.picker.resume()
             end,
           },
-          layout = {
-            preset = "ivy",
-          },
           sources = {
             git_status = {
               win = {
