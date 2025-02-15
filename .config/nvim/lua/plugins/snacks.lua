@@ -31,7 +31,6 @@ local function git_reset_soft(selected)
   git_exec { "reset", "--soft", commit_hash }
 end
 
----@param ctx snacks.picker.preview.ctx
 vim.env.DELTA_FEATURES = '+nvim'
 
 ---@param selected snacks.picker.preview.ctx
@@ -72,6 +71,7 @@ return {
         },
       }
       ---@type snacks.Config
+      ---@diagnostic disable
       local overrides = {
         picker = {
           previewers = { git = { native = true }},
