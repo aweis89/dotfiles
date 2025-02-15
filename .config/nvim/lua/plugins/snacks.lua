@@ -31,8 +31,6 @@ local function git_reset_soft(selected)
   git_exec { "reset", "--soft", commit_hash }
 end
 
-vim.env.DELTA_FEATURES = '+nvim'
-
 ---@param selected snacks.picker.preview.ctx
 local function rm_file(selected)
   for _, s in ipairs(selected) do
@@ -70,6 +68,9 @@ return {
           },
         },
       }
+
+      vim.env.DELTA_FEATURES = '+nvim'
+
       ---@type snacks.Config
       ---@diagnostic disable
       local overrides = {
