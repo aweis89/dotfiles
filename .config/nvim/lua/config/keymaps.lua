@@ -61,7 +61,7 @@ create_tmux_split_command("V")
 create_tmux_split_command("H")
 
 
-vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
+vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod" }, "cwd" }
 
 local set_root = function()
   local root = LazyVim.root.get()
