@@ -17,6 +17,10 @@ return {
     },
   },
   {
+    "williamboman/mason.nvim",
+    opts = { ensure_installed = { "golangci-lint" } },
+  },
+  {
     "neovim/nvim-lspconfig",
     keys = {
       { "cd",         "vim.diagnostic.open_float" },

@@ -5,7 +5,7 @@ local function git_exec(args)
   for _, arg in ipairs(args) do
     table.insert(cmd, arg)
   end
-  if vim.fn.confirm("Run? " .. table.concat(cmd, " "), "&Yes\n&No") == 1 then
+  if vim.fn.confirm(table.concat(cmd, " "), "&Yes\n&No") == 1 then
     vim.fn.system(cmd)
     vim.cmd("checktime")
   end
@@ -74,9 +74,7 @@ return {
       ---@type snacks.Config
       local overrides = {
         picker = {
-          previewers = {
-            git = { native = true },
-          },
+          previewers = { git = { native = true }},
           actions = {
             ["copilot_commit"] = function(picker)
               picker:close()
