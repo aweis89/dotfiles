@@ -1,8 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    ---@param opts ConformOpts
-    init = function(_, opts)
+    opts = function(_, opts)
       local disable_format_file = "disable-format"
       vim.api.nvim_create_user_command("ConformToggle", function()
         local disabled = false
@@ -27,8 +26,7 @@ return {
           LazyVim.format.enable(false)
         end
       end)
-    end,
-    opts = function(_, opts)
+
       local ft = opts.formatters_by_ft
       ft.go = { "gofumpt", "goimports" }
       ft.tf = { "terraform_fmt" }

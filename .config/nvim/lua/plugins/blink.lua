@@ -148,13 +148,14 @@ return {
         },
         list = {
           selection = {
-            auto_insert = function(ctx) return ctx.mode ~= 'cmdline' end,
+            auto_insert = function(ctx)
+              return ctx.mode ~= "cmdline"
+            end,
             preselect = function(ctx)
-              return ctx.mode ~= 'cmdline' and not require('blink.cmp').snippet_active({ direction = 1 })
+              return ctx.mode ~= "cmdline" and not require("blink.cmp").snippet_active({ direction = 1 })
             end,
           },
         },
-
       },
     },
   },

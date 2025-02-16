@@ -2,10 +2,10 @@ return {
   {
     "aweis89/aider.nvim",
     dependencies = {
-      "akinsho/toggleterm.nvim",
-      "nvim-telescope/telescope.nvim",
-      "willothy/flatten.nvim",
-      "ibhagwan/fzf-lua",
+      -- "akinsho/toggleterm.nvim",
+      -- "nvim-telescope/telescope.nvim",
+      -- "willothy/flatten.nvim",
+      -- "ibhagwan/fzf-lua",
       "folke/snacks.nvim",
       "sindrets/diffview.nvim",
     },
