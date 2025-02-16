@@ -1,9 +1,10 @@
 return {
   {
-    "neovim/nvim-lspconfig",
+    "akinsho/flutter-tools.nvim",
+    ft = "dart",
     dependencies = {
-      "akinsho/flutter-tools.nvim",
-      init = function()
+      "neovim/nvim-lspconfig",
+      config = function()
         require("flutter-tools").setup({
           on_attach = require("lazyvim.plugins.lsp.keymaps").on_attach,
           capabilities = vim.lsp.protocol.make_client_capabilities(),
