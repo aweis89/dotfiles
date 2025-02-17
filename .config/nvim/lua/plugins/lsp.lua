@@ -3,7 +3,7 @@ return {
   {
     "rachartier/tiny-inline-diagnostic.nvim",
     event = "VeryLazy", -- Or `LspAttach`
-    priority = 1000,    -- needs to be loaded in first
+    priority = 1000, -- needs to be loaded in first
     config = true,
     opts = {
       options = {
@@ -23,8 +23,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     keys = {
-      { "cd",         "vim.diagnostic.open_float" },
-      { "<leader>lt", "<cmd>LintToggle<cr>",      desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
+      { "cd", "vim.diagnostic.open_float" },
+      { "<leader>lt", "<cmd>LintToggle<cr>", desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
     },
     ---@class PluginLspOpts
     opts = function(_, opts)
