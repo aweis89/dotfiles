@@ -13,7 +13,7 @@ local themes = {
       opts = {
         styles = {
           keywords = { "italic" },
-        }
+        },
       },
     },
   },
@@ -29,10 +29,10 @@ local themes = {
             underline = true,
           },
         }
-        opts.styles = {            -- For example, to apply bold and italic, use "bold,italic"
+        opts.styles = { -- For example, to apply bold and italic, use "bold,italic"
           virtual_text = "italic", -- Style that is applied to virtual text
-          keywords = "italic",     -- Style that is applied to keywords
-          operators = "italic",    -- Style that is applied to operators
+          keywords = "italic", -- Style that is applied to keywords
+          operators = "italic", -- Style that is applied to operators
         }
       end,
     },
@@ -69,7 +69,7 @@ local themes = {
     light = "kanagawa",
     dark = "kanagawa",
     plugin = { "rebelot/kanagawa.nvim" },
-  }
+  },
 }
 
 local reload_theme_path = "~/tmp/theme-reload"
@@ -77,7 +77,9 @@ local reload_theme_path = "~/tmp/theme-reload"
 local function set_background(light_theme, dark_theme)
   local function is_macos()
     local handle = io.popen("uname")
-    if not handle then return false end
+    if not handle then
+      return false
+    end
     local os_name = handle:read("*a")
     handle:close()
     return os_name and os_name:gsub("%s+", "") == "Darwin"
@@ -85,7 +87,9 @@ local function set_background(light_theme, dark_theme)
 
   if is_macos() then
     local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
-    if not handle then return end
+    if not handle then
+      return
+    end
     local result = handle:read("*a")
     handle:close()
 

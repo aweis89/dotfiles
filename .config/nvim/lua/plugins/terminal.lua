@@ -5,10 +5,10 @@ end
 local function terminal(position)
   return function()
     local width = {
-      float = 0.97
+      float = 0.97,
     }
     local height = {
-      float = 0.97
+      float = 0.97,
     }
     Snacks.terminal.toggle("zsh", {
       env = {
@@ -19,7 +19,7 @@ local function terminal(position)
         position = position,
         height = height[position] or 0.5,
         width = width[position] or 0.5,
-      }
+      },
     })
   end
 end
@@ -47,7 +47,7 @@ return {
             win = {
               height = 0.99,
               width = 0.99,
-            }
+            },
           })
         end,
         desc = "Opent terminal",
