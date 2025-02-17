@@ -14,6 +14,28 @@ return {
     opts = function(_, opts)
       opts = vim.tbl_deep_extend("force", opts or {}, {
         ---@type blink.cmp.Config
+        sources = {
+          providers = {
+            lsp = {
+              score_offset = 5,
+            },
+            lazydev = {
+              score_offset = 5,
+            },
+            copilot = {
+              score_offset = 4,
+            },
+            snippets = {
+              score_offset = 2,
+            },
+            path = {
+              score_offset = 2,
+            },
+            buffer = {
+              score_offset = 1,
+            },
+          },
+        },
         cmdline = {
           enabled = true,
           sources = function()
