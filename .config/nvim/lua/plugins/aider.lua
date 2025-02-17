@@ -13,7 +13,7 @@ return {
     event = "VeryLazy",
     opts = {
       aider_args = {
-        '--no-auto-commit',
+        "--no-auto-commit",
       },
 
       on_ask_cmd = "/chat-mode ask",
@@ -36,9 +36,19 @@ return {
       end,
     },
     keys = {
-      { "<leader>ah", function() require("aider.snacks_picker").aider_changes() end, desc = "Aider history" },
-      { "<leader>ac", "<cmd>AiderCommentAsk<cr>",                                    desc = "Aider comment ask" },
-      { "<leader>aC", "<cmd>AiderComment!<cr>",                                      desc = "Aider comment make change" },
+      {
+        "<leader>ah",
+        function()
+          require("aider.snacks_picker").aider_changes()
+        end,
+        desc = "Aider history",
+      },
+      { "<leader>ac", "<cmd>AiderCommentAsk<cr>", desc = "Aider comment ask" },
+      {
+        "<leader>aC",
+        "<cmd>AiderComment!<cr>",
+        desc = "Aider comment make change",
+      },
       {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",

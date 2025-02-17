@@ -17,9 +17,9 @@ local function git_reset_file(selected)
     local text = s.text:gsub("^%s*", "")
     local is_untracked = text:sub(1, 1) == "?"
     if is_untracked then
-      git_exec { "clean", "-f", s.file }
+      git_exec({ "clean", "-f", s.file })
     else
-      git_exec { "checkout", "HEAD", "--", s.file }
+      git_exec({ "checkout", "HEAD", "--", s.file })
     end
   end
 end
@@ -28,7 +28,7 @@ end
 local function git_reset_soft(selected)
   local text = selected[1].text
   local commit_hash = text:match("^(%x+)")
-  git_exec { "reset", "--soft", commit_hash }
+  git_exec({ "reset", "--soft", commit_hash })
 end
 
 ---@param selected snacks.picker.preview.ctx
@@ -43,9 +43,27 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Smart Find Files" },
-      { "<leader>gL",      function() Snacks.picker.git_log_file() end, desc = "Git Log (file)" },
-      { "<leader>sp",      function() Snacks.picker.pick() end,         desc = "Snacks pick pickers" },
+      {
+        "<leader><space>",
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = "Smart Find Files",
+      },
+      {
+        "<leader>gL",
+        function()
+          Snacks.picker.git_log_file()
+        end,
+        desc = "Git Log (file)",
+      },
+      {
+        "<leader>sp",
+        function()
+          Snacks.picker.pick()
+        end,
+        desc = "Snacks pick pickers",
+      },
       {
         "<leader>fs",
         function()
@@ -69,13 +87,13 @@ return {
         },
       }
 
-      vim.env.DELTA_FEATURES = '+nvim'
+      vim.env.DELTA_FEATURES = "+nvim"
 
       ---@type snacks.Config
       ---@diagnostic disable
       local overrides = {
         picker = {
-          previewers = { git = { native = true }},
+          previewers = { git = { native = true } },
           actions = {
             ["copilot_commit"] = function(picker)
               picker:close()
@@ -125,22 +143,18 @@ return {
         "smart",
       }
       for _, fp in ipairs(file_sources) do
-        overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
-          overrides.picker.sources[fp] or {},
-          {
-            hidden = true,
-            win = {
-              input = {
-                keys = {
-                  ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                  ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
-                  ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
-                },
+        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
+          hidden = true,
+          win = {
+            input = {
+              keys = {
+                ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
+                ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
+                ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
               },
             },
-          }
-
-        )
+          },
+        })
       end
 
       local fullscreen = {
@@ -158,19 +172,17 @@ return {
         "projects",
       }
       for _, fp in ipairs(fullscreen) do
-        overrides.picker.sources[fp] = vim.tbl_deep_extend("force",
-          overrides.picker.sources[fp] or {}, {
+        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
+          layout = {
             layout = {
-              layout = {
-                width = 0,
-                height = 0,
-              },
+              width = 0,
+              height = 0,
             },
-          }
-        )
+          },
+        })
       end
 
       return vim.tbl_deep_extend("force", opts or {}, overrides)
-    end
+    end,
   },
 }
