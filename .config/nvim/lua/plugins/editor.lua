@@ -4,12 +4,15 @@ return {
     cmd = { "Git" },
   },
   {
-    'echasnovski/mini.splitjoin',
+    "echasnovski/mini.splitjoin",
     version = false,
     config = true,
-    keys = { { '<leader>ms',
-      function() require("mini.splitjoin").split() end
-    } }
+    keys = { {
+      "<leader>ms",
+      function()
+        require("mini.splitjoin").split()
+      end,
+    } },
   },
   {
     "nvim-neotest/neotest",
@@ -44,16 +47,16 @@ return {
   {
     "echasnovski/mini.snippets",
     opts = function()
-      local gen_loader = require('mini.snippets').gen_loader
+      local gen_loader = require("mini.snippets").gen_loader
       return {
         snippets = {
           gen_loader.from_lang({
             lang_patterns = {
               yaml = { -- Map 'yaml' filetype to 'kubernetes'
-                '**/kubernetes.json',
-                '**/kubernetes.lua',
-                'kubernetes/**/*.json',
-                'kubernetes/**/*.lua',
+                "**/kubernetes.json",
+                "**/kubernetes.lua",
+                "kubernetes/**/*.json",
+                "kubernetes/**/*.lua",
               },
             },
           }),
