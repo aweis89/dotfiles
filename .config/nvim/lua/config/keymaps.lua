@@ -11,15 +11,18 @@ map("i", "<C-l>", "<Right>", { desc = "Insert mode move right" })
 map("i", "<C-h>", "<Left>", { desc = "Insert mode move left" })
 map("i", "jj", "<Esc>", { desc = "escape" })
 
+map("i", "<C-j", "<C-n>", { desc = "next" })
+map("i", "<C-k", "<C-p>", { desc = "prev" })
+
 map("n", "L", "$", { desc = "Go to end of line" })
 map("n", "H", "^", { desc = "Go to beginning of line" })
 map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen" })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
 -- Keep cursor at the bottom of the visual selection after you yank it.
-map('v', 'y', 'ygv<Esc>')
+map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.
-map('x', 'p', 'pgvy')
+map("x", "p", "pgvy")
 
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
@@ -60,7 +63,6 @@ end
 create_tmux_split_command("V")
 create_tmux_split_command("H")
 
-
 vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod" }, "cwd" }
 
 local set_root = function()
@@ -68,12 +70,12 @@ local set_root = function()
   if root == vim.fn.getcwd() then
     return
   end
-  vim.notify('CWD: ' .. root)
+  vim.notify("CWD: " .. root)
   vim.fn.chdir(root)
 end
 
-local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
-vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })
+local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
+vim.api.nvim_create_autocmd("BufEnter", { group = root_augroup, callback = set_root })
 
 if vim.g.neovide then
   require("config.neovide")

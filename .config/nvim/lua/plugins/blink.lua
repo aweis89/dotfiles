@@ -15,6 +15,7 @@ return {
       opts = vim.tbl_deep_extend("force", opts or {}, {
         ---@type blink.cmp.Config
         cmdline = {
+          enabled = true,
           sources = function()
             local type = vim.fn.getcmdtype()
             -- Search forward and backward
@@ -28,10 +29,6 @@ return {
             return {}
           end,
         },
-        keymap = {
-          ["<C-k>"] = { "select_prev", "fallback" },
-          ["<C-j>"] = { "select_next", "fallback" },
-        },
         signature = {
           enabled = true,
         },
@@ -40,7 +37,7 @@ return {
             auto_show = true,
           },
           menu = {
-            max_height = math.floor(vim.o.lines / 2),
+            max_height = vim.o.lines,
             draw = {
               columns = { { "label", "source_name", gap = 1 }, { "kind_icon" } },
             },
