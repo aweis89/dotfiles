@@ -12,28 +12,16 @@ return {
     ---@module 'blink.cmp'
     ---@param opts blink.cmp.Config
     opts = function(_, opts)
-      opts = vim.tbl_deep_extend("force", opts or {}, {
-        ---@type blink.cmp.Config
+      ---@type blink.cmp.Config
+      local overrides = {
         sources = {
           providers = {
-            lsp = {
-              score_offset = 5,
-            },
-            lazydev = {
-              score_offset = 5,
-            },
-            copilot = {
-              score_offset = 4,
-            },
-            snippets = {
-              score_offset = 2,
-            },
-            path = {
-              score_offset = 2,
-            },
-            buffer = {
-              score_offset = 1,
-            },
+            lsp = { score_offset = 5 },
+            lazydev = { score_offset = 5 },
+            copilot = { score_offset = 4 },
+            snippets = { score_offset = 2 },
+            path = { score_offset = 2 },
+            buffer = { score_offset = 1 },
           },
         },
         keymap = {
@@ -62,9 +50,6 @@ return {
           enabled = true,
         },
         completion = {
-          documentation = {
-            auto_show = true,
-          },
           menu = {
             max_height = vim.o.lines,
             draw = {
@@ -79,7 +64,8 @@ return {
             },
           },
         },
-      })
+      }
+      opts = vim.tbl_deep_extend("force", opts or {}, overrides)
       return opts
     end,
   },
