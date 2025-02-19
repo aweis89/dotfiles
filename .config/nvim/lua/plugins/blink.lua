@@ -19,9 +19,9 @@ return {
             lsp = { score_offset = 5 },
             lazydev = { score_offset = 5 },
             copilot = { score_offset = 4 },
-            snippets = { score_offset = 2 },
             path = { score_offset = 2 },
             buffer = { score_offset = 1 },
+            snippets = { score_offset = -1 },
           },
         },
         keymap = {
@@ -34,17 +34,6 @@ return {
             ["<C-j>"] = { "select_next", "fallback" },
           },
           enabled = true,
-          -- remove once lazy update no longer specifies override
-          sources = function()
-            local type = vim.fn.getcmdtype()
-            if type == "/" or type == "?" then
-              return { "buffer" }
-            end
-            if type == ":" then
-              return { "cmdline" }
-            end
-            return {}
-          end,
         },
         signature = {
           enabled = true,
