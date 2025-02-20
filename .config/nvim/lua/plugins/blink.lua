@@ -1,13 +1,5 @@
 return {
   {
-    "neovim/nvim-lspconfig",
-    opts = function()
-      -- disable a keymap
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = { "<c-k>", mode = { "i" }, false }
-    end,
-  },
-  {
     "saghen/blink.cmp",
     ---@module 'blink.cmp'
     ---@param opts blink.cmp.Config
