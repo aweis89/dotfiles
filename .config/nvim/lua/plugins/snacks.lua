@@ -39,6 +39,12 @@ local function rm_file(selected)
   end
 end
 
+---@param picker snacks.Picker
+local function refresh_picker(picker)
+  picker:close()
+  Snacks.picker.resume()
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -102,13 +108,15 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
+              refresh_picker(picker)
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
+              refresh_picker(picker)
             end,
             ["rm_file"] = function(picker)
               rm_file(picker:selected({ fallback = true }))
-              Snacks.picker.resume()
+              refresh_picker(picker)
             end,
           },
           sources = {
