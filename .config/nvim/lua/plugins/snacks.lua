@@ -102,7 +102,6 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
-              Snacks.picker.resume()
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
@@ -113,6 +112,9 @@ return {
             end,
           },
           sources = {
+            projects = {
+              dev = { "~/c", "~/q" },
+            },
             git_status = {
               win = {
                 input = {
