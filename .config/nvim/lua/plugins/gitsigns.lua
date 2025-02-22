@@ -33,9 +33,13 @@ return {
             nav_hunk("prev")
           end
         end, "Prev Hunk")
-        map("n", "]H", function() nav_hunk("last") end, "Last Hunk")
-        map("n", "[H", function() nav_hunk("first") end, "First Hunk")
+        map("n", "]H", function()
+          nav_hunk("last")
+        end, "Last Hunk")
+        map("n", "[H", function()
+          nav_hunk("first")
+        end, "First Hunk")
       end
-    end
-  }
+    end,
+  },
 }

@@ -16,6 +16,10 @@ return {
         "--no-auto-commit",
       },
 
+      after_update_hook = function()
+        vim.cmd("DiffviewFileHistory")
+      end,
+
       on_ask_cmd = "/chat-mode ask",
       on_change_req_cmd = "/chat-mode architect",
 

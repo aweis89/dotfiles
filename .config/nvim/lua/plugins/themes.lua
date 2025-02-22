@@ -39,7 +39,7 @@ local themes = {
   },
   tokyonight = {
     light = "tokyonight-day",
-    dark = "tokyonight-night",
+    dark = "tokyonight",
     plugin = {},
   },
   gruvbox = {
@@ -69,6 +69,11 @@ local themes = {
     light = "kanagawa",
     dark = "kanagawa",
     plugin = { "rebelot/kanagawa.nvim" },
+  },
+  rosepine = {
+    light = "rose-pine",
+    dark = "rose-pine",
+    plugin = { "rose-pine/neovim" },
   },
 }
 
@@ -108,7 +113,6 @@ local function set_background(light_theme, dark_theme)
     end
   else
     vim.api.nvim_set_option_value("background", "dark", {})
-    vim.cmd.colorscheme(dark_theme)
   end
 end
 

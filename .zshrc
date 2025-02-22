@@ -32,6 +32,8 @@ export VISUAL=nvim
 export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
+export FC_ENABLE=1
+
 
 if [[ -n "$NVIM" ]]; then
   EDITOR="nvim --cmd 'let g:flatten_wait=1'"
@@ -446,19 +448,6 @@ gcloud-project() {
 }
 alias gp=gcloud-project
 
-gcloud-update-kubeconfig() {
-    cluster=$(gcloud container clusters list | grep -v NAME | fzf)
-    if [[ -n "$cluster" ]]; then
-        zone=$(echo "$cluster" | awk '{print $2}')
-        name=$(echo "$cluster" | awk '{print $1}')
-        set -x
-        gcloud container clusters get-credentials "$name" --zone "$zone" "$@"
-        set +x
-    fi
-}
-alias guk=gcloud-update-kubeconfig
-alias guki='gcloud-update-kubeconfig --internal-ip'
-
 _gcloud_account() {
     account=$(gcloud auth list --format="table(account)" | grep -v ACCOUNT | fzf)
     set -x
@@ -474,13 +463,15 @@ gcloud-fzf() {
 alias fgc=gcloud-fzf
 
 gcloud-update-kubeconfig() {
-    cluster=$(gcloud container clusters list | grep -v NAME | fzf)
+    cluster=$(gcloud container clusters list 2>/dev/null| grep -v NAME | fzf)
     if [[ -n "$cluster" ]]; then
         zone=$(echo "$cluster" | awk '{print $2}')
         name=$(echo "$cluster" | awk '{print $1}')
         set -x
         gcloud container clusters get-credentials "$name" --zone "$zone" "$@"
         set +x
+        account=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")
+        yq eval '(.users[] | select(.name | test(".*'$name'$")) .user.exec.args) = ["--account", "'$account'"]' -i ~/.kube/config
     fi
 }
 alias guk=gcloud-update-kubeconfig
@@ -509,7 +500,7 @@ slack-pr-msg() {
     local url=$(echo $pr | jq -r '.url')
     local isDraft=$(echo $pr | jq -r '.isDraft')
     local msg="[${repo}#${number}: ${title}](${url})"
-    
+
     [[ "$isDraft" = "true" ]] && msg=":draft-pr: ${msg}"
     echo ":pull-request: ${msg} :pray:" | tee >(pbcopy)
 }
