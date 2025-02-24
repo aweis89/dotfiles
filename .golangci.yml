@@ -670,7 +670,6 @@
 #       rules:
 #         # any struct tag type can be used.
 #         # support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
-#         json: camel
 #         yaml: camel
 #         xml: camel
 #         bson: camel
