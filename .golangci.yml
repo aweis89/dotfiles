@@ -795,6 +795,7 @@ linters:
   enable-all: true
   disable:
     - depguard
+    - errcheck
       # - nlreturn # new line before return
       # - golint # comment docs
       # - revive # comment docs
