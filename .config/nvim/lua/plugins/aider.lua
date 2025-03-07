@@ -17,7 +17,7 @@ return {
       },
 
       after_update_hook = function()
-        vim.cmd("DiffviewFileHistory")
+        vim.cmd("DiffviewOpen")
       end,
 
       on_ask_cmd = "/chat-mode ask",
