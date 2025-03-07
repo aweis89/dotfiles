@@ -21,7 +21,7 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { "zbirenbaum/copilot.lua" },                   -- or zbirenbaum/copilot.lua
+      { "zbirenbaum/copilot.lua" }, -- or zbirenbaum/copilot.lua
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
     },
 
@@ -39,7 +39,9 @@ return {
     config = function(_, opts)
       local user_key_mappings = {
         ["<C-g>"] = git_commit,
-        ["<C-p>"] = function(res) git_commit(res, true) end,
+        ["<C-p>"] = function(res)
+          git_commit(res, true)
+        end,
         ["<C-f>"] = function(response)
           vim.ui.input({ prompt = "Write to file: " }, function(input)
             local message = get_last_code_block(response)
@@ -87,8 +89,7 @@ The user is working on a Darwin machine. Please respond with system specific com
       ]],
         prompts = {
           Commit = {
-            prompt =
-            '> $gpt-4o-mini #git:staged\n\nWrite commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+            prompt = "$gpt-4o-mini #git:staged\n\nWrite commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.",
           },
         },
         model = "claude-3.5-sonnet",

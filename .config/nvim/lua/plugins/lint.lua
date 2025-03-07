@@ -13,7 +13,6 @@ local golangci_always_linters = {
   "dupl", -- Tool for code clone detection
   "dupword", -- checks for duplicate words in the source code
   "durationcheck", -- check for two durations multiplied together
-  "err113", -- Go linter to check the errors handling expressions
   "errcheck", -- checks for unchecked errors in Go code
   "errchkjson", -- Checks types passed to the json encoding functions
   "errname", -- Checks that sentinel errors are prefixed with the `Err` and error types are suffixed with the `Error`

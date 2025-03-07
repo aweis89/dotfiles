@@ -19,6 +19,11 @@ case "$1" in
     dark="$dir/onedarkpro_onedark.conf"
     light="$dir/onedarkpro_onelight.conf"
     ;;
+  "kanagawa")
+    dir="$nvim_lazy_dir/kanagawa.nvim/extras/kitty"
+    dark="$dir/kanagawa.conf"
+    light="$dir/kanagawa_light.conf"
+    ;;
   *)
     dark="$kitty_dir/themes/gruvbox_dark.conf"
     light="$kitty_dir/themes/gruvbox_light.conf"
