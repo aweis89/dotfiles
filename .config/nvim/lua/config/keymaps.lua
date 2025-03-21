@@ -63,7 +63,12 @@ end
 create_tmux_split_command("V")
 create_tmux_split_command("H")
 
-vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod" }, "cwd" }
+local patterns = vim.list_extend(vim.g.root_spec[2], {
+  "go.mod",
+  "base", -- quizlet-infrastructure
+})
+
+vim.g.root_spec = { "lsp", patterns, "cwd" }
 
 local set_root = function()
   local root = LazyVim.root.get()

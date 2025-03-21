@@ -75,11 +75,6 @@ return {
         mode = { "i", "t", "n" },
       },
       {
-        "<leader>as",
-        "<cmd>AiderSpawn<CR>",
-        desc = "Toggle Aidper (default)",
-      },
-      {
         "<leader>al",
         "<cmd>AiderAdd<CR>",
         desc = "Add file to aider",
