@@ -50,16 +50,16 @@ local function get_visual_selection(bufnr)
 end
 
 ---@param bufnr integer|nil
----@return string
+---@return string|nil
 local function get_visual_selection_with_header(bufnr)
-  local lines, path, start, end_line = get_visual_selection(bufnr)
+  local lines, path = get_visual_selection(bufnr)
   if #lines == 0 then
     return nil
   end
   local slines = table.concat(lines, "\n")
   local filetype = vim.o.filetype
   slines = "```" .. filetype .. "\n" .. slines .. "\n```\n"
-  return string.format("# File: %s\n# Lines: %d-%d\n\n%s", path, start, end_line, slines)
+  return string.format("# File: %s\n\n%s", path, slines)
 end
 
 local function terminal(position, cmd)
@@ -82,6 +82,12 @@ local function terminal(position, cmd)
       },
     })
   end
+end
+
+local function claude_terminal()
+  local theme = vim.o.background
+  local cmd = string.format("claude config set -g theme %s; claude", theme)
+  terminal("float", cmd)()
 end
 
 return {
@@ -115,7 +121,7 @@ return {
       },
       {
         "<leader>as",
-        terminal("float", "claude"),
+        claude_terminal,
         desc = "Toggle Claude (default)",
       },
       {
@@ -126,7 +132,7 @@ return {
           selection = get_visual_selection_with_header(bufnr)
           vim.api.nvim_feedkeys("i", "n", false)
           vim.ui.input({ prompt = "Claude" }, function(ai_prompt)
-            terminal("float", "claude")()
+            claude_terminal()
             if selection then
               ai_prompt = selection .. "\n\n" .. ai_prompt
             end
