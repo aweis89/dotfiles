@@ -59,7 +59,7 @@ local function get_visual_selection_with_header(bufnr)
   local slines = table.concat(lines, "\n")
   local filetype = vim.o.filetype
   slines = "```" .. filetype .. "\n" .. slines .. "\n```\n"
-  return string.format("# File: %s\n\n%s", path, slines)
+  return string.format("# File: %s\n\n%s\n", path, slines)
 end
 
 local function terminal(position, cmd)
@@ -127,17 +127,11 @@ return {
       {
         "<leader>as",
         function()
-          local selection = nil
           local bufnr = vim.api.nvim_get_current_buf()
-          selection = get_visual_selection_with_header(bufnr)
+          local selection = get_visual_selection_with_header(bufnr)
+          claude_terminal()
+          vim.fn.chansend(vim.b.terminal_job_id, selection)
           vim.api.nvim_feedkeys("i", "n", false)
-          vim.ui.input({ prompt = "Claude" }, function(ai_prompt)
-            claude_terminal()
-            if selection then
-              ai_prompt = selection .. "\n\n" .. ai_prompt
-            end
-            vim.fn.chansend(vim.b.terminal_job_id, ai_prompt)
-          end)
         end,
         desc = "Toggle Claude (default)",
         mode = { "v" },
