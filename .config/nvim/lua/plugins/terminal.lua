@@ -59,7 +59,7 @@ local function get_visual_selection_with_header(bufnr)
   local slines = table.concat(lines, "\n")
   local filetype = vim.o.filetype
   slines = "```" .. filetype .. "\n" .. slines .. "\n```\n"
-  return string.format("# File: %s\n\n%s\n", path, slines)
+  return string.format("\n# Path: %s\n%s\n", path, slines)
 end
 
 local function terminal(position, cmd)
