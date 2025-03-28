@@ -108,29 +108,36 @@ local golangci_always_linters = {
 return {
   {
     "mfussenegger/nvim-lint",
-    init = function()
-      -- Import the existing golangci-lint configuration for extension
-      local golangcilint = require("lint.linters.golangcilint")
-
-      -- fix args for v2:
-      -- https://github.com/mfussenegger/nvim-lint/pull/761
-      golangcilint.args = {
-        "run",
-        "--output.json.path=stdout",
-        "--issues-exit-code=0",
-        "--show-stats=false",
-        function()
-          return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
-        end,
-      }
-
-      for _, arg in ipairs(golangci_always_linters) do
-        table.insert(golangcilint.args, #golangcilint.args, "--enable")
-        table.insert(golangcilint.args, #golangcilint.args, arg)
-      end
-      require("lint").linters.golangcilint = golangcilint
-    end,
     opts = {
+      linters = {
+        -- Define a custom golangcilint configuration
+        golangcilint = {
+          -- Ensure the command is explicitly defined here
+          cmd = "golangci-lint",
+          -- Keep your custom arguments
+          args = {
+            "run",
+            "--output.json.path=stdout",
+            "--issues-exit-code=0",
+            "--show-stats=false",
+            function()
+              return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+            end,
+          },
+          -- Add the always-enabled linters to the args
+          extra_args = (function()
+            local args = {}
+            for _, linter in ipairs(golangci_always_linters) do
+              table.insert(args, "--enable=" .. linter)
+            end
+            return args
+          end)(),
+          -- Inherit other properties from the default if needed,
+          -- but cmd and args are the most crucial.
+          -- You might need to copy parser logic if the default changes.
+          parser = require("lint.parsers.json").from_jsonlist,
+        },
+      },
       linters_by_ft = {
         go = { "golangcilint" },
         ["*"] = { "codespell" },
