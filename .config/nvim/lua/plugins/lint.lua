@@ -175,7 +175,7 @@ return {
             -- "--enable=gosmopolitan", -- Report certain i18n/l10n anti-patterns in your Go codebase
             -- "--enable=govet", -- Examines Go source code and reports suspicious constructs
             -- "--enable=grouper", -- Analyze expression groups
-            -- "--enable=iface", -- Detect the incorrect use of interfaces
+            "--enable=iface", -- Detect the incorrect use of interfaces
             -- "--enable=importas", -- Enforces consistent import aliases
             -- "--enable=inamedparam", -- reports interfaces with unnamed method parameters
             -- "--enable=ineffassign", -- Detects when assignments to existing variables are not used
@@ -216,7 +216,7 @@ return {
             "--enable=testifylint", -- Checks usage of github.com/stretchr/testify
             -- "--enable=thelper", -- detects tests helpers which is not start with t.Helper() method
             -- "--enable=tparallel", -- detects inappropriate usage of t.Parallel() method in Go test codes
-            -- "--enable=unconvert", -- Remove unnecessary type conversions
+            "--enable=unconvert", -- Remove unnecessary type conversions
             "--enable=unparam", -- Reports unused function parameters
             "--enable=unused", -- Checks Go code for unused constants, variables, functions and types
             "--enable=usestdlibvars", -- detect the possibility to use variables/constants from the Go standard library
