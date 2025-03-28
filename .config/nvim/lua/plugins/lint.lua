@@ -105,23 +105,34 @@ local golangci_always_linters = {
   -- "wsl", -- add or remove empty lines
 }
 
-local custom_golangci_linter = "custom_golangci_linter"
-
 return {
   {
     "mfussenegger/nvim-lint",
     init = function()
       -- Import the existing golangci-lint configuration for extension
       local golangcilint = require("lint.linters.golangcilint")
+
+      -- fix args for v2:
+      -- https://github.com/mfussenegger/nvim-lint/pull/761
+      golangcilint.args = {
+        "run",
+        "--output.json.path=stdout",
+        "--issues-exit-code=0",
+        "--show-stats=false",
+        function()
+          return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+        end,
+      }
+
       for _, arg in ipairs(golangci_always_linters) do
         table.insert(golangcilint.args, #golangcilint.args, "--enable")
         table.insert(golangcilint.args, #golangcilint.args, arg)
       end
-      require("lint").linters[custom_golangci_linter] = golangcilint
+      require("lint").linters.golangcilint = golangcilint
     end,
     opts = {
       linters_by_ft = {
-        go = { custom_golangci_linter },
+        go = { "golangcilint" },
         ["*"] = { "codespell" },
       },
     },
