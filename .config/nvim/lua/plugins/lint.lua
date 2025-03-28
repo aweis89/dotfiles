@@ -132,10 +132,6 @@ return {
             end
             return args
           end)(),
-          -- Inherit other properties from the default if needed,
-          -- but cmd and args are the most crucial.
-          -- You might need to copy parser logic if the default changes.
-          parser = require("lint.parsers.json").from_jsonlist,
         },
       },
       linters_by_ft = {
