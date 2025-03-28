@@ -9,9 +9,14 @@ end
 local function git_commit(response)
   local message = get_last_code_block(response, "gitcommit")
   if message then
-    local command = string.format("Git commit -m %s | Git push | bdelete", vim.fn.shellescape(message))
+    local command = string.format("Git commit -m %s | bdelete", vim.fn.shellescape(message))
     vim.notify("Executing: " .. command)
     vim.api.nvim_command(command)
+    vim.ui.input({ prompt = "Run git push? [y/n] " }, function(input)
+      if input == "y" then
+        vim.api.nvim_command("Git push")
+      end
+    end)
   else
     print("No git commit message found in response.")
   end
