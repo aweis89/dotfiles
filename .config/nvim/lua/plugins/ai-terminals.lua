@@ -86,27 +86,25 @@ end
 ---Create a terminal with specified position and command
 ---@param position "float"|"bottom"|"top"|"left"|"right"
 ---@param cmd string|nil
----@return function
+---@return snacks.win|nil
 function M.create_terminal(position, cmd)
   local valid_positions = { float = true, bottom = true, top = true, left = true, right = true }
 
   if not valid_positions[position] then
     vim.notify("Invalid terminal position: " .. tostring(position), vim.log.levels.ERROR)
-    return function() end
+    return nil
   end
 
-  return function()
-    local dimensions = WINDOW_DIMENSIONS[position]
+  local dimensions = WINDOW_DIMENSIONS[position]
 
-    return Snacks.terminal.toggle(cmd, {
-      env = { id = cmd or position },
-      win = {
-        position = position,
-        height = dimensions.height,
-        width = dimensions.width,
-      },
-    })
-  end
+  return Snacks.terminal.toggle(cmd, {
+    env = { id = cmd or position },
+    win = {
+      position = position,
+      height = dimensions.height,
+      width = dimensions.width,
+    },
+  })
 end
 
 ---Send selected text to a terminal
@@ -119,14 +117,21 @@ function M.send_selection(terminal)
   terminal()
 
   if selection then
-    local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, selection)
-    if not ok then
-      vim.notify("Failed to send selection: " .. tostring(err), vim.log.levels.ERROR)
-      return
-    end
+    M.send(selection)
   end
 
   vim.api.nvim_feedkeys("i", "n", false)
+end
+
+---Send selected text to a terminal
+---@param terminal function Terminal creation function
+---@return nil
+function M.send(text)
+  local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, text)
+  if not ok then
+    vim.notify("Failed to send selection: " .. tostring(err), vim.log.levels.ERROR)
+    return
+  end
 end
 
 ------------------------------------------
@@ -134,17 +139,62 @@ end
 ------------------------------------------
 
 ---Create a Goose terminal
----@return function
+---@return snacks.win|nil
 function M.goose_terminal()
-  return M.create_terminal("float", "goose")()
+  local cmd = string.format("GOOSE_CLI_THEME=%s goose", vim.o.background)
+  return M.create_terminal("float", cmd)
 end
 
 ---Create a Claude terminal
----@return function
+---@return snacks.win|nil
 function M.claude_terminal()
   local theme = vim.o.background
   local cmd = string.format("claude config set -g theme %s && claude", theme)
-  return M.create_terminal("float", cmd)()
+  return M.create_terminal("float", cmd)
+end
+
+---@return string
+function M.diagnostics()
+  local diagnostics = {}
+  local mode = vim.api.nvim_get_mode().mode
+  if mode:match("^[vV\22]") then -- visual, visual-line, or visual-block mode
+    local start_line, _ = unpack(vim.api.nvim_buf_get_mark(0, "<"))
+    local end_line, _ = unpack(vim.api.nvim_buf_get_mark(0, ">"))
+    for line = start_line - 1, end_line - 1 do -- Convert to 0-based indexing
+      local line_diags = vim.diagnostic.get(0, { lnum = line })
+      vim.list_extend(diagnostics, line_diags)
+    end
+  else
+    diagnostics = vim.diagnostic.get(0)
+  end
+
+  local file = vim.api.nvim_buf_get_name(0)
+
+  local formatted = M.diag_format(diagnostics)
+  return string.format("Diagnostics:\nFile: %q:\n%s\n\n", file, table.concat(formatted, "\n"))
+end
+
+---@return string[]
+function M.diag_format(diagnostics)
+  local output = {}
+  local severity_map = {
+    [vim.diagnostic.severity.ERROR] = "ERROR",
+    [vim.diagnostic.severity.WARN] = "WARN",
+    [vim.diagnostic.severity.INFO] = "INFO",
+    [vim.diagnostic.severity.HINT] = "HINT",
+  }
+  for _, diag in ipairs(diagnostics) do
+    local line = string.format(
+      "Line %d, Col %d: [%s] %s (%s)",
+      diag.lnum + 1, -- Convert from 0-based to 1-based line numbers
+      diag.col + 1, -- Convert from 0-based to 1-based column numbers
+      severity_map[diag.severity] or "UNKNOWN",
+      diag.message,
+      diag.source or "unknown"
+    )
+    table.insert(output, line)
+  end
+  return output
 end
 
 ------------------------------------------
@@ -158,14 +208,12 @@ return {
     keys = {
       -- Claude Keymaps
       {
-        "<leader>as",
-        function()
-          M.claude_terminal()
-        end,
+        "<leader>ass",
+        M.claude_terminal,
         desc = "Toggle Claude terminal",
       },
       {
-        "<leader>as",
+        "<leader>ass",
         function()
           M.send_selection(M.claude_terminal)
         end,
@@ -174,16 +222,24 @@ return {
       },
       -- Goose Keymaps
       {
-        "<leader>ag",
-        function()
-          M.goose_terminal()
-        end,
+        "<leader>agg",
+        M.goose_terminal,
         desc = "Toggle Goose terminal",
       },
       {
-        "<leader>ag",
+        "<leader>agg",
         function()
           M.send_selection(M.goose_terminal)
+        end,
+        desc = "Send selection to Goose",
+        mode = { "v" },
+      },
+      {
+        "<leader>agd",
+        function()
+          local diagnostics = M.diagnostics()
+          M.goose_terminal()
+          M.send(diagnostics)
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
