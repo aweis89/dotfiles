@@ -121,7 +121,7 @@ return {
           },
           sources = {
             projects = {
-              dev = { "~/c", "~/q" },
+              dev = { "~/c", "~/q", "~/p" },
             },
             git_status = {
               win = {

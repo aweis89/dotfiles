@@ -93,7 +93,7 @@ return {
           vim.cmd("bdelete!")
         end,
         mode = { "n", "t", "i" },
-        desc = "Toggle left terminal",
+        desc = "Close terminal",
       },
       {
         "<C-a>l",
