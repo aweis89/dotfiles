@@ -38,13 +38,7 @@ local function get_visual_selection(bufnr)
   lines[#lines] = lines[#lines]:sub(1, end_col)
   lines[1] = lines[1]:sub(start_col)
 
-  local filepath = vim.api.nvim_buf_get_name(0)
-  local root_dir = vim.fn.finddir(".git", vim.fn.fnamemodify(filepath, ":h") .. ";") -- Looks for .git directory
-  if root_dir ~= "" then
-    root_dir = vim.fn.fnamemodify(root_dir, ":p:h") -- Get the absolute path of the root
-    local relative_path = vim.fn.fnamemodify(filepath, ":." .. root_dir)
-    filepath = relative_path
-  end
+  local filepath = vim.fn.expand("%:p")
 
   return lines, filepath, start_line, end_line
 end
@@ -90,6 +84,21 @@ local function claude_terminal()
   terminal("float", cmd)()
 end
 
+local function send_selection(terminal)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local selection = get_visual_selection_with_header(bufnr)
+  terminal()
+  if selection then
+    vim.fn.chansend(vim.b.terminal_job_id, selection)
+  end
+  vim.api.nvim_feedkeys("i", "n", false)
+end
+
+local function goose_terminal()
+  local cmd = string.format("goose")
+  terminal("float", cmd)()
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -127,11 +136,20 @@ return {
       {
         "<leader>as",
         function()
-          local bufnr = vim.api.nvim_get_current_buf()
-          local selection = get_visual_selection_with_header(bufnr)
-          claude_terminal()
-          vim.fn.chansend(vim.b.terminal_job_id, selection)
-          vim.api.nvim_feedkeys("i", "n", false)
+          send_selection(claude_terminal)
+        end,
+        desc = "Toggle Claude (default)",
+        mode = { "v" },
+      },
+      {
+        "<leader>ag",
+        goose_terminal,
+        desc = "Toggle Claude (default)",
+      },
+      {
+        "<leader>ag",
+        function()
+          send_selection(goose_terminal)
         end,
         desc = "Toggle Claude (default)",
         mode = { "v" },
