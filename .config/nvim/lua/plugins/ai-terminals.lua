@@ -55,7 +55,7 @@ function M.get_visual_selection(bufnr)
   lines[#lines] = lines[#lines]:sub(1, end_col)
   lines[1] = lines[1]:sub(start_col)
 
-  local filepath = vim.fn.expand("%:p")
+  local filepath = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.")
 
   return lines, filepath, start_line, end_line
 end
@@ -124,7 +124,6 @@ function M.send_selection(terminal)
 end
 
 ---Send selected text to a terminal
----@param terminal function Terminal creation function
 ---@return nil
 function M.send(text)
   local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, text)
