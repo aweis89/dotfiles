@@ -95,9 +95,14 @@ function M.create_terminal(position, cmd)
     return nil
   end
 
+  local base_copy_dir = vim.env.HOME .. "/tmp/"
+  local cwd = vim.fn.getcwd()
+  vim.cmd("!rsync -av --delete " .. vim.fn.getcwd(), base_copy_dir)
+
   local dimensions = WINDOW_DIMENSIONS[position]
 
   return Snacks.terminal.toggle(cmd, {
+    cwd = base_copy_dir .. vim.fn.fnamemodify(cwd, ":t"),
     env = { id = cmd or position },
     win = {
       position = position,
