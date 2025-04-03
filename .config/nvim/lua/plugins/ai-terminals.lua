@@ -220,6 +220,16 @@ return {
         desc = "Send selection to Claude",
         mode = { "v" },
       },
+      {
+        "<leader>asd",
+        function()
+          local diagnostics = M.diagnostics()
+          M.claude_terminal()
+          M.send(diagnostics)
+        end,
+        desc = "Send diagnostics to Goose",
+        mode = { "v" },
+      },
       -- Goose Keymaps
       {
         "<leader>agg",
@@ -241,7 +251,7 @@ return {
           M.goose_terminal()
           M.send(diagnostics)
         end,
-        desc = "Send selection to Goose",
+        desc = "Send diagnostics to Goose",
         mode = { "v" },
       },
     },
