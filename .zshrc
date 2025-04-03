@@ -33,7 +33,7 @@ export BREW_PREFIX=/opt/homebrew
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 export FZF_BASE="$BREW_PREFIX/opt/fzf"
 export FC_ENABLE=1
-
+export GOPRIVATE=github.com/calendly
 
 if [[ -n "$NVIM" ]]; then
   EDITOR="nvim --cmd 'let g:flatten_wait=1'"
@@ -255,14 +255,13 @@ zle -N _fzf_alias
 # Source additional configs
 zsh-defer source "$HOME/.zshrc.local"
 zsh-defer source "$HOME/.zsh/kubectl.zsh"
-zsh-defer source "$BREW_PREFIX/opt/asdf/libexec/asdf.sh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
-alias aig='aichat --model "gemini:gemini-exp-1206" --session'
-alias ais='aichat --model "claude:claude-3-5-sonnet-latest"'
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+alias aig='aichat --model "gemini:gemini-2.5-pro-exp-03-25" --session'
+alias ais='aichat --model "claude:claude-3-sonnet-20240229"'
 alias ai1='aichat --model "openai:o1-preview"'
-alias air='aichat --model deepseek:deepseek-reasoner'
-alias aid='aichat --model deepseek:deepseek-chat'
 
 alias ai=aichat
 alias '??'='aichat -e'
@@ -411,9 +410,56 @@ aider() {
      --completion-menu-color "#3c3836" \
      --code-theme gruvbox-light)
   fi
-  command aider "${opts[@]}" "$@"
+  command /opt/homebrew/bin/aider "${opts[@]}" "$@"
 }
 compdef aider=_aider
+
+goose() {
+  local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
+  if [[ "$mode" == "Dark" ]]; then
+    command goose "$@"
+  else
+    GOOSE_CLI_THEME=light command goose "$@"
+  fi
+}
+
+_goose() {
+  local line
+  local cmd="${words[1]}"
+  local cur="${words[$CURRENT]}"
+
+  local -a commands
+  commands=(
+    "configure:Configure Goose settings"
+    "info:Display Goose information"
+    "mcp:Run one of the mcp servers bundled with goose"
+    "session:Start or resume interactive chat sessions"
+    "run:Execute commands from an instruction file or stdin"
+    "agents:List available agent versions"
+    "update:Update the goose CLI version"
+    "bench:"
+    "help:Print this message or the help of the given subcommand(s)"
+  )
+
+  local -a options
+  options=(
+    "-h:Print help"
+    "--help:Print help"
+    "-V:Print version"
+    "--version:Print version"
+  )
+
+  case "$cmd" in
+    goose)
+      _describe 'command' commands
+      _arguments $options
+      ;;
+    *)
+      _arguments $options
+      ;;
+  esac
+}
+compdef _goose goose
 
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
@@ -562,6 +608,23 @@ argc_scripts=(aichat aider)
 # To add completions for all:
 # argc_scripts=( $(ls -p -1 "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions" | sed -n 's/\.sh$//p') )
 source <(argc --argc-completions zsh $argc_scripts)
+
+openhands() {
+  docker run -it --rm \
+    --pull=always \
+    -e SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.30-nikolaik \
+    -e SANDBOX_USER_ID=$(id -u) \
+    -e WORKSPACE_MOUNT_PATH=$PWD \
+    -e LLM_API_KEY=$ANTHROPIC_API_KEY \
+    -e LLM_MODEL=claude-3-5-sonnet-latest \
+    -v $PWD:/opt/workspace_base \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v ~/.openhands-state:/.openhands-state \
+    --add-host host.docker.internal:host-gateway \
+    --name openhands-app-$(date +%Y%m%d%H%M%S) \
+    docker.all-hands.dev/all-hands-ai/openhands:0.30 \
+    python -m openhands.core.cli;
+}
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
