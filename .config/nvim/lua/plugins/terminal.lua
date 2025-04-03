@@ -88,13 +88,33 @@ return {
         desc = "Toggle left terminal",
       },
       {
+        "<C-a>x",
+        function()
+          vim.cmd("bdelete!")
+        end,
+        mode = { "n", "t", "i" },
+        desc = "Toggle left terminal",
+      },
+      {
         "<C-a>l",
         terminal("right"),
         mode = { "n", "t", "i" },
         desc = "Toggle right terminal",
       },
       {
+        "<C-a>\\",
+        terminal("right"),
+        mode = { "n", "t", "i" },
+        desc = "Toggle right terminal",
+      },
+      {
         "<C-a>j",
+        terminal("bottom"),
+        mode = { "n", "t", "i" },
+        desc = "Toggle bottom terminal",
+      },
+      {
+        "<C-a>-",
         terminal("bottom"),
         mode = { "n", "t", "i" },
         desc = "Toggle bottom terminal",
@@ -111,6 +131,12 @@ return {
         mode = { "n", "t", "i" },
         desc = "Toggle floating terminal",
       },
+      {
+        "<C-a>c",
+        terminal("float"),
+        mode = { "n", "t", "i" },
+        desc = "Toggle floating terminal",
+      },
     },
     opts = {
       dashboard = {
@@ -122,4 +148,3 @@ return {
     },
   },
 }
-
