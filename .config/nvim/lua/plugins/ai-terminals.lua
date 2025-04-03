@@ -143,7 +143,7 @@ end
 ---@return function
 function M.claude_terminal()
   local theme = vim.o.background
-  local cmd = string.format("claude config set -g theme %s; claude", theme)
+  local cmd = string.format("claude config set -g theme %s && claude", theme)
   return M.create_terminal("float", cmd)()
 end
 
