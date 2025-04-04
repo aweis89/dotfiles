@@ -16,6 +16,8 @@ local WINDOW_DIMENSIONS = {
   right = { width = 0.5, height = 0.5 },
 }
 
+local BASE_COPY_DIR = vim.env.HOME .. "/tmp/"
+
 ------------------------------------------
 -- Terminal Core Functions
 ------------------------------------------
@@ -95,9 +97,8 @@ function M.create_terminal(position, cmd)
     return nil
   end
 
-  local base_copy_dir = vim.env.HOME .. "/tmp/"
   local cwd = vim.fn.getcwd()
-  vim.system({ "rsync", "-av", "--delete", "--exclude", ".git", cwd, base_copy_dir })
+  vim.system({ "rsync", "-av", "--delete", "--exclude", ".git", cwd, BASE_COPY_DIR })
 
   local dimensions = WINDOW_DIMENSIONS[position]
 
@@ -116,7 +117,7 @@ end
 function M.diff_with_tmp()
   local cwd = vim.fn.getcwd()
   local cwd_name = vim.fn.fnamemodify(cwd, ":t")
-  local tmp_dir = vim.env.HOME .. "/tmp/" .. cwd_name
+  local tmp_dir = BASE_COPY_DIR .. cwd_name
 
   -- Get list of files that differ
   local diff_cmd = string.format("diff -rq %s %s", cwd, tmp_dir)
@@ -127,21 +128,33 @@ function M.diff_with_tmp()
     return
   end
 
-  -- Parse diff output and extract file paths
+  -- Process diff output and extract file paths
+  local diff_files = {}
   for line in vim.gsplit(diff_output, "\n") do
-    vim.notify(line, vim.log.levels.INFO)
     if line:match("^Files .* and .* differ$") then
       local orig_file = line:match("Files (.-) and")
       local tmp_file = line:match("and (.-) differ")
-
-      vim.notify(string.format("Diffing %s and %s", orig_file, tmp_file), vim.log.levels.INFO)
-
-      -- Open files in vertical split
-      vim.cmd("vsplit " .. vim.fn.fnameescape(orig_file))
-      vim.cmd("diffthis")
-      vim.cmd("vsplit " .. vim.fn.fnameescape(tmp_file))
-      vim.cmd("diffthis")
+      table.insert(diff_files, { orig = orig_file, tmp = tmp_file })
     end
+  end
+
+  -- Close all current windows
+  vim.cmd("tabonly")
+  vim.cmd("only")
+
+  -- Open each differing file in a split view
+  for i, files in ipairs(diff_files) do
+    vim.notify(string.format("Diffing %s and %s", files.orig, files.tmp), vim.log.levels.INFO)
+
+    if i > 1 then
+      -- Create a new tab for each additional file pair
+      vim.cmd("tabnew")
+    end
+
+    vim.cmd("edit " .. vim.fn.fnameescape(files.orig))
+    vim.cmd("diffthis")
+    vim.cmd("vsplit " .. vim.fn.fnameescape(files.tmp))
+    vim.cmd("diffthis")
   end
 end
 
