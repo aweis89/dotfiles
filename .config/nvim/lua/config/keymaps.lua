@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
       vim.keymap.set("t", key, val, opts)
     end
     -- exit insert mode
-    tmap("<Esc>", "<C-\\><C-n>")
     tmap("jj", "<C-\\><C-n>")
     -- enter command mode
     tmap(":", "<C-\\><C-n>:")

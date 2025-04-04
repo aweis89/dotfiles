@@ -160,28 +160,43 @@ end
 
 ---Send selected text to a terminal
 ---@param terminal function Terminal creation function
+---@param opts table|nil Optional settings {prefix: string}
 ---@return nil
-function M.send_selection(terminal)
+function M.send_selection(terminal, opts)
   local bufnr = vim.api.nvim_get_current_buf()
   local selection = M.get_visual_selection_with_header(bufnr)
 
   terminal()
 
   if selection then
-    M.send(selection)
+    M.send(selection, opts)
   end
 
   vim.api.nvim_feedkeys("i", "n", false)
 end
 
----Send selected text to a terminal
+---Send text to a terminal
+---@param text string The text to send
+---@param opts table|nil Optional settings {prefix: string}
 ---@return nil
-function M.send(text)
-  local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, text)
+function M.send(text, opts)
+  opts = opts or {}
+  local content = opts.prefix and (opts.prefix .. text) or text
+
+  local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, content)
   if not ok then
     vim.notify("Failed to send selection: " .. tostring(err), vim.log.levels.ERROR)
     return
   end
+end
+
+local function scratch_prompt()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local selection = M.get_visual_selection_with_header(bufnr)
+  Snacks.scratch()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lines = vim.split(selection, "\n", { plain = true })
+  vim.api.nvim_buf_set_lines(bufnr, 0, 2, false, lines)
 end
 
 ------------------------------------------
@@ -200,6 +215,14 @@ end
 function M.claude_terminal()
   local theme = vim.o.background
   local cmd = string.format("claude config set -g theme %s && claude", theme)
+  return M.create_terminal("float", cmd)
+end
+
+---Create a Claude terminal
+---@return snacks.win|nil
+function M.aider_terminal()
+  local theme = vim.o.background
+  local cmd = string.format("aider --%s-mode --multiline", theme)
   return M.create_terminal("float", cmd)
 end
 
@@ -305,6 +328,31 @@ return {
         function()
           local diagnostics = M.diagnostics()
           M.goose_terminal()
+          M.send(diagnostics)
+        end,
+        desc = "Send diagnostics to Goose",
+        mode = { "v" },
+      },
+      {
+        "<leader>aa",
+        M.aider_terminal,
+        desc = "Toggle Goose terminal",
+      },
+      {
+        "<leader>aa",
+        function()
+          -- M.send_selection(M.aider_terminal, { prefix = "{e\n" })
+          M.send_selection(M.aider_terminal)
+        end,
+        desc = "Send selection to Goose",
+        mode = { "v" },
+      },
+      {
+        "<leader>ad",
+        function()
+          local diagnostics = M.diagnostics()
+          M.aider_terminal()
+          -- M.send(diagnostics, { prefix = "{e\n" })
           M.send(diagnostics)
         end,
         desc = "Send diagnostics to Goose",

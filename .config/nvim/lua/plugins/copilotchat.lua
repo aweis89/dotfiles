@@ -112,6 +112,7 @@ The user is working on a Darwin machine. Please respond with system specific com
       }
     end,
     keys = {
+      { "<leader>aa", false, mode = { "v", "n" } },
       -- { "<leader>ac", "<cmd>Git add % | CopilotChatCommitStaged<cr>", desc = "Commit staged" },
     },
   },
