@@ -8,6 +8,8 @@
 # config file. Keys for all APIs can be stored in a .env file
 # https://aider.chat/docs/config/dotenv.html
 
+detect-urls: false
+
 alias:
   - "fast:claude-3-5-haiku-20241022"
   - "gem:gemini/gemini-exp-1206"
@@ -29,6 +31,7 @@ alias:
 #anthropic-api-key: xxx
 
 ## Specify the model to use for the main chat
+# model: openrouter/google/gemini-2.5-pro-exp-03-25:free
 model: gemini
 
 ## Use claude-3-opus-20240229 model for the main chat
@@ -217,10 +220,10 @@ show-diffs: false
 #subtree-only: false
 
 ## Enable/disable auto commit of LLM changes (default: True)
-#auto-commits: true
+auto-commits: false
 
 ## Enable/disable commits when repo is found dirty (default: True)
-#dirty-commits: true
+dirty-commits: false
 
 ## Attribute aider code changes in the git author name (default: True)
 attribute-author: false
@@ -332,8 +335,7 @@ vim: true
 #apply-clipboard-edits: false
 
 ## Always say yes to every confirmation
-#yes-always: false
-
+yes-always: true
 ## Enable verbose output
 #verbose: false
 
