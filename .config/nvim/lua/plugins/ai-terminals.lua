@@ -97,8 +97,17 @@ function M.create_terminal(position, cmd)
     return nil
   end
 
-  local cwd = vim.fn.getcwd()
-  vim.system({ "rsync", "-av", "--delete", "--exclude", ".git", cwd, BASE_COPY_DIR })
+  vim.system({
+    "rsync",
+    "-av",
+    "--delete",
+    "--exclude",
+    ".git",
+    "--exclude",
+    ".aider*",
+    vim.fn.getcwd(),
+    BASE_COPY_DIR,
+  })
 
   local dimensions = WINDOW_DIMENSIONS[position]
 
@@ -181,9 +190,14 @@ end
 ---@return nil
 function M.send(text, opts)
   opts = opts or {}
-  local content = opts.prefix and (opts.prefix .. text) or text
+  if opts.prefix then
+    text = opts.prefix .. text
+  end
+  if opts.postfix then
+    text = text .. opts.postfix
+  end
 
-  local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, content)
+  local ok, err = pcall(vim.fn.chansend, vim.b.terminal_job_id, text)
   if not ok then
     vim.notify("Failed to send selection: " .. tostring(err), vim.log.levels.ERROR)
     return
@@ -222,7 +236,7 @@ end
 ---@return snacks.win|nil
 function M.aider_terminal()
   local theme = vim.o.background
-  local cmd = string.format("aider --%s-mode --multiline", theme)
+  local cmd = string.format("aider --%s-mode", theme)
   return M.create_terminal("float", cmd)
 end
 
@@ -341,8 +355,8 @@ return {
       {
         "<leader>aa",
         function()
-          -- M.send_selection(M.aider_terminal, { prefix = "{e\n" })
-          M.send_selection(M.aider_terminal)
+          M.send_selection(M.aider_terminal, { prefix = "{e\n" })
+          -- M.send_selection(M.aider_terminal)
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
@@ -352,8 +366,7 @@ return {
         function()
           local diagnostics = M.diagnostics()
           M.aider_terminal()
-          -- M.send(diagnostics, { prefix = "{e\n" })
-          M.send(diagnostics)
+          M.send(diagnostics, { prefix = "{e\n" })
         end,
         desc = "Send diagnostics to Goose",
         mode = { "v" },
