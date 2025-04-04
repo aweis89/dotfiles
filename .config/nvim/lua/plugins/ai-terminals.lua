@@ -97,12 +97,11 @@ function M.create_terminal(position, cmd)
 
   local base_copy_dir = vim.env.HOME .. "/tmp/"
   local cwd = vim.fn.getcwd()
-  vim.cmd("!rsync -av --delete " .. vim.fn.getcwd(), base_copy_dir)
+  vim.system({ "rsync", "-av", "--delete", "--exclude", ".git", cwd, base_copy_dir })
 
   local dimensions = WINDOW_DIMENSIONS[position]
 
   return Snacks.terminal.toggle(cmd, {
-    cwd = base_copy_dir .. vim.fn.fnamemodify(cwd, ":t"),
     env = { id = cmd or position },
     win = {
       position = position,
@@ -110,6 +109,40 @@ function M.create_terminal(position, cmd)
       width = dimensions.width,
     },
   })
+end
+
+---Compare current directory with its backup in ~/tmp and open differing files
+---@return nil
+function M.diff_with_tmp()
+  local cwd = vim.fn.getcwd()
+  local cwd_name = vim.fn.fnamemodify(cwd, ":t")
+  local tmp_dir = vim.env.HOME .. "/tmp/" .. cwd_name
+
+  -- Get list of files that differ
+  local diff_cmd = string.format("diff -rq %s %s", cwd, tmp_dir)
+  local diff_output = vim.fn.system(diff_cmd)
+
+  if vim.v.shell_error == 0 then
+    vim.notify("No differences found", vim.log.levels.INFO)
+    return
+  end
+
+  -- Parse diff output and extract file paths
+  for line in vim.gsplit(diff_output, "\n") do
+    vim.notify(line, vim.log.levels.INFO)
+    if line:match("^Files .* and .* differ$") then
+      local orig_file = line:match("Files (.-) and")
+      local tmp_file = line:match("and (.-) differ")
+
+      vim.notify(string.format("Diffing %s and %s", orig_file, tmp_file), vim.log.levels.INFO)
+
+      -- Open files in vertical split
+      vim.cmd("vsplit " .. vim.fn.fnameescape(orig_file))
+      vim.cmd("diffthis")
+      vim.cmd("vsplit " .. vim.fn.fnameescape(tmp_file))
+      vim.cmd("diffthis")
+    end
+  end
 end
 
 ---Send selected text to a terminal
@@ -210,6 +243,12 @@ return {
     optional = true,
     event = "VeryLazy",
     keys = {
+      -- Diff Tools
+      {
+        "<leader>dvo",
+        M.diff_with_tmp,
+        desc = "Compare with tmp directory backup",
+      },
       -- Claude Keymaps
       {
         "<leader>ass",
