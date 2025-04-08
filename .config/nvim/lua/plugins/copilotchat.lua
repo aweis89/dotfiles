@@ -12,7 +12,14 @@ local function git_commit(response)
     local command = string.format("Git commit -m %s | bdelete", vim.fn.shellescape(message))
     vim.notify("Executing: " .. command)
     vim.api.nvim_command(command)
-    vim.ui.input({ prompt = "Run git push? [y/n] " }, function(input)
+    -- Get the current git branch
+    local branch_list = vim.fn.systemlist("git rev-parse --abbrev-ref HEAD")
+    local branch = ""
+    if #branch_list > 0 then
+      branch = branch_list[1]
+    end
+    local prompt_text = "Run git push for branch '" .. branch .. "'? [y/n] "
+    vim.ui.input({ prompt = prompt_text }, function(input)
       if input == "y" then
         vim.api.nvim_command("Git push")
       end
