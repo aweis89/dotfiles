@@ -19,6 +19,7 @@ map("n", "H", "^", { desc = "Go to beginning of line" })
 map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen" })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
+
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.
@@ -33,7 +34,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
     -- exit insert mode
     tmap("jj", "<C-\\><C-n>")
     -- enter command mode
-    tmap(":", "<C-\\><C-n>:")
+    tmap("<C-;>", "<C-\\><C-n>:")
     -- scrolling up/down
     tmap("<C-u>", "<C-\\><C-n><C-u>")
     tmap("<C-d>", "<C-\\><C-n><C-d>")

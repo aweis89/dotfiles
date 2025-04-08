@@ -1,6 +1,29 @@
 local M = {}
 
 ------------------------------------------
+-- Ignore Patterns for Diff
+------------------------------------------
+local DIFF_IGNORE_PATTERNS = {
+  "*.log",
+  "*.swp",
+  "*.swo",
+  "*.pyc",
+  "__pycache__",
+  "node_modules",
+  ".git",
+  ".DS_Store",
+  "vendor",
+  "*.tmp",
+  "tmp",
+  ".cache",
+  "dist",
+  "build",
+  ".vscode",
+  ".aider*",
+  "cache.db*",
+}
+
+------------------------------------------
 -- Terminals Plugin Configuration
 -- Handles AI tool terminal interactions (Goose, Claude, etc.)
 ------------------------------------------
@@ -97,17 +120,16 @@ function M.create_terminal(position, cmd)
     return nil
   end
 
-  vim.system({
-    "rsync",
-    "-av",
-    "--delete",
-    "--exclude",
-    ".git",
-    "--exclude",
-    ".aider*",
-    vim.fn.getcwd(),
-    BASE_COPY_DIR,
-  })
+  -- Build rsync exclude patterns
+  local rsync_args = { "rsync", "-av", "--delete" }
+  for _, pattern in ipairs(DIFF_IGNORE_PATTERNS) do
+    table.insert(rsync_args, "--exclude")
+    table.insert(rsync_args, pattern)
+  end
+  table.insert(rsync_args, vim.fn.getcwd())
+  table.insert(rsync_args, BASE_COPY_DIR)
+
+  vim.system(rsync_args)
 
   local dimensions = WINDOW_DIMENSIONS[position]
 
@@ -128,8 +150,15 @@ function M.diff_with_tmp()
   local cwd_name = vim.fn.fnamemodify(cwd, ":t")
   local tmp_dir = BASE_COPY_DIR .. cwd_name
 
+  -- Build exclude patterns for diff command
+  local exclude_patterns = {}
+  for _, pattern in ipairs(DIFF_IGNORE_PATTERNS) do
+    table.insert(exclude_patterns, string.format("--exclude='%s'", pattern))
+  end
+  local exclude_str = table.concat(exclude_patterns, " ")
+
   -- Get list of files that differ
-  local diff_cmd = string.format("diff -rq %s %s", cwd, tmp_dir)
+  local diff_cmd = string.format("diff -rq %s %s %s", exclude_str, cwd, tmp_dir)
   local diff_output = vim.fn.system(diff_cmd)
 
   if vim.v.shell_error == 0 then
@@ -288,6 +317,7 @@ end
 -- Plugin Configuration
 ------------------------------------------
 return {
+  { "willothy/flatten.nvim" },
   {
     "folke/snacks.nvim",
     optional = true,

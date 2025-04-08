@@ -259,17 +259,18 @@ zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
-alias aig='aichat --model "gemini:gemini-2.5-pro-exp-03-25" --session'
-alias ais='aichat --model "claude:claude-3-sonnet-20240229"'
-alias ai1='aichat --model "openai:o1-preview"'
+aichat() {
+  GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@"
+}
 
-alias ai=aichat
 alias '??'='aichat -e'
+alias ai=aichat
 
 alias k=kubectl
 alias kcn=kubens
 alias kcu=kubectx
 alias vim='nvim'
+# alias vim='neovide'
 alias c=clear
 alias d=z
 alias dc=docker-compose
