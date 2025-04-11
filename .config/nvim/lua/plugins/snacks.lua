@@ -1,29 +1,16 @@
--- Helper function to send commands to aider terminal
+--- Helper function to extract files from a snacks picker and send them to aider
 ---@param picker snacks.Picker
 ---@param opts? { read_only?: boolean } Options for the command
-local function add_files(picker, opts)
-  opts = opts or {}
-  local command = opts.read_only and "/read-only" or "/add"
+local function add_files_from_picker(picker, opts)
   local selected = picker:selected({ fallback = true })
-  local files = ""
+  local files_to_add = {}
   for _, item in pairs(selected) do
     if item.file then
       local full_path = vim.fn.fnamemodify(item.file, ":p")
-      files = files .. " " .. full_path
+      table.insert(files_to_add, full_path)
     end
   end
-
-  if files == "" then
-    vim.notify("No files selected or found", vim.log.levels.WARN)
-    return
-  end
-
-  local term = require("ai-terminals")
-  -- Check if the aider terminal is already open
-  if not vim.b.term_title then
-    term.aider_terminal()
-  end
-  term.send(command .. " " .. files .. "\n")
+  require("ai-terminals").add_files_to_aider(files_to_add, opts)
 end
 
 ---@param args table
@@ -131,11 +118,11 @@ return {
           actions = {
             ["aider_add"] = function(picker)
               picker:close()
-              add_files(picker) -- Defaults to { read_only = false } -> /add
+              add_files_from_picker(picker) -- Defaults to { read_only = false } -> /add
             end,
             ["aider_read_only"] = function(picker)
               picker:close()
-              add_files(picker, { read_only = true }) -- Send /read-only
+              add_files_from_picker(picker, { read_only = true }) -- Send /read-only
             end,
             ["copilot_commit"] = function(picker)
               picker:close()
