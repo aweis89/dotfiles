@@ -144,10 +144,11 @@ function Core.get_visual_selection_with_header(bufnr, opts)
 end
 
 ---Create a terminal with specified position and command
----@param position "float"|"bottom"|"top"|"left"|"right"
----@param cmd string|nil
+---@param cmd string
+---@param position "float"|"bottom"|"top"|"left"|"right"|nil
 ---@return snacks.win|nil
-function Core.create_terminal(position, cmd)
+function Core.ai_terminal(cmd, position)
+  position = position or "float"
   local valid_positions = { float = true, bottom = true, top = true, left = true, right = true }
 
   if not valid_positions[position] then
@@ -169,7 +170,7 @@ function Core.create_terminal(position, cmd)
   local dimensions = WINDOW_DIMENSIONS[position]
 
   local term = Snacks.terminal.toggle(cmd, {
-    env = { id = cmd or position },
+    env = { id = cmd },
     win = {
       position = position,
       height = dimensions.height,
@@ -311,24 +312,20 @@ end
 ---Create a Goose terminal
 ---@return snacks.win|nil
 function Core.goose_terminal()
-  local cmd = string.format("GOOSE_CLI_THEME=%s goose", vim.o.background)
-  return Core.create_terminal("float", cmd)
+  return Core.ai_terminal(string.format("GOOSE_CLI_THEME=%s goose", vim.o.background))
 end
 
 ---Create a Claude terminal
 ---@return snacks.win|nil
 function Core.claude_terminal()
   local theme = vim.o.background
-  local cmd = string.format("claude config set -g theme %s && claude", theme)
-  return Core.create_terminal("float", cmd)
+  return Core.ai_terminal(string.format("claude config set -g theme %s && claude", theme))
 end
 
 ---Create a Claude terminal
 ---@return snacks.win|nil
 function Core.aider_terminal()
-  local theme = vim.o.background
-  local cmd = string.format("aider --watch-files --%s-mode", theme)
-  return Core.create_terminal("float", cmd)
+  return Core.ai_terminal(string.format("aider --watch-files --%s-mode", vim.o.background))
 end
 
 -- Helper function to map severity enum to string
