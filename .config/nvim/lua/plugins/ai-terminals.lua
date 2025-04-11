@@ -233,13 +233,41 @@ function M.send(text, opts)
   end
 end
 
-local function scratch_prompt()
+function M.scratch_prompt()
   local bufnr = vim.api.nvim_get_current_buf()
   local selection = M.get_visual_selection_with_header(bufnr)
   Snacks.scratch()
-  local bufnr = vim.api.nvim_get_current_buf()
+  local scratch_bufnr = vim.api.nvim_get_current_buf()
+  if not selection then
+    return
+  end
   local lines = vim.split(selection, "\n", { plain = true })
-  vim.api.nvim_buf_set_lines(bufnr, 0, 2, false, lines)
+  vim.api.nvim_buf_set_lines(scratch_bufnr, 0, 2, false, lines)
+
+  -- local last_line_num = vim.api.nvim_buf_line_count(scratch_bufnr)
+  -- local last_line_content = vim.api.nvim_buf_get_lines(scratch_bufnr, last_line_num - 1, last_line_num, false)[1] or ""
+  -- local last_line_col = #last_line_content -- Get length (0-based column)
+  -- vim.api.nvim_win_set_cursor(0, { last_line_num, last_line_col })
+  -- vim.cmd("startinsert!")
+  vim.defer_fn(function()
+    vim.cmd("normal! GA") -- Go to last line and enter Insert mode at the end
+  end, 500)
+  vim.api.nvim_create_autocmd({ "BufLeave" }, {
+    buffer = scratch_bufnr,
+    once = true, -- Ensure it only runs once for this buffer instance
+    desc = "Log closure of AI terminal scratch buffer",
+    callback = function(args)
+      local result = vim.api.nvim_buf_get_lines(scratch_bufnr, 0, -1, false)
+      vim.api.nvim_del_autocmd(args.id) -- Clean up the autocommand
+      vim.api.nvim_buf_set_lines(scratch_bufnr, 0, -1, false, {})
+      vim.defer_fn(function()
+        M.aider_terminal()
+        M.send("\n{EOL\n")
+        M.send(table.concat(result, "\n"))
+        M.send("\nEOL}\n")
+      end, 500)
+    end,
+  })
 end
 
 ------------------------------------------
@@ -269,25 +297,79 @@ function M.aider_terminal()
   return M.create_terminal("float", cmd)
 end
 
+-- Helper function to map severity enum to string
+local function get_severity_str(severity)
+  local severity_map = {
+    [vim.diagnostic.severity.ERROR] = "ERROR",
+    [vim.diagnostic.severity.WARN] = "WARN",
+    [vim.diagnostic.severity.INFO] = "INFO",
+    [vim.diagnostic.severity.HINT] = "HINT",
+  }
+  return severity_map[severity] or "UNKNOWN"
+end
+
 ---@return string
 function M.diagnostics()
   local diagnostics = {}
+  local bufnr = 0 -- Use current buffer
   local mode = vim.api.nvim_get_mode().mode
+
   if mode:match("^[vV\22]") then -- visual, visual-line, or visual-block mode
-    local start_line, _ = unpack(vim.api.nvim_buf_get_mark(0, "<"))
-    local end_line, _ = unpack(vim.api.nvim_buf_get_mark(0, ">"))
-    for line = start_line - 1, end_line - 1 do -- Convert to 0-based indexing
-      local line_diags = vim.diagnostic.get(0, { lnum = line })
-      vim.list_extend(diagnostics, line_diags)
+    local start_mark = vim.api.nvim_buf_get_mark(bufnr, "<")
+    local end_mark = vim.api.nvim_buf_get_mark(bufnr, ">")
+    -- Ensure marks are valid and start <= end
+    if start_mark and end_mark and start_mark[1] > 0 and end_mark[1] > 0 then
+      local start_line = math.min(start_mark[1], end_mark[1])
+      local end_line = math.max(start_mark[1], end_mark[1])
+      -- vim.diagnostic.get uses 0-based line numbers, marks are 1-based
+      for line_num = start_line - 1, end_line - 1 do
+        local line_diags = vim.diagnostic.get(bufnr, { lnum = line_num })
+        vim.list_extend(diagnostics, line_diags)
+      end
+    else
+      -- Fallback or handle error if visual selection is invalid
+      diagnostics = vim.diagnostic.get(bufnr)
     end
   else
-    diagnostics = vim.diagnostic.get(0)
+    diagnostics = vim.diagnostic.get(bufnr)
   end
 
-  local file = vim.api.nvim_buf_get_name(0)
+  local file = vim.api.nvim_buf_get_name(bufnr)
+  local formatted_output = {}
 
-  local formatted = M.diag_format(diagnostics)
-  return string.format("Diagnostics:\nFile: %q:\n%s\n\n", file, table.concat(formatted, "\n"))
+  if #diagnostics == 0 then
+    return string.format("No diagnostics found for file: %q", file)
+  end
+
+  -- Sort diagnostics by line number, then column
+  table.sort(diagnostics, function(a, b)
+    if a.lnum ~= b.lnum then
+      return a.lnum < b.lnum
+    end
+    return a.col < b.col
+  end)
+
+  for _, diag in ipairs(diagnostics) do
+    -- Neovim diagnostics use 0-based indexing for line (lnum) and column (col)
+    local line_nr = diag.lnum + 1 -- Convert to 1-based for display
+    local col_nr = diag.col + 1 -- Convert to 1-based for display
+    local severity_str = get_severity_str(diag.severity)
+    local message = diag.message or ""
+    -- Remove potential newlines from the message itself
+    message = message:gsub("\n", "")
+
+    -- Fetch the source code line (0-based index)
+    local source_line = vim.api.nvim_buf_get_lines(bufnr, diag.lnum, diag.lnum + 1, false)[1]
+    if source_line == nil then
+      source_line = "[Could not fetch source line]"
+    end
+
+    -- Format the output for this diagnostic
+    table.insert(formatted_output, string.format("[%s] L%d:%d: %s", severity_str, line_nr, col_nr, message))
+    table.insert(formatted_output, string.format("  > %s", source_line))
+  end
+
+  return string.format("Diagnostics for file: %q\n\n%s\n", file, table.concat(formatted_output, "\n\n"))
 end
 
 ---@return string[]
@@ -386,7 +468,7 @@ return {
         "<leader>aa",
         function()
           M.send_selection(M.aider_terminal, { prefix = "{e\n" })
-          -- M.send_selection(M.aider_terminal)
+          -- M.scratch_prompt()
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
