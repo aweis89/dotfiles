@@ -1,12 +1,12 @@
 local Core = require("utils.ai_terminals_core")
 
 -- Helper function to send commands to aider terminal
+---@param picker snacks.Picker
 local function send_aider_command(picker, command)
   local selected = picker:selected({ fallback = true })
   local files = ""
   for _, item in pairs(selected) do
-    -- Ensure item.file exists and is a string before concatenating
-    if item and item.file and type(item.file) == "string" then
+    if item.file then
       local full_path = vim.fn.fnamemodify(item.file, ":p")
       files = files .. " " .. full_path
     end
@@ -14,12 +14,7 @@ local function send_aider_command(picker, command)
 
   if files ~= "" then
     Core.aider_terminal()
-    -- Ensure Core.send exists before calling
-    if Core and Core.send then
-      Core.send(command .. " " .. files .. "\n")
-    else
-      vim.notify("Error: Core.send function not found", vim.log.levels.ERROR)
-    end
+    Core.send(command .. " " .. files .. "\n")
   else
     vim.notify("No files selected or found", vim.log.levels.WARN)
   end
