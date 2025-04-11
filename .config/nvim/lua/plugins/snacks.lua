@@ -1,3 +1,30 @@
+local Core = require("utils.ai_terminals_core")
+
+-- Helper function to send commands to aider terminal
+local function send_aider_command(picker, command)
+  local selected = picker:selected({ fallback = true })
+  local files = ""
+  for _, item in pairs(selected) do
+    -- Ensure item.file exists and is a string before concatenating
+    if item and item.file and type(item.file) == "string" then
+      files = files .. " " .. vim.fn.shellescape(item.file) -- Use shellescape for safety
+    end
+  end
+
+  if files ~= "" then
+    local Core = require("utils.ai_terminals_core")
+    Core.aider_terminal()
+    -- Ensure Core.send exists before calling
+    if Core and Core.send then
+      Core.send(command .. " " .. files .. "\n")
+    else
+      vim.notify("Error: Core.send function not found", vim.log.levels.ERROR)
+    end
+  else
+    vim.notify("No files selected or found", vim.log.levels.WARN)
+  end
+end
+
 ---@param args table
 local function git_exec(args)
   local root = Snacks.git.get_root()
@@ -101,6 +128,14 @@ return {
         picker = {
           previewers = { git = { native = true } },
           actions = {
+            ["aider_add"] = function(picker)
+              picker:close()
+              send_aider_command(picker, "/add")
+            end,
+            ["aider_read_only"] = function(picker)
+              picker:close()
+              send_aider_command(picker, "/read-only")
+            end,
             ["copilot_commit"] = function(picker)
               picker:close()
               vim.cmd("CopilotChatCommit")
@@ -158,8 +193,8 @@ return {
           win = {
             input = {
               keys = {
-                ["<leader><space>l"] = { "aider_add", mode = { "n", "i" } },
-                ["<leader><space>L"] = { "aider_read_only", mode = { "n", "i" } },
+                ["<leader><space>a"] = { "aider_add", mode = { "n", "i" } },
+                ["<leader><space>A"] = { "aider_read_only", mode = { "n", "i" } },
                 ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
               },
             },
