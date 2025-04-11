@@ -34,11 +34,7 @@ local WINDOW_DIMENSIONS = {
   right = { width = 0.5, height = 0.5 },
 }
 
-local BASE_COPY_DIR = vim.env.HOME .. "/tmp/"
-
-------------------------------------------
--- Private Helper Functions
-------------------------------------------
+local BASE_COPY_DIR = vim.fn.stdpath("cache") .. "/ai_terminals_diff/"
 
 ---Setup autocommands for a terminal buffer to reload files on focus loss and cleanup on close.
 ---@param buf_id number The buffer ID of the terminal.
