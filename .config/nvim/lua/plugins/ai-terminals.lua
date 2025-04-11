@@ -9,7 +9,6 @@ return {
   {
     "aweis89/ai-terminals.nvim",
     -- dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
-    dependencies = { "folke/snacks.nvim" },
     optional = false,
     event = "VeryLazy",
     keys = {
@@ -107,7 +106,10 @@ return {
       {
         "<leader>aa",
         function()
-          plug().send_selection(plug().aider_terminal, { prefix = "{e\n" })
+          local selection = plug().get_visual_selection_with_header()
+          plug().aider_terminal()
+          plug().send(plug().aider_multiline(selection))
+          vim.api.nvim_feedkeys("i", "n", false)
         end,
         desc = "Send selection to Aider",
         mode = { "v" },
@@ -117,7 +119,7 @@ return {
         function()
           local diagnostics = plug().diagnostics()
           plug().aider_terminal()
-          plug().send(diagnostics, { prefix = "{e\n" })
+          plug().send(plug().aider_multiline(diagnostics))
         end,
         desc = "Send diagnostics to Aider",
         mode = { "v" },
