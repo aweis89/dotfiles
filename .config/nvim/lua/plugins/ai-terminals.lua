@@ -79,6 +79,20 @@ return {
         desc = "Toggle Aider terminal",
       },
       {
+        "<leader>ac",
+        function()
+          Core.add_comment_above_line("AI!")
+        end,
+        desc = "Add comment above line",
+      },
+      {
+        "<leader>aC",
+        function()
+          Core.add_comment_above_line("AI?")
+        end,
+        desc = "Add comment above line",
+      },
+      {
         "<leader>al",
         function()
           local current_file = vim.fn.expand("%:p")
