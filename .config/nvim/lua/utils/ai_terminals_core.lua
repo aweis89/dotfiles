@@ -239,11 +239,6 @@ function Core.scratch_prompt()
   local lines = vim.split(selection, "\n", { plain = true })
   vim.api.nvim_buf_set_lines(scratch_bufnr, 0, 2, false, lines)
 
-  -- local last_line_num = vim.api.nvim_buf_line_count(scratch_bufnr)
-  -- local last_line_content = vim.api.nvim_buf_get_lines(scratch_bufnr, last_line_num - 1, last_line_num, false)[1] or ""
-  -- local last_line_col = #last_line_content -- Get length (0-based column)
-  -- vim.api.nvim_win_set_cursor(0, { last_line_num, last_line_col })
-  -- vim.cmd("startinsert!")
   vim.defer_fn(function()
     vim.cmd("normal! GA") -- Go to last line and enter Insert mode at the end
   end, 500)
