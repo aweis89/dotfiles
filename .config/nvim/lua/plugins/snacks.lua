@@ -1,6 +1,6 @@
 --- Helper function to extract files from a snacks picker and send them to aider
 ---@param picker snacks.Picker
----@param opts? { read_only?: boolean } Options for the command
+---@param opts? { read_only: boolean } Options for the command
 local function add_files_from_picker(picker, opts)
   local selected = picker:selected({ fallback = true })
   local files_to_add = {}
