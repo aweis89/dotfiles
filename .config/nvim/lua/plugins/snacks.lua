@@ -1,5 +1,3 @@
-local Core = require("utils.ai_terminals_core")
-
 -- Helper function to send commands to aider terminal
 ---@param picker snacks.Picker
 ---@param opts? { read_only?: boolean } Options for the command
@@ -20,11 +18,12 @@ local function add_files(picker, opts)
     return
   end
 
+  local term = require("ai-terminals")
   -- Check if the aider terminal is already open
   if not vim.b.term_title then
-    Core.aider_terminal()
+    term.aider_terminal()
   end
-  Core.send(command .. " " .. files .. "\n")
+  term.send(command .. " " .. files .. "\n")
 end
 
 ---@param args table

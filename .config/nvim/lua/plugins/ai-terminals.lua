@@ -1,20 +1,23 @@
-local Core = require("utils.ai_terminals_core")
+local plug = function()
+  return require("ai-terminals")
+end
 
 ------------------------------------------
 -- Plugin Configuration
 ------------------------------------------
 return {
-  { "willothy/flatten.nvim" },
   {
-    "folke/snacks.nvim",
-    optional = true,
+    "aweis89/ai-terminals.nvim",
+    -- dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
+    dependencies = { "folke/snacks.nvim" },
+    optional = false,
     event = "VeryLazy",
     keys = {
       -- Diff Tools
       {
         "<leader>dvo",
         function()
-          Core.diff_with_tmp()
+          plug().diff_with_tmp()
         end,
         desc = "Compare with tmp directory backup",
       },
@@ -22,14 +25,14 @@ return {
       {
         "<leader>ass",
         function()
-          Core.claude_terminal()
+          plug().claude_terminal()
         end,
         desc = "Toggle Claude terminal",
       },
       {
         "<leader>ass",
         function()
-          Core.send_selection(Core.claude_terminal)
+          plug().send_selection(plug().claude_terminal)
         end,
         desc = "Send selection to Claude",
         mode = { "v" },
@@ -37,9 +40,9 @@ return {
       {
         "<leader>asd",
         function()
-          local diagnostics = Core.diagnostics()
-          Core.claude_terminal()
-          Core.send(diagnostics)
+          local diagnostics = plug().diagnostics()
+          plug().claude_terminal()
+          plug().send(diagnostics)
         end,
         desc = "Send diagnostics to Claude",
         mode = { "v" },
@@ -48,14 +51,14 @@ return {
       {
         "<leader>agg",
         function()
-          Core.goose_terminal()
+          plug().goose_terminal()
         end,
         desc = "Toggle Goose terminal",
       },
       {
         "<leader>agg",
         function()
-          Core.send_selection(Core.goose_terminal)
+          plug().send_selection(plug.goose_terminal)
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
@@ -63,9 +66,9 @@ return {
       {
         "<leader>agd",
         function()
-          local diagnostics = Core.diagnostics()
-          Core.goose_terminal()
-          Core.send(diagnostics)
+          local diagnostics = plug().diagnostics()
+          plug().goose_terminal()
+          plug().send(diagnostics)
         end,
         desc = "Send diagnostics to Goose",
         mode = { "v" },
@@ -74,21 +77,21 @@ return {
       {
         "<leader>aa",
         function()
-          Core.aider_terminal()
+          plug().aider_terminal()
         end,
         desc = "Toggle Aider terminal",
       },
       {
         "<leader>ac",
         function()
-          Core.add_comment_above_line("AI!")
+          plug().add_comment_above_line("AI!")
         end,
         desc = "Add comment above line",
       },
       {
         "<leader>aC",
         function()
-          Core.add_comment_above_line("AI?")
+          plug().add_comment_above_line("AI?")
         end,
         desc = "Add comment above line",
       },
@@ -96,15 +99,15 @@ return {
         "<leader>al",
         function()
           local current_file = vim.fn.expand("%:p")
-          Core.aider_terminal()
-          Core.send("/add " .. current_file .. "\n")
+          plug().aider_terminal()
+          plug().send("/add " .. current_file .. "\n")
         end,
         desc = "Add file to Aider",
       },
       {
         "<leader>aa",
         function()
-          Core.send_selection(Core.aider_terminal, { prefix = "{e\n" })
+          plug().send_selection(plug().aider_terminal, { prefix = "{e\n" })
         end,
         desc = "Send selection to Aider",
         mode = { "v" },
@@ -112,9 +115,9 @@ return {
       {
         "<leader>ad",
         function()
-          local diagnostics = Core.diagnostics()
-          Core.aider_terminal()
-          Core.send(diagnostics, { prefix = "{e\n" })
+          local diagnostics = plug().diagnostics()
+          plug().aider_terminal()
+          plug().send(diagnostics, { prefix = "{e\n" })
         end,
         desc = "Send diagnostics to Aider",
         mode = { "v" },
