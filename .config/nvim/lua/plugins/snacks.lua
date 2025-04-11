@@ -2,7 +2,10 @@ local Core = require("utils.ai_terminals_core")
 
 -- Helper function to send commands to aider terminal
 ---@param picker snacks.Picker
-local function send_aider_command(picker, command)
+---@param opts? { read_only?: boolean } Options for the command
+local function add_files(picker, opts)
+  opts = opts or {}
+  local command = opts.read_only and "/read-only" or "/add"
   local selected = picker:selected({ fallback = true })
   local files = ""
   for _, item in pairs(selected) do
@@ -125,11 +128,11 @@ return {
           actions = {
             ["aider_add"] = function(picker)
               picker:close()
-              send_aider_command(picker, "/add")
+              add_files(picker) -- Defaults to { read_only = false } -> /add
             end,
             ["aider_read_only"] = function(picker)
               picker:close()
-              send_aider_command(picker, "/read-only")
+              add_files(picker, { read_only = true }) -- Send /read-only
             end,
             ["copilot_commit"] = function(picker)
               picker:close()
