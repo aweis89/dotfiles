@@ -12,7 +12,7 @@ end
 -- fixes issues with slack where the link is opened, but focus doesn't change
 -- requires hammerspoon to be the default browser
 hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
-	openURLWith(fullURL, "Zen Browser")
+	openURLWith(fullURL, "arc")
 end
 
 -- Set up theme sync for system theme changes
