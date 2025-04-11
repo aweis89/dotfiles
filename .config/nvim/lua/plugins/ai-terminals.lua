@@ -85,14 +85,14 @@ return {
       {
         "<leader>ac",
         function()
-          plug().add_comment_above_line("AI!")
+          plug().aider_comment("AI!")
         end,
         desc = "Add comment above line",
       },
       {
         "<leader>aC",
         function()
-          plug().add_comment_above_line("AI?")
+          plug().aider_comment("AI?")
         end,
         desc = "Add comment above line",
       },
