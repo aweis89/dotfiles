@@ -387,6 +387,7 @@ end
 ---@return nil
 function Core.add_comment_above_line(prefix)
   prefix = prefix or "AI!" -- Default prefix if none provided
+  -- toggle aider terminal
   Core.aider_terminal()
   Core.aider_terminal()
   local comment_text = vim.fn.input("Enter comment (" .. prefix .. "): ")
