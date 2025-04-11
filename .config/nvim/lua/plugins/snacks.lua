@@ -7,7 +7,8 @@ local function send_aider_command(picker, command)
   for _, item in pairs(selected) do
     -- Ensure item.file exists and is a string before concatenating
     if item and item.file and type(item.file) == "string" then
-      files = files .. " " .. vim.fn.shellescape(item.file) -- Use shellescape for safety
+      local full_path = vim.fn.fnamemodify(item.file, ":p")
+      files = files .. " " .. vim.fn.shellescape(full_path) -- Use shellescape for safety
     end
   end
 
