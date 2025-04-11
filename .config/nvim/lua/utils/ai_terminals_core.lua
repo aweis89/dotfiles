@@ -280,7 +280,7 @@ end
 ---@return snacks.win|nil
 function Core.aider_terminal()
   local theme = vim.o.background
-  local cmd = string.format("aider --%s-mode", theme)
+  local cmd = string.format("aider --watch-files --%s-mode", theme)
   return Core.create_terminal("float", cmd)
 end
 
@@ -380,6 +380,34 @@ function Core.diag_format(diagnostics)
     table.insert(output, line)
   end
   return output
+end
+
+---Add a comment above the current line based on user input
+---@param prefix string The prefix to add before the user's comment text
+---@return nil
+function Core.add_comment_above_line(prefix)
+  prefix = prefix or "AI!" -- Default prefix if none provided
+  Core.aider_terminal()
+  Core.aider_terminal()
+  local comment_text = vim.fn.input("Enter comment (" .. prefix .. "): ")
+  if comment_text == "" then
+    return -- Do nothing if the user entered nothing
+  end
+  local current_line = vim.api.nvim_win_get_cursor(0)[1]
+  local comment_string = vim.bo.commentstring or "# %s" -- Default to '#' if not set
+  -- Format the comment string
+  local formatted_prefix = " " .. prefix .. " " -- Add spaces around the prefix
+  local formatted_comment
+  if comment_string:find("%%s") then
+    formatted_comment = comment_string:format(formatted_prefix .. comment_text)
+  else
+    -- Handle cases where commentstring might not have %s (less common)
+    -- or just prepend if it's a simple prefix like '#'
+    formatted_comment = comment_string .. formatted_prefix .. comment_text
+  end
+  -- Insert the comment above the current line
+  vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, { formatted_comment })
+  vim.cmd.write() -- Save the file
 end
 
 return Core
