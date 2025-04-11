@@ -3,7 +3,7 @@ hs.application.enableSpotlightForNameSearches(true)
 
 return {
 	{ "m", "Music" }, -- "M" for "Music"
-	{ "b", "Zen Browser" }, -- "B" for "Browser"
+	{ "b", "Arc" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"
 	{ "t", "kitty" }, -- "T" for "Terminal"
