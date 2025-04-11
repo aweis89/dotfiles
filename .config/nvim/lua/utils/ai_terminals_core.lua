@@ -456,6 +456,7 @@ function Core.add_comment_above_line(prefix)
   -- Insert the comment above the current line
   vim.api.nvim_buf_set_lines(0, current_line - 1, current_line - 1, false, { formatted_comment })
   vim.cmd.write() -- Save the file
+  vim.cmd.stopinsert() -- Exit insert mode
 end
 
 return Core
