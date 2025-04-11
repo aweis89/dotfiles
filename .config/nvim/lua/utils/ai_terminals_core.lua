@@ -37,6 +37,53 @@ local WINDOW_DIMENSIONS = {
 local BASE_COPY_DIR = vim.env.HOME .. "/tmp/"
 
 ------------------------------------------
+-- Private Helper Functions
+------------------------------------------
+
+---Setup autocommands for a terminal buffer to reload files on focus loss and cleanup on close.
+---@param buf_id number The buffer ID of the terminal.
+local function _setup_terminal_autocmds(buf_id)
+  local group_name = "AiTermReload_" .. buf_id
+  local augroup = vim.api.nvim_create_augroup(group_name, { clear = true })
+
+  local function check_files()
+    vim.schedule(function() -- Defer execution slightly
+      vim.notify("AI terminal lost focus. Checking files for changes...", vim.log.levels.INFO)
+      for _, bufinfo in ipairs(vim.fn.getbufinfo({ buflisted = 1 })) do
+        local bnr = bufinfo.bufnr
+        -- Check if buffer is valid, loaded, modifiable, and not the terminal buffer itself
+        if vim.api.nvim_buf_is_valid(bnr) and bufinfo.loaded and vim.bo[bnr].modifiable and bnr ~= buf_id then
+          -- Use pcall to handle potential errors during checktime
+          pcall(vim.cmd, bnr .. "checktime")
+        end
+      end
+    end)
+  end
+
+  -- Autocommand to reload buffers when focus leaves the terminal buffer
+  vim.api.nvim_create_autocmd("BufLeave", {
+    group = augroup,
+    buffer = buf_id,
+    desc = "Reload buffers when AI terminal loses focus",
+    callback = check_files,
+  })
+
+  -- Autocommand to clean up the group when the terminal closes
+  vim.api.nvim_create_autocmd("TermClose", {
+    group = augroup,
+    buffer = buf_id,
+    once = true, -- Only need to clean up once
+    desc = "Clean up AI terminal autocommands",
+    callback = function()
+      pcall(vim.api.nvim_del_augroup_by_name, group_name)
+      vim.notify("AI terminal closed & autocommands cleaned up.", vim.log.levels.INFO)
+      -- Optional: Run check_files one last time on close?
+      check_files()
+    end,
+  })
+end
+
+------------------------------------------
 -- Terminal Core Functions
 ------------------------------------------
 ---Get the current visual selection
@@ -125,7 +172,7 @@ function Core.create_terminal(position, cmd)
 
   local dimensions = WINDOW_DIMENSIONS[position]
 
-  return Snacks.terminal.toggle(cmd, {
+  local term = Snacks.terminal.toggle(cmd, {
     env = { id = cmd or position },
     win = {
       position = position,
@@ -133,6 +180,10 @@ function Core.create_terminal(position, cmd)
       width = dimensions.width,
     },
   })
+
+  _setup_terminal_autocmds(term.buf)
+
+  return term
 end
 
 ---Compare current directory with its backup in ~/tmp and open differing files

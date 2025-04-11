@@ -15,12 +15,16 @@ local function add_files(picker, opts)
     end
   end
 
-  if files ~= "" then
-    Core.aider_terminal()
-    Core.send(command .. " " .. files .. "\n")
-  else
+  if files == "" then
     vim.notify("No files selected or found", vim.log.levels.WARN)
+    return
   end
+
+  -- Check if the aider terminal is already open
+  if not vim.b.term_title then
+    Core.aider_terminal()
+  end
+  Core.send(command .. " " .. files .. "\n")
 end
 
 ---@param args table
@@ -176,7 +180,7 @@ return {
         },
       }
 
-      local fullscreen = {
+      local fullscreen_pickers = {
         "buffers",
         "files",
         "git_files",
@@ -190,7 +194,7 @@ return {
         "recent",
         "smart",
       }
-      for _, fp in ipairs(fullscreen) do
+      for _, fp in ipairs(fullscreen_pickers) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
           hidden = true,
           layout = {
