@@ -94,9 +94,6 @@ function Core.get_visual_selection_with_header(bufnr, opts)
   end
 
   local slines = table.concat(lines, "\n")
-  if not opts.preserve_whitespace then
-    slines = slines:gsub("^%s+", ""):gsub("%s+$", "")
-  end
 
   local filetype = vim.bo[bufnr].filetype or ""
   slines = "```" .. filetype .. "\n" .. slines .. "\n```\n"
