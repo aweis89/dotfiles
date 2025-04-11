@@ -173,18 +173,29 @@ return {
         },
       }
 
-      overrides.picker.sources = overrides.picker.sources or {}
-      local file_sources = {
+      local fullscreen = {
         "buffers",
         "files",
         "git_files",
+        "git_log_file",
+        "git_log",
         "git_status",
+        "grep_buffers",
+        "grep_word",
+        "grep",
+        "projects",
         "recent",
         "smart",
       }
-      for _, fp in ipairs(file_sources) do
+      for _, fp in ipairs(fullscreen) do
         overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
           hidden = true,
+          layout = {
+            layout = {
+              width = 0,
+              height = 0,
+            },
+          },
           win = {
             input = {
               keys = {
@@ -192,31 +203,6 @@ return {
                 ["<leader><space>A"] = { "aider_read_only", mode = { "n", "i" } },
                 ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
               },
-            },
-          },
-        })
-      end
-
-      local fullscreen = {
-        "buffers",
-        "files",
-        "git_files",
-        "git_log",
-        "git_log_file",
-        "git_status",
-        "grep",
-        "grep_buffers",
-        "grep_word",
-        "recent",
-        "smart",
-        "projects",
-      }
-      for _, fp in ipairs(fullscreen) do
-        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
-          layout = {
-            layout = {
-              width = 0,
-              height = 0,
             },
           },
         })
