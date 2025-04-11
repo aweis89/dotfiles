@@ -79,6 +79,15 @@ return {
         desc = "Toggle Aider terminal",
       },
       {
+        "<leader>al",
+        function()
+          local current_file = vim.fn.expand("%:p")
+          Core.aider_terminal()
+          Core.send("/add " .. current_file .. "\n")
+        end,
+        desc = "Add file to Aider",
+      },
+      {
         "<leader>aa",
         function()
           Core.send_selection(Core.aider_terminal, { prefix = "{e\n" })
