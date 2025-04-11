@@ -8,12 +8,11 @@ local function send_aider_command(picker, command)
     -- Ensure item.file exists and is a string before concatenating
     if item and item.file and type(item.file) == "string" then
       local full_path = vim.fn.fnamemodify(item.file, ":p")
-      files = files .. " " .. vim.fn.shellescape(full_path) -- Use shellescape for safety
+      files = files .. " " .. full_path
     end
   end
 
   if files ~= "" then
-    local Core = require("utils.ai_terminals_core")
     Core.aider_terminal()
     -- Ensure Core.send exists before calling
     if Core and Core.send then
