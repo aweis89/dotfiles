@@ -57,7 +57,9 @@ return {
       {
         "<leader>agg",
         function()
-          plug().send_selection(plug.goose_terminal)
+          local selection = plug().get_visual_selection_with_header()
+          plug().goose_terminal()
+          plug().send(selection)
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
