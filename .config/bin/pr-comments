@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+git_current_branch() {
+  local ref
+  ref=$(git symbolic-ref --quiet HEAD 2>/dev/null)
+  local ret=$?
+  if [[ $ret != 0 ]]; then
+    [[ $ret == 128 ]] && return
+    ref=$(git rev-parse --short HEAD 2>/dev/null) || return
+  fi
+  echo "${ref#refs/heads/}"
+}
+
+url=$(
+  gh pr view "$(git_current_branch)" --json url |
+    jq -r '.url' |
+    sed 's%https://github.com%/repos%' |
+    sed 's%pull%pulls%'
+)
+
+echo "-----------------------------"
+
+comment_url="$url/comments"
+gh api \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  -H "Accept: application/vnd.github+json" \
+  "$comment_url" |
+  jq -r \
+    '.[] | "File: \( .path )\n" +
+  "Diff:\n```diff\n\( .diff_hunk )\n```\n" +
+  "Comment:\n\( .body )\n" +
+  "-----------------------------\n"'
