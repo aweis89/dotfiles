@@ -38,7 +38,9 @@ return {
       {
         "<leader>ass",
         function()
-          aiterm().send_selection(aiterm().claude_toggle)
+          local selection = aiterm().get_visual_selection_with_header() or ""
+          aiterm().claude_toggle()
+          aiterm().send(selection)
         end,
         desc = "Send selection to Claude",
         mode = { "v" },
@@ -74,7 +76,7 @@ return {
       {
         "<leader>agd",
         function()
-          local diagnostics = aiterm().diagnostics()
+          local diagnostics = aiterm().diagnostics() or ""
           local term = aiterm().goose_toggle()
           aiterm().send(diagnostics, { term = term })
         end,
@@ -114,7 +116,7 @@ return {
       {
         "<leader>aa",
         function()
-          local selection = aiterm().get_visual_selection_with_header()
+          local selection = aiterm().get_visual_selection_with_header() or ""
           local term = aiterm().aider_toggle()
           aiterm().send(selection, { term = term })
         end,
@@ -124,7 +126,7 @@ return {
       {
         "<leader>ad",
         function()
-          local diagnostics = aiterm().diagnostics()
+          local diagnostics = aiterm().diagnostics() or ""
           local term = aiterm().aider_toggle()
           aiterm().send(diagnostics, { term = term })
         end,
@@ -136,7 +138,7 @@ return {
         function()
           local term = aiterm().aider_get()
           term:focus()
-          require("ai-terminals").run_command_and_send_output(nil)
+          require("ai-terminals").run_command_and_send_output()
         end,
         desc = "Run CMD and send output to active AI terminal",
       },
