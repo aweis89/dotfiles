@@ -115,7 +115,6 @@ return {
         "<leader>aa",
         function()
           local selection = aiterm().get_visual_selection_with_header()
-          selection = aiterm().aider_multiline(selection)
           local term = aiterm().aider_toggle()
           aiterm().send(selection, { term = term })
         end,
@@ -126,12 +125,20 @@ return {
         "<leader>ad",
         function()
           local diagnostics = aiterm().diagnostics()
-          diagnostics = aiterm().aider_multiline(diagnostics)
           local term = aiterm().aider_toggle()
           aiterm().send(diagnostics, { term = term })
         end,
         desc = "Send diagnostics to Aider",
         mode = { "v" },
+      },
+      {
+        "<leader>at",
+        function()
+          local term = aiterm().aider_get()
+          term:focus()
+          require("ai-terminals").run_command_and_send_output(nil)
+        end,
+        desc = "Run CMD and send output to active AI terminal",
       },
     },
   },
