@@ -1,4 +1,4 @@
-local plug = function()
+local aiterm = function()
   return require("ai-terminals")
 end
 
@@ -8,7 +8,7 @@ end
 return {
   {
     "aweis89/ai-terminals.nvim",
-    -- dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
+    dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
     optional = false,
     event = "VeryLazy",
     keys = {
@@ -16,14 +16,14 @@ return {
       {
         "<leader>dvo",
         function()
-          plug().diff_changes()
+          aiterm().diff_changes()
         end,
         desc = "Show diff of last changes made",
       },
       {
         "<leader>dvc",
         function()
-          plug().close_diff()
+          aiterm().close_diff()
         end,
         desc = "Close all diff views (and wipeout buffers)",
       },
@@ -31,14 +31,14 @@ return {
       {
         "<leader>ass",
         function()
-          plug().claude_terminal()
+          aiterm().claude_toggle()
         end,
         desc = "Toggle Claude terminal",
       },
       {
         "<leader>ass",
         function()
-          plug().send_selection(plug().claude_terminal)
+          aiterm().send_selection(aiterm().claude_toggle)
         end,
         desc = "Send selection to Claude",
         mode = { "v" },
@@ -46,9 +46,9 @@ return {
       {
         "<leader>asd",
         function()
-          local diagnostics = plug().diagnostics()
-          plug().claude_terminal()
-          plug().send(diagnostics)
+          local diagnostics = aiterm().diagnostics()
+          local term = aiterm().claude_toggle()
+          aiterm().send(diagnostics, { term = term })
         end,
         desc = "Send diagnostics to Claude",
         mode = { "v" },
@@ -57,16 +57,16 @@ return {
       {
         "<leader>agg",
         function()
-          plug().goose_terminal()
+          aiterm().goose_toggle()
         end,
         desc = "Toggle Goose terminal",
       },
       {
         "<leader>agg",
         function()
-          local selection = plug().get_visual_selection_with_header()
-          plug().goose_terminal()
-          plug().send(selection)
+          local selection = aiterm().get_visual_selection_with_header() or ""
+          local term = aiterm().goose_toggle()
+          aiterm().send(selection, { term = term })
         end,
         desc = "Send selection to Goose",
         mode = { "v" },
@@ -74,9 +74,9 @@ return {
       {
         "<leader>agd",
         function()
-          local diagnostics = plug().diagnostics()
-          plug().goose_terminal()
-          plug().send(diagnostics)
+          local diagnostics = aiterm().diagnostics()
+          local term = aiterm().goose_toggle()
+          aiterm().send(diagnostics, { term = term })
         end,
         desc = "Send diagnostics to Goose",
         mode = { "v" },
@@ -85,21 +85,21 @@ return {
       {
         "<leader>aa",
         function()
-          plug().aider_terminal()
+          aiterm().aider_toggle()
         end,
         desc = "Toggle Aider terminal",
       },
       {
         "<leader>ac",
         function()
-          plug().aider_comment("AI!")
+          aiterm().aider_comment("AI!")
         end,
         desc = "Add comment above line",
       },
       {
         "<leader>aC",
         function()
-          plug().aider_comment("AI?")
+          aiterm().aider_comment("AI?")
         end,
         desc = "Add comment above line",
       },
@@ -107,18 +107,17 @@ return {
         "<leader>al",
         function()
           local current_file = vim.fn.expand("%:p")
-          plug().aider_terminal()
-          plug().send("/add " .. current_file .. "\n")
+          aiterm().add_files_to_aider({ current_file })
         end,
         desc = "Add file to Aider",
       },
       {
         "<leader>aa",
         function()
-          local selection = plug().get_visual_selection_with_header()
-          plug().aider_terminal()
-          plug().send(plug().aider_multiline(selection))
-          vim.api.nvim_feedkeys("i", "n", false)
+          local selection = aiterm().get_visual_selection_with_header()
+          selection = aiterm().aider_multiline(selection)
+          local term = aiterm().aider_toggle()
+          aiterm().send(selection, { term = term })
         end,
         desc = "Send selection to Aider",
         mode = { "v" },
@@ -126,9 +125,10 @@ return {
       {
         "<leader>ad",
         function()
-          local diagnostics = plug().diagnostics()
-          plug().aider_terminal()
-          plug().send(plug().aider_multiline(diagnostics))
+          local diagnostics = aiterm().diagnostics()
+          diagnostics = aiterm().aider_multiline(diagnostics)
+          local term = aiterm().aider_toggle()
+          aiterm().send(diagnostics, { term = term })
         end,
         desc = "Send diagnostics to Aider",
         mode = { "v" },
