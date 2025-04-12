@@ -627,15 +627,16 @@ openhands() {
     python -m openhands.core.cli;
 }
 
+# Created by `pipx` on 2024-11-26 01:38:49
+export PATH="$PATH:$HOME/.local/bin"
+
+export PATH="$PATH:$HOME/.config/bin"
+
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 if [[ "$PROFILE_STARTUP" == true ]]; then
     zprof
 fi
-
-# Created by `pipx` on 2024-11-26 01:38:49
-export PATH="$PATH:/Users/aaron.weisberg/.local/bin"
-
 typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
