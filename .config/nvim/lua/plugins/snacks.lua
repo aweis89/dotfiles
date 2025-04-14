@@ -10,7 +10,7 @@ local function add_files_from_picker(picker, opts)
       table.insert(files_to_add, full_path)
     end
   end
-  require("ai-terminals").add_files_to_aider(files_to_add, opts)
+  require("ai-terminals").aider_add_files(files_to_add, opts)
 end
 
 ---@param args table

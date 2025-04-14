@@ -89,7 +89,7 @@ return {
         function()
           local diagnostics = require("ai-terminals").diagnostics()
           if diagnostics then
-            local term = require("ai-terminals").toggle("claude") -- Ensure terminal is open
+            local term = require("ai-terminals").open("claude") -- Ensure terminal is open
             require("ai-terminals").send(diagnostics, { term = term })
           else
             vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
@@ -125,7 +125,7 @@ return {
         function()
           local diagnostics = require("ai-terminals").diagnostics()
           if diagnostics then
-            local term = require("ai-terminals").toggle("goose")
+            local term = require("ai-terminals").open("goose")
             require("ai-terminals").send(diagnostics, { term = term })
           else
             vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
@@ -160,8 +160,8 @@ return {
         "<leader>al",
         function()
           local current_file = vim.fn.expand("%:p")
-          -- add_files_to_aider handles toggling the terminal if needed
-          require("ai-terminals").add_files_to_aider({ current_file })
+          -- aider_add_files handles toggling the terminal if needed
+          require("ai-terminals").aider_add_files({ current_file })
         end,
         desc = "Add current file to Aider",
       },
@@ -184,7 +184,7 @@ return {
         function()
           local diagnostics = require("ai-terminals").diagnostics()
           if diagnostics then
-            local term = require("ai-terminals").toggle("aider") -- Ensure terminal is open
+            local term = require("ai-terminals").open("aider") -- Ensure terminal is open
             require("ai-terminals").send(diagnostics, { term = term })
           else
             vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
@@ -198,11 +198,9 @@ return {
         "<leader>ar", -- Mnemonic: AI Run command
         function()
           -- Ensure the Aider terminal is open first
-          local term = require("ai-terminals").get("aider")
-          term:focus()
-
+          local term = require("ai-terminals").open("aider")
           -- Prompt user or use a fixed command
-          require("ai-terminals").run_command_and_send_output()
+          require("ai-terminals").run_command_and_send_output(nil, { term = term })
         end,
         desc = "Run 'make test' and send output to Aider terminal",
       },
