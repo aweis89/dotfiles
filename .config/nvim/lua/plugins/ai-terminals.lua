@@ -62,38 +62,14 @@ return {
         "<leader>atc", -- Mnemonic: AI Terminal Claude
         function()
           require("ai-terminals").toggle("claude")
-          -- Note: toggle() returns the terminal instance.
-          -- If you need to send data immediately after toggling,
-          -- capture the return value like in the 'send selection' keymap.
         end,
         desc = "Toggle Claude terminal",
-      },
-      {
-        "<leader>atc", -- Same keybinding, but in visual mode
-        function()
-          local selection = require("ai-terminals").get_visual_selection_with_header()
-          if selection then
-            -- Ensure the terminal is open and get its instance
-            local term = require("ai-terminals").toggle("claude")
-            -- Send the selection to the specific terminal instance
-            require("ai-terminals").send(selection, { term = term })
-          else
-            vim.notify("No text selected", vim.log.levels.WARN)
-          end
-        end,
-        desc = "Send selection to Claude",
-        mode = { "v" },
+        mode = { "n", "v" },
       },
       {
         "<leader>adc", -- Mnemonic: AI Diagnostics Claude
         function()
-          local diagnostics = require("ai-terminals").diagnostics()
-          if diagnostics then
-            local term = require("ai-terminals").open("claude") -- Ensure terminal is open
-            require("ai-terminals").send(diagnostics, { term = term })
-          else
-            vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
-          end
+          require("ai-terminals").send_diagnostics("claude")
         end,
         desc = "Send diagnostics to Claude",
         mode = { "n", "v" }, -- Allow sending buffer or selection diagnostics
@@ -105,31 +81,12 @@ return {
           require("ai-terminals").toggle("goose")
         end,
         desc = "Toggle Goose terminal",
-      },
-      {
-        "<leader>atg", -- Same keybinding, visual mode
-        function()
-          local selection = require("ai-terminals").get_visual_selection_with_header()
-          if selection then
-            local term = require("ai-terminals").toggle("goose")
-            require("ai-terminals").send(selection, { term = term })
-          else
-            vim.notify("No text selected", vim.log.levels.WARN)
-          end
-        end,
-        desc = "Send selection to Goose",
-        mode = { "v" },
+        mode = { "n", "v" },
       },
       {
         "<leader>adg", -- Mnemonic: AI Diagnostics Goose
         function()
-          local diagnostics = require("ai-terminals").diagnostics()
-          if diagnostics then
-            local term = require("ai-terminals").open("goose")
-            require("ai-terminals").send(diagnostics, { term = term })
-          else
-            vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
-          end
+          require("ai-terminals").send_diagnostics("goose")
         end,
         desc = "Send diagnostics to Goose",
         mode = { "n", "v" },
@@ -141,6 +98,7 @@ return {
           require("ai-terminals").toggle("aider")
         end,
         desc = "Toggle Aider terminal",
+        mode = { "n", "v" },
       },
       {
         "<leader>ac",
@@ -159,36 +117,15 @@ return {
       {
         "<leader>al",
         function()
-          local current_file = vim.fn.expand("%:p")
-          -- aider_add_files handles toggling the terminal if needed
-          require("ai-terminals").aider_add_files({ current_file })
+          -- add current file
+          require("ai-terminals").aider_add_files({ vim.fn.expand("%:p") })
         end,
         desc = "Add current file to Aider",
       },
       {
-        "<leader>ata", -- Same keybinding, visual mode
-        function()
-          local selection = require("ai-terminals").get_visual_selection_with_header()
-          if selection then
-            local term = require("ai-terminals").toggle("aider") -- Ensure terminal is open
-            require("ai-terminals").send(selection, { term = term })
-          else
-            vim.notify("No text selected", vim.log.levels.WARN)
-          end
-        end,
-        desc = "Send selection to Aider",
-        mode = { "v" },
-      },
-      {
         "<leader>ada", -- Mnemonic: AI Diagnostics Aider
         function()
-          local diagnostics = require("ai-terminals").diagnostics()
-          if diagnostics then
-            local term = require("ai-terminals").open("aider") -- Ensure terminal is open
-            require("ai-terminals").send(diagnostics, { term = term })
-          else
-            vim.notify("No diagnostics found in buffer", vim.log.levels.INFO)
-          end
+          require("ai-terminals").send_diagnostics("aider")
         end,
         desc = "Send diagnostics to Aider",
         mode = { "n", "v" },
@@ -200,7 +137,7 @@ return {
           -- Ensure the Aider terminal is open first
           local term = require("ai-terminals").open("aider")
           -- Prompt user or use a fixed command
-          require("ai-terminals").run_command_and_send_output(nil, { term = term })
+          require("ai-terminals").send_command_output(nil, { term = term })
         end,
         desc = "Run 'make test' and send output to Aider terminal",
       },
