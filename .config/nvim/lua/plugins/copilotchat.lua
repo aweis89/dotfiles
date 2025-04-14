@@ -18,7 +18,7 @@ local function git_commit(response)
     if #branch_list > 0 then
       branch = branch_list[1]
     end
-    local prompt_text = "Run git push for branch '" .. branch .. "'? [y/n] "
+    local prompt_text = "Push '" .. branch .. "'? [y/n] "
     vim.ui.input({ prompt = prompt_text }, function(input)
       if input == "y" then
         vim.api.nvim_command("Git push")
