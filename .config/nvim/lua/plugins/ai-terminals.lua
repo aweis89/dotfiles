@@ -1,7 +1,3 @@
-local aiterm = function()
-  return require("ai-terminals")
-end
-
 ------------------------------------------
 -- Plugin Configuration
 ------------------------------------------
@@ -46,7 +42,26 @@ return {
         function()
           require("ai-terminals").diff_changes()
         end,
-        desc = "Show diff of last changes made",
+        desc = "Show diff of last changes made (using neovim diff)",
+      },
+      {
+        "<leader>dvt",
+        function()
+          require("ai-terminals").diff_changes(function(code_dir, ai_dir)
+            Snacks.terminal.open(string.format("delta --paging never -s %s %s", code_dir, ai_dir), {
+              interactive = false,
+              auto_close = false,
+              auto_insert = true,
+              win = {
+                position = "float",
+                height = 0.95,
+                width = 0.95,
+              },
+            })
+            vim.api.nvim_feedkeys("gg", "n", false)
+          end)
+        end,
+        desc = "Show diff of last changes made using terminal cmd",
       },
       {
         "<leader>dvc",
