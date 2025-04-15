@@ -134,10 +134,8 @@ return {
       {
         "<leader>ar", -- Mnemonic: AI Run command
         function()
-          -- Ensure the Aider terminal is open first
-          local term = require("ai-terminals").open("aider")
           -- Prompt user or use a fixed command
-          require("ai-terminals").send_command_output(nil, { term = term })
+          require("ai-terminals").send_command_output("aider")
         end,
         desc = "Run 'make test' and send output to Aider terminal",
       },

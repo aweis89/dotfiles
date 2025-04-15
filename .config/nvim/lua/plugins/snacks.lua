@@ -6,8 +6,7 @@ local function add_files_from_picker(picker, opts)
   local files_to_add = {}
   for _, item in pairs(selected) do
     if item.file then
-      local full_path = vim.fn.fnamemodify(item.file, ":p")
-      table.insert(files_to_add, full_path)
+      table.insert(files_to_add, item.file)
     end
   end
   require("ai-terminals").aider_add_files(files_to_add, opts)
