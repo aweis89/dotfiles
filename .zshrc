@@ -383,36 +383,6 @@ p() {
   go run $HOME/dotfiles/bin/perplexity.go "$@"
 }
 
-aider() {
-  opts=(--show-diffs)
-  local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-  if [[ "$mode" == "Dark" ]]; then
-    opts+=(
-      --completion-menu-current-bg-color "#7c6f64" \
-      --completion-menu-current-color "#a89984" \
-      --completion-menu-bg-color "#3c3836" \
-      --completion-menu-color "#ebdbb2" \
-      --assistant-output-color "#d3869b" \
-      --tool-warning-color "#fe8019" \
-      --tool-error-color "#fb4934" \
-      --tool-output-color "#83a598" \
-      --user-input-color "#b8bb26" \
-      --code-theme gruvbox-dark)
-  else
-    opts+=(
-     --assistant-output-color "#8f3f71" \
-     --tool-warning-color "#af3a03" \
-     --tool-error-color "#9d0006" \
-     --tool-output-color "#076678" \
-     --user-input-color "#79740e" \
-     --completion-menu-current-bg-color "#a89984" \
-     --completion-menu-current-color "#7c6f64" \
-     --completion-menu-bg-color "#ebdbb2" \
-     --completion-menu-color "#3c3836" \
-     --code-theme gruvbox-light)
-  fi
-  command /opt/homebrew/bin/aider "${opts[@]}" "$@"
-}
 compdef aider=_aider
 
 goose() {
@@ -630,7 +600,7 @@ openhands() {
 # Created by `pipx` on 2024-11-26 01:38:49
 export PATH="$PATH:$HOME/.local/bin"
 
-export PATH="$PATH:$HOME/.config/bin"
+export PATH="$HOME/.config/bin:$PATH"
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
