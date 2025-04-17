@@ -19,6 +19,9 @@ map("n", "H", "^", { desc = "Go to beginning of line" })
 map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<C-w>i", "<cmd>only<cr>", { desc = "Make current split full screen" })
 map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
+-- make it harder to accidentally enter macro recording mode (which breaks keymapings)
+map("n", "Q", "q", { noremap = true, silent = false })
+map("n", "q", "<nop>", { noremap = false, silent = false })
 
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
