@@ -48,24 +48,11 @@ return {
         "<leader>dvt",
         function()
           require("ai-terminals").diff_changes(function(code_dir, ai_dir)
-            local cmd = string.format("delta --paging=never -s %s %s", code_dir, ai_dir)
+            local cmd = string.format("delta --paging=never -s %s %s", ai_dir, code_dir)
             vim.cmd("tabnew")
             vim.cmd("terminal " .. cmd)
             vim.api.nvim_feedkeys("gg", "n", false)
           end)
-          -- require("ai-terminals").diff_changes(function(code_dir, ai_dir)
-          --   Snacks.terminal.open(string.format("delta --paging never -s %s %s", code_dir, ai_dir), {
-          --     interactive = false,
-          --     auto_close = false,
-          --     auto_insert = true,
-          --     win = {
-          --       position = "float",
-          --       height = 0.95,
-          --       width = 0.95,
-          --     },
-          --   })
-          --   vim.api.nvim_feedkeys("gg", "n", false)
-          -- end)
         end,
         desc = "Show diff of last changes made using terminal cmd",
       },

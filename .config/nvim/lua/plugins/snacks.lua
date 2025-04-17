@@ -12,6 +12,18 @@ local function add_files_from_picker(picker, opts)
   require("ai-terminals").aider_add_files(files_to_add, opts)
 end
 
+--- Helper function to extract search results and send them to aider
+---@param picker snacks.Picker
+local function send_search(picker)
+  local selected = picker:selected({ fallback = true })
+  local items = {}
+  for _, item in pairs(selected) do
+    table.insert(items, item.text)
+  end
+  local term = require("ai-terminals").get("aider")
+  require("ai-terminals").send(table.concat(items, "\n"), { term = term })
+end
+
 ---@param args table
 local function git_exec(args)
   local root = Snacks.git.get_root()
@@ -115,6 +127,10 @@ return {
         picker = {
           previewers = { git = { native = true } },
           actions = {
+            ["aider_search"] = function(picker)
+              picker:close()
+              send_search(picker) -- Defaults to { read_only = false } -> /add
+            end,
             ["aider_add"] = function(picker)
               picker:close()
               add_files_from_picker(picker) -- Defaults to { read_only = false } -> /add
@@ -194,6 +210,7 @@ return {
                 ["<leader><space>a"] = { "aider_add", mode = { "n", "i" } },
                 ["<leader><space>A"] = { "aider_read_only", mode = { "n", "i" } },
                 ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
+                ["<leader><space>s"] = { "aider_search", mode = { "n", "i" } },
               },
             },
           },
