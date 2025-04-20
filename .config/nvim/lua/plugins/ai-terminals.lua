@@ -8,27 +8,17 @@ return {
     config = true,
     opts = {
       terminals = {
-        goose = {
-          cmd = function()
-            return string.format("GOOSE_CLI_THEME=%s goose", vim.o.background)
-          end,
-        },
-        claude = {
-          cmd = function()
-            return string.format("claude config set -g theme %s && claude", vim.o.background)
-          end,
-        },
-        aider = {
-          cmd = function()
-            return string.format("aider --watch-files --%s-mode", vim.o.background)
-          end,
-        },
         aichat = {
           cmd = function()
             return string.format(
               "AICHAT_LIGHT_THEME=%s GEMINI_API_BASE=http://localhost:8080/v1beta aichat -r %%functions%% --session",
               tostring(vim.o.background == "light") -- Convert boolean to string "true" or "false"
             )
+          end,
+        },
+        aider = {
+          cmd = function()
+            return string.format("aider --watch-files --%s-mode", vim.o.background)
           end,
         },
         -- Example of a simple string command
@@ -47,21 +37,16 @@ return {
       {
         "<leader>dvt",
         function()
-          require("ai-terminals").diff_changes(function(code_dir, ai_dir)
-            local cmd = string.format("delta --paging=never -s %s %s", ai_dir, code_dir)
-            vim.cmd("tabnew")
-            vim.cmd("terminal " .. cmd)
-            vim.api.nvim_feedkeys("gg", "n", false)
-          end)
+          require("ai-terminals").diff_changes({ delta = true })
         end,
         desc = "Show diff of last changes made using terminal cmd",
       },
       {
-        "<leader>dvc",
+        "<leader>dvr", -- Mnemonic: Diff View Revert
         function()
-          require("ai-terminals").close_diff()
+          require("ai-terminals").revert_changes()
         end,
-        desc = "Close all diff views (and wipeout buffers)",
+        desc = "Revert changes from backup",
       },
       -- Claude Keymaps
       -- Example Keymaps (using default terminal names: 'claude', 'goose', 'aider')
@@ -80,6 +65,39 @@ return {
           require("ai-terminals").send_diagnostics("claude")
         end,
         desc = "Send diagnostics to Claude",
+        mode = { "n", "v" }, -- Allow sending buffer or selection diagnostics
+      },
+      {
+        "<leader>atk", -- Mnemonic: AI Terminal Kode
+        function()
+          require("ai-terminals").toggle("kode")
+        end,
+        desc = "Toggle Kode terminal",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>adk", -- Mnemonic: AI Diagnostics Kode
+        function()
+          require("ai-terminals").send_diagnostics("Kode")
+        end,
+        desc = "Send diagnostics to Kode",
+        mode = { "n", "v" }, -- Allow sending buffer or selection diagnostics
+      },
+      -- AI Chat Keymaps
+      {
+        "<leader>ati", -- Mnemonic: AI Terminal AI Chat
+        function()
+          require("ai-terminals").toggle("aichat")
+        end,
+        desc = "Toggle AI Chat terminal (sends selection in visual mode)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>adi", -- Mnemonic: AI Diagnostics AI Chat
+        function()
+          require("ai-terminals").send_diagnostics("aichat")
+        end,
+        desc = "Send diagnostics to AI Chat",
         mode = { "n", "v" }, -- Allow sending buffer or selection diagnostics
       },
       -- Goose Keymaps
@@ -126,9 +144,17 @@ return {
         "<leader>al",
         function()
           -- add current file
-          require("ai-terminals").aider_add_files({ vim.fn.expand("%:p") })
+          require("ai-terminals").aider_add_files(vim.fn.expand("%"))
         end,
         desc = "Add current file to Aider",
+      },
+      {
+        "<leader>aR", -- Mnemonic: AI add Read-only
+        function()
+          -- add current file as read-only
+          require("ai-terminals").aider_add_files(vim.fn.expand("%"), { read_only = true })
+        end,
+        desc = "Add current file to Aider (read-only)",
       },
       {
         "<leader>ada", -- Mnemonic: AI Diagnostics Aider
@@ -146,6 +172,27 @@ return {
           require("ai-terminals").send_command_output("aider")
         end,
         desc = "Run 'make test' and send output to Aider terminal",
+      },
+      {
+        "<leader>aL", -- Mnemonic: AI Run command
+        function()
+          require("ai-terminals").aider_add_buffers()
+        end,
+        desc = "Add all buffers to aider",
+      },
+      {
+        "<leader>ax", -- Mnemonic: AI Close (X) all terminals
+        function()
+          require("ai-terminals").destroy_all()
+        end,
+        desc = "Close all AI terminals",
+      },
+      {
+        "<leader>af", -- Mnemonic: AI focus
+        function()
+          require("ai-terminals").focus()
+        end,
+        desc = "Close all AI terminals",
       },
     },
   },
