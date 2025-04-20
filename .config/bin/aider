@@ -29,4 +29,4 @@ else
     --code-theme gruvbox-light)
 fi
 
-command /opt/homebrew/bin/aider "${opts[@]}" "$@"
+$HOME/.asdf/shims/aider "${opts[@]}" "$@"
