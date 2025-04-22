@@ -7,6 +7,7 @@ return {
     dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
     config = true,
     opts = {
+      show_diffs_on_leave = true,
       terminals = {
         aichat = {
           cmd = function()
@@ -14,11 +15,6 @@ return {
               "AICHAT_LIGHT_THEME=%s GEMINI_API_BASE=http://localhost:8080/v1beta aichat -r %%functions%% --session",
               tostring(vim.o.background == "light") -- Convert boolean to string "true" or "false"
             )
-          end,
-        },
-        aider = {
-          cmd = function()
-            return string.format("aider --watch-files --%s-mode", vim.o.background)
           end,
         },
         -- Example of a simple string command
