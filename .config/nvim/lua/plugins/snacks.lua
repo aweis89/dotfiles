@@ -125,7 +125,7 @@ return {
       ---@diagnostic disable
       local overrides = {
         picker = {
-          previewers = { git = { native = true } },
+          previewers = { git = { native = true, builtin = true } },
           actions = {
             ["aider_search"] = function(picker)
               picker:close()
@@ -184,6 +184,7 @@ return {
       local fullscreen_pickers = {
         "buffers",
         "files",
+        "git_diff",
         "git_files",
         "git_log_file",
         "git_log",
