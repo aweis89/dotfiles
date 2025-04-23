@@ -120,6 +120,7 @@ local function pr_picker()
       input = {
         keys = {
           ["<CR>"] = { "checkout", mode = { "n", "i" } },
+          ["<leader><space>r"] = { "ai_review", mode = { "n", "i" } },
         },
       },
     },
@@ -140,6 +141,22 @@ local function pr_picker()
           end
         end)
         p:close()
+      end,
+      ai_review = function(p)
+        local item = p:current({ fallback = true })
+        if not item then
+          vim.notify("No item selected!")
+          return
+        end
+        local pr_num = item.number
+        vim.notify("AI Review action started!") -- DEBUG
+        vim.notify("Reviewing PR #" .. pr_num)
+        local pr_view_system = vim.system({ "gh", "pr", "view", pr_num }, {})
+        local pr_diff_system = vim.system({ "gh", "pr", "diff", pr_num }, {})
+        local result = pr_view_system:wait().stdout
+        result = result .. pr_diff_system:wait().stdout
+        local term = require("ai-terminals").get("aider")
+        require("ai-terminals").send("Review this PR carefully\n" .. result, { term = term, submit = true })
       end,
     },
     format = function(item, p)
