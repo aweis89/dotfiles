@@ -13,7 +13,7 @@ return {
     config = true,
     keys = {
       {
-        "<leader>dvh",
+        "<leader>dvp",
         function()
           -- Function to get the remote default branch reference (e.g., origin/main)
           local function get_remote_default_branch_ref()
@@ -71,14 +71,14 @@ return {
             vim.notify("Could not determine remote default branch for Diffview.", vim.log.levels.WARN)
           end
         end,
-        { desc = "DiffviewOpen origin/default...HEAD (fetches first)" },
+        desc = "DiffviewOpen origin/default...HEAD (fetches first)",
       },
       {
         "<leader>dvc",
         function()
           vim.cmd("DiffviewClose")
         end,
-        { desc = "DiffviewClose" },
+        desc = "DiffviewClose",
       },
     },
   },
