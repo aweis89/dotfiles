@@ -5,9 +5,9 @@ return {
   {
     "aweis89/ai-terminals.nvim",
     dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
-    config = true,
+    ---@type ConfigType
     opts = {
-      show_diffs_on_leave = true,
+      -- show_diffs_on_leave = { delta = true },
       terminals = {
         aichat = {
           cmd = function()
@@ -17,9 +17,8 @@ return {
             )
           end,
         },
-        -- Example of a simple string command
-        -- my_simple_ai = { cmd = "my_ai_tool --interactive" },
       },
+      default_position = "right",
     },
     keys = {
       -- Diff Tools
@@ -28,21 +27,21 @@ return {
         function()
           require("ai-terminals").diff_changes()
         end,
-        desc = "Show diff of last changes made (using neovim diff)",
+        desc = "Show diff of last AI changes (using neovim diff)",
       },
       {
         "<leader>dvt",
         function()
           require("ai-terminals").diff_changes({ delta = true })
         end,
-        desc = "Show diff of last changes made using terminal cmd",
+        desc = "Show diff of last AI changes using terminal cmd",
       },
       {
         "<leader>dvr", -- Mnemonic: Diff View Revert
         function()
           require("ai-terminals").revert_changes()
         end,
-        desc = "Revert changes from backup",
+        desc = "Revert AI changes from backup",
       },
       -- Claude Keymaps
       -- Example Keymaps (using default terminal names: 'claude', 'goose', 'aider')
