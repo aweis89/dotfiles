@@ -71,10 +71,109 @@ local function refresh_picker(picker)
   Snacks.picker.resume()
 end
 
+---@param opts snacks.picker.Config
+---@type snacks.picker.finder
+local function prs(opts, ctx)
+  local args = {
+    "pr",
+    "list",
+    "--json",
+    "number,title",
+    "--jq",
+    ".[] | [.number, .title] | @tsv",
+  }
+  return require("snacks.picker.source.proc").proc({
+    opts,
+    {
+      cmd = "gh",
+      args = args,
+      layout = {
+        fullscreen = true,
+      },
+      ---@param item snacks.picker.finder.Item
+      transform = function(item)
+        -- Split the tab-separated string "number\ttitle"
+        local parts = vim.split(item.text, "\t", { plain = true, trimempty = false })
+        if #parts == 2 then
+          item.number = tonumber(parts[1]) -- Convert the first part to a number
+          item.title = parts[2] -- The second part is the title
+        else
+          -- Handle potential parsing errors or unexpected formats if necessary
+          item.number = nil
+          item.title = item.text -- Fallback: keep original text as title
+        end
+      end,
+    },
+  }, ctx)
+end
+
+---@return snacks.Picker
+local function pr_picker()
+  local picker = require("snacks.picker")
+  return picker("pull_requests", {
+    title = "Pull requests",
+    finder = prs,
+    layout = {
+      fullscreen = true,
+    },
+    win = {
+      input = {
+        keys = {
+          ["<CR>"] = { "checkout", mode = { "n", "i" } },
+        },
+      },
+    },
+    actions = {
+      checkout = function(p)
+        vim.notify("Checkout action started!") -- DEBUG
+        local item = p:current({ fallback = true })
+        if not item then
+          vim.notify("No item selected!")
+          return
+        end
+        vim.notify("Checking out PR #" .. item.number)
+        vim.system({ "gh", "pr", "checkout", item.number }, {}, function(res)
+          if res.code ~= 0 then
+            vim.notify(res.stderr)
+          else
+            vim.notify(res.stdout)
+          end
+        end)
+        p:close()
+      end,
+    },
+    format = function(item, p)
+      return { { string.format("#%d ", item.number), "Function" }, { item.title } }
+    end,
+    preview = function(ctx)
+      ctx.preview:highlight({ ft = "markdown" })
+      local pr_num = ctx.item.number
+      vim.system({ "gh", "pr", "view", pr_num }, {}, function(result)
+        if result.code ~= 0 then
+          vim.notify("Error fetching PR view: " .. result.stderr, vim.log.levels.WARN)
+        end
+        vim.schedule(function()
+          local lines = vim.split(result.stdout, "\n", { plain = true, trimempty = true })
+          pcall(ctx.preview.set_lines, ctx.preview, lines)
+        end)
+      end)
+      -- Return false immediately, the preview will update when the callback runs
+      return false
+    end,
+  })
+end
+
 return {
   {
     "folke/snacks.nvim",
     keys = {
+      {
+        "<leader>hp",
+        function()
+          pr_picker()
+        end,
+        desc = "PR picker",
+      },
       {
         "<leader><space>",
         function()
