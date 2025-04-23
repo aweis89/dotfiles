@@ -78,9 +78,9 @@ local function prs(opts, ctx)
     "pr",
     "list",
     "--json",
-    "number,title",
+    "number,title,body",
     "--jq",
-    ".[] | [.number, .title] | @tsv",
+    ".[] | [.number, .title, .body] | @tsv",
   }
   return require("snacks.picker.source.proc").proc({
     opts,
@@ -94,14 +94,9 @@ local function prs(opts, ctx)
       transform = function(item)
         -- Split the tab-separated string "number\ttitle"
         local parts = vim.split(item.text, "\t", { plain = true, trimempty = false })
-        if #parts == 2 then
-          item.number = tonumber(parts[1]) -- Convert the first part to a number
-          item.title = parts[2] -- The second part is the title
-        else
-          -- Handle potential parsing errors or unexpected formats if necessary
-          item.number = nil
-          item.title = item.text -- Fallback: keep original text as title
-        end
+        item.number = tonumber(parts[1]) -- Convert the first part to a number
+        item.title = parts[2] -- The second part is the title
+        item.body = parts[3]
       end,
     },
   }, ctx)
@@ -164,18 +159,9 @@ local function pr_picker()
     end,
     preview = function(ctx)
       ctx.preview:highlight({ ft = "markdown" })
-      local pr_num = ctx.item.number
-      vim.system({ "gh", "pr", "view", pr_num }, {}, function(result)
-        if result.code ~= 0 then
-          vim.notify("Error fetching PR view: " .. result.stderr, vim.log.levels.WARN)
-        end
-        vim.schedule(function()
-          local lines = vim.split(result.stdout, "\n", { plain = true, trimempty = true })
-          pcall(ctx.preview.set_lines, ctx.preview, lines)
-        end)
-      end)
-      -- Return false immediately, the preview will update when the callback runs
-      return false
+      local lines = vim.split(ctx.item.body, "\\r\\n", { plain = true, trimempty = true })
+      ctx.preview:set_lines(lines)
+      return true
     end,
   })
 end
