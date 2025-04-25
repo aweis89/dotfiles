@@ -1,5 +1,13 @@
 return {
   {
+    "tpope/vim-fugitive",
+    cmd = { "Git" },
+    keys = {
+      -- see autocmds.lua for AI auto-generated functionality
+      { "<leader>gc", "<cmd>tab Git commit -v<cr>", desc = "Git commit" },
+    },
+  },
+  {
     "sindrets/diffview.nvim",
     cmd = {
       "DiffviewOpen",
