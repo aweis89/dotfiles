@@ -36,7 +36,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     vim.defer_fn(function()
       -- Get the current branch name
       local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
-
       -- Ask the user if they want to push
       local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
       vim.ui.input({ prompt = prompt_message, default = "N" }, function(input)
@@ -47,7 +46,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
           vim.system({ "git", "push" }, { text = true }, function(result)
             vim.schedule(function()
               if result.code == 0 then
-                vim.notify("Git push successful:\n" .. result.stdout, vim.log.levels.INFO, { title = "Git" })
+                vim.notify("Git push successful.", vim.log.levels.INFO, { title = "Git" })
               else
                 local error_msg = result.stderr or result.stdout or "Unknown error"
                 vim.notify("Git push failed:\n" .. error_msg, vim.log.levels.ERROR, { title = "Git" })
