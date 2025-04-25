@@ -241,19 +241,9 @@ return {
               picker:close()
               add_files_from_picker(picker, { read_only = true }) -- Send /read-only
             end,
-            ["ai_commit"] = function(picker)
+            ["commit"] = function(picker)
               picker:close()
               vim.cmd("tab Git commit -v")
-              local msg = vim.system({ "c-msg" }, {}, function(res)
-                vim.schedule(function()
-                  if res.code ~= 0 then
-                    vim.notify(res.stderr)
-                    return
-                  end
-                  local msg = res.stdout
-                  vim.api.nvim_buf_set_lines(0, 0, 1, false, vim.split(msg, "\n"))
-                end)
-              end)
             end,
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
@@ -278,7 +268,7 @@ return {
                 input = {
                   keys = {
                     ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
-                    ["<leader><space>g"] = { "ai_commit", mode = { "n", "i" } },
+                    ["<leader><space>g"] = { "commit", mode = { "n", "i" } },
                     ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
                   },
                 },
