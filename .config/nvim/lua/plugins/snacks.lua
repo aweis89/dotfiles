@@ -9,7 +9,7 @@ local function add_files_from_picker(picker, opts)
       table.insert(files_to_add, item.file)
     end
   end
-  require("ai-terminals").aider_add_files(files_to_add, opts)
+  require("ai-terminals").aider_add_files(files_to_add, opts or {})
 end
 
 --- Helper function to extract search results and send them to aider
@@ -153,7 +153,7 @@ local function pr_picker()
         require("ai-terminals").send("Review this PR carefully\n" .. result, { term = term, submit = true })
       end,
     },
-    format = function(item, p)
+    format = function(item)
       return { { string.format("#%d ", item.number), "Function" }, { item.title } }
     end,
     preview = function(ctx)
