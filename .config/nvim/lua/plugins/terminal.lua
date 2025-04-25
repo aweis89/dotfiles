@@ -3,9 +3,9 @@
 -- Handles general terminal functionality and integration
 ------------------------------------------
 
--- if vim.env.TMUX then
---   return {}
--- end
+if vim.env.TMUX then
+  return {}
+end
 
 ------------------------------------------
 -- Constants
