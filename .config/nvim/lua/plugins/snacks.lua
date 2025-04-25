@@ -115,7 +115,7 @@ local function pr_picker()
       input = {
         keys = {
           ["<CR>"] = { "checkout", mode = { "n", "i" } },
-          ["<leader><space>r"] = { "ai_review", mode = { "n", "i" } },
+          ["<localleader>r"] = { "ai_review", mode = { "n", "i" } },
         },
       },
     },
@@ -144,7 +144,6 @@ local function pr_picker()
           return
         end
         local pr_num = item.number
-        vim.notify("AI Review action started!") -- DEBUG
         vim.notify("Reviewing PR #" .. pr_num)
         local pr_view_system = vim.system({ "gh", "pr", "view", pr_num }, {})
         local pr_diff_system = vim.system({ "gh", "pr", "diff", pr_num }, {})
@@ -215,7 +214,7 @@ return {
         win = {
           input = {
             keys = {
-              ["<leader><space>r"] = { "git_reset_soft", mode = { "n", "i" } },
+              ["<localleader>r"] = { "git_reset_soft", mode = { "n", "i" } },
             },
           },
         },
@@ -268,9 +267,9 @@ return {
               win = {
                 input = {
                   keys = {
-                    ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
-                    ["<leader><space>g"] = { "commit", mode = { "n", "i" } },
-                    ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
+                    ["<localleader>s"] = { "git_stage", mode = { "n", "i" } },
+                    ["<localleader>g"] = { "commit", mode = { "n", "i" } },
+                    ["<localleader>r"] = { "git_reset_file", mode = { "n", "i" } },
                   },
                 },
               },
@@ -311,10 +310,10 @@ return {
           win = {
             input = {
               keys = {
-                ["<leader><space>a"] = { "aider_add", mode = { "n", "i" } },
-                ["<leader><space>A"] = { "aider_read_only", mode = { "n", "i" } },
-                ["<leader><space>d"] = { "rm_file", mode = { "n", "i" } },
-                ["<leader><space>s"] = { "aider_search", mode = { "n", "i" } },
+                ["<localleader>a"] = { "aider_add", mode = { "n", "i" } },
+                ["<localleader>A"] = { "aider_read_only", mode = { "n", "i" } },
+                ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
+                -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
               },
             },
           },
@@ -339,7 +338,7 @@ return {
             pull_requests = {
               {
                 name = "ai_review",
-                lhs = "<leader><space>r",
+                lhs = "<localleader>r",
                 desc = "Review PR",
                 mode = { "n", "i" },
                 fn = function(p, item)
@@ -359,7 +358,7 @@ return {
               },
               {
                 name = "delta_diff",
-                lhs = "<leader><space>d",
+                lhs = "<localleader>d",
                 desc = "Diff PR",
                 mode = { "n", "i" },
                 fn = function(p, item)
