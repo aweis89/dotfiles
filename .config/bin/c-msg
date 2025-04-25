@@ -1,6 +1,6 @@
 #!/bin/bash
 
 aichat \
-  --model gemini:gemini-2.0-flash-lite \
+  --model gemini:gemini-2.0-flash \
   -f '`git diff --staged`' \
   "Respond with a git commit message for these changes. Don't add any extra text aside from the commit message."
