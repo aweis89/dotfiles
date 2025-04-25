@@ -36,9 +36,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     vim.defer_fn(function()
       -- Get the current branch name
       local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
-      if vim.v.shell_error ~= 0 then
-        branch_name = "unknown branch" -- Fallback in case of error
-      end
 
       -- Ask the user if they want to push
       local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
