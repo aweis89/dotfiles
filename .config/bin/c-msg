@@ -3,4 +3,4 @@
 aichat \
   --model gemini:gemini-2.0-flash-lite \
   -f '`git diff --staged`' \
-  "Respond with a single commit message for this change. Don't add any extra text as the output will be used directly."
+  "Respond with a git commit message for these changes. Don't add any extra text aside from the commit message."
