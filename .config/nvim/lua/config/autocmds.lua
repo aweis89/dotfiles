@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   group = augroup("ai_commit_msg_populate"), -- Renamed group for clarity
   pattern = "COMMIT_EDITMSG",
   callback = function()
-    vim.system({ "c-msg" }, {}, function(res)
+    vim.system({ "ai-commit-msg" }, {}, function(res)
       vim.schedule(function()
         if res.code ~= 0 then
           vim.notify(res.stderr)
