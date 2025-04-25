@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
           vim.system({ "git", "push" }, { text = true }, function(result)
             vim.schedule(function()
               if result.code == 0 then
-                vim.notify("Git push successful.", vim.log.levels.INFO, { title = "Git" })
+                vim.notify("Git push successful:\n" .. result.stdout, vim.log.levels.INFO, { title = "Git" })
               else
                 local error_msg = result.stderr or result.stdout or "Unknown error"
                 vim.notify("Git push failed:\n" .. error_msg, vim.log.levels.ERROR, { title = "Git" })
