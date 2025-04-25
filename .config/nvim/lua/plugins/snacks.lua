@@ -241,9 +241,9 @@ return {
               picker:close()
               add_files_from_picker(picker, { read_only = true }) -- Send /read-only
             end,
-            ["copilot_commit"] = function(picker)
+            ["ai_commit"] = function(picker)
               picker:close()
-              vim.cmd("Git commit -v")
+              vim.cmd("tab Git commit -v")
               local msg = vim.system({ "c-msg" }, {}, function(res)
                 vim.schedule(function()
                   if res.code ~= 0 then
@@ -278,7 +278,7 @@ return {
                 input = {
                   keys = {
                     ["<leader><space>s"] = { "git_stage", mode = { "n", "i" } },
-                    ["<leader><space>g"] = { "copilot_commit", mode = { "n", "i" } },
+                    ["<leader><space>g"] = { "ai_commit", mode = { "n", "i" } },
                     ["<leader><space>r"] = { "git_reset_file", mode = { "n", "i" } },
                   },
                 },
