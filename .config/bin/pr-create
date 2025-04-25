@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# --- Get base branch and diff ---
+# Use origin/HEAD as a robust way to find the default branch
+base_ref=$(git symbolic-ref refs/remotes/origin/HEAD || git symbolic-ref refs/remotes/origin/main || git symbolic-ref refs/remotes/origin/master || echo "origin/main") # More robust base detection
+base=$(git rev-parse --abbrev-ref "$base_ref")
+echo "Detected base branch: $base" # Added for clarity
+
+# --- Generate diff (handle potential errors) ---
+diff=$(git diff "$base_ref"...HEAD)
+if [ -z "$diff" ]; then
+  echo "No differences found between $base and HEAD. Exiting."
+  exit 0
+fi
+# --- Get commit messages ---
+commits=$(git log "$base_ref"..HEAD --pretty=format:"%s") # Get commit subjects
+if [ -z "$commits" ]; then
+  echo "No new commits found between $base and HEAD."
+  # Decide if you want to exit or proceed without commit context
+fi
+
+echo "Generating PR title and body..."
+
+# --- Combine context ---
+context="Commit Messages:\n$commits\n\nDiff:\n$diff"
+
+# --- Get title and body from AI (add basic error check) ---
+# Assuming 'aichat' exists and works as described
+# Send both commits and diff to the AI
+title_body=$(echo -e "$context" | aichat --role %functions% 'Based on the following commit messages and diff, respond with a two line response: first line should be the PR title and second line should be the body.')
+
+if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
+  echo "Error: Failed to generate title and body from aichat."
+  # Optionally fall back to manual input or exit
+  read -rp "Enter PR Title: " title
+  read -rp "Enter PR Body: " body
+  if [ -z "$title" ]; then
+    echo "Title cannot be empty. Exiting."
+    exit 1
+  fi
+else
+  title=$(echo "$title_body" | head -n 1)
+  body=$(echo "$title_body" | tail -n +2) # Use tail -n +2 to get all lines from the second onwards for the body
+fi
+
+# --- Confirmation Prompt ---
+# Your multi-line prompt using \n is correct.
+# Using printf for potentially better formatting control, but \n works fine.
+prompt_text=$(printf "Create PR with:\n  Title: '%s'\n  Body: '%s'\n\nConfirm? [y/N] " "$title" "$body")
+
+read -rp "$prompt_text" confirm
+
+# --- Process Confirmation ---
+# Corrected logic: proceed only if 'y' or 'Y' is entered.
+# Using Bash regex matching for case-insensitivity. Default is No.
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Proceeding with PR creation..."
+  gh pr create --title "$title" --body "$body"
+else
+  echo "PR creation cancelled."
+  exit 1 # Exit with a non-zero status to indicate cancellation
+fi
+
+echo "PR created successfully (assuming gh command succeeded)."
