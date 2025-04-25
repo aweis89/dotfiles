@@ -243,7 +243,17 @@ return {
             end,
             ["copilot_commit"] = function(picker)
               picker:close()
-              vim.cmd("CopilotChatCommit")
+              vim.cmd("Git commit -v")
+              local msg = vim.system({ "c-msg" }, {}, function(res)
+                vim.schedule(function()
+                  if res.code ~= 0 then
+                    vim.notify(res.stderr)
+                    return
+                  end
+                  local msg = res.stdout
+                  vim.api.nvim_buf_set_lines(0, 0, 1, false, vim.split(msg, "\n"))
+                end)
+              end)
             end,
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
