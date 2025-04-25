@@ -9,7 +9,7 @@ local function add_files_from_picker(picker, opts)
       table.insert(files_to_add, item.file)
     end
   end
-  require("ai-terminals").aider_add_files(files_to_add, opts or {})
+  require("ai-terminals").aider_add_files(files_to_add, opts)
 end
 
 --- Helper function to extract search results and send them to aider
@@ -331,7 +331,7 @@ return {
       picker_config = {
         mappings = {
           -- snacks uses <c-b> for scrolling
-          open_in_browser = { lhs = "<C-u>", desc = "Open URL issue in browser" },
+          open_in_browser = { lhs = "<localleader>b", desc = "Open URL issue in browser" },
         },
         snacks = {
           actions = {
