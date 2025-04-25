@@ -4,7 +4,7 @@
 return {
   {
     "aweis89/ai-terminals.nvim",
-    dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
+    dir = "~/p/ai-terminals.nvim",
     ---@type ConfigType
     opts = {
       show_diffs_on_leave = { delta = true },
@@ -18,7 +18,7 @@ return {
           end,
         },
       },
-      default_position = "right",
+      -- default_position = "right",
     },
     keys = {
       -- Diff Tools
@@ -78,7 +78,6 @@ return {
         desc = "Send diagnostics to Kode",
         mode = { "n", "v" }, -- Allow sending buffer or selection diagnostics
       },
-      -- AI Chat Keymaps
       {
         "<leader>ati", -- Mnemonic: AI Terminal AI Chat
         function()
