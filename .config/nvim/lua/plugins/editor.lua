@@ -9,10 +9,6 @@ return {
     version = false,
   },
   {
-    "tpope/vim-fugitive",
-    cmd = { "Git" },
-  },
-  {
     "echasnovski/mini.splitjoin",
     version = false,
     config = true,

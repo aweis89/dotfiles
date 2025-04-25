@@ -243,6 +243,7 @@ return {
             end,
             ["commit"] = function(picker)
               picker:close()
+              -- see autocmds.lua for AI auto-generated functionality
               vim.cmd("tab Git commit -v")
             end,
             ---@param picker snacks.Picker
