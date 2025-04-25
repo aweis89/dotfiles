@@ -1,4 +1,5 @@
 return {
+  { "LazyVim/LazyVim", priority = 10000, lazy = false, opts = {}, cond = true, version = false },
   {
     "tpope/vim-fugitive",
     cmd = { "Git" },
@@ -13,14 +14,6 @@ return {
         require("mini.splitjoin").split()
       end,
     } },
-  },
-  {
-    "nvim-neotest/neotest",
-    opts = {
-      neotest = {
-        diagnostic = true,
-      },
-    },
   },
   {
     "nvim-treesitter/nvim-treesitter",

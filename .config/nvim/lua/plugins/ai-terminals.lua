@@ -7,7 +7,7 @@ return {
     dir = "/Users/aaron.weisberg/p/ai-terminals.nvim",
     ---@type ConfigType
     opts = {
-      -- show_diffs_on_leave = { delta = true },
+      show_diffs_on_leave = { delta = true },
       terminals = {
         aichat = {
           cmd = function()
