@@ -342,6 +342,7 @@ return {
                 desc = "Review PR",
                 mode = { "n", "i" },
                 fn = function(p, item)
+                  p:close()
                   local pr_num = item.number
 
                   vim.notify("Reviewing PR #" .. pr_num)
