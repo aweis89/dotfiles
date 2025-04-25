@@ -1,5 +1,13 @@
 return {
-  { "LazyVim/LazyVim", priority = 10000, lazy = false, opts = {}, cond = true, version = false },
+  {
+    "LazyVim/LazyVim",
+    priority = 10000,
+    lazy = false,
+    opts = {},
+    cond = true,
+    -- set to "*" to use release version
+    version = false,
+  },
   {
     "tpope/vim-fugitive",
     cmd = { "Git" },
