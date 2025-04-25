@@ -6,7 +6,7 @@ return {
       vim.api.nvim_create_user_command("ConformToggle", function()
         local disabled = false
         local current_path
-        LazyVim.ls(vim.fn.getcwd(), function(path, name, type)
+        LazyVim.ls(vim.fn.getcwd(), function(path, name, _)
           if name == disable_format_file then
             disabled = true
             current_path = path
@@ -21,7 +21,7 @@ return {
         end
       end, { desc = "Persistently enable/disable formatting" })
 
-      LazyVim.ls(vim.fn.getcwd(), function(path, name, type)
+      LazyVim.ls(vim.fn.getcwd(), function(_, name)
         if name == disable_format_file then
           LazyVim.format.enable(false)
         end
