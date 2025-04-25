@@ -40,21 +40,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
       local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
       vim.ui.input({ prompt = prompt_message }, function(input)
         if input and input:lower() == "y" then
-          vim.notify("Pushing commit to " .. branch_name .. "...", vim.log.levels.INFO, { title = "Git" })
-          -- Execute git push asynchronously, explicitly pushing the current branch might be safer
-          -- depending on the user's git push.default setting. Using plain 'git push' for now.
-          vim.system({ "git", "push" }, { text = true }, function(result)
-            vim.schedule(function()
-              if result.code == 0 then
-                vim.notify("Git push successful.", vim.log.levels.INFO, { title = "Git" })
-              else
-                local error_msg = result.stderr or result.stdout or "Unknown error"
-                vim.notify("Git push failed:\n" .. error_msg, vim.log.levels.ERROR, { title = "Git" })
-              end
-            end)
-          end)
-        else
-          vim.notify("Push cancelled.", vim.log.levels.WARN, { title = "Git" })
+          vim.cmd("Git push")
         end
       end)
     end, 100) -- Small delay (100ms)
