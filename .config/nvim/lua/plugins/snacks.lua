@@ -348,7 +348,10 @@ return {
                   vim.notify("Reviewing PR #" .. pr_num)
                   local pr_view_system = vim.system({ "gh", "pr", "view", pr_num }, {})
                   local pr_diff_system = vim.system({ "gh", "pr", "diff", pr_num }, {})
-                  local context = pr_view_system:wait().stdout .. pr_diff_system:wait().stdout
+                  local context = "PR Body\n:"
+                    .. pr_view_system:wait().stdout
+                    .. "\n\nDiff\n"
+                    .. pr_diff_system:wait().stdout
                   local term = require("ai-terminals").get("aider")
                   require("ai-terminals").send(
                     "/ask Review this PR carefully\n" .. context,
