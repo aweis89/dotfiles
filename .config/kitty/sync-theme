@@ -6,23 +6,23 @@ nvim_lazy_dir=$HOME/.local/share/nvim/lazy
 
 case "$1" in
   "tokyonight")
-    dir="$nvim_lazy_dir/tokyonight.nvim/extras/kitty"
-    light="$dir/tokyonight_day.conf"
-    dark="$dir/tokyonight_moon.conf"
+    dir="$nvim_lazy_dir/tokyonight.nvim/extras"
+    light="$dir/kitty/tokyonight_day.conf"
+    dark="$dir/kitty/tokyonight_moon.conf"
     ;;
   "catppuccin")
     dark="$kitty_dir/themes/mocha.conf"
     light="$kitty_dir/themes/latte.conf"
     ;;
   "onedark")
-    dir="$nvim_lazy_dir/onedarkpro.nvim/extras/kitty"
-    dark="$dir/onedarkpro_onedark.conf"
-    light="$dir/onedarkpro_onelight.conf"
+    dir="$nvim_lazy_dir/onedarkpro.nvim/extras"
+    dark="$dir/kitty/onedarkpro_onedark.conf"
+    light="$dir/kitty/onedarkpro_onelight.conf"
     ;;
   "kanagawa")
-    dir="$nvim_lazy_dir/kanagawa.nvim/extras/kitty"
-    dark="$dir/kanagawa.conf"
-    light="$dir/kanagawa_light.conf"
+    dir="$nvim_lazy_dir/kanagawa.nvim/extras"
+    dark="$dir/kitty/kanagawa.conf"
+    light="$dir/kitty/kanagawa_light.conf"
     ;;
   *)
     dark="$kitty_dir/themes/gruvbox_dark.conf"
