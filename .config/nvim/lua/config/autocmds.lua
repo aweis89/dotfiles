@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
       local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
       -- Ask the user if they want to push
       local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
-      vim.ui.input({ prompt = prompt_message, default = "N" }, function(input)
+      vim.ui.input({ prompt = prompt_message }, function(input)
         if input and input:lower() == "y" then
           vim.notify("Pushing commit to " .. branch_name .. "...", vim.log.levels.INFO, { title = "Git" })
           -- Execute git push asynchronously, explicitly pushing the current branch might be safer
