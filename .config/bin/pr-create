@@ -19,21 +19,72 @@ if [ -z "$commits" ]; then
   # Decide if you want to exit or proceed without commit context
 fi
 
+# --- Find and read PR template (Case-Insensitive) ---
+template_content=""
+template_path=""
+
+# Look in standard locations using find -iname for case-insensitivity
+# Prioritize .github/, then docs/, then root directory
+# -maxdepth 1 prevents searching subdirectories within these locations
+# -print -quit prints the first match and exits find immediately
+
+# Check in .github/
+if [ -d ".github" ]; then # Only search if the directory exists
+  template_path=$(find .github -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+
+# If not found, check in docs/
+if [ -z "$template_path" ] && [ -d "docs" ]; then # Only search if not found yet and dir exists
+  template_path=$(find docs -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+
+# If still not found, check in the root directory
+if [ -z "$template_path" ]; then
+  # Search current directory (.) only, not subdirectories
+  template_path=$(find . -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+
+# --- Proceed if template was found ---
+if [ -n "$template_path" ]; then
+  echo "Found PR template: $template_path"
+  # Read the template content, handle potential errors
+  template_content=$(cat "$template_path")
+  if [ $? -ne 0 ]; then
+    echo "Warning: Could not read PR template file at $template_path"
+    template_content="" # Reset if read failed
+    template_path=""    # Also reset path if read failed
+  fi
+else
+  echo "No PR template found."
+fi
+
 echo "Generating PR title and body..."
 
 # --- Combine context ---
-context="Commit Messages:\n$commits\n\nDiff:\n$diff"
+# Start building the context, including the template if found
+context=""
+# Use the template_content variable which is populated only if found and readable
+if [ -n "$template_content" ]; then
+  # Add a clear separator for the AI
+  context="PR Template:\n---\n$template_content\n---\n\n"
+fi
+# Append commit messages and diff
+context+="Commit Messages:\n$commits\n\nDiff:\n$diff"
+
+# --- Define the AI prompt ---
+# Instruct the AI to use all provided context, including the template
+ai_prompt='Based on the following context (which may include a PR template, commit messages, and diff), respond with a two line response: the first line should be the PR title, and the second line should be the PR body. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
 
 # --- Get title and body from AI (add basic error check) ---
 # Assuming 'aichat' exists and works as described
-# Send both commits and diff to the AI
-title_body=$(echo -e "$context" | aichat --role %functions% 'Based on the following commit messages and diff, respond with a two line response: first line should be the PR title and second line should be the body.')
+# Send the combined context and the updated prompt to the AI
+title_body=$(echo -e "$context" | aichat --role %functions% "$ai_prompt")
 
 if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
   echo "Error: Failed to generate title and body from aichat."
   # Optionally fall back to manual input or exit
   read -rp "Enter PR Title: " title
-  read -rp "Enter PR Body: " body
+  read -rp "Enter PR Body (Press Enter then Ctrl+D to finish): " body </dev/tty # Read multiline body from terminal
   if [ -z "$title" ]; then
     echo "Title cannot be empty. Exiting."
     exit 1
@@ -44,9 +95,8 @@ else
 fi
 
 # --- Confirmation Prompt ---
-# Your multi-line prompt using \n is correct.
-# Using printf for potentially better formatting control, but \n works fine.
-prompt_text=$(printf "Create PR with:\n  Title: '%s'\n  Body: '%s'\n\nConfirm? [y/N] " "$title" "$body")
+# Using printf for potentially better formatting control, especially with multi-line body
+prompt_text=$(printf "Create PR with:\n  Title: '%s'\n  Body:\n'''\n%s\n'''\n\nConfirm? [y/N] " "$title" "$body")
 
 read -rp "$prompt_text" confirm
 
@@ -55,6 +105,7 @@ read -rp "$prompt_text" confirm
 # Using Bash regex matching for case-insensitivity. Default is No.
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
   echo "Proceeding with PR creation..."
+  # Pass title and body to gh pr create
   gh pr create --title "$title" --body "$body"
 else
   echo "PR creation cancelled."
