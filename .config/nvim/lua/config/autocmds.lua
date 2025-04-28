@@ -46,3 +46,43 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end, 100) -- Small delay (100ms)
   end,
 })
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function()
+    local function tmap(key, val)
+      local opts = { buffer = 0 }
+      vim.keymap.set("t", key, val, opts)
+    end
+    -- exit insert mode
+    tmap("jj", "<C-\\><C-n>")
+    -- enter command mode
+    tmap("<C-;>", "<C-\\><C-n>:")
+    -- scrolling up/down
+    tmap("<C-u>", "<C-\\><C-n><C-u>")
+    tmap("<C-d>", "<C-\\><C-n><C-d>")
+    -- remove line numbers
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+  end,
+})
+
+local patterns = vim.list_extend(vim.g.root_spec[2], {
+  "go.mod",
+  "base", -- quizlet-infrastructure
+})
+
+vim.g.root_spec = { "lsp", patterns, "cwd" }
+
+local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = root_augroup,
+  callback = function()
+    local root = LazyVim.root.get()
+    if root == vim.fn.getcwd() then
+      return
+    end
+    vim.fn.chdir(root)
+    vim.notify("cwd: " .. root)
+  end,
+})
