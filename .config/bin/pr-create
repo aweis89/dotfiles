@@ -1,21 +1,128 @@
 #!/bin/bash
 
-# --- Get base branch and diff ---
-# Use origin/HEAD as a robust way to find the default branch
-base_ref=$(git symbolic-ref refs/remotes/origin/HEAD || git symbolic-ref refs/remotes/origin/main || git symbolic-ref refs/remotes/origin/master || echo "origin/main") # More robust base detection
-base=$(git rev-parse --abbrev-ref "$base_ref")
-echo "Detected base branch: $base" # Added for clarity
+set -e # Exit immediately if a command exits with a non-zero status.
+
+# --- Default values ---
+default_base_remote="origin"
+default_head_remote="origin"
+# Base branch will be auto-detected if not specified
+
+# --- Argument Parsing ---
+# Using getopt for robust parsing. ':' means the option requires an argument.
+options=$(getopt -o '' --long base-remote:,base-branch:,head-remote:,help -n "$0" -- "$@")
+if [ $? != 0 ]; then echo "Argument parsing failed. Use --help for usage." >&2; exit 1; fi
+
+# Note the quotes around "$options": they are essential!
+eval set -- "$options"
+
+base_remote="$default_base_remote"
+base_branch="" # Will be auto-detected later if empty
+head_remote="$default_head_remote"
+
+while true; do
+  case "$1" in
+    --base-remote ) base_remote="$2"; shift 2 ;;
+    --base-branch ) base_branch="$2"; shift 2 ;;
+    --head-remote ) head_remote="$2"; shift 2 ;;
+    --help )
+      echo "Usage: $0 [--base-remote <remote>] [--base-branch <branch>] [--head-remote <remote>]"
+      echo "  --base-remote  Remote containing the target branch (default: $default_base_remote)."
+      echo "  --base-branch  Target branch name (default: auto-detect from base-remote)."
+      echo "  --head-remote  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
+      exit 0 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+# If head_remote wasn't explicitly set, make it the same as base_remote
+if [ "$head_remote" = "$default_head_remote" ] && [ "$base_remote" != "$default_base_remote" ]; then
+    head_remote="$base_remote"
+fi
+
+echo "Base Remote: $base_remote"
+echo "Head Remote: $head_remote"
+
+# --- Get current branch (head branch) ---
+head_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ -z "$head_branch" ] || [ "$head_branch" = "HEAD" ]; then
+  echo "Error: Could not determine the current branch name." >&2
+  exit 1
+fi
+echo "Head Branch (Current): $head_branch"
+
+# --- Fetch base remote ---
+echo "Fetching base remote '$base_remote'..."
+git fetch "$base_remote"
+
+# --- Determine Base Branch and Ref ---
+if [ -z "$base_branch" ]; then
+  # Auto-detect base branch from the base remote's HEAD
+  base_ref=$(git symbolic-ref "refs/remotes/$base_remote/HEAD")
+  if [ -z "$base_ref" ]; then
+      echo "Error: Could not automatically determine the default branch for remote '$base_remote'." >&2
+      echo "Please specify the target branch using --base-branch." >&2
+      exit 1
+  fi
+  base_branch=$(git rev-parse --abbrev-ref "$base_ref")
+  echo "Auto-detected base branch: $base_branch"
+else
+  # User specified base branch, construct the ref
+  base_ref="refs/remotes/$base_remote/$base_branch"
+  # Verify the branch exists on the remote
+  if ! git show-ref --verify --quiet "$base_ref"; then
+      echo "Error: Branch '$base_branch' not found on remote '$base_remote'." >&2
+      echo "Please ensure the branch exists and the remote is fetched." >&2
+      exit 1
+  fi
+  echo "Using specified base branch: $base_branch"
+fi
+
+# --- Handle Forking and Pushing ---
+base_remote_url=$(git remote get-url "$base_remote" 2>/dev/null) || { echo "Error: Could not get URL for base remote '$base_remote'." >&2; exit 1; }
+
+if [ "$base_remote" != "$head_remote" ]; then
+  echo "Base and head remotes differ. Ensuring head remote '$head_remote' exists and is up-to-date."
+  if ! git remote | grep -q "^$head_remote$"; then
+    echo "Head remote '$head_remote' not found."
+    read -rp "Do you want to fork '$base_remote_url' and add it as remote '$head_remote'? [y/N] " fork_confirm
+    if [[ "$fork_confirm" =~ ^[Yy]$ ]]; then
+      echo "Forking repository..."
+      gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote"
+      echo "Fork created and added as remote '$head_remote'."
+    else
+      echo "Aborting. Head remote '$head_remote' is required." >&2
+      exit 1
+    fi
+  fi
+  echo "Pushing branch '$head_branch' to head remote '$head_remote'..."
+  git push --set-upstream "$head_remote" "$head_branch"
+else
+  # Even if remotes are the same, ensure the branch is pushed
+  echo "Pushing branch '$head_branch' to remote '$head_remote'..."
+  # Check if the remote branch already exists
+  if git show-ref --verify --quiet "refs/remotes/$head_remote/$head_branch"; then
+      git push "$head_remote" "$head_branch" # Push updates
+  else
+      git push --set-upstream "$head_remote" "$head_branch" # Initial push
+  fi
+fi
+
 
 # --- Generate diff (handle potential errors) ---
-diff=$(git diff "$base_ref"...HEAD)
+echo "Generating diff between $base_ref and HEAD..."
+diff=$(git diff "$base_ref...HEAD")
 if [ -z "$diff" ]; then
   echo "No differences found between $base and HEAD. Exiting."
+  echo "No differences found between $base_ref and HEAD. Exiting."
   exit 0
 fi
+
 # --- Get commit messages ---
-commits=$(git log "$base_ref"..HEAD --pretty=format:"%s") # Get commit subjects
+echo "Getting commit messages between $base_ref and HEAD..."
+commits=$(git log "$base_ref..HEAD" --pretty=format:"%s") # Get commit subjects
 if [ -z "$commits" ]; then
-  echo "No new commits found between $base and HEAD."
+  echo "No new commits found between $base_ref and HEAD."
   # Decide if you want to exit or proceed without commit context
 fi
 
@@ -101,15 +208,32 @@ prompt_text=$(printf "Create PR with:\n  Title: '%s'\n  Body:\n'''\n%s\n'''\n\nC
 read -rp "$prompt_text" confirm
 
 # --- Process Confirmation ---
-# Corrected logic: proceed only if 'y' or 'Y' is entered.
-# Using Bash regex matching for case-insensitivity. Default is No.
+# Corrected logic: proceed only if 'y' or 'Y' is entered. Default is No.
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
   echo "Proceeding with PR creation..."
-  # Pass title and body to gh pr create
-  gh pr create --title "$title" --body "$body"
+
+  # Extract owner/repo from base remote URL for the --repo flag
+  # Handles https:// and git@ formats
+  repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^https://github.com/([^/]+)/([^/]+)(\.git)?$#\1/\2#; s#^git@github.com:([^/]+)/([^/]+)(\.git)?$#\1/\2#')
+
+  if [[ "$repo_owner_name" == "$base_remote_url" ]]; then # Check if sed command failed to extract
+      echo "Warning: Could not automatically determine repository owner/name from URL: $base_remote_url" >&2
+      echo "Attempting 'gh pr create' without --repo flag." >&2
+      gh pr create --base "$base_branch" --head "$head_branch" --title "$title" --body "$body"
+  else
+      echo "Targeting repository: $repo_owner_name"
+      # Pass title, body, base branch, head branch, and target repo to gh pr create
+      # gh should handle the head format (e.g., user:branch) automatically if head_remote is a fork
+      gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_branch" --title "$title" --body "$body"
+  fi
+
+  if [ $? -eq 0 ]; then
+      echo "PR created successfully."
+  else
+      echo "Error: 'gh pr create' command failed." >&2
+      exit 1 # Exit with error status if gh command fails
+  fi
 else
   echo "PR creation cancelled."
   exit 1 # Exit with a non-zero status to indicate cancellation
 fi
-
-echo "PR created successfully (assuming gh command succeeded)."
