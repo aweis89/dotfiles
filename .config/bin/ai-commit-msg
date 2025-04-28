@@ -1,5 +1,7 @@
 #!/bin/bash
 
+model="${1:-gemini:gemini-2.0-flash}"
+
 git diff --staged | aichat \
-  --model gemini:gemini-2.0-flash \
-  "Respond with a conventional git commit message for these changes. Don't add any extra text aside from the commit message."
+  --model "$model" \
+  "Generate a concise conventional commit message for this change. Only respond with the commit message."
