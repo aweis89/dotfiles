@@ -8,53 +8,57 @@ default_head_remote="origin"
 # Base branch will be auto-detected if not specified
 
 # --- Argument Parsing ---
-# Using getopt for robust parsing. ':' means the option requires an argument.
-options=$(getopt -o '' --long base-remote:,base-branch:,head-remote:,help -n "$0" -- "$@")
-if [ $? != 0 ]; then
-  echo "Argument parsing failed. Use --help for usage." >&2
-  exit 1
-fi
+# Manual parsing loop
 
-# Note the quotes around "$options": they are essential!
-eval set -- "$options"
-
+# Initialize variables with defaults
 base_remote="$default_base_remote"
 base_branch="" # Will be auto-detected later if empty
 head_remote="$default_head_remote"
 
-while true; do
+while [ $# -gt 0 ]; do
   case "$1" in
-  --base-remote)
+  -br | --base-remote)
+    if [ -z "$2" ] || [[ "$2" == --* ]]; then
+      echo "Error: Missing value for $1" >&2
+      exit 1
+    fi
     base_remote="$2"
-    shift 2
+    shift 2 # Consume flag and its value
     ;;
-  --base-branch)
+  -bb | --base-branch)
+    if [ -z "$2" ] || [[ "$2" == --* ]]; then
+      echo "Error: Missing value for $1" >&2
+      exit 1
+    fi
     base_branch="$2"
-    shift 2
+    shift 2 # Consume flag and its value
     ;;
-  --head-remote)
+  -hr | --head-remote)
+    if [ -z "$2" ] || [[ "$2" == --* ]]; then
+      echo "Error: Missing value for $1" >&2
+      exit 1
+    fi
     head_remote="$2"
-    shift 2
+    shift 2 # Consume flag and its value
     ;;
-  --help)
-    echo "Usage: $0 [--base-remote <remote>] [--base-branch <branch>] [--head-remote <remote>]"
-    echo "  --base-remote  Remote containing the target branch (default: $default_base_remote)."
-    echo "  --base-branch  Target branch name (default: auto-detect from base-remote)."
-    echo "  --head-remote  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
+  -h | --help)
+    echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-h|--help]"
+    echo "  -br, --base-remote <remote>  Remote containing the target branch (default: $default_base_remote)."
+    echo "  -bb, --base-branch <branch>  Target branch name (default: auto-detect from base-remote)."
+    echo "  -hr, --head-remote <remote>  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
+    echo "  -h, --help                   Show this help message."
     exit 0
     ;;
   --)
-    shift
-    break
+    shift # Consume the -- marker
+    break # Stop processing options, remaining arguments are positional
     ;;
-  *) break ;;
+  *)
+    echo "Error: Unknown option: $1" >&2
+    exit 1
+    ;;
   esac
 done
-
-# If head_remote wasn't explicitly set, make it the same as base_remote
-if [ "$head_remote" = "$default_head_remote" ] && [ "$base_remote" != "$default_base_remote" ]; then
-  head_remote="$base_remote"
-fi
 
 echo "Base Remote: $base_remote"
 echo "Head Remote: $head_remote"
@@ -113,7 +117,8 @@ base_remote_url=$(git remote get-url "$base_remote" 2>/dev/null) || {
 
 head_specifier="$head_branch" # Default head specifier for gh pr create
 
-if [ "$base_remote" != "$head_remote" ]; then
+# Use negation of equality check for robustness
+if ! [[ "$base_remote" == "$head_remote" ]]; then
   echo "Base and head remotes differ. Ensuring head remote '$head_remote' exists and is up-to-date."
   head_remote_url=$(git remote get-url "$head_remote" 2>/dev/null) # Check if head remote exists
 
@@ -292,12 +297,15 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
   echo "Proceeding with PR creation..."
 
   # Extract owner/repo from base remote URL for the --repo flag
-  # Handles https://, https://user:token@, and git@ formats
+  # Handles https://.../ and git@...: formats, removing optional .git suffix
   echo "DEBUG: Base remote URL for repo extraction: $base_remote_url" # Added Debugging
-  repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^https://([^@]+@)?github.com/([^/]+)/([^/]+)(\.git)?$#\2/\3#; s#^git@github.com:([^/]+)/([^/]+)(\.git)?$#\1/\2#')
+  # 1. Remove scheme/host (https://.../ or similar)
+  # 2. Remove user/host (git@...: or similar)
+  # 3. Remove trailing .git if present
+  repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^[^/]+//[^/]+/(.*)#\1#; s#^[^:]+:(.*)#\1#; s#\.git$##')
 
-  # Check if sed command failed to extract (result is the same as input OR result is empty)
-  if [[ "$repo_owner_name" == "$base_remote_url" ]] || [[ -z "$repo_owner_name" ]]; then
+  # Check if the extraction resulted in an empty string or looks like a full URL still
+  if [[ -z "$repo_owner_name" ]] || [[ "$repo_owner_name" == *"/"* && "$repo_owner_name" == *":"* ]] || [[ "$repo_owner_name" == *"//"* ]]; then
     echo "Warning: Could not automatically determine repository owner/name from URL: $base_remote_url" >&2
     echo "Attempting 'gh pr create' without --repo flag." >&2
     # Use head_specifier determined earlier
