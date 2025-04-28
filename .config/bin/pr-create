@@ -67,6 +67,17 @@ if [ -z "$head_branch" ] || [ "$head_branch" = "HEAD" ]; then
 fi
 echo "Head Branch (Current): $head_branch"
 
+# --- Check for uncommitted changes ---
+# Warn but don't exit, as gh pr create might still work depending on the changes
+if ! git diff --quiet --exit-code; then
+    echo "Warning: You have uncommitted changes." >&2
+fi
+# Also check staged changes
+if ! git diff --cached --quiet --exit-code; then
+    echo "Warning: You have staged changes." >&2
+fi
+
+
 # --- Fetch base remote ---
 echo "Fetching base remote '$base_remote'..."
 git fetch "$base_remote"
@@ -80,7 +91,8 @@ if [ -z "$base_branch" ]; then
     echo "Please specify the target branch using --base-branch." >&2
     exit 1
   fi
-  base_branch=$(git rev-parse --abbrev-ref "$base_ref")
+  # Extract the short branch name from the full ref (e.g., refs/remotes/origin/main -> main)
+  base_branch=$(basename "$base_ref")
   echo "Auto-detected base branch: $base_branch"
 else
   # User specified base branch, construct the ref
@@ -94,45 +106,83 @@ else
   echo "Using specified base branch: $base_branch"
 fi
 
-# --- Handle Forking and Pushing ---
+# --- Handle Forking and Pushing (Ensure remote is up-to-date *before* diff/commit checks) ---
 base_remote_url=$(git remote get-url "$base_remote" 2>/dev/null) || {
   echo "Error: Could not get URL for base remote '$base_remote'." >&2
   exit 1
 }
 
+head_specifier="$head_branch" # Default head specifier for gh pr create
+
 if [ "$base_remote" != "$head_remote" ]; then
   echo "Base and head remotes differ. Ensuring head remote '$head_remote' exists and is up-to-date."
-  if ! git remote | grep -q "^$head_remote$"; then
+  head_remote_url=$(git remote get-url "$head_remote" 2>/dev/null) # Check if head remote exists
+
+  if [ -z "$head_remote_url" ]; then
     echo "Head remote '$head_remote' not found."
     read -rp "Do you want to fork '$base_remote_url' and add it as remote '$head_remote'? [y/N] " fork_confirm
     if [[ "$fork_confirm" =~ ^[Yy]$ ]]; then
       echo "Forking repository..."
-      gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote"
+      gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote" || { echo "Error: Failed to fork repository." >&2; exit 1; }
       echo "Fork created and added as remote '$head_remote'."
+      head_remote_url=$(git remote get-url "$head_remote") # Get URL after adding
     else
       echo "Aborting. Head remote '$head_remote' is required." >&2
       exit 1
     fi
   fi
+
   echo "Pushing branch '$head_branch' to head remote '$head_remote'..."
-  git push --set-upstream "$head_remote" "$head_branch"
-else
-  # Even if remotes are the same, ensure the branch is pushed
-  echo "Pushing branch '$head_branch' to remote '$head_remote'..."
-  # Check if the remote branch already exists
-  if git show-ref --verify --quiet "refs/remotes/$head_remote/$head_branch"; then
-    git push "$head_remote" "$head_branch" # Push updates
+  git push --set-upstream "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+
+  # Format head specifier for fork: owner:branch
+  # Handle https://user:token@github.com/owner/repo format
+  head_owner=$(echo "$head_remote_url" | sed -E 's#^https://([^@]+@)?github.com/([^/]+)/.*#\2#; s#^git@github.com:([^/]+)/.*#\1#')
+  if [[ "$head_owner" != "$head_remote_url" ]] && [ -n "$head_owner" ]; then # Check if sed worked and owner is not empty
+      head_specifier="$head_owner:$head_branch"
+      echo "Using head specifier for fork: $head_specifier"
   else
-    git push --set-upstream "$head_remote" "$head_branch" # Initial push
+      echo "Warning: Could not determine owner for head remote '$head_remote' from URL: $head_remote_url" >&2
+      echo "Using default head specifier: $head_specifier"
+      # head_specifier remains just "$head_branch"
   fi
+
+else
+  # Remotes are the same, ensure the branch is pushed
+  echo "Pushing branch '$head_branch' to remote '$head_remote'..."
+  # Check if the remote branch already exists and has an upstream set
+  upstream_branch=$(git rev-parse --abbrev-ref "$head_branch@{upstream}" 2>/dev/null)
+  remote_branch_exists=$(git ls-remote --heads "$head_remote" "$head_branch" | wc -l)
+
+  if [ -n "$upstream_branch" ] || [ "$remote_branch_exists" -gt 0 ]; then
+      # Upstream exists or remote branch exists, just push
+      git push "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+  else
+      # No upstream and remote branch doesn't exist, push with --set-upstream
+      git push --set-upstream "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+  fi
+  # head_specifier remains just "$head_branch"
 fi
 
+# --- Verify remote head branch exists after push ---
+echo "Verifying remote head branch '$head_branch' exists on '$head_remote'..."
+# Use --exit-code to get non-zero status if branch not found
+# Redirect stdout to /dev/null as we only care about the exit code
+if ! git ls-remote --exit-code --heads "$head_remote" "$head_branch" > /dev/null; then
+    echo "Error: Head branch '$head_branch' not found on remote '$head_remote' after push." >&2
+    echo "This could be a synchronization delay or a push failure." >&2
+    echo "Please check the remote repository manually." >&2
+    exit 1
+fi
+echo "Remote head branch verified."
+
+
 # --- Generate diff (handle potential errors) ---
+# Now that the remote is updated, check for diffs between the base *remote* branch and local HEAD
 echo "Generating diff between $base_ref and HEAD..."
 diff=$(git diff "$base_ref...HEAD")
 if [ -z "$diff" ]; then
-  echo "No differences found between $base and HEAD. Exiting."
-  echo "No differences found between $base_ref and HEAD. Exiting."
+  echo "No differences found between $base_ref and HEAD. Have you pushed your latest changes?"
   exit 0
 fi
 
@@ -140,8 +190,9 @@ fi
 echo "Getting commit messages between $base_ref and HEAD..."
 commits=$(git log "$base_ref..HEAD" --pretty=format:"%s") # Get commit subjects
 if [ -z "$commits" ]; then
-  echo "No new commits found between $base_ref and HEAD."
-  # Decide if you want to exit or proceed without commit context
+  # Diff exists but no distinct commit messages (e.g., after amend/squash of initial commit)
+  echo "Warning: No distinct commit messages found between $base_ref and HEAD, but a diff exists." >&2
+  # Proceed without commit context for the AI prompt
 fi
 
 # --- Find and read PR template (Case-Insensitive) ---
@@ -231,18 +282,22 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
   echo "Proceeding with PR creation..."
 
   # Extract owner/repo from base remote URL for the --repo flag
-  # Handles https:// and git@ formats
-  repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^https://github.com/([^/]+)/([^/]+)(\.git)?$#\1/\2#; s#^git@github.com:([^/]+)/([^/]+)(\.git)?$#\1/\2#')
+  # Handles https://, https://user:token@, and git@ formats
+  echo "DEBUG: Base remote URL for repo extraction: $base_remote_url" # Added Debugging
+  repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^https://([^@]+@)?github.com/([^/]+)/([^/]+)(\.git)?$#\2/\3#; s#^git@github.com:([^/]+)/([^/]+)(\.git)?$#\1/\2#')
 
-  if [[ "$repo_owner_name" == "$base_remote_url" ]]; then # Check if sed command failed to extract
+  # Check if sed command failed to extract (result is the same as input OR result is empty)
+  if [[ "$repo_owner_name" == "$base_remote_url" ]] || [[ -z "$repo_owner_name" ]]; then
     echo "Warning: Could not automatically determine repository owner/name from URL: $base_remote_url" >&2
     echo "Attempting 'gh pr create' without --repo flag." >&2
-    gh pr create --base "$base_branch" --head "$head_branch" --title "$title" --body "$body"
+    # Use head_specifier determined earlier
+    echo "Executing: gh pr create --base \"$base_branch\" --head \"$head_specifier\" --title \"$title\" --body <body omitted>"
+    gh pr create --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
   else
     echo "Targeting repository: $repo_owner_name"
-    # Pass title, body, base branch, head branch, and target repo to gh pr create
-    # gh should handle the head format (e.g., user:branch) automatically if head_remote is a fork
-    gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_branch" --title "$title" --body "$body"
+    # Pass title, body, base branch, formatted head branch specifier, and target repo to gh pr create
+    echo "Executing: gh pr create --repo \"$repo_owner_name\" --base \"$base_branch\" --head \"$head_specifier\" --title \"$title\" --body <body omitted>"
+    gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
   fi
 
   if [ $? -eq 0 ]; then
