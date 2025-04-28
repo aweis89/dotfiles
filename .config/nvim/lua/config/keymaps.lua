@@ -28,25 +28,6 @@ map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.
 map("x", "p", "pgvy")
 
-vim.api.nvim_create_autocmd("TermOpen", {
-  callback = function()
-    local function tmap(key, val)
-      local opts = { buffer = 0 }
-      vim.keymap.set("t", key, val, opts)
-    end
-    -- exit insert mode
-    tmap("jj", "<C-\\><C-n>")
-    -- enter command mode
-    tmap("<C-;>", "<C-\\><C-n>:")
-    -- scrolling up/down
-    tmap("<C-u>", "<C-\\><C-n><C-u>")
-    tmap("<C-d>", "<C-\\><C-n><C-d>")
-    -- remove line numbers
-    vim.wo.number = false
-    vim.wo.relativenumber = false
-  end,
-})
-
 vim.diagnostic.config({
   float = { border = "rounded" },
 })
@@ -65,25 +46,6 @@ local function create_tmux_split_command(direction)
 end
 create_tmux_split_command("V")
 create_tmux_split_command("H")
-
-local patterns = vim.list_extend(vim.g.root_spec[2], {
-  "go.mod",
-  "base", -- quizlet-infrastructure
-})
-
-vim.g.root_spec = { "lsp", patterns, "cwd" }
-
-local set_root = function()
-  local root = LazyVim.root.get()
-  if root == vim.fn.getcwd() then
-    return
-  end
-  vim.notify("CWD: " .. root)
-  vim.fn.chdir(root)
-end
-
-local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
-vim.api.nvim_create_autocmd("BufEnter", { group = root_augroup, callback = set_root })
 
 if vim.g.neovide then
   require("config.neovide")
