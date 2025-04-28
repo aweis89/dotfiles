@@ -27,8 +27,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
--- Autocommand to prompt for push after writing commit message
-vim.api.nvim_create_autocmd("BufWritePost", {
+-- Autocommand to prompt for push after closing the commit message buffer
+vim.api.nvim_create_autocmd("BufDelete", {
   group = augroup("ai_commit_push_prompt"),
   pattern = "COMMIT_EDITMSG",
   callback = function(args)
