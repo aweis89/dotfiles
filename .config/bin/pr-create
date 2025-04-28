@@ -264,7 +264,7 @@ ai_prompt='Based on the following context (which may include a PR template, comm
 # --- Get title and body from AI (add basic error check) ---
 # Assuming 'aichat' exists and works as described
 # Send the combined context and the updated prompt to the AI
-title_body=$(echo -e "$context" | aichat --role %functions% "$ai_prompt")
+title_body=$(echo -e "$context" | aichat "$ai_prompt")
 
 if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
   echo "Error: Failed to generate title and body from aichat."
