@@ -300,7 +300,11 @@ return {
       ---@diagnostic disable
       local overrides = {
         picker = {
-          previewers = { git = { native = true, builtin = true } },
+          previewers = {
+            -- use delta for git diffs
+            git = { builtin = false },
+            diff = { builtin = false },
+          },
           actions = {
             ["aider_search"] = function(picker)
               picker:close()
