@@ -70,13 +70,12 @@ echo "Head Branch (Current): $head_branch"
 # --- Check for uncommitted changes ---
 # Warn but don't exit, as gh pr create might still work depending on the changes
 if ! git diff --quiet --exit-code; then
-    echo "Warning: You have uncommitted changes." >&2
+  echo "Warning: You have uncommitted changes." >&2
 fi
 # Also check staged changes
 if ! git diff --cached --quiet --exit-code; then
-    echo "Warning: You have staged changes." >&2
+  echo "Warning: You have staged changes." >&2
 fi
-
 
 # --- Fetch base remote ---
 echo "Fetching base remote '$base_remote'..."
@@ -123,7 +122,10 @@ if [ "$base_remote" != "$head_remote" ]; then
     read -rp "Do you want to fork '$base_remote_url' and add it as remote '$head_remote'? [y/N] " fork_confirm
     if [[ "$fork_confirm" =~ ^[Yy]$ ]]; then
       echo "Forking repository..."
-      gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote" || { echo "Error: Failed to fork repository." >&2; exit 1; }
+      gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote" || {
+        echo "Error: Failed to fork repository." >&2
+        exit 1
+      }
       echo "Fork created and added as remote '$head_remote'."
       head_remote_url=$(git remote get-url "$head_remote") # Get URL after adding
     else
@@ -133,18 +135,21 @@ if [ "$base_remote" != "$head_remote" ]; then
   fi
 
   echo "Pushing branch '$head_branch' to head remote '$head_remote'..."
-  git push --set-upstream "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+  git push --set-upstream "$head_remote" "$head_branch" || {
+    echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+    exit 1
+  }
 
   # Format head specifier for fork: owner:branch
   # Handle https://user:token@github.com/owner/repo format
   head_owner=$(echo "$head_remote_url" | sed -E 's#^https://([^@]+@)?github.com/([^/]+)/.*#\2#; s#^git@github.com:([^/]+)/.*#\1#')
   if [[ "$head_owner" != "$head_remote_url" ]] && [ -n "$head_owner" ]; then # Check if sed worked and owner is not empty
-      head_specifier="$head_owner:$head_branch"
-      echo "Using head specifier for fork: $head_specifier"
+    head_specifier="$head_owner:$head_branch"
+    echo "Using head specifier for fork: $head_specifier"
   else
-      echo "Warning: Could not determine owner for head remote '$head_remote' from URL: $head_remote_url" >&2
-      echo "Using default head specifier: $head_specifier"
-      # head_specifier remains just "$head_branch"
+    echo "Warning: Could not determine owner for head remote '$head_remote' from URL: $head_remote_url" >&2
+    echo "Using default head specifier: $head_specifier"
+    # head_specifier remains just "$head_branch"
   fi
 
 else
@@ -155,11 +160,17 @@ else
   remote_branch_exists=$(git ls-remote --heads "$head_remote" "$head_branch" | wc -l)
 
   if [ -n "$upstream_branch" ] || [ "$remote_branch_exists" -gt 0 ]; then
-      # Upstream exists or remote branch exists, just push
-      git push "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+    # Upstream exists or remote branch exists, just push
+    git push "$head_remote" "$head_branch" || {
+      echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+      exit 1
+    }
   else
-      # No upstream and remote branch doesn't exist, push with --set-upstream
-      git push --set-upstream "$head_remote" "$head_branch" || { echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2; exit 1; }
+    # No upstream and remote branch doesn't exist, push with --set-upstream
+    git push --set-upstream "$head_remote" "$head_branch" || {
+      echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+      exit 1
+    }
   fi
   # head_specifier remains just "$head_branch"
 fi
@@ -168,14 +179,13 @@ fi
 echo "Verifying remote head branch '$head_branch' exists on '$head_remote'..."
 # Use --exit-code to get non-zero status if branch not found
 # Redirect stdout to /dev/null as we only care about the exit code
-if ! git ls-remote --exit-code --heads "$head_remote" "$head_branch" > /dev/null; then
-    echo "Error: Head branch '$head_branch' not found on remote '$head_remote' after push." >&2
-    echo "This could be a synchronization delay or a push failure." >&2
-    echo "Please check the remote repository manually." >&2
-    exit 1
+if ! git ls-remote --exit-code --heads "$head_remote" "$head_branch" >/dev/null; then
+  echo "Error: Head branch '$head_branch' not found on remote '$head_remote' after push." >&2
+  echo "This could be a synchronization delay or a push failure." >&2
+  echo "Please check the remote repository manually." >&2
+  exit 1
 fi
 echo "Remote head branch verified."
-
 
 # --- Generate diff (handle potential errors) ---
 # Now that the remote is updated, check for diffs between the base *remote* branch and local HEAD
@@ -249,7 +259,7 @@ context+="Commit Messages:\n$commits\n\nDiff:\n$diff"
 
 # --- Define the AI prompt ---
 # Instruct the AI to use all provided context, including the template
-ai_prompt='Based on the following context (which may include a PR template, commit messages, and diff), respond with a two line response: the first line should be the PR title, and the second line should be the PR body. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
+ai_prompt='Based on the following context (which may include a PR template, commit messages, and diff), your task is to respond with a PR title and body. The first line will be used as the PR title. All subsequent lines will be used as the PR body. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
 
 # --- Get title and body from AI (add basic error check) ---
 # Assuming 'aichat' exists and works as described
