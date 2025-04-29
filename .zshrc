@@ -491,7 +491,7 @@ gcloud-update-kubeconfig() {
     fi
 }
 alias guk=gcloud-update-kubeconfig
-alias guki='gcloud-update-kubeconfig --internal-ip'
+alias guki='gcloud-update-kubeconfig --dns-endpoint'
 
 _gcloud_account() {
     account=$(gcloud auth list --format="table(account)" | grep -v ACCOUNT | fzf)
