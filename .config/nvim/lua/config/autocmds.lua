@@ -20,7 +20,24 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         if msg == nil or msg == "" then
           vim.notify("No commit message")
         else
-          vim.api.nvim_buf_set_lines(0, 0, 1, false, vim.split(msg, "\n"))
+          -- Check if the first line is empty or only whitespace
+          local first_line_content = vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
+          if first_line_content == nil or vim.fn.trim(first_line_content) == "" then
+            -- First line is empty, replace it with the message
+            vim.api.nvim_buf_set_lines(0, 0, 1, false, vim.split(msg, "\n"))
+          else
+            -- First line has content, insert below with comments
+            local comment_prefix = "# "
+            local commented_msg_lines = {}
+            for _, line in ipairs(vim.split(msg, "\n")) do
+              table.insert(commented_msg_lines, comment_prefix .. line)
+            end
+
+            -- Insert a blank line at index 1 (second line)
+            vim.api.nvim_buf_set_lines(0, 1, 1, false, { "" })
+            -- Insert the commented message starting at index 2 (third line)
+            vim.api.nvim_buf_set_lines(0, 2, 2, false, commented_msg_lines)
+          end
         end
       end)
     end)
