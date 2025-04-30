@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e # Exit immediately if a command exits with a non-zero status.
+set -eo pipefail
 
 # --- Default values ---
 default_base_remote="origin"
@@ -159,25 +159,10 @@ if ! [[ "$base_remote" == "$head_remote" ]]; then
 
 else
   # Remotes are the same, ensure the branch is pushed
-  echo "Pushing branch '$head_branch' to remote '$head_remote'..."
-  # Check if the remote branch already exists and has an upstream set
-  upstream_branch=$(git rev-parse --abbrev-ref "$head_branch@{upstream}" 2>/dev/null)
-  remote_branch_exists=$(git ls-remote --heads "$head_remote" "$head_branch" | wc -l)
-
-  if [ -n "$upstream_branch" ] || [ "$remote_branch_exists" -gt 0 ]; then
-    # Upstream exists or remote branch exists, just push
-    git push "$head_remote" "$head_branch" || {
-      echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
-      exit 1
-    }
-  else
-    # No upstream and remote branch doesn't exist, push with --set-upstream
-    git push --set-upstream "$head_remote" "$head_branch" || {
-      echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
-      exit 1
-    }
-  fi
-  # head_specifier remains just "$head_branch"
+  git push "$head_remote" "$head_branch" || {
+    echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+    exit 1
+  }
 fi
 
 # --- Verify remote head branch exists after push ---
@@ -309,13 +294,11 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
     echo "Warning: Could not automatically determine repository owner/name from URL: $base_remote_url" >&2
     echo "Attempting 'gh pr create' without --repo flag." >&2
     # Use head_specifier determined earlier
-    set -x
     gh pr create --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
     set +x
   else
     echo "Targeting repository: $repo_owner_name"
     # Pass title, body, base branch, formatted head branch specifier, and target repo to gh pr create
-    set -x
     gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
     set +x
   fi
