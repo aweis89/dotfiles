@@ -14,6 +14,17 @@ default_head_remote="origin"
 base_remote="$default_base_remote"
 base_branch="" # Will be auto-detected later if empty
 head_remote="$default_head_remote"
+additional_prompt="" # Initialize additional prompt context
+
+# Read from stdin if available (non-blocking)
+if [ -t 0 ]; then
+  # stdin is a terminal, don't try to read
+  stdin_prompt=""
+else
+  # stdin is piped or redirected
+  stdin_prompt=$(cat)
+fi
+additional_prompt="$stdin_prompt" # Start with stdin content
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -41,11 +52,26 @@ while [ $# -gt 0 ]; do
     head_remote="$2"
     shift 2 # Consume flag and its value
     ;;
+  -p | --prompt)
+    if [ -z "$2" ] || [[ "$2" == --* ]]; then
+      echo "Error: Missing value for $1" >&2
+      exit 1
+    fi
+    # Append prompt argument value, add newline if stdin_prompt wasn't empty
+    if [ -n "$stdin_prompt" ]; then
+      additional_prompt="$additional_prompt"$'\n'"$2"
+    else
+      # If stdin was empty, the argument becomes the whole prompt
+      additional_prompt="$2"
+    fi
+    shift 2 # Consume flag and its value
+    ;;
   -h | --help)
-    echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-h|--help]"
+    echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-p <prompt>] [-h|--help]"
     echo "  -br, --base-remote <remote>  Remote containing the target branch (default: $default_base_remote)."
     echo "  -bb, --base-branch <branch>  Target branch name (default: auto-detect from base-remote)."
     echo "  -hr, --head-remote <remote>  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
+    echo "  -p, --prompt <prompt>        Additional context/instructions for the AI generating the title/body."
     echo "  -h, --help                   Show this help message."
     exit 0
     ;;
@@ -62,6 +88,7 @@ done
 
 echo "Base Remote: $base_remote"
 echo "Head Remote: $head_remote"
+echo "Prompt: $additional_prompt"
 
 # --- Get current branch (head branch) ---
 head_branch=$(git rev-parse --abbrev-ref HEAD)
@@ -179,8 +206,9 @@ echo "Remote head branch verified."
 
 # --- Generate diff (handle potential errors) ---
 # Now that the remote is updated, check for diffs between the base *remote* branch and local HEAD
+# Use -U500 to show 500 lines of context around each diff
 echo "Generating diff between $base_ref and HEAD..."
-diff=$(git diff "$base_ref...HEAD")
+diff=$(git diff -U500 "$base_ref...HEAD")
 if [ -z "$diff" ]; then
   echo "No differences found between $base_ref and HEAD. Have you pushed your latest changes?"
   exit 0
@@ -237,23 +265,25 @@ fi
 echo "Generating PR title and body..."
 
 # --- Combine context ---
-# Start building the context, including the template if found
+# Start building the context
 context=""
-# Use the template_content variable which is populated only if found and readable
+# Prepend additional user prompt if provided
+if [ -n "$additional_prompt" ]; then
+  context="User Instructions:\n---\n$additional_prompt\n---\n\n"
+fi
+# Append template if found and readable
 if [ -n "$template_content" ]; then
-  # Add a clear separator for the AI
-  context="PR Template:\n---\n$template_content\n---\n\n"
+  context+="PR Template:\n---\n$template_content\n---\n\n"
 fi
 # Append commit messages and diff
 context+="Commit Messages:\n$commits\n\nDiff:\n$diff"
 
 # --- Define the AI prompt ---
-# Instruct the AI to use all provided context, including the template
-ai_prompt='Based on the following context (which may include a PR template, commit messages, and diff), your task is to respond with a PR title and body. The first line will be used as the PR title. All subsequent lines will be used as the PR body. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
+# Instruct the AI to use all provided context, including potential user instructions and template
+ai_prompt='Based on the following context (which may include user instructions, a PR template, commit messages, and diff), your task is to respond with a PR title and body. The first line will be used as the PR title. All subsequent lines will be used as the PR body. Prioritize any specific user instructions. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
 
 # --- Get title and body from AI (add basic error check) ---
 # Assuming 'aichat' exists and works as described
-# Send the combined context and the updated prompt to the AI
 title_body=$(echo -e "$context" | aichat "$ai_prompt")
 
 if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
