@@ -28,11 +28,9 @@ echo "Description: $description"
 read -rp "Create issue? [y/N] " confirm
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  jira_user=${JIRA_USER:-aaron.weisberg@quizlet.com}
   result=$(echo "$description" | jira issue create --no-input \
-    -t Story \
-    --assignee "$jira_user" \
-    --parent PLATFORM-1847 \
+    "$JIRA_CREATE_ARGS" \
+    --assignee "$JIRA_USER" \
     -s "$summery" "${@:2}")
   echo "$result"
 else
