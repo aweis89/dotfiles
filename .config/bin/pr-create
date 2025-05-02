@@ -269,7 +269,7 @@ echo "Generating PR title and body..."
 context=""
 # Prepend additional user prompt if provided
 if [ -n "$additional_prompt" ]; then
-  context="User Instructions:\n---\n$additional_prompt\n---\n\n"
+  context="Additional Context:\n---\n$additional_prompt\n---\n\n"
 fi
 # Append template if found and readable
 if [ -n "$template_content" ]; then
@@ -280,11 +280,20 @@ context+="Commit Messages:\n$commits\n\nDiff:\n$diff"
 
 # --- Define the AI prompt ---
 # Instruct the AI to use all provided context, including potential user instructions and template
-ai_prompt='Based on the following context (which may include user instructions, a PR template, commit messages, and diff), your task is to respond with a PR title and body. The first line will be used as the PR title. All subsequent lines will be used as the PR body. Prioritize any specific user instructions. If a template was provided, use its structure and sections as a guide for the body, filling it in based on the commits and diff.'
+ai_prompt='
+Your task is to respond with a PR title and body that best describes these changes.
+If a template was provided, use its structure and sections as a guide for the body.
+IMPORTANT!: format the resp in the following way:
+- The first line of the response should be the PR title.
+- All subsequent lines should be the PR body.
+- There should be no additional text before or after the title and body.
+'
 
 # --- Get title and body from AI (add basic error check) ---
 # Assuming 'aichat' exists and works as described
-title_body=$(echo -e "$context" | aichat "$ai_prompt")
+printf "Context:\n%s\n\nPrompt:\n%s\n" "$context" "$ai_prompt"
+
+title_body=$(echo -e "$context" | aichat -S --model gemini:gemini-2.5-flash-preview-04-17 "$ai_prompt")
 
 if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
   echo "Error: Failed to generate title and body from aichat."
