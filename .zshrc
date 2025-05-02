@@ -301,6 +301,8 @@ alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
+alias js=jira-list
+
 pr-review() {
   set -e
 
@@ -594,69 +596,6 @@ openhands() {
     --name openhands-app-$(date +%Y%m%d%H%M%S) \
     docker.all-hands.dev/all-hands-ai/openhands:0.30 \
     python -m openhands.core.cli;
-}
-
-jira-done() {
-  id="$1"
-  jira issue move $id Start
-  jira issue move $id --resolution Done "Skip Review"
-}
-
-jira-list() {
-  # Ensure JIRA_USER is set and not empty
-  if [[ -z "$JIRA_USER" ]]; then
-    echo "Error: JIRA_USER environment variable is not set." >&2
-    return 1
-  fi
-
-  local selected
-  selected=$(jira issue list --plain --no-headers \
-    --status 'In Progress' \
-    --status Open \
-    --assignee "$JIRA_USER" \
-    | fzf --layout reverse \
-    --expect=ctrl-b \
-    --preview "jira issue view {2}" \
-    --preview-window "bottom:40%:wrap"
-  )
-
-  # Check if fzf was cancelled (e.g., Esc key)
-  if [[ -z "$selected" ]]; then
-    echo "No issue selected."
-    return 1
-  fi
-
-  # fzf with --expect outputs the key pressed on the first line,
-  # and the selected item(s) on subsequent lines.
-  local keypress=$(echo "$selected" | head -n 1)
-  local selection_line=$(echo "$selected" | tail -n +2)
-
-  # If Enter was pressed (or no key specified by --expect), proceed to open
-  if [[ -z "$selection_line" ]]; then
-    echo "No selection line found."
-    return 1
-  fi
-  local id=$(echo "$selection_line" | awk '{print $2}')
-  if [[ -z "$id" ]]; then
-    echo "Could not extract issue ID from selection: $selection_line" >&2
-    return 1
-  fi
-  if [[ "$keypress" == "ctrl-b" ]]; then
-    jira-branch "$id"
-    return 0
-  fi
-
-  echo "Opening issue: $id"
-  jira open "$id"
-}
-
-jira-branch() {
-  id=$1
-  git checkout -b $id-$(jira issue view $id --raw \
-    | jq -r '.fields.summary' \
-    | tr '[:upper:]' '[:lower:]' \
-    | tr -s ' ' '-' \
-    | tr -dc '[:alnum:]-')
 }
 
 # Created by `pipx` on 2024-11-26 01:38:49

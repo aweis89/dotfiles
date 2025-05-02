@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Ensure JIRA_USER is set and not empty
+if [[ -z "$JIRA_USER" ]]; then
+  echo "Error: JIRA_USER environment variable is not set." >&2
+  exit 1
+fi
+
+jira-done() {
+  id="$1"
+  jira issue move $id Start
+  jira issue move $id --resolution Done "Skip Review"
+}
+
+selected=$(
+  jira issue list --plain --no-headers \
+    --status 'In Progress' \
+    --status Open \
+    --assignee "$JIRA_USER" |
+    fzf --layout reverse \
+      --expect=ctrl-b \
+      --expect=ctrl-d \
+      --preview "jira issue view {2}" \
+      --preview-window "bottom:40%:wrap"
+)
+
+# Check if fzf was cancelled (e.g., Esc key)
+if [[ -z "$selected" ]]; then
+  echo "No issue selected."
+  exit 1
+fi
+
+# fzf with --expect outputs the key pressed on the first line,
+# and the selected item(s) on subsequent lines.
+keypress=$(echo "$selected" | head -n 1)
+selection_line=$(echo "$selected" | tail -n +2)
+
+# If Enter was pressed (or no key specified by --expect), proceed to open
+if [[ -z "$selection_line" ]]; then
+  echo "No selection line found."
+  exit 1
+fi
+id=$(echo "$selection_line" | awk '{print $2}')
+if [[ -z "$id" ]]; then
+  echo "Could not extract issue ID from selection: $selection_line" >&2
+  exit 1
+fi
+if [[ "$keypress" == "ctrl-b" ]]; then
+  git checkout -b "$id-$(jira issue view "$id" --raw |
+    jq -r '.fields.summary' |
+    tr '[:upper:]' '[:lower:]' |
+    tr -s ' ' '-' |
+    tr -dc '[:alnum:]-')"
+  exit 0
+fi
+
+if [[ "$keypress" == "ctrl-d" ]]; then
+  jira issue move "$id" Start
+  jira issue move "$id" --resolution Done "Skip Review"
+fi
+
+echo "Opening issue: $id"
+jira open "$id"
