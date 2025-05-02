@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e
+
+prompt="$1"
+
+ai_prompt=$(
+  cat <<EOF
+Create a Jira ticket with the following requirements.
+For the summery, only use alphanumeric characters and spaces.
+Other characters are allowed for the description.
+Keep the description concise and to the point.
+The first line of the response should be the Jira ticket summary.
+All subsequent lines should be the Jira ticket description.
+No extra text is allowed before or after the summery and description.
+
+Requirements:
+$prompt
+EOF
+)
+
+response=$(aichat -S --model gemini:gemini-2.5-flash-preview-04-17 "$ai_prompt")
+summery=$(echo "$response" | head -n 1)
+description=$(echo "$response" | tail -n +2)
+
+echo "Summery: $summery"
+echo "Description: $description"
+read -rp "Create issue? [y/N] " confirm
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  jira_user=${JIRA_USER:-aaron.weisberg@quizlet.com}
+  result=$(echo "$description" | jira issue create --no-input \
+    -t Story \
+    --assignee "$jira_user" \
+    --parent PLATFORM-1847 \
+    -s "$summery" "${@:2}")
+  echo "$result"
+else
+  exit 0
+fi
+
+url=$(echo "$result" | grep 'https://.*')
+id=$(echo "$url" | awk -F/ '{print $NF}')
+branch_desc=$(echo "$summery" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '-' | tr -dc '[:alnum:]-')
+branch_cmd="git checkout -b $id-$branch_desc"
+
+prompt_text="Run: \`$branch_cmd\` [y/N] "
+read -rp "$prompt_text" confirm
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  command $branch_cmd
+fi
