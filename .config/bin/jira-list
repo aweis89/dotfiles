@@ -18,10 +18,10 @@ selected=$(
     --status Open \
     --assignee "$JIRA_USER" |
     fzf --layout reverse \
-      --expect=ctrl-b \
+      --expect=ctrl-o \
       --expect=ctrl-d \
       --preview "jira issue view {2}" \
-      --preview-window "bottom:40%:wrap"
+      --preview-window "bottom:60%:wrap"
 )
 
 # Check if fzf was cancelled (e.g., Esc key)
@@ -48,7 +48,7 @@ fi
 
 # Handle actions based on keypress
 case "$keypress" in
-ctrl-b)
+ctrl-o)
   # Create a new branch based on the issue ID and summary
   git checkout -b "$id-$(jira issue view "$id" --raw |
     jq -r '.fields.summary' |
@@ -63,8 +63,7 @@ ctrl-d)
   jira issue move "$id" --resolution Done "Skip Review"
   # Continue to open the issue in the browser after marking as done
   ;;
-*)
-  echo "Opening issue: $id"
-  jira open "$id"
-  ;;
 esac
+
+echo "Opening issue: $id"
+jira open "$id"
