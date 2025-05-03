@@ -124,7 +124,16 @@ return {
       ---@type snacks.Config
       ---@diagnostic disable
       local overrides = {
+        gitbrowse = {
+          config = function(opts, defaults)
+            -- Strip user:password@
+            table.insert(opts.remote_patterns, { "^https://.*@(.*)", "https://%1" })
+          end,
+        },
         picker = {
+          layout = {
+            fullscreen = true,
+          },
           previewers = {
             -- use delta for git diffs
             git = { builtin = false },

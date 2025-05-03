@@ -9,8 +9,12 @@
 ---@param rhs string|function
 ---@param opts? {desc?: string, unique?: boolean, buffer?: number|boolean, remap?: boolean, silent?:boolean, nowait?: boolean}
 function keymap(mode, lhs, rhs, opts)
-  if not opts then opts = {} end
-  if opts.unique == nil then opts.unique = true end -- allows to disable with `unique=false`
+  if not opts then
+    opts = {}
+  end
+  if opts.unique == nil then
+    opts.unique = true
+  end -- allows to disable with `unique=false`
 
   -- violating `unique=true` throws an error; using `pcall` so other mappings
   -- are still loaded
@@ -25,13 +29,17 @@ local function changeScaleFactor(delta)
   local opts = { id = "scale_factor", icon = icon, title = "Scale factor" }
   vim.notify(tostring(vim.g.neovide_scale_factor), nil, opts)
 end
-keymap({ "n", "x", "i" }, "<D-=>", function() changeScaleFactor(0.01) end, { desc = " Zoom" })
-keymap({ "n", "x", "i" }, "<D-->", function() changeScaleFactor(-0.01) end, { desc = " Zoom" })
+keymap({ "n", "x", "i" }, "<D-=>", function()
+  changeScaleFactor(0.01)
+end, { desc = " Zoom" })
+keymap({ "n", "x", "i" }, "<D-->", function()
+  changeScaleFactor(-0.01)
+end, { desc = " Zoom" })
 
 --------------------------------------------------------------------------------
 
 -- CMD & ALT Keys
-vim.g.neovide_input_use_logo = true                   -- enable, so `cmd` on macOS can be used
+vim.g.neovide_input_use_logo = true -- enable, so `cmd` on macOS can be used
 vim.g.neovide_input_macos_option_key_is_meta = "none" -- disable, so `{@~` etc. can be used
 
 -- Appearance
@@ -68,20 +76,14 @@ vim.g.neovide_cursor_vfx_particle_curl = 1.3
 vim.g.neovide_fullscreen = true
 
 vim.o.guifont = "Operator Mono:h20"
-vim.g.neovide_theme = 'gruvybox'
+vim.g.neovide_theme = "gruvybox"
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    vim.cmd("cd " .. vim.env.HOME)
-  end
-})
-
-vim.keymap.set('n', '<D-s>', ':w<CR>') -- Save
-vim.keymap.set('v', '<D-c>', '"+y')    -- Copy
-vim.keymap.set('n', '<D-v>', '"+P')    -- Paste normal mode
-vim.keymap.set('v', '<D-v>', '"+P')    -- Paste visual mode
-vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
-vim.keymap.set('i', '<D-v>', '<C-R>+') -- Paste insert mode
-vim.keymap.set('t', '<C-v>', '"+P')    -- Paste terminal mode
+vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
+vim.keymap.set("v", "<D-c>", '"+y') -- Copy
+vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
+vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
+vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+vim.keymap.set("i", "<D-v>", "<C-R>+") -- Paste insert mode
+vim.keymap.set("t", "<C-v>", '"+P') -- Paste terminal mode
 
 dofile(vim.env.HOME .. "/.neovide_local.lua")
