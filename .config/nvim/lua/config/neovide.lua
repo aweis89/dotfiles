@@ -8,7 +8,7 @@
 ---@param lhs string
 ---@param rhs string|function
 ---@param opts? {desc?: string, unique?: boolean, buffer?: number|boolean, remap?: boolean, silent?:boolean, nowait?: boolean}
-function keymap(mode, lhs, rhs, opts)
+local function keymap(mode, lhs, rhs, opts)
   if not opts then
     opts = {}
   end
