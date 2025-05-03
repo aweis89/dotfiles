@@ -29,7 +29,7 @@ read -rp "Create issue? [y/N] " confirm
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
   result=$(echo "$description" | jira issue create --no-input \
-    "$JIRA_CREATE_ARGS" \
+    $JIRA_CREATE_ARGS \
     --assignee "$JIRA_USER" \
     -s "$summery" "${@:2}")
   echo "$result"
