@@ -22,11 +22,8 @@ local WINDOW_DIMENSIONS = {
 ------------------------------------------
 -- Terminal Functions
 ------------------------------------------
----Create a terminal with specified position and command
----@param position "float"|"bottom"|"top"|"left"|"right"
----@param cmd string|nil
----@return function
-local function terminal(position, cmd)
+
+local function snacks_term(cmd, position)
   local valid_positions = { float = true, bottom = true, top = true, left = true, right = true }
 
   if not valid_positions[position] then
@@ -34,16 +31,40 @@ local function terminal(position, cmd)
     return function() end
   end
 
+  local dimensions = WINDOW_DIMENSIONS[position]
+  return Snacks.terminal.toggle(cmd or DEFAULT_SHELL, {
+    env = { id = cmd or position },
+    win = {
+      position = position,
+      height = dimensions.height,
+      width = dimensions.width,
+    },
+  })
+end
+
+-- create fullscreen terminal
+local function create_fullscreen_term()
+  vim.cmd.terminal()
+  local buffer = vim.api.nvim_get_current_buf()
+  local onenter = function()
+    vim.cmd.startinsert()
+    vim.api.nvim_buf_set_keymap(buffer, "n", "q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
+  end
+  onenter()
+
+  vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    buffer = buffer,
+    callback = onenter,
+  })
+end
+
+---Create a terminal with specified position and command
+---@param position "float"|"bottom"|"top"|"left"|"right"
+---@param cmd string|nil
+---@return function
+local function terminal_func(position, cmd)
   return function()
-    local dimensions = WINDOW_DIMENSIONS[position]
-    return Snacks.terminal.toggle(cmd or DEFAULT_SHELL, {
-      env = { id = cmd or position },
-      win = {
-        position = position,
-        height = dimensions.height,
-        width = dimensions.width,
-      },
-    })
+    snacks_term(cmd, position)
   end
 end
 
@@ -57,7 +78,7 @@ return {
     event = "VeryLazy",
     opts = function(_, opts)
       table.insert(opts.dashboard.preset.keys, 2, {
-        action = terminal("float"),
+        action = create_fullscreen_term,
         desc = "Terminal",
         icon = " ",
         key = "t",
@@ -83,7 +104,7 @@ return {
       -- Direction-based terminal toggles
       {
         "<C-a>h",
-        terminal("left"),
+        terminal_func("left"),
         mode = { "n", "t", "i" },
         desc = "Toggle left terminal",
       },
@@ -97,56 +118,43 @@ return {
       },
       {
         "<C-a>l",
-        terminal("right"),
+        terminal_func("right"),
         mode = { "n", "t", "i" },
         desc = "Toggle right terminal",
       },
       {
         "<C-a>\\",
-        terminal("right"),
+        terminal_func("right"),
         mode = { "n", "t", "i" },
         desc = "Toggle right terminal",
       },
       {
         "<C-a>j",
-        terminal("bottom"),
+        terminal_func("bottom"),
         mode = { "n", "t", "i" },
         desc = "Toggle bottom terminal",
       },
       {
         "<C-a>-",
-        terminal("bottom"),
+        terminal_func("bottom"),
         mode = { "n", "t", "i" },
         desc = "Toggle bottom terminal",
       },
       {
         "<C-a>k",
-        terminal("top"),
+        terminal_func("top"),
         mode = { "n", "t", "i" },
         desc = "Toggle top terminal",
       },
       {
         "<C-a>f",
-        terminal("float"),
+        terminal_func("float"),
         mode = { "n", "t", "i" },
         desc = "Toggle floating terminal",
       },
       {
         "<C-a>c",
-        function()
-          vim.cmd.terminal()
-          local buffer = vim.api.nvim_get_current_buf()
-          local onenter = function()
-            vim.cmd.startinsert()
-            vim.api.nvim_buf_set_keymap(buffer, "n", "q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-          end
-          onenter()
-
-          vim.api.nvim_create_autocmd({ "BufEnter" }, {
-            buffer = buffer,
-            callback = onenter,
-          })
-        end,
+        create_fullscreen_term,
         mode = { "n", "t", "i" },
         desc = "Create new terminal",
       },
