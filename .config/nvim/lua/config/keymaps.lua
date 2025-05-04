@@ -47,6 +47,9 @@ end
 create_tmux_split_command("V")
 create_tmux_split_command("H")
 
+-- disable the default pager
+vim.env.PAGER = "cat"
+
 if vim.g.neovide then
   require("config.neovide")
 end
