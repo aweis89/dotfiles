@@ -14,24 +14,29 @@ end
 -- create terminal
 local function create_term()
   vim.cmd.terminal()
-  local bufid = vim.api.nvim_get_current_buf()
-  local winid = vim.api.nvim_get_current_win()
   local onenter = function()
     vim.cmd.startinsert()
+    -- defer required when opening terminal from snacks buffer picker for options to take effect
+    vim.defer_fn(function()
+      local winid = vim.api.nvim_get_current_win()
+      vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
+      vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
 
-    vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
-    vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
-
-    vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
+      local bufid = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
+      vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
+      vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
+      vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
+    end, 100)
   end
   onenter()
 
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
-    buffer = bufid,
-    callback = onenter,
+    buffer = vim.api.nvim_get_current_buf(),
+    -- callback = onenter,
+    callback = function(args)
+      onenter()
+    end,
   })
 end
 
