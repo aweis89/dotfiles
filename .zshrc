@@ -564,7 +564,20 @@ bindkey '^J' menu-select
 bindkey -M menuselect '^J' menu-complete
 bindkey -M menuselect '^K' reverse-menu-complete
 
-bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
+# bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
+_aichat_zsh() {
+    if [[ -n "$BUFFER" ]]; then
+        local _old=$BUFFER
+        BUFFER+="  󰚭"
+        zle -I && zle redisplay
+        BUFFER=$(command aichat -r '%shell%' "$_old")
+        # change to this when issue is resolved: https://github.com/sigoden/aichat/issues/531
+        # BUFFER=$(command aichat -e "$_old")
+        zle end-of-line
+    fi
+}
+zle -N _aichat_zsh
+bindkey '^o' _aichat_zsh
 
 # Function to edit the current ZLE buffer, adapting to Neovim environment
 nvim-edit-cmd() {
@@ -632,6 +645,7 @@ nvim-edit-cmd() {
 
   # Force ZLE to redraw the prompt and buffer
   zle redisplay
+  # zle end-of-line
 }
 # Register the function as a Zsh Line Editor (ZLE) widget
 zle -N nvim-edit-cmd

@@ -18,13 +18,14 @@ local function create_term()
   local winid = vim.api.nvim_get_current_win()
   local onenter = function()
     vim.cmd.startinsert()
-    vim.wo[winid].number = false
-    vim.wo[winid].relativenumber = false
 
-    vim.api.nvim_buf_set_keymap(bufid, "n", "q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(bufid, "n", "c", "<cmd>close<cr>", { noremap = true, silent = true })
+    vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
+    vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
+
     vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
   end
   onenter()
 

@@ -1,3 +1,8 @@
+-- auto triggering breaks in neovide
+if vim.g.neovide then
+  return {}
+end
+
 return {
   {
     "lewis6991/gitsigns.nvim",
