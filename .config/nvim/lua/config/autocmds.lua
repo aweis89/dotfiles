@@ -104,3 +104,19 @@ vim.api.nvim_create_autocmd("BufEnter", {
     vim.notify("cwd: " .. root)
   end,
 })
+
+local zshEditCmdGroup = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true })
+vim.api.nvim_create_autocmd("BufEnter", { -- Trigger when entering a buffer
+  group = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true }),
+  pattern = "zsh-edit-cmd-nvim.*", -- Match buffers whose name starts with this pattern
+  -- Adjust if your mktemp pattern in zsh is different
+  desc = "Map q to :wq for Zsh command editing buffer",
+  callback = function(args)
+    vim.keymap.set("n", "q", ":wq<CR>", {
+      buffer = args.buf,
+      noremap = true,
+      silent = true,
+      desc = "Write and quit Zsh edit buffer",
+    })
+  end,
+})

@@ -23,6 +23,17 @@ map("n", "<leader>rr", ":!%:p<cr>", { desc = "Run current file" })
 map("n", "Q", "q", { noremap = true, silent = false })
 map("n", "q", "<nop>", { noremap = false, silent = false })
 
+-- Move focus between splits
+map("n", "<C-a>h", "<C-w>h", { desc = "Focus left split" })
+map("n", "<C-a>j", "<C-w>j", { desc = "Focus down split" })
+map("n", "<C-a>k", "<C-w>k", { desc = "Focus up split" })
+map("n", "<C-a>l", "<C-w>l", { desc = "Focus right split" })
+map("t", "<C-a>h", "<C-\\><C-n><C-w>h", { desc = "Focus left split" })
+map("t", "<C-a>j", "<C-\\><C-n><C-w>j", { desc = "Focus down split" })
+map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
+map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
+map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
+
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.
