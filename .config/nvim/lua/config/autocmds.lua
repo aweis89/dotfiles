@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
             -- Insert the commented message starting at index 2 (third line)
             vim.api.nvim_buf_set_lines(0, 2, 2, false, commented_msg_lines)
           end
+          vim.notify("Commit message generated", vim.log.levels.INFO)
         end
       end)
     end)
@@ -105,7 +106,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
 })
 
-local zshEditCmdGroup = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true })
 vim.api.nvim_create_autocmd("BufEnter", { -- Trigger when entering a buffer
   group = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true }),
   pattern = "zsh-edit-cmd-nvim.*", -- Match buffers whose name starts with this pattern
