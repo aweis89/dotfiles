@@ -78,12 +78,11 @@ vim.g.neovide_fullscreen = true
 vim.o.guifont = "Operator Mono:h20"
 vim.g.neovide_theme = "gruvybox"
 
-vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
-vim.keymap.set("v", "<D-c>", '"+y') -- Copy
-vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
-vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
-vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-vim.keymap.set("i", "<D-v>", "<C-R>+") -- Paste insert mode
-vim.keymap.set("t", "<C-v>", '"+P') -- Paste terminal mode
+vim.api.nvim_set_keymap("v", "<sc-c>", '"+y', { noremap = true })
+vim.api.nvim_set_keymap("n", "<sc-v>", 'l"+P', { noremap = true })
+vim.api.nvim_set_keymap("v", "<sc-v>", '"+P', { noremap = true })
+vim.api.nvim_set_keymap("c", "<sc-v>", '<C-o>l<C-o>"+<C-o>P<C-o>l', { noremap = true })
+vim.api.nvim_set_keymap("i", "<sc-v>", '<ESC>l"+Pli', { noremap = true })
+vim.api.nvim_set_keymap("t", "<sc-v>", '<C-\\><C-n>"+Pi', { noremap = true })
 
 dofile(vim.env.HOME .. "/.neovide_local.lua")
