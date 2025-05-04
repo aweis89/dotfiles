@@ -1,23 +1,11 @@
 ------------------------------------------
 -- Terminal Configuration
--- Handles general terminal functionality and integration
+-- Simulates similar mappings to tmux using neovmi terminals
 ------------------------------------------
 
 if vim.env.TMUX then
   return {}
 end
-
-------------------------------------------
--- Constants
-------------------------------------------
-local DEFAULT_SHELL = vim.env.SHELL or "zsh"
-local WINDOW_DIMENSIONS = {
-  float = { width = 0.97, height = 0.97 },
-  bottom = { width = 0.5, height = 0.5 },
-  top = { width = 0.5, height = 0.5 },
-  left = { width = 0.5, height = 0.5 },
-  right = { width = 0.5, height = 0.5 },
-}
 
 ------------------------------------------
 -- Terminal Functions
@@ -55,6 +43,23 @@ return {
     optional = true,
     event = "VeryLazy",
     opts = function(_, opts)
+      local function map(mode, lhs, rhs, opts)
+        opts = opts or { noremap = true, silent = true }
+        vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+      end
+
+      -- Move focus between splits
+      map("n", "<C-a>h", "<C-w>h", { desc = "Focus left split" })
+      map("n", "<C-a>j", "<C-w>j", { desc = "Focus down split" })
+      map("n", "<C-a>k", "<C-w>k", { desc = "Focus up split" })
+      map("n", "<C-a>l", "<C-w>l", { desc = "Focus right split" })
+      map("t", "<C-a>h", "<C-\\><C-n><C-w>h", { desc = "Focus left split" })
+      map("t", "<C-a>j", "<C-\\><C-n><C-w>j", { desc = "Focus down split" })
+      map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
+      map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
+      -- Close terminal
+      map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
+
       opts.dashboard.preset.header = ""
       table.insert(opts.dashboard.preset.keys, 2, {
         action = create_term,
