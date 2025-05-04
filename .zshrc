@@ -566,6 +566,78 @@ bindkey -M menuselect '^K' reverse-menu-complete
 
 bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
 
+# Function to edit the current ZLE buffer, adapting to Neovim environment
+nvim-edit-cmd() {
+  # Use mktemp to create a secure temporary file
+  local TMPFILE
+  TMPFILE=$(mktemp "${TMPDIR:-/tmp}/zsh-edit-cmd-nvim.XXXXXX.sh") || {
+    print -zr "Error: Failed to create temporary file."
+    return 1
+  }
+
+  # Ensure cleanup happens even if the script is interrupted or exits
+  # Use EXIT trap for general cleanup, specific signals for interruption
+  trap 'rm -f "$TMPFILE"; trap - INT TERM EXIT' INT TERM EXIT
+
+  # Write the current command buffer to the temporary file
+  print -n -- "$BUFFER" > "$TMPFILE" || {
+     print -zr "Error: Failed to write to temporary file '$TMPFILE'."
+     # Cleanup handled by trap
+     return 1
+   }
+
+  # Check if running inside a Neovim terminal session
+  if [[ -n "$NVIM" && -S "$NVIM" ]]; then
+    # Get initial modification time (macOS stat syntax)
+    local initial_mtime
+    initial_mtime=$(stat -f %m "$TMPFILE")
+
+    # Open the file in Neovim via the server
+    command nvim --server "$NVIM" --remote-tab "$TMPFILE" 1>/dev/null 2>&1
+
+    # Wait for the file to be modified or deleted
+    while true; do
+      local current_mtime=$(stat -f %m "$TMPFILE" 2>/dev/null)
+
+      # Check if modification time has changed
+      if [[ "$current_mtime" != "$initial_mtime" ]]; then
+        break
+      fi
+      sleep 0.5
+    done
+  else
+    # --- Running OUTSIDE Neovim ---
+    # Launch a new Neovim instance, ensuring it interacts with the correct TTY
+    command nvim "$TMPFILE" <$TTY >$TTY 2>&1
+  fi
+
+  # Read the potentially modified content back into BUFFER.
+  # Check if the file still exists and is readable first.
+  if [[ -f "$TMPFILE" && -r "$TMPFILE" ]]; then
+    # Using command cat ensures we get the raw file content
+    BUFFER=$(command cat "$TMPFILE")
+  else
+    # Handle case where temp file is missing or unreadable after editing attempt
+    print -zr "Error: Temporary file '$TMPFILE' not found or unreadable after editing."
+    return 1 # Cleanup handled by trap
+  fi
+
+  # Set the cursor position to the end of the new buffer content
+  CURSOR=${#BUFFER}
+
+  # Explicitly clean up the temporary file and remove the trap
+  # (Trap already covers exit, but explicit removal is good practice)
+  rm -f "$TMPFILE"
+  trap - INT TERM EXIT # Remove the trap
+
+  # Force ZLE to redraw the prompt and buffer
+  zle redisplay
+}
+# Register the function as a Zsh Line Editor (ZLE) widget
+zle -N nvim-edit-cmd
+# Bind the widget to a key sequence
+bindkey '^e' nvim-edit-cmd
+
 # argc-completions
 export ARGC_COMPLETIONS_ROOT="$HOME/.local/argc-completions"
 if [[ ! -d "$ARGC_COMPLETIONS_ROOT" ]]; then
@@ -580,23 +652,6 @@ argc_scripts=(aichat aider)
 # To add completions for all:
 # argc_scripts=( $(ls -p -1 "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions" | sed -n 's/\.sh$//p') )
 source <(argc --argc-completions zsh $argc_scripts)
-
-openhands() {
-  docker run -it --rm \
-    --pull=always \
-    -e SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.30-nikolaik \
-    -e SANDBOX_USER_ID=$(id -u) \
-    -e WORKSPACE_MOUNT_PATH=$PWD \
-    -e LLM_API_KEY=$ANTHROPIC_API_KEY \
-    -e LLM_MODEL=claude-3-5-sonnet-latest \
-    -v $PWD:/opt/workspace_base \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v ~/.openhands-state:/.openhands-state \
-    --add-host host.docker.internal:host-gateway \
-    --name openhands-app-$(date +%Y%m%d%H%M%S) \
-    docker.all-hands.dev/all-hands-ai/openhands:0.30 \
-    python -m openhands.core.cli;
-}
 
 # Created by `pipx` on 2024-11-26 01:38:49
 export PATH="$PATH:$HOME/.local/bin"
