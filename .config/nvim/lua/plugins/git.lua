@@ -20,6 +20,8 @@ return {
     },
     config = true,
     keys = {
+      { "<leader>dvh", "<cmd>DiffviewOpen HEAD<cr>", desc = "DiffviewOpen HEAD" },
+
       {
         "<leader>dvp",
         function()
