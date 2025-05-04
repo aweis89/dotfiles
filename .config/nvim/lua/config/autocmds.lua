@@ -7,7 +7,7 @@ end
 
 -- Autocommand to populate commit message using c-msg
 vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = augroup("ai_commit_msg_populate"), -- Renamed group for clarity
+  group = augroup("ai_commit_msg_populate"),
   pattern = "COMMIT_EDITMSG",
   callback = function()
     vim.notify("Generating commit message...", vim.log.levels.INFO)
