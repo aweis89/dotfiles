@@ -133,9 +133,22 @@ return {
       },
       {
         "<C-a>c",
-        terminal("float"),
+        function()
+          vim.cmd.terminal()
+          local buffer = vim.api.nvim_get_current_buf()
+          local onenter = function()
+            vim.cmd.startinsert()
+            vim.api.nvim_buf_set_keymap(buffer, "n", "q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
+          end
+          onenter()
+
+          vim.api.nvim_create_autocmd({ "BufEnter" }, {
+            buffer = buffer,
+            callback = onenter,
+          })
+        end,
         mode = { "n", "t", "i" },
-        desc = "Toggle floating terminal",
+        desc = "Create new terminal",
       },
     },
     opts = {
