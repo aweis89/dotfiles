@@ -576,9 +576,16 @@ preexec() {
     local dir=$(basename $PWD)
     # Use nvim_buf_set_name API function, targeting the specific buffer
     # Construct the new name - using "term://" is just cosmetic
-    local new_name="term://$dir:$1"
-    # Escape the new_name for the vim command string
-    new_name=$(printf '%s\n' "$new_name" | sed "s/'/''/g") # Basic single quote escaping
+    # Extract the first two words of the command
+    local cmd_part
+    cmd_part=$(echo "$1" | awk '{print $1, $2}')
+    # Truncate to 50 characters if necessary
+    if [[ ${#cmd_part} -gt 50 ]]; then
+      cmd_part=${cmd_part:0:50}
+    fi
+    local new_name="term://$dir:$cmd_part"
+    # Remove single and double quotes from the new_name
+    new_name=$(printf '%s\n' "$new_name" | sed "s/['\"]//g")
 
     # Send the API command (adjust 'nv -x' as needed for your alias)
     # Ensure your 'nv -x' correctly handles executing Lua/Vimscript expressions
