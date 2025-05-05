@@ -37,6 +37,9 @@ export GOPRIVATE=github.com/calendly
 
 if [[ -n "$NVIM" ]]; then
   EDITOR="nvim --server $NVIM --remote-tab"
+  VISUAL="$EDITOR"
+  alias vim="$EDITOR"
+  alias nvim="$EDITOR"
 fi
 
 fzf_default_opts=(
