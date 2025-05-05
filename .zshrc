@@ -36,7 +36,7 @@ export FC_ENABLE=1
 export GOPRIVATE=github.com/calendly
 
 if [[ -n "$NVIM" ]]; then
-  EDITOR="nvim --cmd 'let g:flatten_wait=1'"
+  EDITOR="nvim --server $NVIM --remote-tab"
 fi
 
 fzf_default_opts=(

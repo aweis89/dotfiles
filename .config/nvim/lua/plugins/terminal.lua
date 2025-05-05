@@ -17,8 +17,6 @@ end
 return {
   {
     "folke/snacks.nvim",
-    optional = true,
-    event = "VeryLazy",
     opts = function(_, opts)
       -- Define local map function *inside* opts function scope if needed elsewhere in opts
       local function map(mode, lhs, rhs, map_opts)
