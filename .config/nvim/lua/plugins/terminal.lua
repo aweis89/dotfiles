@@ -7,37 +7,8 @@ if vim.env.TMUX then
   return {}
 end
 
-------------------------------------------
--- Terminal Functions
-------------------------------------------
-
--- create terminal
 local function create_term()
   vim.cmd.terminal()
-  local onenter = function()
-    vim.cmd.startinsert()
-    -- defer required when opening terminal from snacks buffer picker for options to take effect
-    vim.defer_fn(function()
-      local winid = vim.api.nvim_get_current_win()
-      vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
-      vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
-
-      local bufid = vim.api.nvim_get_current_buf()
-      vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-      vim.api.nvim_buf_set_keymap(bufid, "t", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
-      vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>q", "<cmd>bwipeout!<cr>", { noremap = true, silent = true })
-      vim.api.nvim_buf_set_keymap(bufid, "n", "<localleader>c", "<cmd>close<cr>", { noremap = true, silent = true })
-    end, 100)
-  end
-  onenter()
-
-  vim.api.nvim_create_autocmd({ "BufEnter" }, {
-    buffer = vim.api.nvim_get_current_buf(),
-    -- callback = onenter,
-    callback = function(args)
-      onenter()
-    end,
-  })
 end
 
 ------------------------------------------
@@ -49,9 +20,10 @@ return {
     optional = true,
     event = "VeryLazy",
     opts = function(_, opts)
-      local function map(mode, lhs, rhs, opts)
-        opts = opts or { noremap = true, silent = true }
-        vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+      -- Define local map function *inside* opts function scope if needed elsewhere in opts
+      local function map(mode, lhs, rhs, map_opts)
+        map_opts = map_opts or { noremap = true, silent = true }
+        vim.keymap.set(mode, lhs, rhs, map_opts) -- Use vim.keymap.set for consistency
       end
 
       -- Move focus between splits
@@ -63,8 +35,8 @@ return {
       map("t", "<C-a>j", "<C-\\><C-n><C-w>j", { desc = "Focus down split" })
       map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
       map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
-      -- Close terminal
-      map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
+      -- Close terminal (using buffer wipeout)
+      map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal buffer" })
 
       opts.dashboard.preset.header = ""
       table.insert(opts.dashboard.preset.keys, 2, {

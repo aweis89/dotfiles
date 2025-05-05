@@ -120,3 +120,51 @@ vim.api.nvim_create_autocmd("BufEnter", { -- Trigger when entering a buffer
     })
   end,
 })
+
+local termOptsGroup = vim.api.nvim_create_augroup("TerminalWindowOptions", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
+  group = termOptsGroup,
+  pattern = "*", -- Trigger for any buffer entered
+  callback = function(args)
+    -- Get the buffer type of the buffer just entered
+    local buftype = vim.api.nvim_get_option_value("buftype", { buf = args.buf })
+    -- Get the current window ID (where the buffer was entered)
+    local winid = vim.api.nvim_get_current_win()
+
+    if buftype == "terminal" then
+      vim.defer_fn(function()
+        vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("cursorline", false, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("signcolumn", "no", { win = winid, scope = "local" })
+
+        vim.cmd.startinsert()
+        vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
+
+        local function bmap(mode, lhs, rhs)
+          vim.api.nvim_buf_set_keymap(args.buf, mode, lhs, rhs, { noremap = true, silent = true })
+        end
+        bmap("t", "<localleader>q", "<cmd>bwipeout!<cr>")
+        bmap("t", "<localleader>c", "<cmd>close<cr>")
+        bmap("n", "<localleader>q", "<cmd>bwipeout!<cr>")
+        bmap("n", "<localleader>c", "<cmd>close<cr>")
+      end, 100)
+    else
+      -- Get the current global values
+      local global_number = vim.api.nvim_get_option_value("number", { scope = "global" })
+      local global_relativenumber = vim.api.nvim_get_option_value("relativenumber", { scope = "global" })
+      local global_cursorline = vim.api.nvim_get_option_value("cursorline", { scope = "global" })
+      local global_signcolumn = vim.api.nvim_get_option_value("signcolumn", { scope = "global" })
+
+      vim.defer_fn(function()
+        -- Apply the global values locally to this window
+        vim.api.nvim_set_option_value("number", global_number, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("relativenumber", global_relativenumber, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("cursorline", global_cursorline, { win = winid, scope = "local" })
+        vim.api.nvim_set_option_value("signcolumn", global_signcolumn, { win = winid, scope = "local" })
+      end, 100)
+    end
+  end,
+})
