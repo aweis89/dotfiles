@@ -262,10 +262,21 @@ zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 aichat() {
-  GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@"
+  if [[ -t 1 ]]; then
+    local pager_cmd
+    if [[ -n "$PAGER" ]]; then
+      # Use ${=PAGER} to force word splitting
+      pager_cmd=(${(z)PAGER})
+    else
+      pager_cmd=(less -R)
+    fi
+    GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@" | $pager_cmd
+  else
+    # Otherwise, just run the command
+    GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@"
+  fi
 }
-
-alias '??'='aichat -e'
+alias '??'='command aichat -e'
 alias ai=aichat
 
 alias k=kubectl
