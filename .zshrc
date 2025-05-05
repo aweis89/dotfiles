@@ -564,6 +564,12 @@ bindkey '^J' menu-select
 bindkey -M menuselect '^J' menu-complete
 bindkey -M menuselect '^K' reverse-menu-complete
 
+chpwd () {
+  # Sync nvim working directory with terminal
+  # https://github.com/I60R/page
+  [ ! -z "$NVIM" ] && nv -x "lcd $PWD"
+}
+
 # bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
 _aichat_zsh() {
     if [[ -n "$BUFFER" ]]; then
