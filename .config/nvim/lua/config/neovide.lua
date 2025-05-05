@@ -74,15 +74,12 @@ vim.opt.guicursor = {
 -- vim.g.neovide_cursor_vfx_particle_curl = 1.3
 
 vim.g.neovide_fullscreen = true
-
 vim.o.guifont = "Operator Mono:h20"
 vim.g.neovide_theme = "gruvybox"
 
-vim.api.nvim_set_keymap("v", "<sc-c>", '"+y', { noremap = true })
-vim.api.nvim_set_keymap("n", "<sc-v>", 'l"+P', { noremap = true })
-vim.api.nvim_set_keymap("v", "<sc-v>", '"+P', { noremap = true })
-vim.api.nvim_set_keymap("c", "<sc-v>", '<C-o>l<C-o>"+<C-o>P<C-o>l', { noremap = true })
-vim.api.nvim_set_keymap("i", "<sc-v>", '<ESC>l"+Pli', { noremap = true })
-vim.api.nvim_set_keymap("t", "<sc-v>", '<C-\\><C-n>"+Pi', { noremap = true })
+-- vim.api.nvim_set_keymap("i", "<d-v>", '<ESC>l"+Pli', { noremap = true })
+-- vim.api.nvim_set_keymap("n", "<d-v>", 'l"+P', { noremap = true })
+-- vim.api.nvim_set_keymap("c", "<c-v>", '<C-o>l<C-o>"+<C-o>P<C-o>l', { noremap = true })
+-- vim.api.nvim_set_keymap("t", "<sc-v>", '<C-\\><C-n>"+PA', { noremap = true })
 
 dofile(vim.env.HOME .. "/.neovide_local.lua")

@@ -34,7 +34,9 @@ map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
 map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
 map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
 
-map("t", "<C-v>", "<C-\\><C-n>p", { noremap = false, desc = "Paste from clipboard" })
+map("t", "<C-v>", "<C-\\><C-n>pA", { noremap = false, desc = "Paste from clipboard" })
+map("i", "<C-v>", "<ESC>pA", { noremap = false, desc = "Paste from clipboard" })
+map("n", "<C-v>", "pA", { noremap = false, desc = "Paste from clipboard" })
 
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
