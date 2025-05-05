@@ -63,7 +63,7 @@ create_tmux_split_command("V")
 create_tmux_split_command("H")
 
 -- neovim pager: https://github.com/I60R/page
-vim.env.PAGER = "page -q 90000 -z 90000"
+vim.env.PAGER = "page" -- -q 90000 -z 90000
 
 if vim.g.neovide then
   require("config.neovide")

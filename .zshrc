@@ -602,9 +602,8 @@ preexec() {
     # Remove single and double quotes from the new_name
     new_name=$(printf '%s\n' "$new_name" | sed "s/['\"]//g")
 
-    # Send the API command (adjust 'nv -x' as needed for your alias)
-    # Ensure your 'nv -x' correctly handles executing Lua/Vimscript expressions
-    nv -x "lua vim.api.nvim_buf_set_name(0, '$new_name')" 2>/dev/null
+    # Use pcall to silently attempt buffer rename, assign result to avoid potential output
+    nv -x "lua local ok, res = pcall(vim.api.nvim_buf_set_name, 0, '${new_name}')" &>/dev/null
   fi
 }
 
