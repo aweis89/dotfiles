@@ -131,9 +131,6 @@ return {
           end,
         },
         picker = {
-          layout = {
-            fullscreen = true,
-          },
           previewers = {
             -- use delta for git diffs
             git = { builtin = false },

@@ -573,7 +573,8 @@ chpwd () {
 preexec() {
   # Check if running in nvim and if the specific env var is set
   if [ ! -z "$NVIM" ]; then
-    local dir=$(basename $PWD)
+    pwd=$(echo $PWD | sed "s%$HOME%~%")
+    local dir=$(basename $pwd)
     # Use nvim_buf_set_name API function, targeting the specific buffer
     # Construct the new name - using "term://" is just cosmetic
     # Extract the first two words of the command
@@ -589,7 +590,7 @@ preexec() {
 
     # Send the API command (adjust 'nv -x' as needed for your alias)
     # Ensure your 'nv -x' correctly handles executing Lua/Vimscript expressions
-    nv -x "lua vim.api.nvim_buf_set_name(0, '$new_name')"
+    nv -x "lua vim.api.nvim_buf_set_name(0, '$new_name')" 2>/dev/null
   fi
 }
 
