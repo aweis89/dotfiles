@@ -152,7 +152,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
         bmap("t", "<localleader>c", "<cmd>close<cr>")
         bmap("n", "<localleader>q", "<cmd>bwipeout!<cr>")
         bmap("n", "<localleader>c", "<cmd>close<cr>")
-      else
+      elseif buftype == "" then
         -- Get the current global values
         -- local global_number = vim.api.nvim_get_option_value("number", { scope = "global" })
         -- local global_relativenumber = vim.api.nvim_get_option_value("relativenumber", { scope = "global" })
