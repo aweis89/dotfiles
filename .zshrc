@@ -570,6 +570,22 @@ chpwd () {
   [ ! -z "$NVIM" ] && nv -x "lcd $PWD"
 }
 
+preexec() {
+  # Check if running in nvim and if the specific env var is set
+  if [ ! -z "$NVIM" ]; then
+    local dir=$(basename $PWD)
+    # Use nvim_buf_set_name API function, targeting the specific buffer
+    # Construct the new name - using "term://" is just cosmetic
+    local new_name="term://$dir:$1"
+    # Escape the new_name for the vim command string
+    new_name=$(printf '%s\n' "$new_name" | sed "s/'/''/g") # Basic single quote escaping
+
+    # Send the API command (adjust 'nv -x' as needed for your alias)
+    # Ensure your 'nv -x' correctly handles executing Lua/Vimscript expressions
+    nv -x "lua vim.api.nvim_buf_set_name(0, '$new_name')"
+  fi
+}
+
 # bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
 _aichat_zsh() {
     if [[ -n "$BUFFER" ]]; then

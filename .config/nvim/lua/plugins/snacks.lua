@@ -175,6 +175,10 @@ return {
             projects = {
               dev = { "~/c", "~/q", "~/p" },
             },
+            buffers = {
+              -- don't show old buffer name when renamed (e.g. terminal buffers)
+              unloaded = false,
+            },
             git_status = {
               win = {
                 input = {
