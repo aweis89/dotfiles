@@ -141,23 +141,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
         vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
         vim.api.nvim_set_option_value("cursorline", false, { win = winid, scope = "local" })
         vim.api.nvim_set_option_value("signcolumn", "no", { win = winid, scope = "local" })
-
-        vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
-
-        local function bmap(mode, lhs, rhs)
-          vim.api.nvim_buf_set_keymap(bufid, mode, lhs, rhs, { noremap = true, silent = true })
-        end
-        bmap("t", "<localleader>q", "<cmd>bwipeout!<cr>")
-        bmap("t", "<localleader>c", "<cmd>close<cr>")
-        bmap("n", "<localleader>q", "<cmd>bwipeout!<cr>")
-        bmap("n", "<localleader>c", "<cmd>close<cr>")
       elseif buftype == "" then
-        -- Get the current global values
-        -- local global_number = vim.api.nvim_get_option_value("number", { scope = "global" })
-        -- local global_relativenumber = vim.api.nvim_get_option_value("relativenumber", { scope = "global" })
-        -- local global_cursorline = vim.api.nvim_get_option_value("cursorline", { scope = "global" })
-        -- local global_signcolumn = vim.api.nvim_get_option_value("signcolumn", { scope = "global" })
         local global_number = true
         local global_relativenumber = true
         local global_cursorline = true

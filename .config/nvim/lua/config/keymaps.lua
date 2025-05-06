@@ -36,7 +36,13 @@ map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
 
 map("t", "<C-v>", "<C-\\><C-n>pA", { noremap = false, desc = "Paste from clipboard" })
 map("i", "<C-v>", "<ESC>pA", { noremap = false, desc = "Paste from clipboard" })
-map("n", "<C-v>", "pA", { noremap = false, desc = "Paste from clipboard" })
+map("c", "<C-v>", "<C-R>+", { noremap = false, desc = "Paste from clipboard" })
+
+-- Terminal close
+map("t", "<localleader>q", "<cmd>bwipeout!<cr>")
+map("t", "<localleader>c", "<cmd>close<cr>")
+map("n", "<localleader>q", "<cmd>bwipeout!<cr>")
+map("n", "<localleader>c", "<cmd>close<cr>")
 
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
