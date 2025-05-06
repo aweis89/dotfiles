@@ -118,6 +118,30 @@ return {
         end,
         desc = "Lazy Sources",
       },
+      {
+        "<C-f>f",
+        function()
+          Snacks.picker.files()
+        end,
+        desc = "Find files",
+        mode = "t",
+      },
+      {
+        "<C-f>g",
+        function()
+          Snacks.picker.git_files()
+        end,
+        desc = "Find git files",
+        mode = "t",
+      },
+      {
+        "<C-f>r",
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = "Find recent files",
+        mode = "t",
+      },
     },
     ---@type fun(_, opts): snacks.Config
     ---@param opts snacks.Config

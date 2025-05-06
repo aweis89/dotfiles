@@ -4,7 +4,7 @@
 
 local function map(mode, lhs, rhs, opts)
   opts = opts or { noremap = true, silent = true }
-  vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+  vim.keymap.set(mode, lhs, rhs, opts)
 end
 
 map("i", "<C-l>", "<Right>", { desc = "Insert mode move right" })
