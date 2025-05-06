@@ -6,8 +6,7 @@
     tmux attach -t default
 }
 
-emulate zsh -c "$(direnv export zsh)"
-
+# typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
 typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}/${P9K_KUBECONTEXT_NAMESPACE}@${P9K_KUBECONTEXT_CLUSTER}'
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -16,8 +15,6 @@ typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-emulate zsh -c "$(direnv hook zsh)"
 
 # Skip global compinit
 skip_global_compinit=1
@@ -480,14 +477,6 @@ gcloud-project() {
 }
 alias gp=gcloud-project
 
-_gcloud_account() {
-    account=$(gcloud auth list --format="table(account)" | grep -v ACCOUNT | fzf)
-    set -x
-    gcloud config set account $account
-    set +x
-}
-alias gcloud-account=_gcloud_account
-
 gcloud-fzf() {
     cmd=$(__gcloud_sel)
     [[ -n "$cmd" ]] && eval "$cmd"
@@ -578,13 +567,31 @@ bindkey '^J' menu-select
 bindkey -M menuselect '^J' menu-complete
 bindkey -M menuselect '^K' reverse-menu-complete
 
-chpwd () {
+_nvim_sync_chpwd_hook() {
   # Sync nvim working directory with terminal
   # https://github.com/I60R/page
   [ ! -z "$NVIM" ] && nv -x "lcd $PWD"
 }
+typeset -ag chpwd_functions
+if (( ! ${chpwd_functions[(I)_nvim_sync_chpwd_hook]} )); then
+  chpwd_functions+=(_nvim_sync_chpwd_hook)
+fi
 
-preexec() {
+_direnv_hook() {
+  trap -- '' SIGINT
+  eval "$("/opt/homebrew/bin/direnv" export zsh 2>/dev/null)"
+  trap - SIGINT
+}
+typeset -ag precmd_functions
+if (( ! ${precmd_functions[(I)_direnv_hook]} )); then
+  precmd_functions=(_direnv_hook $precmd_functions)
+fi
+typeset -ag chpwd_functions
+if (( ! ${chpwd_functions[(I)_direnv_hook]} )); then
+  chpwd_functions=(_direnv_hook $chpwd_functions)
+fi
+
+_set_nvim_term_buffer_name() {
   # Check if running in nvim and if the specific env var is set
   if [ ! -z "$NVIM" ]; then
     pwd=$(echo $PWD | sed "s%$HOME%~%")
@@ -606,6 +613,10 @@ preexec() {
     nv -x "lua local ok, res = pcall(vim.api.nvim_buf_set_name, 0, '${new_name}')" &>/dev/null
   fi
 }
+typeset -ag preexec_functions
+if (( ! ${preexec_functions[(I)_set_nvim_term_buffer_name]} )); then
+  preexec_functions+=(_set_nvim_term_buffer_name)
+fi
 
 # bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
 _aichat_zsh() {
@@ -720,7 +731,6 @@ export PATH="$HOME/.config/bin:$PATH"
 if [[ "$PROFILE_STARTUP" == true ]]; then
     zprof
 fi
-typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
