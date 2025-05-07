@@ -9,6 +9,21 @@
 # typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
 typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}/${P9K_KUBECONTEXT_NAMESPACE}@${P9K_KUBECONTEXT_CLUSTER}'
 
+_direnv_hook() {
+  trap -- '' SIGINT
+  eval "$("/opt/homebrew/bin/direnv" export zsh)"
+  trap - SIGINT
+}
+
+typeset -ag precmd_functions
+if (( ! ${precmd_functions[(I)_direnv_hook]} )); then
+  precmd_functions=(_direnv_hook $precmd_functions)
+fi
+typeset -ag chpwd_functions
+if (( ! ${chpwd_functions[(I)_direnv_hook]} )); then
+  chpwd_functions=(_direnv_hook $chpwd_functions)
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -554,18 +569,19 @@ bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
 bindkey '^s' multi_fzf_completion
-bindkey '^F' _fzf_file_widget
-bindkey '^b' _fzf_file_widget
 bindkey '^g' fzf-gcloud-widget
-
 bindkey '^I' menu-select
 bindkey "$terminfo[kcbt]" menu-select
 bindkey -M menuselect '^I' menu-complete
 bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
-
 bindkey '^J' menu-select
 bindkey -M menuselect '^J' menu-complete
 bindkey -M menuselect '^K' reverse-menu-complete
+
+if [[ -n "$NVIM" ]]; then
+  bindkey '^F' _fzf_file_widget
+  bindkey '^b' _fzf_file_widget
+fi
 
 _nvim_sync_chpwd_hook() {
   # Sync nvim working directory with terminal
@@ -575,20 +591,6 @@ _nvim_sync_chpwd_hook() {
 typeset -ag chpwd_functions
 if (( ! ${chpwd_functions[(I)_nvim_sync_chpwd_hook]} )); then
   chpwd_functions+=(_nvim_sync_chpwd_hook)
-fi
-
-_direnv_hook() {
-  trap -- '' SIGINT
-  eval "$("/opt/homebrew/bin/direnv" export zsh 2>/dev/null)"
-  trap - SIGINT
-}
-typeset -ag precmd_functions
-if (( ! ${precmd_functions[(I)_direnv_hook]} )); then
-  precmd_functions=(_direnv_hook $precmd_functions)
-fi
-typeset -ag chpwd_functions
-if (( ! ${chpwd_functions[(I)_direnv_hook]} )); then
-  chpwd_functions=(_direnv_hook $chpwd_functions)
 fi
 
 _set_nvim_term_buffer_name() {
