@@ -6,9 +6,6 @@
     tmux attach -t default
 }
 
-# typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
-typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}/${P9K_KUBECONTEXT_NAMESPACE}@${P9K_KUBECONTEXT_CLUSTER}'
-
 _direnv_hook() {
   trap -- '' SIGINT
   eval "$("/opt/homebrew/bin/direnv" export zsh)"
@@ -30,6 +27,9 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+# typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}'
+typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION='${P9K_KUBECONTEXT_NAME}/${P9K_KUBECONTEXT_NAMESPACE}@${P9K_KUBECONTEXT_CLUSTER}'
 
 # Skip global compinit
 skip_global_compinit=1
@@ -663,11 +663,9 @@ nvim-edit-cmd() {
 
     # Open the file in Neovim via the server
     command nvim --server "$NVIM" --remote-tab "$TMPFILE" 1>/dev/null 2>&1
-
     # Wait for the file to be modified or deleted
     while true; do
       local current_mtime=$(stat -f %m "$TMPFILE" 2>/dev/null)
-
       # Check if modification time has changed
       if [[ "$current_mtime" != "$initial_mtime" ]]; then
         break
