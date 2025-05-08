@@ -32,7 +32,7 @@ map("t", "<C-a>h", "<C-\\><C-n><C-w>h", { desc = "Focus left split" })
 map("t", "<C-a>j", "<C-\\><C-n><C-w>j", { desc = "Focus down split" })
 map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
 map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
-map("t", "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
+map({ "t", "n" }, "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
 
 -- zoom
 map({ "t", "n", "i" }, "<C-a>i", Snacks.zen.zoom, { desc = "Zoom toggle" })
