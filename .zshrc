@@ -49,7 +49,8 @@ export FC_ENABLE=1
 export GOPRIVATE=github.com/calendly
 
 if [[ -n "$NVIM" ]]; then
-  EDITOR="nvim --server $NVIM --remote-tab"
+  # EDITOR="nvim --server $NVIM --remote-tab"
+  EDITOR="nvim-remote-tab-wait"
   VISUAL="$EDITOR"
   alias vim="$EDITOR"
   alias nvim="$EDITOR"
@@ -658,21 +659,7 @@ nvim-edit-cmd() {
 
   # Check if running inside a Neovim terminal session
   if [[ -n "$NVIM" && -S "$NVIM" ]]; then
-    # Get initial modification time (macOS stat syntax)
-    local initial_mtime
-    initial_mtime=$(stat -f %m "$TMPFILE")
-
-    # Open the file in Neovim via the server
-    command nvim --server "$NVIM" --remote-tab "$TMPFILE" 1>/dev/null 2>&1
-    # Wait for the file to be modified or deleted
-    while true; do
-      local current_mtime=$(stat -f %m "$TMPFILE" 2>/dev/null)
-      # Check if modification time has changed
-      if [[ "$current_mtime" != "$initial_mtime" ]]; then
-        break
-      fi
-      sleep 0.5
-    done
+    nvim-remote-tab-wait "$TMPFILE"
   else
     # --- Running OUTSIDE Neovim ---
     # Launch a new Neovim instance, ensuring it interacts with the correct TTY

@@ -2,6 +2,8 @@
 
 set -eo pipefail
 
+direnv allow .
+
 # --- Default values ---
 default_base_remote="origin"
 default_head_remote="origin"
@@ -334,12 +336,10 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
     echo "Attempting 'gh pr create' without --repo flag." >&2
     # Use head_specifier determined earlier
     gh pr create --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
-    set +x
   else
     echo "Targeting repository: $repo_owner_name"
     # Pass title, body, base branch, formatted head branch specifier, and target repo to gh pr create
     gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_specifier" --title "$title" --body "$body"
-    set +x
   fi
 
   if [ $? -eq 0 ]; then
