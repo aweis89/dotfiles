@@ -1,11 +1,16 @@
-local AiderModels = { "gemini", "o4-mini", "sonnet" }
+local AiderModels = {
+  "gemini",
+  "o4-mini",
+  "sonnet",
+  "flash",
+}
 
 return {
   {
     "aweis89/ai-terminals.nvim",
     dir = "~/p/ai-terminals.nvim",
     cmd = "AiderModel",
-    ---@type ConfigType
+    ---@type fun(): ConfigType
     opts = function()
       -- Completion function for AiderModel command
       _G.AiderModelComplete = function()
@@ -19,7 +24,7 @@ return {
           vim.notify(model)
           vim.fn.writefile({ model }, ModelFile)
         end
-      end, { nargs = 1, complete = "customlist,v:lua._G.AiderModelComplete" })
+      end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
 
       return {
         show_diffs_on_leave = { delta = true },
@@ -53,6 +58,27 @@ return {
       -- default_position = "right",
     end,
     keys = {
+      -- Aider model selection
+      {
+        "<leader>amg",
+        "<cmd>AiderModel gemini<cr>",
+        desc = "Aider Model: gemini",
+      },
+      {
+        "<leader>amc",
+        "<cmd>AiderModel sonnet<cr>",
+        desc = "Aider Model: claude",
+      },
+      {
+        "<leader>amo",
+        "<cmd>AiderModel o4-mini<cr>",
+        desc = "Aider Model: o4-mini",
+      },
+      {
+        "<leader>amf",
+        "<cmd>AiderModel flash<cr>",
+        desc = "Aider Model: flash",
+      },
       -- Diff Tools
       {
         "<leader>dvo",
