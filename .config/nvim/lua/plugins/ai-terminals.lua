@@ -1,22 +1,57 @@
+local AiderModels = { "gemini", "o4-mini", "sonnet" }
+
 return {
   {
     "aweis89/ai-terminals.nvim",
     dir = "~/p/ai-terminals.nvim",
+    cmd = "AiderModel",
     ---@type ConfigType
-    opts = {
-      show_diffs_on_leave = { delta = true },
-      terminals = {
-        aichat = {
-          cmd = function()
-            return string.format(
-              "AICHAT_LIGHT_THEME=%s GEMINI_API_BASE=http://localhost:8080/v1beta aichat -r %%functions%% --session",
-              tostring(vim.o.background == "light") -- Convert boolean to string "true" or "false"
-            )
-          end,
+    opts = function()
+      -- Completion function for AiderModel command
+      _G.AiderModelComplete = function()
+        return AiderModels
+      end
+
+      local ModelFile = vim.fn.stdpath("state") .. "/aider-model.txt"
+      vim.api.nvim_create_user_command("AiderModel", function(opt)
+        local model = opt.args
+        if model ~= "" then
+          vim.notify(model)
+          vim.fn.writefile({ model }, ModelFile)
+        end
+      end, { nargs = 1, complete = "customlist,v:lua._G.AiderModelComplete" })
+
+      return {
+        show_diffs_on_leave = { delta = true },
+        terminals = {
+          aichat = {
+            cmd = function()
+              return string.format(
+                "AICHAT_LIGHT_THEME=%s GEMINI_API_BASE=http://localhost:8080/v1beta aichat -r %%functions%% --session",
+                tostring(vim.o.background == "light") -- Convert boolean to string "true" or "false"
+              )
+            end,
+          },
+          aider = {
+            cmd = function()
+              vim.notify("called")
+              local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
+              if vim.fn.filereadable(ModelFile) == 1 then
+                local model_override_lines = vim.fn.readfile(ModelFile)
+                if #model_override_lines > 0 and model_override_lines[1] ~= nil and model_override_lines[1] ~= "" then
+                  local model = vim.fn.trim(model_override_lines[1]) -- Trim whitespace
+                  if model ~= "" then
+                    cmd = cmd .. " --model " .. model
+                  end
+                end
+              end
+              return cmd
+            end,
+          },
         },
-      },
+      }
       -- default_position = "right",
-    },
+    end,
     keys = {
       -- Diff Tools
       {
