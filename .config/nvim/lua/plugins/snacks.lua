@@ -24,13 +24,6 @@ local function send_search(picker)
   require("ai-terminals").send(table.concat(items, "\n"), { term = term })
 end
 
----@param picker snacks.Picker
-local function copy_preview(picker)
-  local selected = picker:selected({ fallback = true })
-  local item = selected[1]
-  vim.fn.setreg("*", item.preview.text)
-end
-
 ---@param args table
 local function git_exec(args)
   local root = Snacks.git.get_root()
@@ -200,7 +193,10 @@ return {
               refresh_picker(picker)
             end,
             ["copy_preview"] = function(picker)
-              copy_preview(picker)
+              local selected = picker:selected({ fallback = true })
+              if selected[1] and selected[1].preview and selected[1].preview.text then
+                vim.fn.setreg("*", selected[1].preview.text)
+              end
               picker:close()
             end,
           },
