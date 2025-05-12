@@ -1,26 +1,14 @@
 #!/opt/homebrew/bin/zsh
 
+
 # Auto tmux
 [[ -z "$TMUX" ]] && [[ -z "$NVIM" ]] && {
     tmux new-session -ds default
     tmux attach -t default
 }
 
-export DIRENV_LOG_FORMAT=
-# eval "$(direnv hook zsh)"
-_direnv_hook() {
-  trap -- '' SIGINT
-  eval "$("/opt/homebrew/bin/direnv" export zsh)"
-  trap - SIGINT
-}
-typeset -ag precmd_functions
-if (( ! ${precmd_functions[(I)_direnv_hook]} )); then
-  precmd_functions=(_direnv_hook $precmd_functions)
-fi
-typeset -ag chpwd_functions
-if (( ! ${chpwd_functions[(I)_direnv_hook]} )); then
-  chpwd_functions=(_direnv_hook $chpwd_functions)
-fi
+export DIRENV_LOG_FORMAT=""
+eval "$(direnv hook zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -59,7 +47,7 @@ fi
 fzf_default_opts=(
   --multi
   --keep-right
-  --layout=reverse 
+  --layout=reverse
   --color=light
   "--bind='ctrl-p:toggle-preview'"
   "--bind='ctrl-s:toggle+down'"
@@ -152,7 +140,7 @@ _fzf_file_widget() {
     if [[ -n "$dir" ]]; then
         cd "$dir" 2>/dev/null || return
     fi
-    
+
     local result
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         result=$(_fzf_git_files)
@@ -165,7 +153,7 @@ _fzf_file_widget() {
           --query "$query"
         )
     fi
-    
+
     if [[ -n "$result" ]]; then
         result="${result#./}"
         LBUFFER="${LBUFFER%$partial}$result"
@@ -173,14 +161,14 @@ _fzf_file_widget() {
 
     # Change back to original directory
     cd "$orig_dir"
-    
+
     zle reset-prompt
 }
 zle -N _fzf_file_widget
 
 _fzf_git_files() {
     _fzf_git_check || return
-    
+
      local root query
     root=$(git rev-parse --show-toplevel)
     [[ $root != "$PWD" ]] && query='!../ '
@@ -320,8 +308,8 @@ alias kittys='vim ~/.config/kitty/kitty.conf'
 alias zshs='vim ~/.zshrc'
 alias zshl='vim ~/.zshrc.local'
 alias zshp='vim ~/.zsh/.zsh_plugins.txt'
-alias ff='find . -type f -name'
-alias fd='find . -type d -name'
+# alias ff='find . -type f -name'
+# alias fd='find . -type d -name'
 alias explain='unset github_token; gh copilot explain'
 alias ggroot='cd $(git rev-parse --show-toplevel)'
 
@@ -357,7 +345,7 @@ pr-review() {
     echo "PR $pr is already merged"
     return 0
   fi
-  
+
   gh pr checkout "$pr"
   git diff "origin/$base"
 

@@ -57,7 +57,7 @@ vim.opt.guicursor = {
 }
 
 vim.g.neovide_fullscreen = true
-vim.o.guifont = "Operator Mono,Fira Code:h20"
+vim.o.guifont = "JetBrains Mono:b:h18"
 vim.g.neovide_theme = "gruvybox"
 
 -- vim.api.nvim_set_keymap("i", "<d-v>", '<ESC>l"+Pli', { noremap = true })

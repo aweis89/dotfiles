@@ -32,7 +32,16 @@ return {
         "<C-a>c",
         create_term,
         mode = { "n", "t", "i" },
-        desc = "Create new terminal",
+        desc = "Create terminal",
+      },
+      {
+        "<C-a>t",
+        function()
+          vim.cmd.tabnew()
+          create_term()
+        end,
+        mode = { "n", "t", "i" },
+        desc = "Create terminal tab",
       },
       {
         "<C-a>v",

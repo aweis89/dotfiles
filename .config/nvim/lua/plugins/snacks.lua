@@ -37,20 +37,6 @@ local function git_exec(args)
   end
 end
 
-local function ai_review(p, item)
-  p:close()
-  local pr_num = item.number
-
-  vim.notify("Reviewing PR #" .. pr_num)
-  local pr_view_system = vim.system({ "gh", "pr", "view", pr_num }, {})
-  local pr_diff_system = vim.system({ "gh", "pr", "diff", pr_num }, {})
-  local context = "PR Body\n:" .. pr_view_system:wait().stdout .. "\n\nDiff\n" .. pr_diff_system:wait().stdout
-  local term = require("ai-terminals").get("aider")
-  require("ai-terminals").send(
-    "/ask " .. context .. "\n Review this PR",
-    { term = term, submit = false, insert_mode = true }
-  )
-end
 ---@param selected snacks.picker.Item[]
 local function git_reset_file(selected)
   for _, s in ipairs(selected) do
@@ -146,6 +132,7 @@ return {
     ---@type fun(_, opts): snacks.Config
     ---@param opts snacks.Config
     opts = function(_, opts)
+      -- opts.dashboard.enabled = false
       opts.dashboard.preset.header = ""
       local git_log_settings = {
         win = {
