@@ -24,6 +24,13 @@ local function send_search(picker)
   require("ai-terminals").send(table.concat(items, "\n"), { term = term })
 end
 
+---@param picker snacks.Picker
+local function copy_preview(picker)
+  local selected = picker:selected({ fallback = true })
+  local item = selected[1]
+  vim.fn.setreg("*", item.preview.text)
+end
+
 ---@param args table
 local function git_exec(args)
   local root = Snacks.git.get_root()
@@ -192,10 +199,23 @@ return {
               rm_file(picker:selected({ fallback = true }))
               refresh_picker(picker)
             end,
+            ["copy_preview"] = function(picker)
+              copy_preview(picker)
+              picker:close()
+            end,
           },
           sources = {
             projects = {
               dev = { "~/c", "~/q", "~/p" },
+            },
+            notifications = {
+              win = {
+                input = {
+                  keys = {
+                    ["<cr>"] = { "copy_preview", mode = { "n", "i" } },
+                  },
+                },
+              },
             },
             buffers = {
               -- don't show old buffer name when renamed (e.g. terminal buffers)
