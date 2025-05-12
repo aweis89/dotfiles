@@ -102,9 +102,13 @@ vim.api.nvim_create_autocmd("BufEnter", {
       return
     end
     vim.fn.chdir(root)
-    vim.notify("cwd: " .. root)
+    vim.notify("cwd: " .. root, vim.log.levels.DEBUG)
   end,
 })
+vim.keymap.set("n", "<leader>fd", function()
+  local cwd = "~" .. string.sub(vim.fn.getcwd(), #vim.env.HOME + 1)
+  vim.notify(cwd)
+end, { desc = "Show CWD" })
 
 vim.api.nvim_create_autocmd("BufEnter", { -- Trigger when entering a buffer
   group = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true }),

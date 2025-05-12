@@ -75,6 +75,11 @@ local themes = {
     dark = "rose-pine",
     plugin = { "rose-pine/neovim" },
   },
+  everforest = {
+    light = "everforest",
+    dark = "everforest",
+    plugin = { "neanias/everforest-nvim" },
+  },
 }
 
 local reload_theme_path = "~/tmp/theme-reload"
@@ -118,6 +123,9 @@ end
 
 local light_theme = themes.tokyonight
 local dark_theme = themes.tokyonight
+
+local light_theme = themes.everforest
+local dark_theme = themes.everforest
 
 local plugins = {
   {

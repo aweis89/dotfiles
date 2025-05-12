@@ -27,6 +27,7 @@ return {
       end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
 
       return {
+        default_position = "right",
         show_diffs_on_leave = { delta = true },
         terminals = {
           aichat = {
@@ -39,7 +40,6 @@ return {
           },
           aider = {
             cmd = function()
-              vim.notify("called")
               local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
               if vim.fn.filereadable(ModelFile) == 1 then
                 local model_override_lines = vim.fn.readfile(ModelFile)
@@ -55,7 +55,6 @@ return {
           },
         },
       }
-      -- default_position = "right",
     end,
     keys = {
       -- Aider model selection
