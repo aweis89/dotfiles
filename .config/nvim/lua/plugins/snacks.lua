@@ -71,6 +71,12 @@ local function refresh_picker(picker)
   Snacks.picker.resume()
 end
 
+local function defer_insert()
+  vim.defer_fn(function()
+    vim.cmd.startinsert()
+  end, 200)
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -105,18 +111,10 @@ return {
         desc = "Lazy Sources",
       },
       {
-        "<c-f>s",
-        function()
-          local lazypath = vim.fn.stdpath("data") .. "/lazy/"
-          Snacks.picker.files({ dirs = { lazypath } })
-        end,
-        desc = "Lazy Sources",
-        mode = "t",
-      },
-      {
         "<C-f>f",
         function()
           Snacks.picker.files()
+          defer_insert()
         end,
         desc = "Find Files",
         mode = "t",
@@ -125,6 +123,7 @@ return {
         "<C-f>c",
         function()
           Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+          defer_insert()
         end,
         desc = "Find Config Files",
         mode = "t",
@@ -133,6 +132,7 @@ return {
         "<C-f>g",
         function()
           Snacks.picker.git_files()
+          defer_insert()
         end,
         desc = "Find Git Files",
         mode = "t",
@@ -141,6 +141,7 @@ return {
         "<C-f>r",
         function()
           Snacks.picker.recent()
+          defer_insert()
         end,
         desc = "Find Recent Files",
         mode = "t",
