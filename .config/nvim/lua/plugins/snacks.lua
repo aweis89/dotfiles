@@ -94,7 +94,7 @@ return {
         function()
           Snacks.picker.pick()
         end,
-        desc = "Snacks pick pickers",
+        desc = "Snacks Pickers",
       },
       {
         "<leader>fs",
@@ -105,11 +105,28 @@ return {
         desc = "Lazy Sources",
       },
       {
+        "<c-f>s",
+        function()
+          local lazypath = vim.fn.stdpath("data") .. "/lazy/"
+          Snacks.picker.files({ dirs = { lazypath } })
+        end,
+        desc = "Lazy Sources",
+        mode = "t",
+      },
+      {
         "<C-f>f",
         function()
           Snacks.picker.files()
         end,
-        desc = "Find files",
+        desc = "Find Files",
+        mode = "t",
+      },
+      {
+        "<C-f>c",
+        function()
+          Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+        end,
+        desc = "Find Config Files",
         mode = "t",
       },
       {
@@ -117,7 +134,7 @@ return {
         function()
           Snacks.picker.git_files()
         end,
-        desc = "Find git files",
+        desc = "Find Git Files",
         mode = "t",
       },
       {
@@ -125,7 +142,7 @@ return {
         function()
           Snacks.picker.recent()
         end,
-        desc = "Find recent files",
+        desc = "Find Recent Files",
         mode = "t",
       },
     },
