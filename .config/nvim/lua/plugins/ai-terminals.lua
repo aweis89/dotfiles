@@ -40,7 +40,7 @@ return {
           },
           aider = {
             cmd = function()
-              local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
+              local cmd = string.format("aider --watch-files --%s-mode --chat-mode ask", vim.o.background)
               if vim.fn.filereadable(ModelFile) == 1 then
                 local model_override_lines = vim.fn.readfile(ModelFile)
                 if #model_override_lines > 0 and model_override_lines[1] ~= nil and model_override_lines[1] ~= "" then
