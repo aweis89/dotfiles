@@ -45,6 +45,5 @@ junegunn/fzf-git.sh path:fzf-git.sh
 esc/conda-zsh-completion kind:fpath
 junegunn/fzf path:shell/key-bindings.zsh
 zdharma-continuum/fast-syntax-highlighting
-zsh-users/zsh-autosuggestions
 marlonrichert/zsh-autocomplete
 lincheney/fzf-tab-completion path:zsh
