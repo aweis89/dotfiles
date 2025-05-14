@@ -79,8 +79,11 @@ setopt \
   SHARE_HISTORY \
   INTERACTIVE_COMMENTS \
   HIST_EXPIRE_DUPS_FIRST \
+  HIST_FIND_NO_DUPS \
+  HIST_IGNORE_ALL_DUPS \
   HIST_IGNORE_DUPS \
   HIST_IGNORE_SPACE \
+  HIST_SAVE_NO_DUPS \
   HIST_VERIFY SHARE_HISTORY
 
 # Line wrapping for pane resizing
@@ -110,8 +113,10 @@ keys=(
     /:accept:'repeat-fzf-completion'
 )
 zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
-zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
+# zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
 zstyle ':autocomplete:*' async on
+# This will make Autocomplete behave as if you pressed CtrlR at the start of each new command line
+zstyle ':autocomplete:*' default-context history-incremental-search-backward
 
 _evalcache zoxide init zsh
 
