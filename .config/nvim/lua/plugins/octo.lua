@@ -22,6 +22,27 @@ return {
     "pwntester/octo.nvim",
     cmd = "Octo",
     opts = {
+      gh_env = function()
+        local home = vim.fn.expand("~")
+        local token_config = {
+          [home .. "/q"] = "Q_GITHUB_TOKEN",
+          [home .. "/c"] = "C_GITHUB_TOKEN",
+        }
+
+        local token_env_var = "P_GITHUB_TOKEN" -- Default token
+
+        local cwd = vim.fn.getcwd()
+        for path_prefix, env_var_name in pairs(token_config) do
+          if cwd:sub(1, #path_prefix) == path_prefix then
+            token_env_var = env_var_name
+            break
+          end
+        end
+
+        return {
+          GH_TOKEN = vim.env[token_env_var],
+        }
+      end,
       picker = "snacks",
       picker_config = {
         mappings = {
