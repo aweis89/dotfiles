@@ -281,6 +281,8 @@ aichat() {
 alias '??'='command aichat -e'
 alias ai=aichat
 
+
+alias gh="direnv exec . gh"
 alias k=kubectl
 alias kcn=kubens
 alias kcu=kubectx
