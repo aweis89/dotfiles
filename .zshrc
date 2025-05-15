@@ -637,7 +637,7 @@ nvim-edit-cmd() {
 
   # Check if running inside a Neovim terminal session
   if [[ -n "$NVIM" && -S "$NVIM" ]]; then
-    nvim-remote-tab-wait "$TMPFILE"
+    nvim-remote "$TMPFILE"
   else
     # --- Running OUTSIDE Neovim ---
     # Launch a new Neovim instance, ensuring it interacts with the correct TTY
