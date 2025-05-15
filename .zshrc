@@ -79,10 +79,10 @@ setopt \
   SHARE_HISTORY \
   INTERACTIVE_COMMENTS \
   HIST_EXPIRE_DUPS_FIRST \
-  HIST_FIND_NO_DUPS \
-  HIST_IGNORE_ALL_DUPS \
   HIST_IGNORE_DUPS \
   HIST_IGNORE_SPACE \
+  HIST_IGNORE_ALL_DUPS \
+  HIST_FIND_NO_DUPS \
   HIST_SAVE_NO_DUPS \
   HIST_VERIFY SHARE_HISTORY
 
@@ -268,26 +268,9 @@ zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
-aichat() {
-  if [[ -t 1 ]]; then
-    local pager_cmd
-    if [[ -n "$PAGER" ]]; then
-      # Use ${=PAGER} to force word splitting
-      pager_cmd=(${(z)PAGER})
-    else
-      pager_cmd=(less -R)
-    fi
-    GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@" | $pager_cmd
-  else
-    # Otherwise, just run the command
-    GEMINI_API_BASE=http://localhost:8080/v1beta command aichat "$@"
-  fi
-}
 alias '??'='command aichat -e'
 alias ai=aichat
 
-
-alias gh="direnv exec . gh"
 alias k=kubectl
 alias kcn=kubens
 alias kcu=kubectx
