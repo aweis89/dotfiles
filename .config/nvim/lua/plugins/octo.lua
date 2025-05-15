@@ -22,6 +22,7 @@ return {
     "pwntester/octo.nvim",
     cmd = "Octo",
     opts = {
+      gh_cmd = "/opt/homebrew/bin/gh",
       gh_env = function()
         local home = vim.fn.expand("~")
         local token_config = {

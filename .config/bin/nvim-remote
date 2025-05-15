@@ -2,7 +2,7 @@
 
 path="$1"
 initial_mtime=$(stat -f %m "$path")
-command nvim --server "$NVIM" --remote-tab "$path"
+command nvim --server "$NVIM" --remote "$path"
 # Wait for the file to be modified or deleted
 while true; do
   current_mtime=$(stat -f %m "$path" 2>/dev/null)
