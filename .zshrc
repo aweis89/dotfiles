@@ -38,7 +38,7 @@ export GOPRIVATE=github.com/calendly
 
 if [[ -n "$NVIM" ]]; then
   # EDITOR="nvim --server $NVIM --remote-tab"
-  EDITOR="nvim-remote-tab-wait"
+  EDITOR="nvim-remote"
   VISUAL="$EDITOR"
   alias vim="$EDITOR"
   alias nvim="$EDITOR"
