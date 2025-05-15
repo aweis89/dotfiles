@@ -10,6 +10,8 @@
 
 detect-urls: false
 
+reasoning-effort: high
+
 alias:
   - "fast:claude-3-5-haiku-20241022"
   - "gem:gemini/gemini-exp-1206"
@@ -33,6 +35,7 @@ alias:
 ## Specify the model to use for the main chat
 # model: openrouter/google/gemini-2.5-pro-exp-03-25:free
 model: gemini
+# model: o4-mini
 
 ## Use claude-3-opus-20240229 model for the main chat
 #opus: false
