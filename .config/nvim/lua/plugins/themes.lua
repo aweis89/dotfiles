@@ -79,7 +79,8 @@ local themes = {
     light = "everforest",
     dark = "everforest",
     plugin = {
-      "neanias/everforest-nvim",
+      -- "neanias/everforest-nvim",
+      "aweis89/everforest-nvim",
       config = function()
         require("everforest").setup({
           current_word_style = "underline",
