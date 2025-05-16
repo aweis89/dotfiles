@@ -116,7 +116,7 @@ zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
 # zstyle ':autocomplete:*' delay 0.5  # don't slow down typing
 zstyle ':autocomplete:*' async on
 # This will make Autocomplete behave as if you pressed CtrlR at the start of each new command line
-zstyle ':autocomplete:*' default-context history-incremental-search-backward
+# zstyle ':autocomplete:*' default-context history-incremental-search-backward
 
 _evalcache zoxide init zsh
 
@@ -238,7 +238,8 @@ multi_fzf_completion() {
         fi
 
         # Default to regular fzf completion
-        zle fzf_completion
+        # zle fzf_completion
+        zle fzf-completion
         return
     fi
 
@@ -545,7 +546,7 @@ bindkey -r '^t'
 
 bindkey '^o' pass-to-aichat-widget
 bindkey '^w' forward-word
-bindkey '^r' fzf-history-widget
+# bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
 bindkey '^s' multi_fzf_completion
