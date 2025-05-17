@@ -1,8 +1,11 @@
 local AiderModels = {
-  "gemini",
-  "o4-mini",
-  "sonnet",
-  "flash",
+  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "gemini-copilot" },
+  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "gemini-copilot" },
+  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
+  { model = "gemini" }, -- Used by <leader>amg keybinding
+  { model = "o4-mini" }, -- Used by <leader>amo keybinding
+  { model = "sonnet" }, -- Used by <leader>amc keybinding
+  { model = "flash" }, -- Used by <leader>amf keybinding
 }
 
 return {
@@ -14,15 +17,43 @@ return {
     opts = function()
       -- Completion function for AiderModel command
       _G.AiderModelComplete = function()
-        return AiderModels
+        local completions = {}
+        for _, entry in ipairs(AiderModels) do
+          if entry.alias and entry.alias ~= "" then
+            table.insert(completions, entry.alias)
+          else
+            table.insert(completions, entry.model)
+          end
+        end
+        return completions
       end
 
       local ModelFile = vim.fn.stdpath("state") .. "/aider-model.txt"
       vim.api.nvim_create_user_command("AiderModel", function(opt)
-        local model = opt.args
-        if model ~= "" then
-          vim.notify(model)
-          vim.fn.writefile({ model }, ModelFile)
+        local input_arg = opt.args
+        local model_to_write = nil
+
+        if input_arg ~= "" then
+          for _, entry in ipairs(AiderModels) do
+            if entry.alias and entry.alias == input_arg then
+              model_to_write = entry.model
+              break
+            elseif entry.model == input_arg then
+              model_to_write = entry.model
+              break
+            end
+          end
+
+          if model_to_write then
+            local notify_msg = "Aider model set to: " .. model_to_write
+            if input_arg ~= model_to_write then
+              notify_msg = notify_msg .. " (selected via alias: " .. input_arg .. ")"
+            end
+            vim.notify(notify_msg)
+            vim.fn.writefile({ model_to_write }, ModelFile)
+          else
+            vim.notify("Unknown Aider model or alias: " .. input_arg, vim.log.levels.WARN)
+          end
         end
       end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
 

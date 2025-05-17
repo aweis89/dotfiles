@@ -9,6 +9,10 @@ return {
     version = false,
   },
   {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = false,
+  },
+  {
     "echasnovski/mini.splitjoin",
     version = false,
     config = true,
