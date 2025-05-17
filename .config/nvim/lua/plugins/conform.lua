@@ -1,6 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
+    enabled = false,
     opts = function(_, opts)
       local disable_format_file = "disable-format"
       vim.api.nvim_create_user_command("ConformToggle", function()

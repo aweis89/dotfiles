@@ -1,9 +1,7 @@
 local AiderModels = {
-  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "copilot-gemini" },
-  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
-  { model = "gemini" }, -- Used by <leader>amg keybinding
+  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "copilot-gemini" }, -- Used by <leader>amg keybinding
+  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" }, -- Used by <leader>amc keybinding
   { model = "o4-mini" }, -- Used by <leader>amo keybinding
-  { model = "sonnet" }, -- Used by <leader>amc keybinding
   { model = "flash" }, -- Used by <leader>amf keybinding
 }
 
@@ -93,12 +91,12 @@ return {
       -- Aider model selection
       {
         "<leader>amg",
-        "<cmd>AiderModel gemini<cr>",
+        "<cmd>AiderModel copilot-gemini<cr>",
         desc = "Aider Model: gemini",
       },
       {
         "<leader>amc",
-        "<cmd>AiderModel sonnet<cr>",
+        "<cmd>AiderModel copilot-sonnet<cr>",
         desc = "Aider Model: claude",
       },
       {
