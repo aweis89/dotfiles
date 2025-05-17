@@ -220,7 +220,8 @@ return {
           },
           sources = {
             projects = {
-              dev = { "~/c", "~/q", "~/p" },
+              dev = { "~/c", "~/q", "~/q/go-services/pkg/", "~/q/go-services/svc/", "~/p" },
+              patterns = { "go.sum", "go.mod" },
               win = {
                 input = {
                   keys = {

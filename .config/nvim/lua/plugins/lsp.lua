@@ -3,7 +3,7 @@ return {
   {
     "rachartier/tiny-inline-diagnostic.nvim",
     event = "VeryLazy", -- Or `LspAttach`
-    priority = 1000, -- needs to be loaded in first
+    priority = 1000,    -- needs to be loaded in first
     config = true,
     opts = {
       options = {
@@ -17,14 +17,44 @@ return {
     },
   },
   {
+    "nvimtools/none-ls.nvim",
+    enabled = false,
+    opts = function(_, opts)
+      local nls = require("null-ls")
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        nls.builtins.diagnostics.golangci_lint,
+      })
+
+      ---@type vim.diagnostic.Opts
+      opts.diagnostic_config = {
+        underline = true,
+        update_in_insert = false,
+        virtual_text = {
+          spacing = 4,
+          source = "if_many",
+          prefix = "●",
+        },
+        severity_sort = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+            [vim.diagnostic.severity.INFO] = " ",
+          },
+        },
+      }
+    end,
+  },
+  {
     "williamboman/mason.nvim",
     opts = { ensure_installed = { "golangci-lint" } },
   },
   {
     "neovim/nvim-lspconfig",
     keys = {
-      { "cd", "vim.diagnostic.open_float" },
-      { "<leader>lt", "<cmd>LintToggle<cr>", desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
+      { "cd",         "vim.diagnostic.open_float" },
+      { "<leader>lt", "<cmd>LintToggle<cr>",      desc = "Toggle Lint", mode = { "n", "v" }, remap = true },
     },
     ---@class PluginLspOpts
     opts = function(_, opts)
@@ -48,9 +78,9 @@ return {
       })
 
       return vim.tbl_deep_extend("force", opts, {
-        diagnostics = {
-          virtual_text = false,
-        },
+        -- diagnostics = {
+        --   virtual_text = false,
+        -- },
         servers = {
           gopls = {
             filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },

@@ -5,7 +5,8 @@ return {
       linters = {
         -- Define a custom golangcilint configuration
         golangcilint = {
-          cmd = "golangci-lint",
+          -- cmd = "golangci-lint",
+          cmd = "/opt/homebrew/bin/golangci-lint",
           args = {
             "run",
             "--output.json.path=stdout",

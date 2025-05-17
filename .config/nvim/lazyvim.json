@@ -33,6 +33,7 @@
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lang.yaml",
     "lazyvim.plugins.extras.lang.zig",
+    "lazyvim.plugins.extras.lsp.none-ls",
     "lazyvim.plugins.extras.test",
     "lazyvim.plugins.extras.test.core",
     "lazyvim.plugins.extras.ui.treesitter-context",
