@@ -32,7 +32,15 @@ return {
         virtual_text = {
           spacing = 4,
           source = "if_many",
-          prefix = "●",
+          prefix = function(diagnostic)
+            local icons = LazyVim.config.icons.diagnostics
+            for d, icon in pairs(icons) do
+              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+                return icon
+              end
+            end
+            return "●"
+          end
         },
         severity_sort = true,
         signs = {
