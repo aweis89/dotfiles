@@ -49,8 +49,10 @@ return {
               notify_msg = notify_msg .. " (selected via alias: " .. input_arg .. ")"
             end
             vim.notify(notify_msg)
-            require("ai-terminals").send_term("aider", "/model " .. model_to_write, { submit = true })
             vim.fn.writefile({ model_to_write }, ModelFile)
+            -- restart aider
+            require("ai-terminals").destroy_all()
+            require("ai-terminals").toggle("aider")
           else
             vim.notify("Unknown Aider model or alias: " .. input_arg, vim.log.levels.WARN)
           end
