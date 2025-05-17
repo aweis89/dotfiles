@@ -10,7 +10,7 @@
 
 detect-urls: false
 
-reasoning-effort: high
+# reasoning-effort: high
 
 alias:
   - "fast:claude-3-5-haiku-20241022"
@@ -34,7 +34,7 @@ alias:
 
 ## Specify the model to use for the main chat
 # model: openrouter/google/gemini-2.5-pro-exp-03-25:free
-model: gemini
+model: openai/gemini-2.5-pro-preview-05-06
 # model: o4-mini
 
 ## Use claude-3-opus-20240229 model for the main chat
@@ -260,10 +260,8 @@ attribute-committer: false
 ## Specify lint commands to run for different languages, eg: "python: flake8 --select=..." (can be used multiple times)
 #lint-cmd: xxx
 ## Specify multiple values like this:
-#lint-cmd:
-#  - xxx
-#  - yyy
-#  - zzz
+lint-cmd:
+  - "golang:golangci-lint run"
 
 ## Enable/disable automatic linting after changes (default: True)
 #auto-lint: true

@@ -1,6 +1,5 @@
 local AiderModels = {
-  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "gemini-copilot" },
-  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "gemini-copilot" },
+  { model = "openai/gemini-2.5-pro-preview-05-06", alias = "copilot-gemini" },
   { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
   { model = "gemini" }, -- Used by <leader>amg keybinding
   { model = "o4-mini" }, -- Used by <leader>amo keybinding
@@ -50,6 +49,7 @@ return {
               notify_msg = notify_msg .. " (selected via alias: " .. input_arg .. ")"
             end
             vim.notify(notify_msg)
+            require("ai-terminals").send_term("aider", "/model " .. model_to_write, { submit = true })
             vim.fn.writefile({ model_to_write }, ModelFile)
           else
             vim.notify("Unknown Aider model or alias: " .. input_arg, vim.log.levels.WARN)
