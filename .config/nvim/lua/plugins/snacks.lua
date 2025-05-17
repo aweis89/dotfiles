@@ -221,6 +221,14 @@ return {
           sources = {
             projects = {
               dev = { "~/c", "~/q", "~/p" },
+              win = {
+                input = {
+                  keys = {
+                    -- default to file picker
+                    ["<cr>"] = { { "tcd", "picker_files" }, mode = { "n", "i" } },
+                  },
+                },
+              },
             },
             notifications = {
               win = {
