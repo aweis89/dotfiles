@@ -271,6 +271,7 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 alias '??'='command aichat -e'
 alias ai=aichat
+alias aig='aichat --model copilot:gemini-2.5-pro-preview-05-06'
 
 alias k=kubectl
 alias kcn=kubens
