@@ -1,8 +1,8 @@
 local AiderModels = {
   { model = "openai/gemini-2.5-pro-preview-05-06", alias = "copilot-gemini" }, -- Used by <leader>amg keybinding
-  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" }, -- Used by <leader>amc keybinding
-  { model = "o4-mini" }, -- Used by <leader>amo keybinding
-  { model = "flash" }, -- Used by <leader>amf keybinding
+  { model = "openai/claude-3.7-sonnet",            alias = "copilot-sonnet" }, -- Used by <leader>amc keybinding
+  { model = "o4-mini" },                                                       -- Used by <leader>amo keybinding
+  { model = "flash" },                                                         -- Used by <leader>amf keybinding
 }
 
 return {
