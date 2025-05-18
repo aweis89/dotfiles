@@ -5,6 +5,25 @@ local AiderModels = {
   { model = "flash" },                                                         -- Used by <leader>amf keybinding
 }
 
+-- File to store the selected Aider model
+local ModelFile = vim.fn.stdpath("state") .. "/aider-model.txt"
+
+-- Read the saved Aider model from file
+local function read_aider_model()
+  if vim.fn.filereadable(ModelFile) == 1 then
+    local model_override_lines = vim.fn.readfile(ModelFile)
+    if #model_override_lines > 0 and model_override_lines[1] ~= nil and model_override_lines[1] ~= "" then
+      return vim.fn.trim(model_override_lines[1]) -- Trim whitespace
+    end
+  end
+  return nil
+end
+
+-- Write an Aider model to file
+local function write_aider_model(model)
+  vim.fn.writefile({ model }, ModelFile)
+end
+
 return {
   {
     "aweis89/ai-terminals.nvim",
@@ -25,7 +44,6 @@ return {
         return completions
       end
 
-      local ModelFile = vim.fn.stdpath("state") .. "/aider-model.txt"
       vim.api.nvim_create_user_command("AiderModel", function(opt)
         local input_arg = opt.args
         local model_to_write = nil
@@ -47,7 +65,7 @@ return {
               notify_msg = notify_msg .. " (selected via alias: " .. input_arg .. ")"
             end
             vim.notify(notify_msg)
-            vim.fn.writefile({ model_to_write }, ModelFile)
+            write_aider_model(model_to_write)
             -- restart aider
             require("ai-terminals").destroy_all()
             require("ai-terminals").toggle("aider")
@@ -59,27 +77,19 @@ return {
 
       return {
         default_position = "right",
-        show_diffs_on_leave = { delta = true },
+        -- show_diffs_on_leave = { delta = true },
         terminals = {
-          aichat = {
+          goose = {
             cmd = function()
-              return string.format(
-                "AICHAT_LIGHT_THEME=%s GEMINI_API_BASE=http://localhost:8080/v1beta aichat -r %%functions%% --session",
-                tostring(vim.o.background == "light") -- Convert boolean to string "true" or "false"
-              )
+              return string.format("unset GITHUB_TOKEN; GOOSE_CLI_THEME=%s goose", vim.o.background)
             end,
           },
           aider = {
             cmd = function()
               local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
-              if vim.fn.filereadable(ModelFile) == 1 then
-                local model_override_lines = vim.fn.readfile(ModelFile)
-                if #model_override_lines > 0 and model_override_lines[1] ~= nil and model_override_lines[1] ~= "" then
-                  local model = vim.fn.trim(model_override_lines[1]) -- Trim whitespace
-                  if model ~= "" then
-                    cmd = cmd .. " --model " .. model
-                  end
-                end
+              local model = read_aider_model()
+              if model and model ~= "" then
+                cmd = cmd .. " --model " .. model
               end
               return cmd
             end,
