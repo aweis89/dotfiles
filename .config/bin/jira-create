@@ -19,7 +19,7 @@ $prompt
 EOF
 )
 
-response=$(aichat -S --model gemini:gemini-2.5-flash-preview-04-17 "$ai_prompt")
+response=$(aichat -S "$ai_prompt")
 summery=$(echo "$response" | head -n 1)
 description=$(echo "$response" | tail -n +2)
 

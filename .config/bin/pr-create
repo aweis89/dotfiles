@@ -2,8 +2,6 @@
 
 set -eo pipefail
 
-direnv allow .
-
 # --- Default values ---
 default_base_remote="origin"
 default_head_remote="origin"
@@ -295,7 +293,7 @@ IMPORTANT!: format the resp in the following way:
 # Assuming 'aichat' exists and works as described
 printf "Context:\n%s\n\nPrompt:\n%s\n" "$context" "$ai_prompt"
 
-title_body=$(echo -e "$context" | aichat -S --model gemini:gemini-2.5-flash-preview-04-17 "$ai_prompt")
+title_body=$(echo -e "$context" | aichat -S "$ai_prompt")
 
 if [ -z "$title_body" ] || [ "$(echo "$title_body" | wc -l)" -lt 2 ]; then
   echo "Error: Failed to generate title and body from aichat."
