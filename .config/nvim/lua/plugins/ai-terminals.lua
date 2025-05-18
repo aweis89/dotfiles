@@ -2,7 +2,6 @@ local AiderModels = {
   { model = "openai/gemini-2.5-pro-preview-05-06", alias = "copilot-gemini" }, -- Used by <leader>amg keybinding
   { model = "openai/claude-3.7-sonnet",            alias = "copilot-sonnet" }, -- Used by <leader>amc keybinding
   { model = "o4-mini" },                                                       -- Used by <leader>amo keybinding
-  { model = "flash" },                                                         -- Used by <leader>amf keybinding
 }
 
 -- File to store the selected Aider model
@@ -76,6 +75,7 @@ return {
       end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
 
       return {
+        -- enable_diffing = false,
         default_position = "right",
         -- show_diffs_on_leave = { delta = true },
         terminals = {
@@ -113,11 +113,6 @@ return {
         "<leader>amo",
         "<cmd>AiderModel o4-mini<cr>",
         desc = "Aider Model: o4-mini",
-      },
-      {
-        "<leader>amf",
-        "<cmd>AiderModel flash<cr>",
-        desc = "Aider Model: flash",
       },
       -- Diff Tools
       {

@@ -1,7 +1,11 @@
 return {
   {
     "stevearc/conform.nvim",
-    enabled = false,
+    enabled = function()
+      -- Check if none-ls extra is enabled in LazyVim
+      local has_none_ls = require("lazy.core.config").spec.plugins["none-ls.nvim"] ~= nil
+      return not has_none_ls
+    end,
     opts = function(_, opts)
       local disable_format_file = "disable-format"
       vim.api.nvim_create_user_command("ConformToggle", function()
