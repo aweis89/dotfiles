@@ -357,6 +357,13 @@ pr-review() {
   set +e
 }
 
+copilot-models() {
+  curl -s https://api.githubcopilot.com/models \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -H "Copilot-Integration-Id: vscode-chat" | jq -r '.data[].id'
+}
+
 delta() {
   set +x
   local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
