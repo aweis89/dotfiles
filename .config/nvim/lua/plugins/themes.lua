@@ -79,11 +79,12 @@ local themes = {
     light = "everforest",
     dark = "everforest",
     plugin = {
-      -- "neanias/everforest-nvim",
-      "aweis89/everforest-nvim",
+      "neanias/everforest-nvim",
       config = function()
         require("everforest").setup({
-          current_word_style = "underline",
+          on_highlights = function(hl, palette)
+            hl.CurrentWord = { fg = palette.none, bg = palette.bg_visual, undercurl = true }
+          end,
         })
       end,
     },
