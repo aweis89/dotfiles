@@ -167,6 +167,9 @@ return {
       ---@type snacks.Config
       ---@diagnostic disable
       local overrides = {
+        notifier = {
+          level = vim.log.levels.WARN,
+        },
         gitbrowse = {
           config = function(opts, defaults)
             -- Strip user:password@
