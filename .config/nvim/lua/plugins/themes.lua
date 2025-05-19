@@ -83,7 +83,7 @@ local themes = {
       config = function()
         require("everforest").setup({
           on_highlights = function(hl, palette)
-            hl.CurrentWord = { fg = palette.none, bg = palette.bg_visual, undercurl = true }
+            hl.CurrentWord = { fg = palette.none, bg = palette.bg_visual, underline = true }
           end,
         })
       end,
