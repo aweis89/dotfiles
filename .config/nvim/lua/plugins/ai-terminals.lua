@@ -36,57 +36,48 @@ local function jira_id_from_branch()
   return jira_id
 end
 
+local function select_aider_model_picker()
+  local picker_items = {}
+  for _, entry in ipairs(AiderModels) do
+    local display_text = entry.alias or entry.model
+    if entry.alias and entry.alias ~= entry.model then
+      display_text = entry.alias .. " (" .. entry.model .. ")"
+    end
+    table.insert(picker_items, {
+      text = display_text,
+      model = entry.model,
+      alias = entry.alias,
+    })
+  end
+
+  Snacks.picker.pick({
+    items = picker_items,
+    format = "text",
+    layout = { title = "Select Aider Model", preview = false, layout = { width = 5, height = 20 } },
+    preview = false,
+    confirm = function(_, selected_item) -- First arg is picker instance, we don't need it
+      if selected_item and selected_item.model then
+        local model_to_write = selected_item.model
+        local notify_msg = "Aider model set to: " .. model_to_write
+        if selected_item.alias and selected_item.alias ~= model_to_write then
+          notify_msg = notify_msg .. " (selected via alias: " .. selected_item.alias .. ")"
+        end
+        vim.notify(notify_msg)
+        write_aider_model(model_to_write)
+        -- restart aider
+        require("ai-terminals").destroy_all()
+        require("ai-terminals").toggle("aider")
+      end
+    end,
+  })
+end
+
 return {
   {
     "aweis89/ai-terminals.nvim",
     dir = "~/p/ai-terminals.nvim",
-    cmd = "AiderModel",
     ---@type fun(): ConfigType
     opts = function()
-      -- Completion function for AiderModel command
-      _G.AiderModelComplete = function()
-        local completions = {}
-        for _, entry in ipairs(AiderModels) do
-          if entry.alias and entry.alias ~= "" then
-            table.insert(completions, entry.alias)
-          else
-            table.insert(completions, entry.model)
-          end
-        end
-        return completions
-      end
-
-      vim.api.nvim_create_user_command("AiderModel", function(opt)
-        local input_arg = opt.args
-        local model_to_write = nil
-
-        if input_arg ~= "" then
-          for _, entry in ipairs(AiderModels) do
-            if entry.alias and entry.alias == input_arg then
-              model_to_write = entry.model
-              break
-            elseif entry.model == input_arg then
-              model_to_write = entry.model
-              break
-            end
-          end
-
-          if model_to_write then
-            local notify_msg = "Aider model set to: " .. model_to_write
-            if input_arg ~= model_to_write then
-              notify_msg = notify_msg .. " (selected via alias: " .. input_arg .. ")"
-            end
-            vim.notify(notify_msg)
-            write_aider_model(model_to_write)
-            -- restart aider
-            require("ai-terminals").destroy_all()
-            require("ai-terminals").toggle("aider")
-          else
-            vim.notify("Unknown Aider model or alias: " .. input_arg, vim.log.levels.WARN)
-          end
-        end
-      end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
-
       return {
         terminal_keymaps = {
 
@@ -138,19 +129,11 @@ return {
     keys = {
       -- Aider model selection
       {
-        "<leader>amg",
-        "<cmd>AiderModel copilot-gemini<cr>",
-        desc = "Aider Model: gemini",
-      },
-      {
-        "<leader>amc",
-        "<cmd>AiderModel copilot-sonnet<cr>",
-        desc = "Aider Model: claude",
-      },
-      {
-        "<leader>amo",
-        "<cmd>AiderModel o4-mini<cr>",
-        desc = "Aider Model: o4-mini",
+        "<leader>am",
+        function()
+          select_aider_model_picker()
+        end,
+        desc = "Select Aider Model (Picker)",
       },
       -- Diff Tools
       {
