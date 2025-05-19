@@ -61,7 +61,7 @@ return {
                 lhs = "<localleader>r",
                 desc = "Review PR",
                 mode = { "n", "i" },
-                fn = ai_review("aider"),
+                fn = ai_review("goose"),
               },
               {
                 name = "ai_review_claude",

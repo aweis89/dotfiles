@@ -23,6 +23,19 @@ local function write_aider_model(model)
   vim.fn.writefile({ model }, ModelFile)
 end
 
+-- extract jira id from branch name
+-- e.g PR-1234-ticket becomes PR-1234
+local function jira_id_from_branch()
+  local branch = vim.fn.trim(vim.fn.system("git branch --show-current"))
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+
+  -- Match patterns like XX-1234 or XXX-1234 or PLATFORM-12345
+  local jira_id = string.match(branch, "(%u+%-%d+)")
+  return jira_id
+end
+
 return {
   {
     "aweis89/ai-terminals.nvim",
@@ -75,6 +88,31 @@ return {
       end, { nargs = 1, desc = "Select Aider Model", complete = "customlist,v:lua._G.AiderModelComplete" })
 
       return {
+        terminal_keymaps = {
+
+          {
+            key = "<localleader>j",
+            action = function()
+              vim.schedule(function()
+                local ticket = jira_id_from_branch()
+                if not ticket then
+                  vim.notify("No Jira ticket found in branch name", vim.log.levels.WARN)
+                end
+                vim.system({ "jira", "issue", "view", "--plain", ticket }, {}, function(result)
+                  if result and result.stdout and #result.stdout > 0 then
+                    vim.schedule(function()
+                      require("ai-terminals").send(result.stdout)
+                    end)
+                  else
+                    vim.notify("No Jira ticket found in branch name", vim.log.levels.WARN)
+                  end
+                end)
+              end)
+            end,
+            modes = { "n" },
+            desc = "Get Jira ticket",
+          },
+        },
         -- enable_diffing = false,
         default_position = "right",
         -- show_diffs_on_leave = { delta = true },
