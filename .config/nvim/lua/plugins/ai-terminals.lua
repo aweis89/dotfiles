@@ -4,23 +4,27 @@ local AiderModels = {
   { model = "o4-mini" }, -- Used by <leader>amo keybinding
 }
 
--- File to store the selected Aider model
-local ModelFile = vim.fn.stdpath("state") .. "/aider-model.txt"
+-- Function to get the full path for a cache file
+local function get_cache_filepath(key)
+  return vim.fn.stdpath("state") .. "/" .. key .. ".txt"
+end
 
--- Read the saved Aider model from file
-local function read_aider_model()
-  if vim.fn.filereadable(ModelFile) == 1 then
-    local model_override_lines = vim.fn.readfile(ModelFile)
-    if #model_override_lines > 0 and model_override_lines[1] ~= nil and model_override_lines[1] ~= "" then
-      return vim.fn.trim(model_override_lines[1]) -- Trim whitespace
+-- Read a value from cache
+local function read_cache(key)
+  local filepath = get_cache_filepath(key)
+  if vim.fn.filereadable(filepath) == 1 then
+    local lines = vim.fn.readfile(filepath)
+    if #lines > 0 and lines[1] ~= nil and lines[1] ~= "" then
+      return vim.fn.trim(lines[1]) -- Trim whitespace
     end
   end
   return nil
 end
 
--- Write an Aider model to file
-local function write_aider_model(model)
-  vim.fn.writefile({ model }, ModelFile)
+-- Write a value to cache
+local function write_cache(key, value)
+  local filepath = get_cache_filepath(key)
+  vim.fn.writefile({ value }, filepath)
 end
 
 -- extract jira id from branch name
@@ -53,8 +57,13 @@ local function select_aider_model_picker()
   Snacks.picker.pick({
     items = picker_items,
     format = "text",
-    layout = { title = "Select Aider Model", preview = false, layout = { width = 5, height = 20 } },
-    preview = false,
+    layout = {
+      title = "Select Aider Model",
+      layout = { width = 5, height = 20 },
+    },
+    preview = function()
+      return false
+    end,
     confirm = function(_, selected_item) -- First arg is picker instance, we don't need it
       if selected_item and selected_item.model then
         local model_to_write = selected_item.model
@@ -63,7 +72,7 @@ local function select_aider_model_picker()
           notify_msg = notify_msg .. " (selected via alias: " .. selected_item.alias .. ")"
         end
         vim.notify(notify_msg)
-        write_aider_model(model_to_write)
+        write_cache("aider-model", model_to_write)
         -- restart aider
         require("ai-terminals").destroy_all()
         require("ai-terminals").toggle("aider")
@@ -116,7 +125,7 @@ return {
           aider = {
             cmd = function()
               local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
-              local model = read_aider_model()
+              local model = read_cache("aider-model")
               if model and model ~= "" then
                 cmd = cmd .. " --model " .. model
               end

@@ -130,9 +130,6 @@ local function set_background(light_theme, dark_theme)
   end
 end
 
-local light_theme = themes.tokyonight
-local dark_theme = themes.tokyonight
-
 local light_theme = themes.everforest
 local dark_theme = themes.everforest
 
