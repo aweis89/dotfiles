@@ -168,7 +168,7 @@ return {
       ---@diagnostic disable
       local overrides = {
         notifier = {
-          level = vim.log.levels.WARN,
+          level = vim.log.levels.INFO,
         },
         gitbrowse = {
           config = function(opts, defaults)
@@ -181,6 +181,11 @@ return {
             -- use delta for git diffs
             git = { builtin = false },
             diff = { builtin = false },
+          },
+          win = {
+            input = {
+              keys = { ["<c-v>"] = { "explorer_paste", mode = { "n", "x" } } },
+            },
           },
           actions = {
             ["aider_search"] = function(picker)
