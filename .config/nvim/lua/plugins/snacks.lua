@@ -111,6 +111,13 @@ return {
         desc = "Lazy Sources",
       },
       {
+        "//",
+        function()
+          Snacks.picker.lines()
+        end,
+        desc = "Buffer Search",
+      },
+      {
         "<C-f>f",
         function()
           Snacks.picker.files()

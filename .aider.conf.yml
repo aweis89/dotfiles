@@ -34,7 +34,7 @@ alias:
 
 ## Specify the model to use for the main chat
 # model: openrouter/google/gemini-2.5-pro-exp-03-25:free
-model: openai/gemini-2.5-pro-preview-05-06
+model: openai/gemini-2.5-pro
 # model: o4-mini
 
 ## Use claude-3-opus-20240229 model for the main chat
@@ -261,7 +261,7 @@ attribute-committer: false
 #lint-cmd: xxx
 ## Specify multiple values like this:
 lint-cmd:
-  - "golang:golangci-lint run"
+  - "go: golangci-lint run"
 
 ## Enable/disable automatic linting after changes (default: True)
 #auto-lint: true
