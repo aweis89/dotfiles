@@ -5,7 +5,7 @@ set -e
 prompt="$1"
 
 ai_prompt=$(
-  cat <<EOF
+	cat <<EOF
 Create a Jira ticket with the following requirements.
 For the summery, only use alphanumeric characters and spaces.
 Other characters are allowed for the description.
@@ -28,13 +28,14 @@ echo "Description: $description"
 read -rp "Create issue? [y/N] " confirm
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  result=$(echo "$description" | jira issue create --no-input \
-    $JIRA_CREATE_ARGS \
-    --assignee "$JIRA_USER" \
-    -s "$summery" "${@:2}")
-  echo "$result"
+	result=$(echo "$description" | jira issue create --no-input \
+		--custom story-points=4 \
+		$JIRA_CREATE_ARGS \
+		--assignee "$JIRA_USER" \
+		-s "$summery" "${@:2}")
+	echo "$result"
 else
-  exit 0
+	exit 0
 fi
 
 url=$(echo "$result" | grep 'https://.*')
@@ -45,5 +46,5 @@ branch_cmd="git checkout -b $id-$branch_desc"
 prompt_text="Run: \`$branch_cmd\` [y/N] "
 read -rp "$prompt_text" confirm
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  command $branch_cmd
+	command $branch_cmd
 fi
