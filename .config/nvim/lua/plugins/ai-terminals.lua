@@ -1,7 +1,8 @@
 local AiderModels = {
-  { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" }, -- Used by <leader>amg keybinding
-  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" }, -- Used by <leader>amc keybinding
-  { model = "o4-mini" }, -- Used by <leader>amo keybinding
+  { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
+  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
+  { model = "openai/claude-3.7-sonnet-thought", alias = "copilot-sonnet-thought" },
+  { model = "o4-mini" },
 }
 
 -- Function to get the full path for a cache file
