@@ -13,6 +13,14 @@ return {
     enabled = false,
   },
   {
+    "nvim-neotest/neotest",
+    opts = {
+      quickfix = {
+        enabled = false,
+      },
+    },
+  },
+  {
     "echasnovski/mini.splitjoin",
     version = false,
     config = true,
