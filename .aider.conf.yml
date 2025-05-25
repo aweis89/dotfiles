@@ -17,6 +17,8 @@ alias:
   - "gem:gemini/gemini-exp-1206"
   - "pro:gemini/gemini-pro"
 
+read: [CONVENTIONS.md]
+
 ##########
 # options:
 
