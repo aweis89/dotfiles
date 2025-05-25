@@ -35,7 +35,9 @@ map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
 map({ "t", "n" }, "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
 
 -- zoom
-map({ "t", "n", "i" }, "<C-a>i", Snacks.zen.zoom, { desc = "Zoom toggle" })
+map({ "t", "n", "i" }, "<C-a>i", function()
+  require("snacks.zen").zoom()
+end, { desc = "Zoom toggle" })
 
 map("t", "<C-v>", "<C-\\><C-n>pA", { noremap = false, desc = "Paste from clipboard" })
 map("i", "<C-v>", "<ESC>pA", { noremap = false, desc = "Paste from clipboard" })

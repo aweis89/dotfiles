@@ -5,8 +5,8 @@ return {
     lazy = false,
     opts = {},
     cond = true,
-    -- set to "*" to use release version
-    version = false,
+    -- set to false to use latest main
+    version = "*",
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",

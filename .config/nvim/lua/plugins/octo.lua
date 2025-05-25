@@ -35,6 +35,7 @@ return {
         local cwd = vim.fn.getcwd()
         for path_prefix, env_var_name in pairs(token_config) do
           if cwd:sub(1, #path_prefix) == path_prefix then
+            vim.notify("Using token from " .. path_prefix, vim.log.levels.WARN)
             token_env_var = env_var_name
             break
           end
@@ -61,7 +62,7 @@ return {
                 lhs = "<localleader>r",
                 desc = "Review PR",
                 mode = { "n", "i" },
-                fn = ai_review("goose"),
+                fn = ai_review("aider"),
               },
               {
                 name = "ai_review_claude",
