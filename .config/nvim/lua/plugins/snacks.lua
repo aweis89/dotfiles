@@ -294,8 +294,40 @@ return {
         "recent",
         "smart",
       }
-      for _, fp in ipairs(fullscreen_pickers) do
-        overrides.picker.sources[fp] = vim.tbl_deep_extend("force", overrides.picker.sources[fp] or {}, {
+
+      local file_action_pickers = {
+        "buffers",
+        "files",
+        "git_diff",
+        "git_files",
+        "git_log_file",
+        "git_log",
+        "git_status",
+        "grep_buffers",
+        "grep_word",
+        "grep",
+        "projects",
+        "recent",
+        "smart",
+        "explorer",
+      }
+
+      local file_picker_actions = {
+        win = {
+          input = {
+            keys = {
+              ["<localleader>a"] = { "aider_add", mode = { "n", "i" } },
+              ["<localleader>A"] = { "aider_read_only", mode = { "n", "i" } },
+              ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
+              -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
+            },
+          },
+        },
+      }
+
+      -- Apply fullscreen settings
+      for _, picker_name in ipairs(fullscreen_pickers) do
+        local fullscreen_config = {
           hidden = true,
           layout = {
             layout = {
@@ -303,17 +335,15 @@ return {
               height = 0,
             },
           },
-          win = {
-            input = {
-              keys = {
-                ["<localleader>a"] = { "aider_add", mode = { "n", "i" } },
-                ["<localleader>A"] = { "aider_read_only", mode = { "n", "i" } },
-                ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
-                -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
-              },
-            },
-          },
-        })
+        }
+        overrides.picker.sources[picker_name] =
+          vim.tbl_deep_extend("force", overrides.picker.sources[picker_name] or {}, fullscreen_config)
+      end
+
+      -- Apply file action keybindings
+      for _, picker_name in ipairs(file_action_pickers) do
+        overrides.picker.sources[picker_name] =
+          vim.tbl_deep_extend("force", overrides.picker.sources[picker_name] or {}, file_picker_actions)
       end
 
       return vim.tbl_deep_extend("force", opts or {}, overrides)
