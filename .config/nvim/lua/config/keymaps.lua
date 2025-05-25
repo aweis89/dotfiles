@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 
 local function map(mode, lhs, rhs, opts)
-  opts = opts or { noremap = true, silent = true }
+  opts = opts or {}
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
