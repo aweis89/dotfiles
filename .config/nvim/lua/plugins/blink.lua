@@ -21,6 +21,10 @@ return {
           ["<C-j>"] = { "select_next", "fallback" },
         },
         cmdline = {
+          completion = {
+            list = { selection = { preselect = false } },
+            menu = { auto_show = true },
+          },
           keymap = {
             ["<C-k>"] = { "select_prev", "fallback" },
             ["<C-j>"] = { "select_next", "fallback" },
@@ -39,9 +43,10 @@ return {
           },
           list = {
             selection = {
-              preselect = function(ctx)
-                return ctx.mode ~= "cmdline" and not require("blink.cmp").snippet_active({ direction = 1 })
-              end,
+              preselect = false,
+              -- preselect = function(ctx)
+              --   return ctx.mode ~= "cmdline" and not require("blink.cmp").snippet_active({ direction = 1 })
+              -- end,
             },
           },
         },
