@@ -552,6 +552,7 @@ zle -N pass-to-aichat-widget
 
 bindkey -r '^t'
 
+bindkey -M menuselect '\r' .accept-line
 bindkey '^o' pass-to-aichat-widget
 bindkey '^w' forward-word
 # bindkey '^r' fzf-history-widget

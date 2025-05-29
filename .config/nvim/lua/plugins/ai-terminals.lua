@@ -2,7 +2,8 @@ local AiderModels = {
   { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
   { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
   { model = "openai/claude-3.7-sonnet-thought", alias = "copilot-sonnet-thought" },
-  { model = "o4-mini" },
+  { model = "gemini-2.5-pro" },
+  { model = "o4-mini", openai_env_key = "OPENAI_API_KEY_ORIG" },
 }
 
 -- Function to get the full path for a cache file
@@ -151,6 +152,9 @@ return {
         default_position = "right",
         -- show_diffs_on_leave = { delta = true },
         terminals = {
+          env = {
+            PAGER = "cat",
+          },
           goose = {
             cmd = function()
               return string.format("unset GITHUB_TOKEN; GOOSE_CLI_THEME=%s goose", vim.o.background)
@@ -158,12 +162,26 @@ return {
           },
           aider = {
             cmd = function()
-              local cmd = string.format("aider --watch-files --%s-mode", vim.o.background)
-              local model = read_cache("aider-model")
-              if model and model ~= "" then
-                cmd = cmd .. " --model " .. model
+              local cmd_parts = { "aider", "--watch-files", string.format("--%s-mode", vim.o.background) }
+              local selected_model_name = read_cache("aider-model")
+
+              if selected_model_name and selected_model_name ~= "" then
+                table.insert(cmd_parts, "--model")
+                table.insert(cmd_parts, selected_model_name)
+
+                -- Check for openai_env_key for the selected model
+                for _, model_entry in ipairs(AiderModels) do
+                  if model_entry.model == selected_model_name and model_entry.openai_env_key then
+                    local api_key = vim.fn.getenv(model_entry.openai_env_key)
+                    if api_key and api_key ~= "" then
+                      table.insert(cmd_parts, "--openai-api-key")
+                      table.insert(cmd_parts, api_key)
+                    end
+                    break -- Found the model, no need to continue loop
+                  end
+                end
               end
-              return cmd
+              return table.concat(cmd_parts, " ")
             end,
           },
         },

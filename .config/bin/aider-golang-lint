@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+set -e # Exit immediately if a command exits with a non-zero status.
+
+# --- Helper Functions ---
+
+# find_module_root: Given a file path, traverses up to find a go.mod file.
+# If found, returns the directory containing go.mod.
+# Otherwise, returns the directory of the input file itself.
+find_module_root() {
+	local dir
+	dir=$(dirname "$1")
+	dir=$(cd "$dir" && pwd) # Get absolute path of the directory
+
+	while [[ "$dir" != "/" ]]; do
+		if [[ -f "$dir/go.mod" ]]; then
+			echo "$dir"
+			return 0
+		fi
+		dir=$(dirname "$dir")
+	done
+	# If no go.mod is found, assume the file's directory is the package root
+	# This might need adjustment based on your project structure if not using modules.
+	echo "$(dirname "$1")"
+}
+
+# --- Main Script ---
+
+if [ "$#" -eq 0 ]; then
+	echo "Usage: $0 <go_file1> [<go_file2> ...]"
+	exit 1
+fi
+
+declare -A unique_package_roots
+
+for go_file in "$@"; do
+	if [[ ! -f "$go_file" ]]; then
+		echo "Warning: File '$go_file' not found. Skipping."
+		continue
+	fi
+
+	# Make sure the go_file path is absolute
+	abs_go_file=$(cd "$(dirname "$go_file")" && pwd)/$(basename "$go_file")
+
+	package_root=$(find_module_root "$abs_go_file")
+	if [[ -n "$package_root" ]]; then
+		unique_package_roots["$package_root"]=1
+	else
+		echo "Warning: Could not determine package root for '$go_file'. Skipping."
+	fi
+done
+
+if [ ${#unique_package_roots[@]} -eq 0 ]; then
+	echo "No valid Go files or package roots found to lint."
+	exit 0
+fi
+
+echo "Found the following unique package roots to lint:"
+for root in "${!unique_package_roots[@]}"; do
+	echo "  - $root"
+done
+echo ""
+
+successful_lints=0
+failed_lints=0
+
+for package_path in "${!unique_package_roots[@]}"; do
+	echo "----------------------------------------------------------------------"
+	echo "Running golangci-lint in: $package_path"
+	echo "----------------------------------------------------------------------"
+	# Change to the package root directory to run golangci-lint
+	# This ensures that golangci-lint picks up the correct go.mod and context.
+	# We target './...' to lint all packages within that module root.
+	if (cd "$package_path" && golangci-lint run ./...); then
+		echo "Successfully linted $package_path"
+		successful_lints=$((successful_lints + 1))
+	else
+		echo "Error linting $package_path"
+		failed_lints=$((failed_lints + 1))
+	fi
+	echo ""
+done
+
+echo "----------------------------------------------------------------------"
+echo "Linting Summary:"
+echo "  Successful: $successful_lints"
+echo "  Failed:     $failed_lints"
+echo "----------------------------------------------------------------------"
+
+if [ "$failed_lints" -gt 0 ]; then
+	exit 1
+fi
+
+exit 0

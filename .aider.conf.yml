@@ -263,7 +263,7 @@ attribute-committer: false
 #lint-cmd: xxx
 ## Specify multiple values like this:
 lint-cmd:
-  - "go: golangci-lint run"
+  - "go: ~/.config/bin/aider-golang-lint"
 
 ## Enable/disable automatic linting after changes (default: True)
 #auto-lint: true
