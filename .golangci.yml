@@ -6,6 +6,7 @@ linters:
     - varnamelen
     - nlreturn
     - funlen
+    - mnd
   exclusions:
     generated: lax
     presets:
