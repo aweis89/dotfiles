@@ -14,14 +14,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     local spinner_timer -- will be vim.uv.new_timer()
     local notif_id = "commit-msg"
 
-    -- Initial notification with the first spinner frame
-    -- notif_id = vim.notify("Generating commit message...", vim.log.levels.INFO, {
-    --   title = "AI Commit",
-    --   icon = Snacks.util.spinner(),
-    --   timeout = false, -- Keep it visible until explicitly replaced
-    --   replace = true,
-    -- })
-
     -- Function to update spinner icon using hrtime for smooth animation
     local function update_spinner_icon()
       if not notif_id or (spinner_timer and spinner_timer:is_closing()) then
