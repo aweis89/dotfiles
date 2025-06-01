@@ -11,17 +11,16 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "COMMIT_EDITMSG",
   callback = function()
     -- Spinner setup
-    local spinner_chars = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
     local spinner_timer -- will be vim.uv.new_timer()
-    local notif_id -- to store the notification ID
+    local notif_id = "commit-msg"
 
     -- Initial notification with the first spinner frame
-    notif_id = vim.notify("Generating commit message...", vim.log.levels.INFO, {
-      title = "AI Commit",
-      icon = Snacks.util.spinner(),
-      timeout = false, -- Keep it visible until explicitly replaced
-      replace = true,
-    })
+    -- notif_id = vim.notify("Generating commit message...", vim.log.levels.INFO, {
+    --   title = "AI Commit",
+    --   icon = Snacks.util.spinner(),
+    --   timeout = false, -- Keep it visible until explicitly replaced
+    --   replace = true,
+    -- })
 
     -- Function to update spinner icon using hrtime for smooth animation
     local function update_spinner_icon()
