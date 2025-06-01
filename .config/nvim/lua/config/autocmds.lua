@@ -18,8 +18,9 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     -- Initial notification with the first spinner frame
     notif_id = vim.notify("Generating commit message...", vim.log.levels.INFO, {
       title = "AI Commit",
-      icon = spinner_chars[1],
+      icon = Snacks.util.spinner(),
       timeout = false, -- Keep it visible until explicitly replaced
+      replace = true,
     })
 
     -- Function to update spinner icon using hrtime for smooth animation
@@ -35,7 +36,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         id = notif_id,
         icon = spinner_chars[math.floor(vim.uv.hrtime() / (1e6 * 100)) % #spinner_chars + 1], -- 100ms interval
         title = "AI Commit",
-        replace = notif_id, -- Ensure it replaces the existing notification
         timeout = false, -- Keep it visible
       })
     end
@@ -109,7 +109,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.api.nvim_create_autocmd("BufDelete", {
   group = augroup("ai_commit_push_prompt"),
   pattern = "COMMIT_EDITMSG",
-  callback = function(args)
+  callback = function()
     -- Defer the prompt slightly to allow git commit process to potentially start/finish
     vim.defer_fn(function()
       -- Get the current branch name
