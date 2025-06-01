@@ -190,7 +190,7 @@ local termOptsGroup = vim.api.nvim_create_augroup("TerminalWindowOptions", { cle
 vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
   group = termOptsGroup,
   pattern = "*", -- Trigger for any buffer entered
-  callback = function(args)
+  callback = function()
     vim.defer_fn(function()
       local bufid = vim.api.nvim_get_current_buf()
       if not vim.api.nvim_buf_is_valid(bufid) then
