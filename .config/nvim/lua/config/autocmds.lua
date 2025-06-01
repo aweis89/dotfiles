@@ -38,8 +38,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       spinner_timer:start(100, 100, vim.schedule_wrap(update_spinner_icon))
     end
 
-    local prompt =
-      "Generate a concise conventional commit message for this change. Only respond with the commit message text."
+    local prompt = "Generate a conventional commit message for this change. "
+      .. "Only respond with the commit message text."
     local script = string.format("git diff --staged | aichat %q", prompt)
     vim.system({ "/bin/bash", "-c", script }, {}, function(res)
       -- Stop spinner
