@@ -38,7 +38,9 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       spinner_timer:start(100, 100, vim.schedule_wrap(update_spinner_icon))
     end
 
-    vim.system({ "ai-commit-msg" }, {}, function(res)
+    local script =
+      'git diff --staged | aichat "Generate a concise conventional commit message for this change. Only respond with the commit message text."'
+    vim.system({ "/bin/bash", "-c", script }, {}, function(res)
       -- Stop spinner
       if spinner_timer and not spinner_timer:is_closing() then
         spinner_timer:stop()
