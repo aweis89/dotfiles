@@ -1,4 +1,0 @@
-#!/bin/bash
-
-git diff --staged | aichat \
-  "Generate a concise conventional commit message for this change. Only respond with the commit message text."
