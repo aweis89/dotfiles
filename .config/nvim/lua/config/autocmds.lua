@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       end
       vim.notify("Generating commit message...", vim.log.levels.INFO, {
         id = notif_id,
-        icon = spinner_chars[math.floor(vim.uv.hrtime() / (1e6 * 100)) % #spinner_chars + 1], -- 100ms interval
+        icon = Snacks.util.spinner(),
         title = "AI Commit",
         timeout = false, -- Keep it visible
       })
