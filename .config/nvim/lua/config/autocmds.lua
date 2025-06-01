@@ -141,7 +141,12 @@ local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
 
 vim.api.nvim_create_autocmd("BufEnter", {
   group = root_augroup,
-  callback = function()
+  callback = function(arg)
+    local buf_name = vim.api.nvim_buf_get_name(arg.buf)
+    if buf_name and vim.fn.fnamemodify(buf_name, ":t") == "COMMIT_EDITMSG" then
+      return
+    end
+
     local root = LazyVim.root.get()
     if root == vim.fn.getcwd() then
       return
