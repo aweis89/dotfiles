@@ -50,9 +50,10 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       spinner_timer = nil -- Allow garbage collection
 
       vim.schedule(function()
+        -- Guard if notification was somehow dismissed
         if not notif_id then
           return
-        end -- Guard if notification was somehow dismissed
+        end
 
         if res.code ~= 0 then
           vim.notify(res.stderr or "Unknown error from ai-commit-msg", vim.log.levels.ERROR, {
