@@ -142,9 +142,17 @@ local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
 vim.api.nvim_create_autocmd("BufEnter", {
   group = root_augroup,
   callback = function(arg)
+    -- List of filenames to skip
+    local skip_dir_change_files = { "COMMIT_EDITMSG" }
     local buf_name = vim.api.nvim_buf_get_name(arg.buf)
-    if buf_name and vim.fn.fnamemodify(buf_name, ":t") == "COMMIT_EDITMSG" then
-      return
+
+    if buf_name then
+      local current_filename = vim.fn.fnamemodify(buf_name, ":t")
+      for _, skip_file in ipairs(skip_dir_change_files) do
+        if current_filename == skip_file then
+          return
+        end
+      end
     end
 
     local root = LazyVim.root.get()
