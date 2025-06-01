@@ -10,37 +10,96 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   group = augroup("ai_commit_msg_populate"),
   pattern = "COMMIT_EDITMSG",
   callback = function()
-    vim.notify("Generating commit message...", vim.log.levels.INFO)
-    vim.system({ "ai-commit-msg" }, {}, function(res)
-      vim.schedule(function()
-        if res.code ~= 0 then
-          vim.notify(res.stderr)
-          return
+    -- Spinner setup
+    local spinner_chars = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+    local spinner_timer -- will be vim.uv.new_timer()
+    local notif_id -- to store the notification ID
+
+    -- Initial notification with the first spinner frame
+    notif_id = vim.notify("Generating commit message...", vim.log.levels.INFO, {
+      title = "AI Commit",
+      icon = spinner_chars[1],
+      timeout = false, -- Keep it visible until explicitly replaced
+    })
+
+    -- Function to update spinner icon using hrtime for smooth animation
+    local function update_spinner_icon()
+      if not notif_id or (spinner_timer and spinner_timer:is_closing()) then
+        if spinner_timer and not spinner_timer:is_closing() then
+          spinner_timer:stop()
+          spinner_timer:close()
         end
-        local msg = res.stdout
-        if msg == nil or msg == "" then
-          vim.notify("No commit message")
+        return
+      end
+      vim.notify("Generating commit message...", vim.log.levels.INFO, {
+        id = notif_id,
+        icon = spinner_chars[math.floor(vim.uv.hrtime() / (1e6 * 100)) % #spinner_chars + 1], -- 100ms interval
+        title = "AI Commit",
+        replace = notif_id, -- Ensure it replaces the existing notification
+        timeout = false, -- Keep it visible
+      })
+    end
+
+    -- Start spinner timer
+    spinner_timer = vim.uv.new_timer()
+    if spinner_timer then
+      -- Start after a brief moment, then repeat every 100ms
+      spinner_timer:start(100, 100, vim.schedule_wrap(update_spinner_icon))
+    end
+
+    vim.system({ "ai-commit-msg" }, {}, function(res)
+      -- Stop spinner
+      if spinner_timer and not spinner_timer:is_closing() then
+        spinner_timer:stop()
+        spinner_timer:close() -- Important to close the handle
+      end
+      spinner_timer = nil -- Allow garbage collection
+
+      vim.schedule(function()
+        if not notif_id then
+          return
+        end -- Guard if notification was somehow dismissed
+
+        if res.code ~= 0 then
+          vim.notify(res.stderr or "Unknown error from ai-commit-msg", vim.log.levels.ERROR, {
+            id = notif_id,
+            title = "AI Commit Error",
+            icon = "", -- Error icon (requires a Nerd Font)
+            replace = notif_id,
+            timeout = 5000, -- Auto-dismiss after 5 seconds
+          })
+        elseif res.stdout == nil or res.stdout == "" then
+          vim.notify("No commit message generated.", vim.log.levels.WARN, {
+            id = notif_id,
+            title = "AI Commit",
+            icon = "", -- Warning icon
+            replace = notif_id,
+            timeout = 5000,
+          })
         else
+          local msg = res.stdout
           -- Check if the first line is empty or only whitespace
           local first_line_content = vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
           if first_line_content == nil or vim.fn.trim(first_line_content) == "" then
-            -- First line is empty, replace it with the message
             vim.api.nvim_buf_set_lines(0, 0, 1, false, vim.split(msg, "\n"))
           else
-            -- First line has content, insert below with comments
             local comment_prefix = "# "
             local commented_msg_lines = {}
             for _, line in ipairs(vim.split(msg, "\n")) do
               table.insert(commented_msg_lines, comment_prefix .. line)
             end
-
-            -- Insert a blank line at index 1 (second line)
-            vim.api.nvim_buf_set_lines(0, 1, 1, false, { "" })
-            -- Insert the commented message starting at index 2 (third line)
-            vim.api.nvim_buf_set_lines(0, 2, 2, false, commented_msg_lines)
+            vim.api.nvim_buf_set_lines(0, 1, 1, false, { "" }) -- Insert blank line
+            vim.api.nvim_buf_set_lines(0, 2, 2, false, commented_msg_lines) -- Insert commented message
           end
-          vim.notify("Commit message generated", vim.log.levels.INFO)
+          vim.notify("Commit message generated.", vim.log.levels.INFO, {
+            id = notif_id,
+            title = "AI Commit",
+            icon = "", -- Success icon
+            replace = notif_id,
+            timeout = 3000, -- Auto-dismiss after 3 seconds
+          })
         end
+        notif_id = nil -- Clear notif_id after handling
       end)
     end)
   end,
@@ -85,12 +144,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
   end,
 })
 
-local patterns = vim.list_extend(vim.g.root_spec[2], {
-  "go.mod",
-  "base", -- quizlet-infrastructure
-})
-
-vim.g.root_spec = { "lsp", patterns, "cwd" }
+vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod", "base" }, "cwd" }
 
 local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
 
@@ -102,7 +156,11 @@ vim.api.nvim_create_autocmd("BufEnter", {
       return
     end
     vim.fn.chdir(root)
-    vim.notify("cwd: " .. root, vim.log.levels.DEBUG)
+    local display_root = root
+    if vim.env.HOME and root:sub(1, #vim.env.HOME) == vim.env.HOME then
+      display_root = "~" .. root:sub(#vim.env.HOME + 1)
+    end
+    vim.notify("cwd: " .. display_root, vim.log.levels.INFO)
   end,
 })
 vim.keymap.set("n", "<leader>fd", function()
