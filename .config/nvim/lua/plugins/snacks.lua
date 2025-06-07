@@ -80,6 +80,8 @@ end
 return {
   {
     "folke/snacks.nvim",
+    -- use fork for zoom/unzoom fix for neovim terminal buffers
+    url = "https://github.com/aweis89/snacks.nvim",
     keys = {
       {
         "<leader><space>",
