@@ -10,6 +10,13 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   group = augroup("ai_commit_msg_populate"),
   pattern = "COMMIT_EDITMSG",
   callback = function()
+    -- Map q to close commit buffer without quitting
+    vim.keymap.set("n", "q", ":bd<CR>", {
+      buffer = 0,
+      noremap = true,
+      silent = true,
+      desc = "Close commit buffer"
+    })
     -- Spinner setup
     local spinner_timer -- will be vim.uv.new_timer()
     local notif_id = "commit-msg"

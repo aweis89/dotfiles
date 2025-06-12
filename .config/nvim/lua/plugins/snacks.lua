@@ -155,6 +155,15 @@ return {
         desc = "Find Recent Files",
         mode = "t",
       },
+      {
+        "<C-f>p",
+        function()
+          Snacks.picker.projects()
+          defer_insert()
+        end,
+        desc = "Find Recent Files",
+        mode = "t",
+      },
     },
     ---@type fun(_, opts): snacks.Config
     ---@param opts snacks.Config
