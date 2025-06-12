@@ -11,11 +11,11 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "COMMIT_EDITMSG",
   callback = function()
     -- Map q to close commit buffer without quitting
-    vim.keymap.set("n", "q", ":bd<CR>", {
+    vim.keymap.set("n", "q", ":w | bd<CR>", {
       buffer = 0,
       noremap = true,
       silent = true,
-      desc = "Close commit buffer"
+      desc = "Write and close commit buffer"
     })
     -- Spinner setup
     local spinner_timer -- will be vim.uv.new_timer()
