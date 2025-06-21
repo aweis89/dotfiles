@@ -1,8 +1,10 @@
 -- use lualine as bufferline
 return {
   { "akinsho/bufferline.nvim", enabled = false },
+  { "vimpostor/vim-tpipeline", event = "VeryLazy" },
   {
     "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
     opts = {
       sections = {
         lualine_b = {
