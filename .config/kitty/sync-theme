@@ -1,41 +1,50 @@
 #!/bin/zsh
 
-kitty_dir="${0:a:h}"
-theme="$kitty_dir/current-theme.conf"
-nvim_lazy_dir=$HOME/.local/share/nvim/lazy
+# kitty_dir="${0:a:h}"
+# theme="$kitty_dir/current-theme.conf"
+# nvim_lazy_dir=$HOME/.local/share/nvim/lazy
+#
+# case "$1" in
+#   "tokyonight")
+#     dir="$nvim_lazy_dir/tokyonight.nvim/extras"
+#     light="$dir/kitty/tokyonight_day.conf"
+#     dark="$dir/kitty/tokyonight_moon.conf"
+#     ;;
+#   "catppuccin")
+#     dark="$kitty_dir/themes/mocha.conf"
+#     light="$kitty_dir/themes/latte.conf"
+#     ;;
+#   "onedark")
+#     dir="$nvim_lazy_dir/onedarkpro.nvim/extras"
+#     dark="$dir/kitty/onedarkpro_onedark.conf"
+#     light="$dir/kitty/onedarkpro_onelight.conf"
+#     ;;
+#   "kanagawa")
+#     dir="$nvim_lazy_dir/kanagawa.nvim/extras"
+#     dark="$dir/kitty/kanagawa.conf"
+#     light="$dir/kitty/kanagawa_light.conf"
+#     ;;
+#   *)
+#     dark="$kitty_dir/themes/gruvbox_dark.conf"
+#     light="$kitty_dir/themes/gruvbox_light.conf"
+#     ;;
+# esac
+#
+# [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
+#   && target="$dark" || target="$light"
+#
+# rm -rf "$theme"
+# ln -s "$target" "$theme"
 
-case "$1" in
-  "tokyonight")
-    dir="$nvim_lazy_dir/tokyonight.nvim/extras"
-    light="$dir/kitty/tokyonight_day.conf"
-    dark="$dir/kitty/tokyonight_moon.conf"
-    ;;
-  "catppuccin")
-    dark="$kitty_dir/themes/mocha.conf"
-    light="$kitty_dir/themes/latte.conf"
-    ;;
-  "onedark")
-    dir="$nvim_lazy_dir/onedarkpro.nvim/extras"
-    dark="$dir/kitty/onedarkpro_onedark.conf"
-    light="$dir/kitty/onedarkpro_onelight.conf"
-    ;;
-  "kanagawa")
-    dir="$nvim_lazy_dir/kanagawa.nvim/extras"
-    dark="$dir/kitty/kanagawa.conf"
-    light="$dir/kitty/kanagawa_light.conf"
-    ;;
-  *)
-    dark="$kitty_dir/themes/gruvbox_dark.conf"
-    light="$kitty_dir/themes/gruvbox_light.conf"
-    ;;
-esac
+if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]]; then
+  theme='Everforest Dark Medium'
+else
+  theme='Everforest Light Medium'
+fi
 
-[[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" = "Dark" ]] \
-  && target="$dark" || target="$light"
+/opt/homebrew/bin/kitty +kitten themes \
+  --reload-in=all \
+  --config-file-name=kitty.conf \
+  "$theme"
 
-rm -rf "$theme"
-ln -s "$target" "$theme"
-
-for pid in "$(ps -x | grep '/Applications/kitty.app/Contents/MacOS/kitty' | grep -v grep | awk '{ print $1 }')"; do
-    kill -SIGUSR1 $pid
-done
+tmux source-file $HOME/.config/tmux/tmux.conf
