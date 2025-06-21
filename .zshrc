@@ -559,7 +559,7 @@ bindkey '^w' forward-word
 bindkey '^l' autosuggest-accept
 bindkey '^[OD' backward-char
 bindkey '^s' multi_fzf_completion
-bindkey '^g' fzf-gcloud-widget
+# bindkey '^g' fzf-gcloud-widget
 bindkey '^I' menu-select
 bindkey "$terminfo[kcbt]" menu-select
 bindkey -M menuselect '^I' menu-complete
