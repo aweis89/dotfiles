@@ -42,9 +42,11 @@ else
   theme='Everforest Light Medium'
 fi
 
-/opt/homebrew/bin/kitty +kitten themes \
+bin=/opt/homebrew/bin
+
+$bin/kitty +kitten themes \
   --reload-in=all \
   --config-file-name=kitty.conf \
   "$theme"
 
-tmux source-file $HOME/.config/tmux/tmux.conf
+$bin/tmux source-file $HOME/.config/tmux/tmux.conf
