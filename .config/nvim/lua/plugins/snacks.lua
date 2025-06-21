@@ -291,19 +291,19 @@ return {
       }
 
       local fullscreen_pickers = {
-        -- "buffers",
-        -- "files",
-        -- "git_diff",
-        -- "git_files",
-        -- "git_log_file",
-        -- "git_log",
-        -- "git_status",
-        -- "grep_buffers",
-        -- "grep_word",
-        -- "grep",
-        -- "projects",
-        -- "recent",
-        -- "smart",
+        "buffers",
+        "files",
+        "git_diff",
+        "git_files",
+        "git_log_file",
+        "git_log",
+        "git_status",
+        "grep_buffers",
+        "grep_word",
+        "grep",
+        "projects",
+        "recent",
+        "smart",
       }
 
       local file_action_pickers = {
