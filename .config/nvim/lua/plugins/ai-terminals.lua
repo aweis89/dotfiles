@@ -286,6 +286,7 @@ return {
         { name = "aichat", key = "i", display_name = "AI Chat" },
         { name = "goose", key = "g" },
         { name = "aider", key = "a" },
+        { name = "codex", key = "d" },
       })
     ),
   },
