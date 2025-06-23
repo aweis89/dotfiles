@@ -585,7 +585,7 @@ fi
 
 _set_nvim_term_buffer_name() {
   # Check if running in nvim and if the specific env var is set
-  if [ ! -z "$NVIM" ]; then
+  if [ ! -z "$NVIM" ] && [ -z "$TMUX" ]; then
     pwd=$(echo $PWD | sed "s%$HOME%~%")
     local dir=$(basename $pwd)
     # Use nvim_buf_set_name API function, targeting the specific buffer
