@@ -1,7 +1,15 @@
 -- use lualine as bufferline
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  { "vimpostor/vim-tpipeline", event = "VeryLazy" },
+  --  vim-tpipeline integrates terminal statuslines with lualine.
+  {
+    "vimpostor/vim-tpipeline",
+    dependencies = {
+      -- lauline needs to load first
+      "nvim-lualine/lualine.nvim",
+    },
+    event = "VeryLazy",
+  },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
@@ -27,8 +35,12 @@ return {
             end,
           },
         },
+        -- remove file path
+        lualine_c = {},
         -- remove progress and location
         lualine_y = {},
+        -- remove diff
+        lualine_x = {},
         -- change time for buffers
         lualine_z = { "buffers" },
       },
