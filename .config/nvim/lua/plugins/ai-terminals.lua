@@ -2,7 +2,7 @@ local AiderModels = {
   { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
   { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
   { model = "openai/claude-3.7-sonnet-thought", alias = "copilot-sonnet-thought" },
-  { model = "gemini-2.5-pro" },
+  { model = "gemini/gemini-2.5-pro" },
   { model = "o4-mini", openai_env_key = "OPENAI_API_KEY_ORIG" },
 }
 
@@ -111,6 +111,24 @@ local function create_terminal_keymaps(terminals)
       desc = "Send diagnostics to " .. display_name,
       mode = { "n", "v" },
     })
+
+    -- Add current file keymap
+    table.insert(keymaps, {
+      "<leader>al" .. key,
+      function()
+        require("ai-terminals").add_files_to_terminal(name, { vim.fn.expand("%") })
+      end,
+      desc = "Add current file to " .. display_name,
+    })
+
+    -- Add all buffers keymap
+    table.insert(keymaps, {
+      "<leader>aL" .. key,
+      function()
+        require("ai-terminals").add_buffers_to_terminal(name)
+      end,
+      desc = "Add all buffers to " .. display_name,
+    })
   end
 
   return keymaps
@@ -159,6 +177,12 @@ return {
             cmd = function()
               return string.format("unset GITHUB_TOKEN; GOOSE_CLI_THEME=%s goose", vim.o.background)
             end,
+          },
+          claude = {
+            cmd = "~/.asdf/installs/nodejs/23.6.1/bin/claude",
+          },
+          codex = {
+            cmd = "codex --full-auto",
           },
           aider = {
             cmd = function()
@@ -233,22 +257,6 @@ return {
           end,
           desc = "Add 'AI?' comment above line",
         },
-        {
-          "<leader>al",
-          function()
-            -- add current file
-            require("ai-terminals").aider_add_files(vim.fn.expand("%"))
-          end,
-          desc = "Add current file to Aider",
-        },
-        {
-          "<leader>aR", -- Mnemonic: AI add Read-only
-          function()
-            -- add current file as read-only
-            require("ai-terminals").aider_add_files(vim.fn.expand("%"), { read_only = true })
-          end,
-          desc = "Add current file to Aider (read-only)",
-        },
         -- Example: Run a command and send output to a specific terminal (e.g., Aider)
         {
           "<leader>ar", -- Mnemonic: AI Run command
@@ -259,11 +267,11 @@ return {
           desc = "Run 'make test' and send output to Aider terminal",
         },
         {
-          "<leader>aL", -- Mnemonic: AI Run command
+          "<leader>aR", -- Mnemonic: AI add Read-only
           function()
-            require("ai-terminals").aider_add_buffers()
+            require("ai-terminals").add_files_to_terminal("aider", { vim.fn.expand("%") }, { read_only = true })
           end,
-          desc = "Add all buffers to aider",
+          desc = "Add current file to Aider (read-only)",
         },
         {
           "<leader>ax", -- Mnemonic: AI Close (X) all terminals
@@ -284,7 +292,7 @@ return {
         { name = "claude", key = "c" },
         { name = "kode", key = "k" },
         { name = "aichat", key = "i", display_name = "AI Chat" },
-        { name = "goose", key = "g" },
+        { name = "gemini", key = "g" },
         { name = "aider", key = "a" },
         { name = "codex", key = "d" },
       })

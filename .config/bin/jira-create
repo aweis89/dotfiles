@@ -10,6 +10,7 @@ Create a Jira ticket with the following requirements.
 For the summery, only use alphanumeric characters and spaces.
 Other characters are allowed for the description.
 Keep the description concise and to the point.
+Ensure there is an acceptance criteria section in the description.
 The first line of the response should be the Jira ticket summary.
 All subsequent lines should be the Jira ticket description.
 No extra text is allowed before or after the summery and description.
@@ -30,20 +31,21 @@ read -rp "Create issue? [y/N] " confirm
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
 	result=$(echo "$description" | jira issue create --no-input \
 		$JIRA_CREATE_ARGS \
-		--assignee "$JIRA_USER" \
 		-s "$summery" "${@:2}")
 	echo "$result"
 else
 	exit 0
 fi
 
-url=$(echo "$result" | grep 'https://.*')
-id=$(echo "$url" | awk -F/ '{print $NF}')
-branch_desc=$(echo "$summery" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '-' | tr -dc '[:alnum:]-')
-branch_cmd="git checkout -b $id-$branch_desc"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	url=$(echo "$result" | grep 'https://.*')
+	id=$(echo "$url" | awk -F/ '{print $NF}')
+	branch_desc=$(echo "$summery" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '-' | tr -dc '[:alnum:]-')
+	branch_cmd="git checkout -b $id-$branch_desc"
 
-prompt_text="Run: \`$branch_cmd\` [y/N] "
-read -rp "$prompt_text" confirm
-if [[ "$confirm" =~ ^[Yy]$ ]]; then
-	command $branch_cmd
+	prompt_text="Run: \`$branch_cmd\` [y/N] "
+	read -rp "$prompt_text" confirm
+	if [[ "$confirm" =~ ^[Yy]$ ]]; then
+		command $branch_cmd
+	fi
 fi

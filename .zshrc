@@ -8,7 +8,7 @@
 }
 
 export DIRENV_LOG_FORMAT=""
-eval "$(direnv hook zsh)"
+# eval "$(direnv hook zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -117,6 +117,7 @@ zstyle ':completion:*' fzf-completion-keybindings "${keys[@]}"
 zstyle ':autocomplete:*' async on
 # This will make Autocomplete behave as if you pressed CtrlR at the start of each new command line
 # zstyle ':autocomplete:*' default-context history-incremental-search-backward
+zstyle ':autocomplete:*:kubectl:*' fake-compdef
 
 _evalcache zoxide init zsh
 
@@ -264,11 +265,16 @@ zle -N _fzf_alias
 
 # Source additional configs
 zsh-defer source "$HOME/.zshrc.local"
-zsh-defer source "$HOME/.zsh/kubectl.zsh"
+# zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
+# add fallback for global nodejs/python
+export PATH="$PATH:~/.asdf/installs/nodejs/23.6.1/bin"
+export PATH="$PATH:~/.asdf/installs/python/3.11.10/bin"
+
+alias codex='ASDF_NODEJS_VERSION=23.6.1 codex'
 alias '??'='command aichat -e'
 alias ai=aichat
 alias aig='aichat --model copilot:gemini-2.5-pro-preview-05-06'
@@ -282,16 +288,14 @@ alias c=clear
 alias d=z
 alias dc=docker-compose
 alias kb=kubebuilder
-alias kw='watch kubectl'
 alias tmux="TERM=screen-256color tmux"
 alias tf=terraform
 alias tfa='terraform apply -auto-approve'
 alias tfi='terraform init'
-alias ag=rg
+alias ag='rg -i'
 alias rgh="rg --hidden --glob '!**/.git/**'"
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
-alias kw='watch kubectl'
 alias rms='rm -rf ~/.local/state/nvim/swap/*'
 alias tmuxs='vim ~/.config/tmux/tmux.conf'
 alias tt=gotestsum
@@ -310,6 +314,11 @@ alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
 
 alias js=jira-list
+
+kw() {
+  watch "kubectl $@"
+}
+complete -F _kubectl kw
 
 pr-review() {
   set -e
@@ -359,7 +368,7 @@ pr-review() {
 
 copilot-models() {
   curl -s https://api.githubcopilot.com/models \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Authorization: Bearer $COPILOT_KEY" \
     -H "Content-Type: application/json" \
     -H "Copilot-Integration-Id: vscode-chat" | jq -r '.data[].id'
 }
@@ -708,5 +717,4 @@ if [[ "$PROFILE_STARTUP" == true ]]; then
     zprof
 fi
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY="YES"
