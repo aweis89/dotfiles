@@ -1,7 +1,8 @@
 --- Helper function to extract files from a snacks picker and send them to aider
 ---@param picker snacks.Picker
+---@param term string
 ---@param opts? { read_only?: boolean } Options for the command
-local function add_files_from_picker(picker, opts)
+local function add_files_from_picker(picker, term, opts)
   local selected = picker:selected({ fallback = true })
   local files_to_add = {}
   for _, item in pairs(selected) do
@@ -9,7 +10,7 @@ local function add_files_from_picker(picker, opts)
       table.insert(files_to_add, item.file)
     end
   end
-  require("ai-terminals").aider_add_files(files_to_add, opts)
+  require("ai-terminals").add_files_to_terminal(term, files_to_add, opts)
 end
 
 --- Helper function to extract search results and send them to aider
@@ -208,15 +209,19 @@ return {
           actions = {
             ["aider_search"] = function(picker)
               picker:close()
-              send_search(picker) -- Defaults to { read_only = false } -> /add
+              send_search(picker)
             end,
             ["aider_add"] = function(picker)
               picker:close()
-              add_files_from_picker(picker) -- Defaults to { read_only = false } -> /add
+              add_files_from_picker(picker, "aider")
             end,
             ["aider_read_only"] = function(picker)
               picker:close()
-              add_files_from_picker(picker, { read_only = true }) -- Send /read-only
+              add_files_from_picker(picker, "aider", { read_only = true }) -- Send /read-only
+            end,
+            ["claude_add"] = function(picker)
+              picker:close()
+              add_files_from_picker(picker, "claude")
             end,
             ["commit"] = function(picker)
               picker:close()
@@ -327,8 +332,9 @@ return {
         win = {
           input = {
             keys = {
-              ["<localleader>a"] = { "aider_add", mode = { "n", "i" } },
-              ["<localleader>A"] = { "aider_read_only", mode = { "n", "i" } },
+              ["<localleader>aa"] = { "aider_add", mode = { "n", "i" } },
+              ["<localleader>Aa"] = { "aider_read_only", mode = { "n", "i" } },
+              ["<localleader>ac"] = { "claude_add", mode = { "n", "i" } },
               ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
               -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
             },
