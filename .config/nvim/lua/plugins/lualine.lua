@@ -1,18 +1,31 @@
--- use lualine as bufferline
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  --  vim-tpipeline integrates terminal statuslines with lualine.
   {
-    "vimpostor/vim-tpipeline",
-    dependencies = {
-      -- lauline needs to load first
-      "nvim-lualine/lualine.nvim",
+    "christopher-francisco/tmux-status.nvim",
+    lazy = true,
+    config = function(_, opts)
+      require("tmux-status").setup(opts)
+    end,
+    opts = {
+      window = {
+        -- "dir" | "name" | "index_name"
+        -- if not listed above, text will be passed directly to tmux formatting
+        text = "name",
+      },
+      colors = {
+        window_active = "#e69875",
+        window_inactive = "#859289",
+        window_inactive_recent = "#3f5865",
+        session = "#a7c080",
+        datetime = "#7a8478",
+        battery = "#7a8478",
+      },
+      force_show = false, -- Force components to be shown regardless of Tmux status
+      manage_tmux_status = true, -- Set to false if you do NOT want the plugin to turn Tmux status on/off
     },
-    event = "VeryLazy",
   },
   {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
     opts = {
       sections = {
         lualine_b = {
@@ -35,9 +48,17 @@ return {
             end,
           },
         },
-        -- remove file path
-        lualine_c = {},
-        -- remove progress and location
+        lualine_c = {
+          "%=",
+          {
+            function()
+              return require("tmux-status").tmux_windows()
+            end,
+            cond = function()
+              return require("tmux-status").show()
+            end,
+          },
+        },
         lualine_y = {},
         -- remove diff
         lualine_x = {},
