@@ -181,7 +181,10 @@ return {
             end,
           },
           claude = {
-            cmd = "~/.asdf/installs/nodejs/23.6.1/bin/claude",
+            cmd = function()
+              local claude_path = "~/.asdf/installs/nodejs/23.6.1/bin/claude"
+              return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
+            end,
           },
           codex = {
             cmd = "codex --full-auto",
