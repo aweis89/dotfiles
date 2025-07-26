@@ -2,6 +2,8 @@ local AiderModels = {
   { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
   { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
   { model = "openai/claude-3.7-sonnet-thought", alias = "copilot-sonnet-thought" },
+  { model = "vertex_ai/claude-sonnet-4", alias = "vertex-sonnet-4" },
+  { model = "vertex_ai/claude-opus-4", alias = "vertex-opus-4" },
   { model = "gemini/gemini-2.5-pro" },
   { model = "o4-mini", openai_env_key = "OPENAI_API_KEY_ORIG" },
 }
@@ -141,8 +143,8 @@ return {
     ---@type fun(): ConfigType
     opts = function()
       return {
+        backend = "tmux",
         terminal_keymaps = {
-
           {
             key = "<localleader>j",
             action = function()
@@ -186,7 +188,11 @@ return {
           },
           aider = {
             cmd = function()
-              local cmd_parts = { "aider", "--watch-files", string.format("--%s-mode", vim.o.background) }
+              local cmd_parts = {
+                "~/.config/bin/aider",
+                "--watch-files",
+                string.format("--%s-mode", vim.o.background),
+              }
               local selected_model_name = read_cache("aider-model")
 
               if selected_model_name and selected_model_name ~= "" then
