@@ -143,7 +143,7 @@ return {
     ---@type fun(): ConfigType
     opts = function()
       return {
-        backend = "tmux",
+        -- backend = "tmux",
         terminal_keymaps = {
           {
             key = "<localleader>j",
