@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       buffer = 0,
       noremap = true,
       silent = true,
-      desc = "Write and close commit buffer"
+      desc = "Write and close commit buffer",
     })
     -- Spinner setup
     local spinner_timer -- will be vim.uv.new_timer()

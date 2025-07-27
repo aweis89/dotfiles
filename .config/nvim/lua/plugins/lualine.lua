@@ -1,31 +1,18 @@
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  {
-    "christopher-francisco/tmux-status.nvim",
-    lazy = true,
-    config = function(_, opts)
-      require("tmux-status").setup(opts)
-    end,
-    opts = {
-      window = {
-        -- "dir" | "name" | "index_name"
-        -- if not listed above, text will be passed directly to tmux formatting
-        text = "name",
-      },
-      colors = {
-        window_active = "#e69875",
-        window_inactive = "#859289",
-        window_inactive_recent = "#3f5865",
-        session = "#a7c080",
-        datetime = "#7a8478",
-        battery = "#7a8478",
-      },
-      force_show = false, -- Force components to be shown regardless of Tmux status
-      manage_tmux_status = true, -- Set to false if you do NOT want the plugin to turn Tmux status on/off
-    },
-  },
+  { "vimpostor/vim-tpipeline", event = "VeryLazy" },
   {
     "nvim-lualine/lualine.nvim",
+    -- https://github.com/vimpostor/vim-tpipeline/issues/53
+    config = function(_, opts)
+      require("lualine").setup(opts)
+
+      if os.getenv("TMUX") then
+        vim.defer_fn(function()
+          vim.o.laststatus = 0
+        end, 0)
+      end
+    end,
     opts = {
       sections = {
         lualine_b = {
@@ -48,17 +35,7 @@ return {
             end,
           },
         },
-        lualine_c = {
-          "%=",
-          {
-            function()
-              return require("tmux-status").tmux_windows()
-            end,
-            cond = function()
-              return require("tmux-status").show()
-            end,
-          },
-        },
+        lualine_c = {},
         lualine_y = {},
         -- remove diff
         lualine_x = {},
