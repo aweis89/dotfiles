@@ -7,15 +7,16 @@ romkatv/powerlevel10k
 
 mroth/evalcache
 
-# # Oh My Zsh plugins
-ohmyzsh/ohmyzsh path:lib
+# Oh My Zsh plugins
+# ohmyzsh/ohmyzsh path:lib
+getantidote/use-omz
 ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
 ohmyzsh/ohmyzsh path:plugins/ag kind:fpath
 ohmyzsh/ohmyzsh path:plugins/azure
 ohmyzsh/ohmyzsh path:plugins/asdf
 ohmyzsh/ohmyzsh path:plugins/brew
 ohmyzsh/ohmyzsh path:plugins/docker
-# ohmyzsh/ohmyzsh path:plugins/docker-compose
+ohmyzsh/ohmyzsh path:plugins/docker-compose
 ohmyzsh/ohmyzsh path:plugins/fzf
 ohmyzsh/ohmyzsh path:plugins/gcloud
 ohmyzsh/ohmyzsh path:plugins/gh
@@ -23,7 +24,7 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:plugins/helm
 ohmyzsh/ohmyzsh path:plugins/istioctl
-# ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kustomize kind:fpath
 ohmyzsh/ohmyzsh path:plugins/n kind:fpath
 ohmyzsh/ohmyzsh path:plugins/rg kind:fpath
