@@ -8,7 +8,6 @@ romkatv/powerlevel10k
 mroth/evalcache
 
 # Oh My Zsh plugins
-# ohmyzsh/ohmyzsh path:lib
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:plugins/adb kind:fpath
 ohmyzsh/ohmyzsh path:plugins/ag kind:fpath
