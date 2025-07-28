@@ -7,7 +7,7 @@ return {
     config = function(_, opts)
       require("lualine").setup(opts)
 
-      if os.getenv("TMUX") then
+      if vim.env.TMUX then
         vim.defer_fn(function()
           vim.o.laststatus = 0
         end, 0)
