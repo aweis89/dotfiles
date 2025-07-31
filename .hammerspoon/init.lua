@@ -1,11 +1,41 @@
 require("keyboard")
 local reload_theme_path = "~/tmp/theme-reload"
+local zen_browser = "Zen Browser"
+
+-- Container mapping for URLs
+local container_map = {
+	["quizlet"] = "qz",
+	["calendly"] = "cl",
+	["meet%.google%.com"] = "qz",
+}
 
 -- Function to open URL in specified browser
 function openURLWith(url, browser)
-	-- Use 'open' command to specifically launch URL in Arc
-	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
-	hs.execute(command)
+	if browser ~= zen_browser then
+		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
+		hs.execute(command)
+		return
+	end
+
+	local container = nil
+
+	-- Check URL against container mapping
+	for pattern, container_name in pairs(container_map) do
+		if string.find(url, pattern) then
+			container = container_name
+			break
+		end
+	end
+
+	-- Use container format only if mapping found
+	if container then
+		local containerURL = string.format("ext+container:name=%s&url=%s", container, url)
+		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, containerURL)
+		hs.execute(command)
+	else
+		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
+		hs.execute(command)
+	end
 end
 
 -- force browser focus when opening links
@@ -13,7 +43,7 @@ end
 -- requires hammerspoon to be the default browser
 hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 	-- openURLWith(fullURL, "arc")
-	openURLWith(fullURL, "Zen Browser")
+	openURLWith(fullURL, zen_browser)
 	-- copy url to clipboard
 	hs.pasteboard.setContents(fullURL)
 end
