@@ -157,13 +157,15 @@ local function set_background(light_theme, dark_theme)
 end
 
 local light_theme = themes.everforest
-local dark_theme = themes.everforest
+local dark_theme = "habamax"
 
 local plugins = {
   {
     "LazyVim/LazyVim",
     opts = function()
-      set_background(light_theme.light, dark_theme.dark)
+      local light_name = type(light_theme) == "table" and light_theme.light or light_theme
+      local dark_name = type(dark_theme) == "table" and dark_theme.dark or dark_theme
+      set_background(light_name, dark_name)
 
       local theme_reload_path = vim.fn.expand(reload_theme_path)
       local watcher = vim.uv.new_fs_event()
@@ -183,6 +185,8 @@ local plugins = {
 }
 
 table.insert(plugins, light_theme.plugin)
-table.insert(plugins, dark_theme.plugin)
+if type(dark_theme) == "table" and dark_theme.plugin then
+  table.insert(plugins, dark_theme.plugin)
+end
 
 return plugins
