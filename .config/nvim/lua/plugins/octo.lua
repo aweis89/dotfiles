@@ -13,7 +13,12 @@ local function ai_review(term_name, prefix)
       context = "/ask " .. context
     end
     local term = require("ai-terminals").get(term_name)
-    require("ai-terminals").send(context .. "\n Review this PR", { term = term, submit = false, insert_mode = true })
+    require("ai-terminals").send(context .. "\n Review this PR", {
+      term = term,
+      submit = false,
+      insert_mode = true,
+      focus = true,
+    })
   end
 end
 return {
