@@ -29,4 +29,4 @@ else
 		--code-theme gruvbox-light)
 fi
 
-"$HOME/.asdf/installs/python/3.11.10/bin/aider" "$@" "${opts[@]}"
+"$HOME/.asdf/installs/python/3.11.10/bin/aider" "${opts[@]}" "$@"
