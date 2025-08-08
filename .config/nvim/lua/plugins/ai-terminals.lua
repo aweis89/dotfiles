@@ -1,7 +1,7 @@
 local AiderModels = {
   { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
-  { model = "openai/claude-3.7-sonnet", alias = "copilot-sonnet" },
-  { model = "openai/claude-3.7-sonnet-thought", alias = "copilot-sonnet-thought" },
+  { model = "openai/claude-sonnet-4", alias = "copilot-sonnet-4" },
+  { model = "openai/claude-sonnet-4-thought", alias = "copilot-sonnet-4" },
   { model = "vertex_ai/claude-sonnet-4", alias = "vertex-sonnet-4" },
   { model = "vertex_ai/claude-opus-4", alias = "vertex-opus-4" },
   { model = "gemini/gemini-2.5-pro" },
@@ -187,7 +187,7 @@ return {
             end,
           },
           codex = {
-            cmd = "codex --full-auto",
+            cmd = "/opt/homebrew/bin/codex --full-auto",
           },
           aider = {
             cmd = function()
@@ -200,7 +200,7 @@ return {
 
               if selected_model_name and selected_model_name ~= "" then
                 table.insert(cmd_parts, "--model")
-                table.insert(cmd_parts, selected_model_name)
+                table.insert(cmd_parts, "'" .. selected_model_name .. "'")
 
                 -- Check for openai_env_key for the selected model
                 for _, model_entry in ipairs(AiderModels) do
