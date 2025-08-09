@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+INSTALL_DIR="${HOME}/.local/bin"
+BINARY_NAME="codex"
+REPO="openai/codex"
+ARCH=$(uname -m)
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+
+get_latest_version() {
+    curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | cut -d '"' -f 4
+}
+
+get_current_version() {
+    if [ -x "${INSTALL_DIR}/${BINARY_NAME}" ]; then
+        "${INSTALL_DIR}/${BINARY_NAME}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.0"
+    else
+        echo "0.0.0"
+    fi
+}
+
+map_arch() {
+    case "$ARCH" in
+        x86_64)
+            echo "x86_64"
+            ;;
+        arm64|aarch64)
+            echo "aarch64"
+            ;;
+        *)
+            echo "Unsupported architecture: $ARCH" >&2
+            exit 1
+            ;;
+    esac
+}
+
+map_os() {
+    case "$OS" in
+        darwin)
+            echo "apple-darwin"
+            ;;
+        linux)
+            echo "unknown-linux-gnu"
+            ;;
+        *)
+            echo "Unsupported OS: $OS" >&2
+            exit 1
+            ;;
+    esac
+}
+
+main() {
+    echo "Checking for codex updates..."
+    
+    mkdir -p "$INSTALL_DIR"
+    
+    LATEST_VERSION=$(get_latest_version)
+    CURRENT_VERSION=$(get_current_version)
+    
+    LATEST_VERSION_NUM=$(echo "$LATEST_VERSION" | sed 's/[^0-9.]//g')
+    
+    if [ "$CURRENT_VERSION" = "$LATEST_VERSION_NUM" ]; then
+        echo "Codex is already up to date (version $CURRENT_VERSION)"
+        exit 0
+    fi
+    
+    echo "Current version: $CURRENT_VERSION"
+    echo "Latest version: $LATEST_VERSION_NUM"
+    echo "Installing codex ${LATEST_VERSION}..."
+    
+    MAPPED_ARCH=$(map_arch)
+    MAPPED_OS=$(map_os)
+    PLATFORM="${MAPPED_ARCH}-${MAPPED_OS}"
+    
+    DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${LATEST_VERSION}/codex-${PLATFORM}.tar.gz"
+    TEMP_DIR=$(mktemp -d)
+    
+    trap "rm -rf $TEMP_DIR" EXIT
+    
+    echo "Downloading from: $DOWNLOAD_URL"
+    curl -L -o "${TEMP_DIR}/codex.tar.gz" "$DOWNLOAD_URL"
+    
+    echo "Extracting..."
+    tar -xzf "${TEMP_DIR}/codex.tar.gz" -C "$TEMP_DIR"
+    
+    EXTRACTED_BINARY="${TEMP_DIR}/codex-${PLATFORM}"
+    if [ ! -f "$EXTRACTED_BINARY" ]; then
+        EXTRACTED_BINARY="${TEMP_DIR}/codex"
+    fi
+    
+    if [ ! -f "$EXTRACTED_BINARY" ]; then
+        echo "Error: Could not find extracted binary" >&2
+        exit 1
+    fi
+    
+    echo "Installing to ${INSTALL_DIR}/${BINARY_NAME}..."
+    mv "$EXTRACTED_BINARY" "${INSTALL_DIR}/${BINARY_NAME}"
+    chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
+    
+    NEW_VERSION=$("${INSTALL_DIR}/${BINARY_NAME}" --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    echo "Successfully installed codex version $NEW_VERSION"
+    
+    if ! echo "$PATH" | grep -q "${INSTALL_DIR}"; then
+        echo ""
+        echo "NOTE: ${INSTALL_DIR} is not in your PATH."
+        echo "Add the following to your shell configuration file:"
+        echo "  export PATH=\"\${PATH}:${INSTALL_DIR}\""
+    fi
+}
+
+main "$@"

@@ -182,12 +182,12 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "claude"
+              local claude_path = "~/.local/bin/claude"
               return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
             end,
           },
           codex = {
-            cmd = "codex --full-auto",
+            cmd = "~/.local/bin/codex --full-auto",
           },
           aider = {
             cmd = function()
