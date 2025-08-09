@@ -122,7 +122,8 @@ function gcloud-foreach-project
     end
 
     # Use parallel for concurrent execution - each project on a new line
-    printf "%s\n" $projects | parallel -j 0 --keep-order "echo '=== Project: {} ==='; $argv --project={}"
+    printf "%s\n" $projects | parallel -j 0 \
+        "echo '=== Project: {} ==='; $argv --project={} 2>/dev/null; or true"
 end
 abbr -a -- gfp gcloud-foreach-project
 
