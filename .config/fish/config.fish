@@ -147,7 +147,7 @@ function pr-msg
         set msg ":draft-pr: $msg"
     end
     # Output the message and copy to clipboard
-    echo ":pull-request: $msg :pray:" | tee (pbcopy)
+    echo ":pull-request: $msg :pray:" | tee /dev/tty | pbcopy
 end
 
 bind -M insert \cw forward-word
