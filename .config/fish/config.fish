@@ -51,7 +51,7 @@ abbr -a -- fishs 'vim ~/.config/fish/config.fish'
 
 abbr -a -- ag rg
 abbr -a -- ?? 'aichat -e'
-abbr -a -- a signadot
+abbr -a -- s signadot
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
