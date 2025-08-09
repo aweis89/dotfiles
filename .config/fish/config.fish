@@ -79,7 +79,7 @@ function pass_to_aichat_widget
     # Execute the new command
     commandline -f execute
 end
-bind -M insert \co pass_to_aichat_widget
+bind --mode insert \co pass_to_aichat_widget
 abbr -a -- ?? 'aichat -e'
 
 function goinit
@@ -178,8 +178,10 @@ function pr-msg
     echo ":pull-request: $msg :pray:" | tee /dev/tty | pbcopy
 end
 
-bind -M insert \cw forward-word
-bind -M insert \cl accept-autosuggestion
-bind -M insert \cn accept-autosuggestion
-bind -M insert \cj complete
-bind -M insert \ck complete
+fish_vi_key_bindings --no-erase insert
+bind --mode insert --sets-mode default jj repaint
+bind --mode insert \cw forward-word
+bind --mode insert \cl accept-autosuggestion
+bind --mode insert \cn accept-autosuggestion
+bind --mode insert \cj complete
+bind --mode insert \ck complete
