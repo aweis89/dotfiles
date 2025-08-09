@@ -114,7 +114,6 @@ function gcloud-foreach-project
         return 1
     end
 
-    set current_project (gcloud config get-value project 2>/dev/null)
     set projects (gcloud projects list --format="value(projectId)" 2>/dev/null)
 
     if test -z "$projects"
@@ -122,11 +121,8 @@ function gcloud-foreach-project
         return 1
     end
 
-    for project in $projects
-        echo "=== Project: $project ==="
-        eval $argv --project="$project"
-        echo ""
-    end
+    # Use parallel for concurrent execution - each project on a new line
+    printf "%s\n" $projects | parallel -j 0 --keep-order "echo '=== Project: {} ==='; $argv --project={}"
 end
 abbr -a -- gfp gcloud-foreach-project
 
