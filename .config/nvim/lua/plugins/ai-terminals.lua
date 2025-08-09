@@ -182,12 +182,12 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "~/.asdf/installs/nodejs/23.6.1/bin/claude"
+              local claude_path = "claude"
               return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
             end,
           },
           codex = {
-            cmd = "/opt/homebrew/bin/codex --full-auto",
+            cmd = "codex --full-auto",
           },
           aider = {
             cmd = function()
