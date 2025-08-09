@@ -178,7 +178,7 @@ function pr-msg
     echo ":pull-request: $msg :pray:" | tee /dev/tty | pbcopy
 end
 
-fish_vi_key_bindings --no-erase insert
+fish_vi_key_bindings
 bind --mode insert --sets-mode default jj repaint
 bind --mode insert \cw forward-word
 bind --mode insert \cl accept-autosuggestion
