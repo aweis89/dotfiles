@@ -50,7 +50,6 @@ abbr -a -- freflog '_fzf_git_lreflogs | xargs git checkout'
 abbr -a -- fishs 'vim ~/.config/fish/config.fish'
 
 abbr -a -- ag rg
-abbr -a -- ?? 'aichat -e'
 abbr -a -- s signadot
 
 set -gx EDITOR nvim
@@ -66,6 +65,12 @@ fzf_configure_bindings \
     --git_log=\cgl \
     --history=\cr
 
+function ggmain
+    git checkout (__git.default_branch)
+    git pull origin (__git.current_branch)
+end
+abbr -a -- ggm ggmain
+
 function pass_to_aichat_widget
     # Retrieve the current command line input
     set current_input (commandline)
@@ -75,11 +80,7 @@ function pass_to_aichat_widget
     commandline -f execute
 end
 bind -M insert \co pass_to_aichat_widget
-
-function ggmain
-    git checkout main 2>/dev/null || git checkout master
-    ggpull
-end
+abbr -a -- ?? 'aichat -e'
 
 function goinit
     set -l name $argv[1]
@@ -107,6 +108,12 @@ function gcloud-project
 end
 abbr -a -- gp gcloud-project
 
+function gcloud-account
+    set account (gcloud auth list --format='table(account)' | grep -v ACCOUNT | fzf | string collect; or echo)
+    gcloud config set account $account
+end
+abbr -a -- gac "gcloud-account; gcloud-project"
+
 function gcloud-update-kubeconfig
     set cluster (gcloud container clusters list | grep -v NAME | fzf | string collect; or echo)
     if test -n "$cluster"
@@ -119,11 +126,6 @@ function gcloud-update-kubeconfig
 end
 abbr -a -- guk gcloud-update-kubeconfig
 abbr -a -- guki 'gcloud-update-kubeconfig --internal-ip'
-
-function gcloud-account
-    set account (gcloud auth list --format='table(account)' | grep -v ACCOUNT | fzf | string collect; or echo)
-    gcloud config set account $account
-end
 
 function gcloud-fzf
     set cmd (__gcloud_sel | string collect; or echo)
