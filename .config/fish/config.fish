@@ -6,6 +6,7 @@ end
 fish_add_path /opt/homebrew/bin
 fish_add_path ~/.config/bin
 fish_add_path ~/.local/bin
+fish_add_path /opt/homebrew/share/google-cloud-sdk/bin
 
 # Auto tmux
 if test -z "$TMUX"; and test -z "$NVIM"
