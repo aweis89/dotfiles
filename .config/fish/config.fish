@@ -108,6 +108,35 @@ function gcloud-project
 end
 abbr -a -- gp gcloud-project
 
+function gcloud-foreach-project
+    if test (count $argv) -eq 0
+        echo "Usage: gcloud-foreach-project <command>"
+        return 1
+    end
+
+    set current_project (gcloud config get-value project 2>/dev/null)
+    set projects (gcloud projects list --format="value(projectId)" 2>/dev/null)
+
+    if test -z "$projects"
+        echo "No projects found"
+        return 1
+    end
+
+    for project in $projects
+        echo "=== Project: $project ==="
+        eval $argv --project="$project"
+        echo ""
+    end
+end
+abbr -a -- gfp gcloud-foreach-project
+
+function copilot-models
+    curl -s https://api.githubcopilot.com/models \
+        -H "Authorization: Bearer $COPILOT_KEY" \
+        -H "Content-Type: application/json" \
+        -H "Copilot-Integration-Id: vscode-chat" | jq -r '.data[].id'
+end
+
 function gcloud-account
     set account (gcloud auth list --format='table(account)' | grep -v ACCOUNT | fzf | string collect; or echo)
     gcloud config set account $account
