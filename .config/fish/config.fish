@@ -32,7 +32,6 @@ alias tmux="TERM=screen-256color command tmux"
 alias tf=terraform
 alias tfa='terraform apply -auto-approve'
 alias tfi='terraform init'
-alias ag=rg
 alias int='curl -ss https://google.com'
 alias kb=kubebuilder
 alias kw='watch kubectl'
@@ -50,7 +49,10 @@ alias ggroot='cd $(git rev-parse --show-toplevel)'
 alias fb='_fzf_git_branches | xargs git checkout'
 alias freflog='_fzf_git_lreflogs | xargs git checkout'
 alias fishs='vim ~/.config/fish/config.fish'
-alias s=signadot
+
+abbr -a -- ag rg
+abbr -a -- ?? 'aichat -e'
+abbr -a -- a signadot
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
@@ -68,9 +70,6 @@ function pass_to_aichat_widget
     commandline -f execute
 end
 bind -M insert \co pass_to_aichat_widget
-
-# Abbreviation for aichat
-abbr --add ?? 'aichat -e'
 
 function ggmain
     git checkout main 2>/dev/null || git checkout master
@@ -101,7 +100,7 @@ function gcloud-project
         gcloud config get project
     end
 end
-alias gp=gcloud-project
+abbr -a -- gp gcloud-project
 
 function gcloud-update-kubeconfig
     set cluster (gcloud container clusters list | grep -v NAME | fzf | string collect; or echo)
@@ -113,8 +112,8 @@ function gcloud-update-kubeconfig
         set +x
     end
 end
-alias guk=gcloud-update-kubeconfig
-alias guki='gcloud-update-kubeconfig --internal-ip'
+abbr -a -- guk gcloud-update-kubeconfig
+abbr -a -- guki 'gcloud-update-kubeconfig --internal-ip'
 
 function gcloud-account
     set account (gcloud auth list --format='table(account)' | grep -v ACCOUNT | fzf | string collect; or echo)
@@ -125,7 +124,7 @@ function gcloud-fzf
     set cmd (__gcloud_sel | string collect; or echo)
     test -n "$cmd" && eval "$cmd"
 end
-alias fgc=gcloud-fzf
+abbr -a -- fgc gcloud-fzf
 
 function pr-msg
     # Retrieve PR data
