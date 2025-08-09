@@ -118,9 +118,7 @@ alias guki='gcloud-update-kubeconfig --internal-ip'
 
 function gcloud-account
     set account (gcloud auth list --format='table(account)' | grep -v ACCOUNT | fzf | string collect; or echo)
-    set -x
     gcloud config set account $account
-    set +x
 end
 
 function gcloud-fzf
