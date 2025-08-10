@@ -1,25 +1,53 @@
 require("keyboard")
 local reload_theme_path = "~/tmp/theme-reload"
-local zen_browser = "Zen Browser"
 
--- Container mapping for URLs
+-- Map URL patterns to Edge/Zen containers (display names for Edge)
 local container_map = {
 	["quizlet"] = "qz",
 	["calendly"] = "cl",
 	["meet%.google%.com"] = "qz",
 }
 
--- Function to open URL in specified browser
-function openURLWith(url, browser)
-	if browser ~= zen_browser then
-		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
-		hs.execute(command)
-		return
+-- App names/paths
+local zen_browser = "Zen Browser"
+local edge_browser = "Microsoft Edge"
+local edge_bin = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+local edge_local_state = os.getenv("HOME") .. "/Library/Application Support/Microsoft Edge/Local State"
+
+-- Build a display-name -> profile-directory map from Edge Local State
+local function loadEdgeProfileMap()
+	local f = io.open(edge_local_state, "r")
+	if not f then
+		return {}
+	end
+	local data = f:read("*a")
+	f:close()
+	local ok, json = pcall(hs.json.decode, data)
+	if not ok or not json or not json.profile or not json.profile.info_cache then
+		return {}
 	end
 
-	local container = nil
+	local map = {}
+	for dir, meta in pairs(json.profile.info_cache) do
+		if meta and meta.name then
+			map[meta.name] = dir -- e.g., ["qz"] = "Profile 2", ["cl"] = "Profile 3", ["Personal"] = "Default"
+		end
+	end
+	return map
+end
 
-	-- Check URL against container mapping
+-- Cache the profile map so we don't read every time
+local edgeProfilesByName = loadEdgeProfileMap()
+
+local function getEdgeProfileDir(displayName)
+	-- fall back to Default if not mapped or missing
+	return (displayName and edgeProfilesByName[displayName]) or "Default"
+end
+
+-- Function to open URL in specified browser
+function openURLWith(url, browser)
+	-- First, decide if this URL maps to a "container"/profile by display name
+	local container = nil
 	for pattern, container_name in pairs(container_map) do
 		if string.find(url, pattern) then
 			container = container_name
@@ -27,23 +55,35 @@ function openURLWith(url, browser)
 		end
 	end
 
-	-- Use container format only if mapping found
-	if container then
+	-- Branch: Microsoft Edge with profile directories
+	if browser == edge_browser then
+		local profileDir = getEdgeProfileDir(container) -- "Profile 2", "Profile 3", or "Default"
+		local command = string.format('"%s" --profile-directory="%s" "%s"', edge_bin, profileDir, url)
+		hs.execute(command)
+		return
+	end
+
+	-- Branch: Zen with ext+container scheme
+	if browser == zen_browser and container then
 		local containerURL = string.format("ext+container:name=%s&url=%s", container, url)
 		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, containerURL)
 		hs.execute(command)
-	else
-		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
-		hs.execute(command)
+		return
 	end
+
+	-- Fallback: open with the browser directly
+	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
+	hs.execute(command)
 end
 
--- force browser focus when opening links
--- fixes issues with slack where the link is opened, but focus doesn't change
--- requires hammerspoon to be the default browser
+-- Force browser focus when opening links (Hammerspoon is default browser)
 hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
-	-- openURLWith(fullURL, "arc")
+	-- Example: route to Edge
+	-- openURLWith(fullURL, "Microsoft Edge")
+
+	-- Your current default:
 	openURLWith(fullURL, zen_browser)
+
 	-- copy url to clipboard
 	hs.pasteboard.setContents(fullURL)
 end
