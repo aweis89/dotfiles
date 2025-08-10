@@ -26,6 +26,7 @@ alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
 
 # Commands to run in interactive sessions can go here
+abbr -a -- v nvim
 abbr -a -- ai aichat
 abbr -a -- kcn kubens
 abbr -a -- kcu kubectx
@@ -37,19 +38,19 @@ abbr -a -- tfa 'terraform apply -auto-approve'
 abbr -a -- tfi 'terraform init'
 abbr -a -- int 'curl -ss https://google.com'
 abbr -a -- rms 'rm -rf ~/.local/share/nvim/swap/*'
-abbr -a -- tmuxs 'vim ~/.config/tmux/tmux.conf'
+abbr -a -- tmuxs 'nvim ~/.config/tmux/tmux.conf'
 abbr -a -- tt gotestsum
 abbr -a -- vims 'cd ~/.config/nvim/lua && vim'
-abbr -a -- zshs 'vim ~/.zshrc'
-abbr -a -- zshl 'vim ~/.zshrc.local'
-abbr -a -- zshp 'vim ~/.zsh/.zsh_plugins.txt'
+abbr -a -- zshs 'nvim ~/.zshrc'
+abbr -a -- zshl 'nvim ~/.zshrc.local'
+abbr -a -- zshp 'nvim ~/.zsh/.zsh_plugins.txt'
 abbr -a -- ff 'find . -type f -name'
 abbr -a -- fd 'find . -type d -name'
 abbr -a -- explain 'unset github_token; gh copilot explain'
 abbr -a -- ggr 'cd $(git rev-parse --show-toplevel)'
 abbr -a -- fb '_fzf_git_branches | xargs git checkout'
 abbr -a -- freflog '_fzf_git_lreflogs | xargs git checkout'
-abbr -a -- fishs 'vim ~/.config/fish/config.fish'
+abbr -a -- fishs 'nvim ~/.config/fish/config.fish'
 
 abbr -a -- ag rg
 abbr -a -- s signadot
