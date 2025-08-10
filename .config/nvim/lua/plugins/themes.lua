@@ -156,7 +156,7 @@ local function set_background(light_theme, dark_theme)
   end
 end
 
-local light_theme = themes.everforest
+local light_theme = themes.gruvbox
 local dark_theme = themes.onedark
 
 local plugins = {
