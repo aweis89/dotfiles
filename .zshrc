@@ -716,3 +716,4 @@ if [[ "$PROFILE_STARTUP" == true ]]; then
 fi
 
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY="YES"
+export PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
