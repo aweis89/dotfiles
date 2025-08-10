@@ -157,7 +157,7 @@ local function set_background(light_theme, dark_theme)
 end
 
 local light_theme = themes.everforest
-local dark_theme = "habamax"
+local dark_theme = themes.onedark
 
 local plugins = {
   {

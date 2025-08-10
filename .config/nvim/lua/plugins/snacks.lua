@@ -198,8 +198,8 @@ return {
         picker = {
           previewers = {
             -- use delta for git diffs
-            git = { builtin = false },
-            diff = { builtin = false },
+            -- git = { builtin = false },
+            -- diff = { builtin = false },
           },
           win = {
             input = {
