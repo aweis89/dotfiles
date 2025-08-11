@@ -64,9 +64,6 @@ abbr -a -- zshs 'nvim ~/.zshrc'
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
-set -gx BREW_PREFIX /opt/homebrew
-set -gx ZSH_CACHE_DIR (test -n "$XDG_CACHE_HOME" && echo "$XDG_CACHE_HOME" || echo "$HOME"'/.cache')'/zsh'
-set -gx FZF_BASE "$BREW_PREFIX"'/opt/fzf'
 set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 
 functions -q fzf_configure_bindings && fzf_configure_bindings \
