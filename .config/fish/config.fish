@@ -62,7 +62,7 @@ set -gx ZSH_CACHE_DIR (test -n "$XDG_CACHE_HOME" && echo "$XDG_CACHE_HOME" || ec
 set -gx FZF_BASE "$BREW_PREFIX"'/opt/fzf'
 set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 
-fzf_configure_bindings \
+functions -q fzf_configure_bindings && fzf_configure_bindings \
     --directory=\cf \
     --git_status=\cgs \
     --git_log=\cgl \
@@ -188,3 +188,29 @@ bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
 bind --mode insert \cj complete
 bind --mode insert \ck complete
+
+set fisher_path ~/.local/share/fish/fisher
+
+if not functions -q fisher
+    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
+    fisher update
+end
+
+source (/opt/homebrew/bin/starship init fish --print-full-init | psub)
+
+set --query _fisher_path_initialized && exit
+set --global _fisher_path_initialized
+
+if test -z "$fisher_path" || test "$fisher_path" = "$__fish_config_dir"
+    exit
+end
+
+set fish_complete_path $fish_complete_path[1] $fisher_path/completions $fish_complete_path[2..]
+set fish_function_path $fish_function_path[1] $fisher_path/functions $fish_function_path[2..]
+
+for file in $fisher_path/conf.d/*.fish
+    if ! test -f (string replace --regex "^.*/" $__fish_config_dir/conf.d/ -- $file)
+        and test -f $file && test -r $file
+        source $file
+    end
+end
