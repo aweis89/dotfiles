@@ -2238,6 +2238,6 @@ macos_show_window_title_in all
 
 
 # BEGIN_KITTY_THEME
-# Everforest Dark Medium
+# Everforest Light Medium
 include current-theme.conf
 # END_KITTY_THEME

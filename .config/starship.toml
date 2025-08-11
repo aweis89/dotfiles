@@ -70,7 +70,6 @@ $meson\
 $spack\
 $memory\
 $aws\
-$gcloud\
 $openstack\
 $azure\
 $direnv\
@@ -175,3 +174,4 @@ error_symbol = "[❯](bold red)"
 [directory]
 truncation_length = 3
 truncate_to_repo = false
+

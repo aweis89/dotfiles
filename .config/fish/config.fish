@@ -196,7 +196,8 @@ if not functions -q fisher
     fisher update
 end
 
-source (/opt/homebrew/bin/starship init fish --print-full-init | psub)
+# source (/opt/homebrew/bin/starship init fish --print-full-init | psub)
+set --universal pure_enable_k8s true
 
 set --query _fisher_path_initialized && exit
 set --global _fisher_path_initialized
