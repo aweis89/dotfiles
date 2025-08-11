@@ -60,7 +60,9 @@ abbr -a -- zshs 'nvim ~/.zshrc'
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
-set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --color=light --bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up" --bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
+set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --color=light' \
+    '--bind "tab:down,shift-tab:up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up"' \
+    '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 
 functions -q fzf_configure_bindings && fzf_configure_bindings \
     --directory=\cf \
