@@ -30,13 +30,9 @@ abbr -a -- ?? 'aichat -e'
 abbr -a -- ag rg
 abbr -a -- ai aichat
 abbr -a -- dc docker-compose
-abbr -a -- explain 'unset github_token; gh copilot explain'
-abbr -a -- fb '_fzf_git_branches | xargs git checkout'
-abbr -a -- fd 'find . -type d -name'
-abbr -a -- ff 'find . -type f -name'
+abbr -a -- fd 'fd --hidden'
 abbr -a -- fgc gcloud-fzf
 abbr -a -- fishs 'nvim ~/.config/fish/config.fish'
-abbr -a -- freflog '_fzf_git_lreflogs | xargs git checkout'
 abbr -a -- gac "gcloud-account; gcloud-project"
 abbr -a -- gfp gcloud-foreach-project
 abbr -a -- ggm ggmain
