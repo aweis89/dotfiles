@@ -82,3 +82,5 @@ bind --mode insert \ck complete
 set --universal pure_enable_k8s true
 
 load_fisher ~/.local/share/fish/fisher
+
+direnv hook fish | source
