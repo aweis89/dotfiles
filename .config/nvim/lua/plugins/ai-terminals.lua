@@ -2,6 +2,7 @@ local AiderModels = {
   { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
   { model = "openai/claude-sonnet-4", alias = "copilot-sonnet-4" },
   { model = "openai/claude-sonnet-4-thought", alias = "copilot-sonnet-4" },
+  { model = "openai/gpt-5", alias = "copilot-gpt-5" },
   { model = "vertex_ai/claude-sonnet-4", alias = "vertex-sonnet-4" },
   { model = "vertex_ai/claude-opus-4", alias = "vertex-opus-4" },
   { model = "gemini/gemini-2.5-pro" },
@@ -168,7 +169,7 @@ return {
             desc = "Get Jira ticket",
           },
         },
-        -- enable_diffing = false,
+        enable_diffing = true,
         default_position = "right",
         -- show_diffs_on_leave = { delta = true },
         terminals = {
@@ -182,7 +183,7 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "~/.local/bin/claude"
+              local claude_path = "~/.config/bin/claude"
               return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
             end,
           },

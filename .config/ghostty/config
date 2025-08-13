@@ -1,10 +1,12 @@
 font-family = Operator Mono Medium
-font-size = 21
+font-size = 18
 # theme = dark:everforest-dark,light:everforest-light
 # theme = light:GruvboxLight,dark:GruvboxDark
-theme = light:GruvboxLight,dark:/Users/aaron.weisberg/.local/share/nvim/lazy/onedarkpro.nvim/extras/ghostty/onedarkpro_onedark
+theme = light:GruvboxLight,dark:/Users/aaron.weisberg/.local/share/nvim/lazy/onedarkpro.nvim/extras/ghostty/onedarkpro_onedark_dark
 
 window-padding-y = 0
 fullscreen = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
+custom-shader = ?shaders/cursor_smear.glsl
+auto-update-channel = stable

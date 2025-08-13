@@ -21,13 +21,15 @@ end
 
 alias cat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
-alias k=kubectl
 alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
 
 # Commands to run in interactive sessions can go here
 abbr -a -- ?? 'aichat -e'
 abbr -a -- ag rg
+abbr -a -- k kubectl
+abbr -a -- ggpush 'git push origin (__git.current_branch)'
+abbr -a -- ggpull 'git pull origin (__git.current_branch)'
 abbr -a -- ai aichat
 abbr -a -- dc docker-compose
 abbr -a -- fd 'fd --hidden'
@@ -70,6 +72,14 @@ functions -q fzf_configure_bindings && fzf_configure_bindings \
     --git_log=\cgl \
     --history=\cr
 
+set sponge_purge_only_on_exit true
+
+function watch_wrap
+    set input (commandline)
+    commandline -r "watch '$input'"
+    commandline -f execute
+end
+
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jj repaint
 bind --mode insert \co pass_to_aichat_widget
@@ -78,6 +88,7 @@ bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
 bind --mode insert \cj complete
 bind --mode insert \ck complete
+bind --mode insert \cw watch_wrap
 
 set --universal pure_enable_k8s true
 

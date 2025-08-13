@@ -45,7 +45,7 @@ local themes = {
   },
   onedark = {
     light = "onelight",
-    dark = "onedark",
+    dark = "onedark_dark",
     plugin = {
       "olimorris/onedarkpro.nvim",
       priority = 1000,
@@ -172,7 +172,7 @@ local plugins = {
       if watcher then
         watcher:start(theme_reload_path, {}, function()
           vim.schedule(function()
-            set_background()
+            set_background(light_name, dark_name)
           end)
         end)
       end
