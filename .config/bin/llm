@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+from openai import OpenAI
+import os
+import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--prompt", help="System prompt to add before user input")
+parser.add_argument("-m", "--model", default="gpt-5", help="Model to use")
+parser.add_argument("-r", "--reasoning", default="low", help="Reasoning effort")
+args = parser.parse_args()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+user_input = sys.stdin.read().strip()
+
+messages = []
+if args.prompt:
+    messages.append({"role": "system", "content": args.prompt})
+
+messages.append({"role": "user", "content": user_input})
+
+response = client.responses.create(
+    model=args.model,
+    reasoning={"effort": args.reasoning},
+    input=messages,
+)
+
+print(response.output_text)

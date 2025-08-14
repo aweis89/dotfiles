@@ -65,6 +65,13 @@ return {
         --   virtual_text = false,
         -- },
         servers = {
+          pyright = {
+            settings = {
+              python = {
+                pythonPath = "~/.asdf/shims/python",
+              },
+            },
+          },
           gopls = {
             filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
             settings = {
