@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
     local prompt = "Generate a conventional commit message for this change. "
       .. "Only respond with the commit message text."
-    local script = string.format("git diff --staged | aichat %q", prompt)
+    local script = string.format("git diff --staged | aichat --model openai:gpt-5-nano %q", prompt)
     vim.system({ "/bin/bash", "-c", script }, {}, function(res)
       -- Stop spinner
       if spinner_timer and not spinner_timer:is_closing() then
@@ -141,6 +141,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod", "base" }, "cwd" }
+-- vim.g.root_spec = { ".git" }
 
 local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
 

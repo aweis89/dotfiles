@@ -261,8 +261,6 @@ _fzf_alias() {
 }
 zle -N _fzf_alias
 
-# Source additional configs
-zsh-defer source "$HOME/.zshrc.local"
 # zsh-defer source "$HOME/.zsh/kubectl.zsh"
 zsh-defer source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 
