@@ -24,6 +24,11 @@ return {
         end
 
         super_on_attach(bufnr)
+
+        map("n", "<leader>ghU", function()
+          gs.reset_buffer_index()
+        end, "Undo staged buffer")
+
         map("n", "]h", function()
           if vim.wo.diff then
             vim.cmd.normal({ "]c", bang = true })
