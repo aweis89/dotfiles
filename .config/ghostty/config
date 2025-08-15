@@ -1,4 +1,5 @@
-font-family = Operator Mono Medium
+# font-family = Operator Mono Medium
+font-family = JetBrains Mono NL SemiBold
 font-size = 18
 # theme = dark:everforest-dark,light:everforest-light
 # theme = light:GruvboxLight,dark:GruvboxDark
@@ -10,4 +11,4 @@ fullscreen = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 custom-shader = ?shaders/cursor_smear.glsl
-auto-update-channel = stable
+auto-update-channel = tip

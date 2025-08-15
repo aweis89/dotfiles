@@ -95,4 +95,8 @@ set --universal pure_enable_k8s true
 
 load_fisher ~/.local/share/fish/fisher
 
-direnv hook fish | source
+set -l direnv_cache ~/.local/share/fish/direnv.fish
+if not test -f $direnv_cache
+    direnv hook fish >$direnv_cache
+end
+source $direnv_cache
