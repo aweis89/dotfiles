@@ -95,6 +95,5 @@ set --universal pure_enable_k8s true
 
 load_fisher ~/.local/share/fish/fisher
 
-
 cache_tool_init zoxide "zoxide init fish" true
 cache_tool_init direnv "direnv hook fish" true
