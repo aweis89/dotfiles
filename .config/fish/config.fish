@@ -93,8 +93,7 @@ bind --mode insert \ck complete
 bind --mode insert \cw watch_wrap
 
 set --universal pure_enable_k8s true
-
-load_fisher ~/.local/share/fish/fisher
+set -g async_prompt_functions _pure_prompt_git
 
 cache_tool_init zoxide "zoxide init fish" true
 cache_tool_init direnv "direnv hook fish" true
