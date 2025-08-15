@@ -223,6 +223,10 @@ return {
               picker:close()
               add_files_from_picker(picker, "claude")
             end,
+            ["codex_add"] = function(picker)
+              picker:close()
+              add_files_from_picker(picker, "codex")
+            end,
             ["commit"] = function(picker)
               picker:close()
               -- see autocmds.lua for AI auto-generated functionality
@@ -335,6 +339,7 @@ return {
               ["<localleader>aa"] = { "aider_add", mode = { "n", "i" } },
               ["<localleader>Aa"] = { "aider_read_only", mode = { "n", "i" } },
               ["<localleader>ac"] = { "claude_add", mode = { "n", "i" } },
+              ["<localleader>ad"] = { "codex_add", mode = { "n", "i" } },
               ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
               -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
             },

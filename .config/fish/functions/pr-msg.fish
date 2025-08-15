@@ -9,7 +9,7 @@ function pr-msg
     set url (echo $pr | jq -r '.url')
     set isDraft (echo $pr | jq -r '.isDraft')
     # Construct the message
-    set msg "[$repo#$number: $title}($url)"
+    set msg "[$repo#$number: $title]($url)"
     if test "$isDraft" = true
         set msg ":draft-pr: $msg"
     end

@@ -5,6 +5,7 @@ set -g fish_greeting
 fish_add_path ~/.config/bin
 fish_add_path ~/.local/bin
 fish_add_path ~/.asdf/shims
+fish_add_path ~/go/bin
 fish_add_path /opt/homebrew/bin
 fish_add_path /opt/homebrew/share/google-cloud-sdk/bin
 fish_add_path /Applications/Docker.app/Contents/Resources/bin
