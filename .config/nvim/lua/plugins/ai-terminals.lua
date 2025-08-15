@@ -188,7 +188,7 @@ return {
             end,
           },
           codex = {
-            cmd = "~/.local/bin/codex --full-auto",
+            cmd = "~/.local/bin/codex --full-auto -s danger-full-access",
           },
           aider = {
             cmd = function()
