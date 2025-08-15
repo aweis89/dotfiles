@@ -95,8 +95,6 @@ set --universal pure_enable_k8s true
 
 load_fisher ~/.local/share/fish/fisher
 
-set -l direnv_cache ~/.local/share/fish/direnv.fish
-if not test -f $direnv_cache
-    direnv hook fish >$direnv_cache
-end
-source $direnv_cache
+
+cache_tool_init zoxide "zoxide init fish" true
+cache_tool_init direnv "direnv hook fish" true
