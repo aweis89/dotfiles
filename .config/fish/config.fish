@@ -16,7 +16,7 @@ if ! status is-interactive
 end
 
 # Auto tmux
-if test -z "$TMUX"; and test -z "$NVIM"
+if test -z "$TMUX" && test -z "$NVIM"
     tmux new-session -ds default 2>/dev/null
     tmux attach -t default
 end
