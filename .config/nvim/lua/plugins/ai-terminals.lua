@@ -183,7 +183,7 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "~/.config/bin/claude"
+              local claude_path = "~/.config/bin/claude --dangerously-skip-permissions"
               return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
             end,
           },
@@ -299,12 +299,12 @@ return {
         },
       },
       create_terminal_keymaps({
-        { name = "claude", key = "c" },
-        { name = "kode", key = "k" },
-        { name = "aichat", key = "i", display_name = "AI Chat" },
-        { name = "gemini", key = "g" },
         { name = "aider", key = "a" },
+        { name = "claude", key = "c" },
         { name = "codex", key = "d" },
+        { name = "cursor", key = "s" },
+        { name = "gemini", key = "g" },
+        { name = "goose", key = "o" },
       })
     ),
   },

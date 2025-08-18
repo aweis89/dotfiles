@@ -11,4 +11,4 @@ fullscreen = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 custom-shader = ?shaders/cursor_smear.glsl
-auto-update-channel = tip
+auto-update-channel = stable
