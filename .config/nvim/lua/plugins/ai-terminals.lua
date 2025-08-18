@@ -233,7 +233,7 @@ return {
         },
         -- Diff Tools
         {
-          "<leader>dvo",
+          "<leader>dva",
           function()
             require("ai-terminals").diff_changes()
           end,

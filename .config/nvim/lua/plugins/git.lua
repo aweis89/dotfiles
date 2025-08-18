@@ -117,6 +117,22 @@ return {
         desc = "DiffviewOpen HEAD",
       },
       {
+        "<leader>dvo",
+        function()
+          local diffview = require("diffview")
+          diffview.open()
+        end,
+        desc = "DiffviewOpen",
+      },
+      {
+        "<leader>dvs",
+        function()
+          local diffview = require("diffview")
+          diffview.open({ "--staged" })
+        end,
+        desc = "DiffviewOpen --staged",
+      },
+      {
         "<leader>dvp",
         function()
           -- Function to get the remote default branch reference (e.g., origin/main)
