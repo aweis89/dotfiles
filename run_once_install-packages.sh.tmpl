@@ -2,6 +2,12 @@
 
 set -eo pipefail
 
+# Skip if SKIP_BREW is set
+if [[ -n "$SKIP_BREW" ]]; then
+    echo "🍺 Skipping Homebrew installation (SKIP_BREW is set)"
+    exit 0
+fi
+
 echo "🍺 Installing Homebrew packages..."
 
 # Install Homebrew if not present
