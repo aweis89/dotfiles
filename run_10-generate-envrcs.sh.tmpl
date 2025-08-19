@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -eu
+
+{{- $envrcMap := (fromYaml (include (joinPath .chezmoi.sourceDir "envrcs.yaml"))) -}}
+
+{{- range $rawPath, $content := $envrcMap }}
+dest={{ $rawPath }}
+
+mkdir -p "$(dirname "$dest")"
+umask 077
+cat > "$dest" <<'EOF'
+{{ $content }}
+EOF
+
+if command -v direnv >/dev/null 2>&1; then
+  (cd "$(dirname "$dest")" && direnv allow || true)
+fi
+{{- end }}

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eo pipefail
+
+echo "🖥️  Configuring macOS settings..."
+
+# Disable Dock icon for Hammerspoon
+echo "Disabling Dock icon for Hammerspoon..."
+defaults write org.hammerspoon.Hammerspoon MJShowDockIconKey -bool FALSE
+
+echo "✅ macOS configuration complete!"

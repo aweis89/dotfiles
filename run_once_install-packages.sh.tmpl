@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Skip if SKIP_BREW is set
+if [[ -n "$SKIP_BREW" ]]; then
+    echo "🍺 Skipping Homebrew installation (SKIP_BREW is set)"
+    exit 0
+fi
+
+echo "🍺 Installing Homebrew packages..."
+
+# Install Homebrew if not present
+which -s brew || {
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+# Install packages from Brewfile
+echo "Installing packages from Brewfile..."
+brew bundle check || brew bundle
+
+echo "✅ Package installation complete!"
