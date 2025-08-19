@@ -6,7 +6,6 @@ function edit-config
         return 1
     end
 
-    # `chezmoi managed` exits 0 if the file is managed by chezmoi
     if chezmoi managed --exact --exclude=externals --include=files -- "$file" >/dev/null 2>&1
         echo "Using Chezmoi"
         chezmoi edit -- "$file"
