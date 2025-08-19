@@ -9,8 +9,8 @@ function edit-config
     if chezmoi managed --exact --exclude=externals --include=files -- "$file" >/dev/null 2>&1
         echo "Using Chezmoi"
         chezmoi edit -- "$file"
-    else
-        echo "Using nvim"
-        nvim $argv
+        return $status
     end
+    echo "Using nvim"
+    nvim $argv
 end
