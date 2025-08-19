@@ -1,6 +1,5 @@
 function edit-config
     set file $argv[1]
-
     if test -z "$file"
         echo "Usage: e <file>"
         return 1
