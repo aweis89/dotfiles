@@ -1,4 +1,5 @@
 #!/bin/bash
 
-owner_repo=$1
-git clone "https://$GITHUB_TOKEN@github.com/$owner_repo"
+repo=$1
+
+git clone "https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
