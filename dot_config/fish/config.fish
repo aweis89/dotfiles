@@ -51,7 +51,7 @@ abbr -a -- kb kubebuilder
 abbr -a -- kcn kubens
 abbr -a -- kcu kubectx
 abbr -a -- kw 'watch kubectl'
-abbr -a -- rms "rm -rf '~/.local/share/nvim/swap/*'"
+abbr -a -- rms 'rm -rf ~/.local/share/nvim/swap/*'
 abbr -a -- s signadot
 abbr -a -- tf terraform
 abbr -a -- tfa 'terraform apply -auto-approve'
