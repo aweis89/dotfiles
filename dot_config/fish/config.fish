@@ -38,7 +38,7 @@ abbr -a -- ai aichat
 abbr -a -- dc docker-compose
 abbr -a -- fd 'fd --hidden'
 abbr -a -- fgc gcloud-fzf
-abbr -a -- fishs 'nvim ~/.config/fish/config.fish'
+abbr -a -- fishs 'edit-config ~/.config/fish/config.fish'
 abbr -a -- gac "gcloud-account; gcloud-project"
 abbr -a -- gfp gcloud-foreach-project
 abbr -a -- ggm ggmain
@@ -56,13 +56,29 @@ abbr -a -- s signadot
 abbr -a -- tf terraform
 abbr -a -- tfa 'terraform apply -auto-approve'
 abbr -a -- tfi 'terraform init'
-abbr -a -- tmuxs 'nvim ~/.config/tmux/tmux.conf'
+abbr -a -- tmuxs 'edit-config ~/.config/tmux/tmux.conf'
 abbr -a -- tt gotestsum
 abbr -a -- v nvim
 abbr -a -- vims 'cd ~/.config/nvim/lua && vim'
-abbr -a -- zshl 'nvim ~/.zshrc.local'
-abbr -a -- zshp 'nvim ~/.zsh/.zsh_plugins.txt'
-abbr -a -- zshs 'nvim ~/.zshrc'
+abbr -a -- zshl 'edit-config ~/.zshrc.local'
+abbr -a -- zshp 'edit-config ~/.zsh/.zsh_plugins.txt'
+abbr -a -- zshs 'edit-config ~/.zshrc'
+
+function edit-config
+    set file $argv[1]
+
+    if test -z "$file"
+        echo "Usage: e <file>"
+        return 1
+    end
+
+    # `chezmoi managed` exits 0 if the file is managed by chezmoi
+    if chezmoi managed --exact --exclude=externals --include=files -- "$file" >/dev/null 2>&1
+        chezmoi edit -- "$file"
+    else
+        nvim $argv
+    end
+end
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
