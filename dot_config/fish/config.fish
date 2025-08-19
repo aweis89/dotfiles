@@ -64,24 +64,6 @@ abbr -a -- zshl 'edit-config ~/.zshrc.local'
 abbr -a -- zshp 'edit-config ~/.zsh/.zsh_plugins.txt'
 abbr -a -- zshs 'edit-config ~/.zshrc'
 
-function edit-config
-    set file $argv[1]
-
-    if test -z "$file"
-        echo "Usage: e <file>"
-        return 1
-    end
-
-    # `chezmoi managed` exits 0 if the file is managed by chezmoi
-    if chezmoi managed --exact --exclude=externals --include=files -- "$file" >/dev/null 2>&1
-        echo "Using Chezmoi"
-        chezmoi edit -- "$file"
-    else
-        echo "Using nvim"
-        nvim $argv
-    end
-end
-
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --color=light' \
