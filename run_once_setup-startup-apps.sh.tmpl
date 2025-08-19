@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eo pipefail
+
+echo "🚀 Setting up startup applications..."
+
+declare -a startup_apps=(
+    "Hammerspoon"
+    "Karabiner-Elements"
+)
+
+for app in "${startup_apps[@]}"; do
+    echo "Adding ${app} to login items..."
+    osascript -e "tell application \"System Events\" to make login item at end with properties {path:\":Applications:${app}.app\", hidden:true}" 2>/dev/null || echo "Note: ${app} may not be installed yet"
+    
+    # Start the app if not already running
+    if ! pgrep -q "$app"; then
+        echo "Starting ${app}..."
+        open -a "${app}.app" 2>/dev/null || echo "Note: ${app} not found, skipping startup"
+    fi
+done
+
+echo "✅ Startup applications configured!"
