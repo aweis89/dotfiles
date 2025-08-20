@@ -63,25 +63,9 @@ chezmoi add ~/.someconfig
 chezmoi add --autotemplate ~/.someconfig
 ```
 
-## Structure
+## Actively used
 
-- **Homebrew packages**: `Brewfile` - managed by chezmoi run-once scripts
-- **Shell config**: `.zshrc`, `.p10k.zsh`, `.zsh/` directory
-- **Application configs**: `.config/` directory with various app configurations
-- **Scripts**: `.config/bin/` - custom utility scripts
-- **Setup automation**: `run_once_*.sh` - automated setup scripts that run on first apply
-
-## Migration from Stow
-
-This repo was previously managed with GNU Stow. The migration to chezmoi provides:
-
-- Better cross-platform support
-- Templating capabilities for machine-specific configs
-- Automatic script execution (run-once, run-always)
-- More robust file state management
-- Built-in git integration
-
-The old `setup` script functionality has been replaced with chezmoi's run-once scripts that handle:
-- Package installation via Homebrew
-- macOS configuration
-- Application setup
+There are multiple options for some tools, the following is a list of the currently used tools that will be kept up-to-date
+- Using ghostty as my current terminal, perviously kitty
+- Using fish as my shell, previoulsy zsh
+- Using neovim with lazyvim
