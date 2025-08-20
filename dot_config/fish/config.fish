@@ -25,6 +25,9 @@ alias cat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
 alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
+function rms
+    rm -f ~/.local/state/nvim/swap/*
+end
 
 set -g CDPATH . ~/p ~/c ~/q
 
@@ -39,7 +42,8 @@ abbr -a -- dc docker-compose
 abbr -a -- fd 'fd --hidden'
 abbr -a -- fgc gcloud-fzf
 abbr -a -- fishs 'edit-config ~/.config/fish/config.fish'
-abbr -a -- gac "gcloud-account; gcloud-project"
+abbr -a -- gac "gcloud-account
+ gcloud-project"
 abbr -a -- gfp gcloud-foreach-project
 abbr -a -- ggm ggmain
 abbr -a -- ggr 'cd $(git rev-parse --show-toplevel)'
@@ -51,7 +55,6 @@ abbr -a -- kb kubebuilder
 abbr -a -- kcn kubens
 abbr -a -- kcu kubectx
 abbr -a -- kw 'watch kubectl'
-abbr -a -- rms 'rm -rf ~/.local/share/nvim/swap/*'
 abbr -a -- s signadot
 abbr -a -- tf terraform
 abbr -a -- tfa 'terraform apply -auto-approve'
