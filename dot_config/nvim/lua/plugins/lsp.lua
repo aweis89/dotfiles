@@ -9,6 +9,13 @@ return {
         nls.builtins.diagnostics.golangci_lint,
       })
 
+      local diagnostic_icon_map = {
+        [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,
+        [vim.diagnostic.severity.WARN] = LazyVim.config.icons.diagnostics.Warn,
+        [vim.diagnostic.severity.HINT] = LazyVim.config.icons.diagnostics.Hint,
+        [vim.diagnostic.severity.INFO] = LazyVim.config.icons.diagnostics.Info,
+      }
+
       ---@type vim.diagnostic.Opts
       opts.diagnostic_config = {
         underline = true,
@@ -16,15 +23,13 @@ return {
         virtual_text = {
           spacing = 4,
           source = "if_many",
+          prefix = function(diagnostic)
+            return diagnostic_icon_map[diagnostic.severity] or ""
+          end,
         },
         severity_sort = true,
         signs = {
-          text = {
-            [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,
-            [vim.diagnostic.severity.WARN] = LazyVim.config.icons.diagnostics.Warn,
-            [vim.diagnostic.severity.HINT] = LazyVim.config.icons.diagnostics.Hint,
-            [vim.diagnostic.severity.INFO] = LazyVim.config.icons.diagnostics.Info,
-          },
+          text = diagnostic_icon_map,
         },
       }
     end,

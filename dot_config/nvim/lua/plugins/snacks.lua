@@ -81,6 +81,8 @@ end
 return {
   {
     "folke/snacks.nvim",
+    repo = "aweis89/snacks.nvim",
+    branch = "fix-relative-path",
     -- use fork for zoom/unzoom fix for neovim terminal buffers
     url = "https://github.com/aweis89/snacks.nvim",
     keys = {
