@@ -21,7 +21,7 @@ if test -z "$TMUX" && test -z "$NVIM"
     tmux attach -t default
 end
 
-alias cat="bat --theme auto:system --theme-dark default --theme-light GitHub"
+alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
 alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
