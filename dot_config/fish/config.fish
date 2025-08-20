@@ -29,9 +29,6 @@ function rms
     rm -f ~/.local/state/nvim/swap/*
 end
 
-set -g CDPATH . ~/p ~/c ~/q
-
-# Commands to run in interactive sessions can go here
 abbr -a -- ?? 'aichat -e'
 abbr -a -- ag rg
 abbr -a -- k kubectl
@@ -71,14 +68,17 @@ set -gx VISUAL nvim
 set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --multi --color=light' \
     '--bind "tab:toggle,shift-tab:toggle+up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up"' \
     '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
+set -gx pure_enable_k8s true
+
+set -g CDPATH . ~/p ~/c ~/q
+set -g async_prompt_functions _pure_prompt_git
+set -g sponge_purge_only_on_exit true
 
 fzf_configure_bindings \
     --directory=\cf \
     --git_status=\cgs \
     --git_log=\cgl \
     --history=\cr
-
-set sponge_purge_only_on_exit true
 
 function watch_wrap
     set input (commandline)
@@ -95,9 +95,6 @@ bind --mode insert \cn accept-autosuggestion
 bind --mode insert \cj complete
 bind --mode insert \ck complete
 bind --mode insert \cw watch_wrap
-
-set --universal pure_enable_k8s true
-set -g async_prompt_functions _pure_prompt_git
 
 cache_tool_init zoxide "zoxide init fish" true
 cache_tool_init direnv "direnv hook fish" true
