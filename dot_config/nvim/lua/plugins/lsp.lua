@@ -20,9 +20,13 @@ return {
       opts.diagnostic_config = {
         underline = true,
         update_in_insert = false,
+        jump = {
+          wrap = true,
+          float = true,
+        },
         virtual_text = {
-          spacing = 4,
-          source = "if_many",
+          spacing = 0,
+          source = false,
           prefix = function(diagnostic)
             return diagnostic_icon_map[diagnostic.severity] or ""
           end,
