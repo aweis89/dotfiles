@@ -42,8 +42,7 @@ abbr -a -- dc docker-compose
 abbr -a -- fd 'fd --hidden'
 abbr -a -- fgc gcloud-fzf
 abbr -a -- fishs 'edit-config ~/.config/fish/config.fish'
-abbr -a -- gac "gcloud-account
- gcloud-project"
+abbr -a -- gac "gcloud-account; gcloud-project"
 abbr -a -- gfp gcloud-foreach-project
 abbr -a -- ggm ggmain
 abbr -a -- ggr 'cd $(git rev-parse --show-toplevel)'
