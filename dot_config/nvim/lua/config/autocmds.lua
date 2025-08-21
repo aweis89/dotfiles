@@ -122,6 +122,7 @@ vim.api.nvim_create_autocmd("BufDelete", {
 })
 
 vim.api.nvim_create_autocmd("TermOpen", {
+  group = augroup("terminal_setup"),
   callback = function()
     local function tmap(key, val)
       local opts = { buffer = 0 }
@@ -143,11 +144,14 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod", "base" }, "cwd" }
 -- vim.g.root_spec = { ".git" }
 
-local root_augroup = vim.api.nvim_create_augroup("MyAutoRoot", {})
-
 vim.api.nvim_create_autocmd("BufEnter", {
-  group = root_augroup,
+  group = augroup("auto_root"),
   callback = function(arg)
+    local root = LazyVim.root.get()
+    if root == vim.fn.getcwd() then
+      return
+    end
+
     -- List of filenames to skip
     local skip_dir_change_files = { "COMMIT_EDITMSG" }
     local buf_name = vim.api.nvim_buf_get_name(arg.buf)
@@ -161,10 +165,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
       end
     end
 
-    local root = LazyVim.root.get()
-    if root == vim.fn.getcwd() then
-      return
-    end
     vim.fn.chdir(root)
     local display_root = root
     if vim.env.HOME and root:sub(1, #vim.env.HOME) == vim.env.HOME then
@@ -178,25 +178,8 @@ vim.keymap.set("n", "<leader>fd", function()
   vim.notify(cwd)
 end, { desc = "Show CWD" })
 
-vim.api.nvim_create_autocmd("BufEnter", { -- Trigger when entering a buffer
-  group = vim.api.nvim_create_augroup("ZshEditCmdSetup", { clear = true }),
-  pattern = "zsh-edit-cmd-nvim.*", -- Match buffers whose name starts with this pattern
-  -- Adjust if your mktemp pattern in zsh is different
-  desc = "Map q to :wq for Zsh command editing buffer",
-  callback = function(args)
-    vim.keymap.set("n", "q", ":wq<CR>", {
-      buffer = args.buf,
-      noremap = true,
-      silent = true,
-      desc = "Write and quit Zsh edit buffer",
-    })
-  end,
-})
-
-local termOptsGroup = vim.api.nvim_create_augroup("TerminalWindowOptions", { clear = true })
-
 vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
-  group = termOptsGroup,
+  group = augroup("terminal_window_options"),
   pattern = "*", -- Trigger for any buffer entered
   callback = function()
     vim.defer_fn(function()
@@ -233,7 +216,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
 local function direnv_load() end
 
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
-local group = vim.api.nvim_create_augroup("DirenvAutoLoad", { clear = true })
+local group = augroup("direnv_auto_load")
 
 vim.api.nvim_create_autocmd({ "DirChanged" }, {
   group = group,
