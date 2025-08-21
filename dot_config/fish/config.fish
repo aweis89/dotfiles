@@ -94,7 +94,7 @@ bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
 bind --mode insert \cj complete
 bind --mode insert \ck complete
-bind --mode insert \cw watch_wrap
+bind --mode insert \cq watch_wrap
 
 cache_tool_init zoxide "zoxide init fish" true
 cache_tool_init direnv "direnv hook fish" true

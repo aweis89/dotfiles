@@ -175,6 +175,12 @@ return {
         terminals = {
           env = {
             PAGER = "cat",
+            GOOGLE_CLOUD_LOCATION = function()
+              return vim.env.GOOGLE_CLOUD_LOCATION
+            end,
+            GOOGLE_CLOUD_PROJECT = function()
+              return vim.env.GOOGLE_CLOUD_PROJECT
+            end,
           },
           goose = {
             cmd = function()

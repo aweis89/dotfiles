@@ -218,7 +218,7 @@ local function direnv_load() end
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
 local group = augroup("direnv_auto_load")
 
-vim.api.nvim_create_autocmd({ "DirChanged" }, {
+vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
   group = group,
   pattern = "*",
   callback = function()
