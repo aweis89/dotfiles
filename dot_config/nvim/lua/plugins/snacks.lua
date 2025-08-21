@@ -132,13 +132,13 @@ return {
         mode = "t",
       },
       {
-        "<C-f>c",
+        "<leader>fc",
         function()
-          Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+          local cwd = vim.fn.system("chezmoi source-path " .. vim.fn.stdpath("config")):gsub("\n", "")
+          Snacks.picker.files({ cwd = cwd })
           defer_insert()
         end,
         desc = "Find Config Files",
-        mode = "t",
       },
       {
         "<C-f>g",
