@@ -34,6 +34,22 @@ map("t", "<C-a>k", "<C-\\><C-n><C-w>k", { desc = "Focus up split" })
 map("t", "<C-a>l", "<C-\\><C-n><C-w>l", { desc = "Focus right split" })
 map({ "t", "n" }, "<C-a>x", "<cmd>bwipeout!<cr>", { desc = "Close terminal" })
 
+-- execute current file
+map("n", "<C-x>", function()
+  local current_file = vim.fn.expand("%")
+  if current_file == "" then
+    vim.notify("No file to execute", vim.log.levels.WARN)
+    return
+  end
+
+  -- Create vertical split
+  vim.cmd("vsplit")
+
+  -- Create terminal and run the command
+  local cmd = "sh " .. vim.fn.shellescape(current_file)
+  vim.cmd("terminal " .. cmd)
+end, { desc = "Run current file in shell (terminal)" })
+
 -- zoom
 map({ "t", "n", "i" }, "<C-a>i", function()
   require("snacks.zen").zoom()
