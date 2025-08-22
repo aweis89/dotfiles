@@ -189,7 +189,7 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "~/.config/bin/claude --dangerously-skip-permissions"
+              local claude_path = "~/.config/bin/claude"
               return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
             end,
           },
