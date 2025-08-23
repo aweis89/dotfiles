@@ -132,6 +132,15 @@ local function create_terminal_keymaps(terminals)
       end,
       desc = "Add all buffers to " .. display_name,
     })
+
+    -- Send command output keymap
+    table.insert(keymaps, {
+      "<leader>ar" .. key,
+      function()
+        require("ai-terminals").send_command_output(name)
+      end,
+      desc = "Run command and send output to " .. display_name,
+    })
   end
 
   return keymaps
@@ -272,15 +281,6 @@ return {
             require("ai-terminals").aider_comment("AI?") -- Adds comment and saves file
           end,
           desc = "Add 'AI?' comment above line",
-        },
-        -- Example: Run a command and send output to a specific terminal (e.g., Aider)
-        {
-          "<leader>ar", -- Mnemonic: AI Run command
-          function()
-            -- Prompt user or use a fixed command
-            require("ai-terminals").send_command_output("aider")
-          end,
-          desc = "Run 'make test' and send output to Aider terminal",
         },
         {
           "<leader>aR", -- Mnemonic: AI add Read-only

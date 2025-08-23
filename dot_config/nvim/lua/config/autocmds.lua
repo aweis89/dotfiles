@@ -47,7 +47,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
     local prompt = "Generate a conventional commit message for this change. "
       .. "Only respond with the commit message text."
-    local script = string.format("git diff --staged | llm -m gpt-5-nano -r low -p '%q'", prompt)
+    local script =
+      string.format("git diff --staged | ASDF_PYTHON_VERSION=3.11.10 llm -m gpt-5-nano -r low -p '%q'", prompt)
     vim.system({ "/bin/bash", "-c", script }, {}, function(res)
       -- Stop spinner
       if spinner_timer and not spinner_timer:is_closing() then
