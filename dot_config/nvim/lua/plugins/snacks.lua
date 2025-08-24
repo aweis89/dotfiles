@@ -198,6 +198,11 @@ return {
           end,
         },
         picker = {
+          formatters = {
+            file = {
+              truncate = 90,
+            },
+          },
           previewers = {
             -- use delta for git diffs
             -- git = { builtin = false },

@@ -32,19 +32,6 @@ local function write_cache(key, value)
   vim.fn.writefile({ value }, filepath)
 end
 
--- extract jira id from branch name
--- e.g PR-1234-ticket becomes PR-1234
-local function jira_id_from_branch()
-  local branch = vim.fn.trim(vim.fn.system("git branch --show-current"))
-  if vim.v.shell_error ~= 0 then
-    return nil
-  end
-
-  -- Match patterns like XX-1234 or XXX-1234 or PLATFORM-12345
-  local jira_id = string.match(branch, "(%u+%-%d+)")
-  return jira_id
-end
-
 local function select_aider_model_picker()
   local picker_items = {}
   for _, entry in ipairs(AiderModels) do
@@ -86,96 +73,24 @@ local function select_aider_model_picker()
   })
 end
 
--- Helper function to create terminal keymaps
-local function create_terminal_keymaps(terminals)
-  local keymaps = {}
-
-  for _, terminal in ipairs(terminals) do
-    local name = terminal.name
-    local key = terminal.key
-    local display_name = terminal.display_name or name:gsub("^%l", string.upper)
-
-    -- Toggle terminal keymap
-    table.insert(keymaps, {
-      "<leader>at" .. key,
-      function()
-        require("ai-terminals").toggle(name)
-      end,
-      desc = "Toggle " .. display_name .. " terminal",
-      mode = { "n", "v" },
-    })
-
-    -- Send diagnostics keymap
-    table.insert(keymaps, {
-      "<leader>ad" .. key,
-      function()
-        require("ai-terminals").send_diagnostics(name)
-      end,
-      desc = "Send diagnostics to " .. display_name,
-      mode = { "n", "v" },
-    })
-
-    -- Add current file keymap
-    table.insert(keymaps, {
-      "<leader>al" .. key,
-      function()
-        require("ai-terminals").add_files_to_terminal(name, { vim.fn.expand("%") })
-      end,
-      desc = "Add current file to " .. display_name,
-    })
-
-    -- Add all buffers keymap
-    table.insert(keymaps, {
-      "<leader>aL" .. key,
-      function()
-        require("ai-terminals").add_buffers_to_terminal(name)
-      end,
-      desc = "Add all buffers to " .. display_name,
-    })
-
-    -- Send command output keymap
-    table.insert(keymaps, {
-      "<leader>ar" .. key,
-      function()
-        require("ai-terminals").send_command_output(name)
-      end,
-      desc = "Run command and send output to " .. display_name,
-    })
-  end
-
-  return keymaps
-end
-
 return {
   {
     "aweis89/ai-terminals.nvim",
+    lazy = false,
     dir = "~/p/ai-terminals.nvim",
     ---@type fun(): ConfigType
     opts = function()
       return {
         -- backend = "tmux",
-        terminal_keymaps = {
-          {
-            key = "<localleader>j",
-            action = function()
-              vim.schedule(function()
-                local ticket = jira_id_from_branch()
-                if not ticket then
-                  vim.notify("No Jira ticket found in branch name", vim.log.levels.WARN)
-                end
-                vim.system({ "jira", "issue", "view", "--plain", ticket }, {}, function(result)
-                  if result and result.stdout and #result.stdout > 0 then
-                    vim.schedule(function()
-                      require("ai-terminals").send(result.stdout)
-                    end)
-                  else
-                    vim.notify("No Jira ticket found in branch name", vim.log.levels.WARN)
-                  end
-                end)
-              end)
-            end,
-            modes = { "n" },
-            desc = "Get Jira ticket",
+        auto_terminal_keymaps = {
+          enabled = true,
+          terminals = {
+            { name = "aider", key = "a" },
+            { name = "claude", key = "c" },
+            { name = "codex", key = "d" },
+            { name = "cursor", key = "s" },
+            { name = "gemini", key = "g" },
+            { name = "goose", key = "o" },
           },
         },
         enable_diffing = true,
@@ -236,82 +151,72 @@ return {
         },
       }
     end,
-    keys = vim.list_extend(
+    keys = {
+      -- Aider model selection
       {
-        -- Aider model selection
-        {
-          "<leader>am",
-          function()
-            select_aider_model_picker()
-          end,
-          desc = "Select Aider Model (Picker)",
-        },
-        -- Diff Tools
-        {
-          "<leader>dva",
-          function()
-            require("ai-terminals").diff_changes()
-          end,
-          desc = "Show diff of last AI changes (using neovim diff)",
-        },
-        {
-          "<leader>dvt",
-          function()
-            require("ai-terminals").diff_changes({ delta = true })
-          end,
-          desc = "Show diff of last AI changes using terminal cmd",
-        },
-        {
-          "<leader>dvr", -- Mnemonic: Diff View Revert
-          function()
-            require("ai-terminals").revert_changes()
-          end,
-          desc = "Revert AI changes from backup",
-        },
-        {
-          "<leader>ac",
-          function()
-            require("ai-terminals").aider_comment("AI!") -- Adds comment and saves file
-          end,
-          desc = "Add 'AI!' comment above line",
-        },
-        {
-          "<leader>aC",
-          function()
-            require("ai-terminals").aider_comment("AI?") -- Adds comment and saves file
-          end,
-          desc = "Add 'AI?' comment above line",
-        },
-        {
-          "<leader>aR", -- Mnemonic: AI add Read-only
-          function()
-            require("ai-terminals").add_files_to_terminal("aider", { vim.fn.expand("%") }, { read_only = true })
-          end,
-          desc = "Add current file to Aider (read-only)",
-        },
-        {
-          "<leader>ax", -- Mnemonic: AI Close (X) all terminals
-          function()
-            require("ai-terminals").destroy_all()
-          end,
-          desc = "Close all AI terminals",
-        },
-        {
-          "<leader>af", -- Mnemonic: AI focus
-          function()
-            require("ai-terminals").focus()
-          end,
-          desc = "Focus AI terminal",
-        },
+        "<leader>am",
+        function()
+          select_aider_model_picker()
+        end,
+        desc = "Select Aider Model (Picker)",
       },
-      create_terminal_keymaps({
-        { name = "aider", key = "a" },
-        { name = "claude", key = "c" },
-        { name = "codex", key = "d" },
-        { name = "cursor", key = "s" },
-        { name = "gemini", key = "g" },
-        { name = "goose", key = "o" },
-      })
-    ),
+      -- Diff Tools
+      {
+        "<leader>dva",
+        function()
+          require("ai-terminals").diff_changes()
+        end,
+        desc = "Show diff of last AI changes (using neovim diff)",
+      },
+      {
+        "<leader>dvt",
+        function()
+          require("ai-terminals").diff_changes({ delta = true })
+        end,
+        desc = "Show diff of last AI changes using terminal cmd",
+      },
+      {
+        "<leader>dvr", -- Mnemonic: Diff View Revert
+        function()
+          require("ai-terminals").revert_changes()
+        end,
+        desc = "Revert AI changes from backup",
+      },
+      {
+        "<leader>ac",
+        function()
+          require("ai-terminals").aider_comment("AI!") -- Adds comment and saves file
+        end,
+        desc = "Add 'AI!' comment above line",
+      },
+      {
+        "<leader>aC",
+        function()
+          require("ai-terminals").aider_comment("AI?") -- Adds comment and saves file
+        end,
+        desc = "Add 'AI?' comment above line",
+      },
+      {
+        "<leader>aR", -- Mnemonic: AI add Read-only
+        function()
+          require("ai-terminals").add_files_to_terminal("aider", { vim.fn.expand("%") }, { read_only = true })
+        end,
+        desc = "Add current file to Aider (read-only)",
+      },
+      {
+        "<leader>ax", -- Mnemonic: AI Close (X) all terminals
+        function()
+          require("ai-terminals").destroy_all()
+        end,
+        desc = "Close all AI terminals",
+      },
+      {
+        "<leader>af", -- Mnemonic: AI focus
+        function()
+          require("ai-terminals").focus()
+        end,
+        desc = "Focus AI terminal",
+      },
+    },
   },
 }
