@@ -7,7 +7,12 @@ local function add_files_from_picker(picker, term, opts)
   local files_to_add = {}
   for _, item in pairs(selected) do
     if item.file then
-      table.insert(files_to_add, item.file)
+      -- Use Snacks.picker.util.path() to get the absolute path
+      -- This is necessary to get the absolute path from project picker
+      local abs_path = Snacks.picker.util.path(item)
+      if abs_path then
+        table.insert(files_to_add, abs_path)
+      end
     end
   end
   require("ai-terminals").add_files_to_terminal(term, files_to_add, opts)
