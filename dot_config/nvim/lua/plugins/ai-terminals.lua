@@ -90,7 +90,7 @@ return {
             { name = "codex", key = "d" },
             { name = "cursor", key = "s" },
             { name = "gemini", key = "g" },
-            { name = "goose", key = "o" },
+            { name = "opencode", key = "o" },
           },
         },
         enable_diffing = true,
