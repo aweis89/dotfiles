@@ -114,7 +114,12 @@ return {
           claude = {
             cmd = function()
               local claude_path = "~/.config/bin/claude"
-              return string.format("%s config set -g theme %s && %s", claude_path, vim.o.background, claude_path)
+              return string.format(
+                "%s config set -g theme %s && %s --permission-mode plan",
+                claude_path,
+                vim.o.background,
+                claude_path
+              )
             end,
           },
           codex = {
