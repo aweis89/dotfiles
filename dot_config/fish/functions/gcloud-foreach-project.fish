@@ -1,6 +1,6 @@
 function gcloud-foreach-project
     if test (count $argv) -eq 0
-        echo "Usage: gcloud-foreach-project <command>"
+        echo "Usage: gcloud-foreach-project <gcloud-command-args>"
         return 1
     end
 
@@ -12,6 +12,10 @@ function gcloud-foreach-project
     end
 
     # Use parallel for concurrent execution - each project on a new line
+    # Prepend 'gcloud' to the arguments
     printf "%s\n" $projects | parallel -j 0 \
-        "echo '=== Project: {} ==='; $argv --project={} 2>/dev/null; or true"
+        "echo '=== Project: {} ==='; gcloud $argv --project={} 2>/dev/null; or true"
 end
+
+# Completion for gcloud-foreach-project - use the same completion as gcloud
+complete -c gcloud-foreach-project -f -a '(__fish_argcomplete_complete gcloud)'
