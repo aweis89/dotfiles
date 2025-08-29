@@ -1,3 +1,10 @@
+--- Helper function to check if a path is a directory
+---@param path string
+---@return boolean
+local function is_dir(path)
+  return vim.fn.isdirectory(path) == 1
+end
+
 --- Helper function to extract files from a snacks picker and send them to aider
 ---@param picker snacks.Picker
 ---@param term string
@@ -13,7 +20,13 @@ local function add_files_from_picker(picker, term, opts)
       if abs_path then
         table.insert(files_to_add, abs_path)
       end
+    else
+      vim.notify("No file associated with selected item: " .. item.text, vim.log.levels.WARN)
     end
+  end
+  if term == "claude" and #files_to_add == 1 and is_dir(files_to_add[1]) then
+    require("ai-terminals").send_term(term, "/add-dir " .. files_to_add[1], { focus = true, submit = true })
+    return
   end
   require("ai-terminals").add_files_to_terminal(term, files_to_add, opts)
 end
