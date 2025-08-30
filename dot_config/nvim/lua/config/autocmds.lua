@@ -213,9 +213,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
   end,
 })
 
--- direnv autoload on cwd changes
-local function direnv_load() end
-
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
 local group = augroup("direnv_auto_load")
 
@@ -247,5 +244,8 @@ vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
   end,
 })
 
--- Optional: manual refresh command
-vim.api.nvim_create_user_command("DirenvLoad", direnv_load, {})
+-- Auto-save current buffer when leaving insert mode or after text changes
+vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+  group = augroup("auto_save_on_insert_leave"),
+  command = "silent update",
+})
