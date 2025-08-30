@@ -179,45 +179,9 @@ vim.keymap.set("n", "<leader>fd", function()
   vim.notify(cwd)
 end, { desc = "Show CWD" })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "TermOpen" }, {
-  group = augroup("terminal_window_options"),
-  pattern = "*", -- Trigger for any buffer entered
-  callback = function()
-    vim.defer_fn(function()
-      local bufid = vim.api.nvim_get_current_buf()
-      if not vim.api.nvim_buf_is_valid(bufid) then
-        return
-      end
-      local winid = vim.api.nvim_get_current_win()
-      local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufid })
-
-      if buftype == "terminal" then
-        vim.cmd.startinsert()
-        vim.api.nvim_set_option_value("number", false, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("relativenumber", false, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("cursorline", false, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("signcolumn", "no", { win = winid, scope = "local" })
-      elseif buftype == "" then
-        local global_number = true
-        local global_relativenumber = true
-        local global_cursorline = true
-        local global_signcolumn = "yes"
-
-        -- Apply the global values locally to this window
-        vim.api.nvim_set_option_value("number", global_number, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("relativenumber", global_relativenumber, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("cursorline", global_cursorline, { win = winid, scope = "local" })
-        vim.api.nvim_set_option_value("signcolumn", global_signcolumn, { win = winid, scope = "local" })
-      end
-    end, 100)
-  end,
-})
-
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
-local group = augroup("direnv_auto_load")
-
 vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
-  group = group,
+  group = augroup("direnv_auto_load"),
   pattern = "*",
   callback = function()
     local function log(msg, level)
