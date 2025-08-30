@@ -9,13 +9,32 @@ end
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = augroup("ai_commit_msg_populate"),
   pattern = "COMMIT_EDITMSG",
-  callback = function()
+  callback = function(arg)
     -- Map q to close commit buffer without quitting
     vim.keymap.set("n", "q", ":w | bd<CR>", {
       buffer = 0,
       noremap = true,
       silent = true,
       desc = "Write and close commit buffer",
+    })
+
+    vim.api.nvim_create_autocmd("BufDelete", {
+      group = augroup("prompt_git_push"),
+      buffer = arg.buf,
+      callback = function()
+        -- Defer the prompt slightly to allow git commit process to potentially start/finish
+        vim.defer_fn(function()
+          -- Get the current branch name
+          local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
+          -- Ask the user if they want to push
+          local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
+          vim.ui.input({ prompt = prompt_message }, function(input)
+            if input and input:lower() == "y" then
+              vim.cmd("Git push")
+            end
+          end)
+        end, 100) -- Small delay (100ms)
+      end,
     })
     -- Spinner setup
     local spinner_timer -- will be vim.uv.new_timer()
@@ -99,26 +118,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         end
       end)
     end)
-  end,
-})
-
--- Autocommand to prompt for push after closing the commit message buffer
-vim.api.nvim_create_autocmd("BufDelete", {
-  group = augroup("ai_commit_push_prompt"),
-  pattern = "COMMIT_EDITMSG",
-  callback = function()
-    -- Defer the prompt slightly to allow git commit process to potentially start/finish
-    vim.defer_fn(function()
-      -- Get the current branch name
-      local branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
-      -- Ask the user if they want to push
-      local prompt_message = string.format("Push commit to '%s'? (y/N): ", branch_name)
-      vim.ui.input({ prompt = prompt_message }, function(input)
-        if input and input:lower() == "y" then
-          vim.cmd("Git push")
-        end
-      end)
-    end, 100) -- Small delay (100ms)
   end,
 })
 
