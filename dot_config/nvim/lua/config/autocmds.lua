@@ -94,5 +94,9 @@ vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
 -- Auto-save current buffer when leaving insert mode or after text changes
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   group = augroup("auto_save_on_insert_leave"),
-  command = "silent update",
+  callback = function()
+    if vim.bo.filetype ~= "gitcommit" then
+      vim.cmd("silent update")
+    end
+  end,
 })
