@@ -30,6 +30,25 @@ return {
     },
   },
   {
+    -- AI-powered commit message generation
+    "aweis89/ai-commit-msg.nvim",
+    dir = "~/p/ai-commit-msg.nvim",
+    lazy = false, -- Load immediately to ensure autocmds are set up
+    config = function()
+      require("ai_commit_msg").setup({
+        -- Using claude code as default
+        command = "git diff --staged | claude code -p '{prompt}'",
+        prompt = "Generate a conventional commit message for this change. Only respond with the commit message text.",
+        auto_push_prompt = true,
+        spinner = true,
+        notifications = true,
+        keymaps = {
+          quit = "q",
+        },
+      })
+    end,
+  },
+  {
     "lewis6991/gitsigns.nvim",
     opts = function(_, opts)
       local gs = require("gitsigns")
