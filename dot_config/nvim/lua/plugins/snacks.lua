@@ -383,8 +383,8 @@ return {
           hidden = true,
           layout = {
             layout = {
-              width = 0,
-              height = 0,
+              width = 0.90,
+              height = 0.90,
             },
           },
         }
