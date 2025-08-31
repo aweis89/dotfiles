@@ -331,22 +331,6 @@ return {
         },
       }
 
-      local fullscreen_pickers = {
-        "buffers",
-        "files",
-        "git_diff",
-        "git_files",
-        "git_log_file",
-        "git_log",
-        "git_status",
-        "grep_buffers",
-        "grep_word",
-        "grep",
-        "projects",
-        "recent",
-        "smart",
-      }
-
       local file_action_pickers = {
         "buffers",
         "files",
@@ -379,21 +363,6 @@ return {
           },
         },
       }
-
-      -- Apply fullscreen settings
-      for _, picker_name in ipairs(fullscreen_pickers) do
-        local fullscreen_config = {
-          hidden = true,
-          layout = {
-            layout = {
-              width = 0.90,
-              height = 0.90,
-            },
-          },
-        }
-        overrides.picker.sources[picker_name] =
-          vim.tbl_deep_extend("force", overrides.picker.sources[picker_name] or {}, fullscreen_config)
-      end
 
       -- Apply file action keybindings
       for _, picker_name in ipairs(file_action_pickers) do
