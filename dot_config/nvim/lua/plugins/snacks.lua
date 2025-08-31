@@ -208,6 +208,8 @@ return {
       local overrides = {
         notifier = {
           level = vim.log.levels.INFO,
+          -- show messages on bottom right as not to conflict with cmdline
+          top_down = false,
         },
         gitbrowse = {
           config = function(opts, defaults)
