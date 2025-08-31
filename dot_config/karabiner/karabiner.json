@@ -360,11 +360,20 @@
                                             "name": "q_pressed",
                                             "value": 1
                                         }
-                                    },
+                                    }
+                                ],
+                                "to_if_alone": [
                                     { "key_code": "q" }
                                 ],
                                 "to_delayed_action": {
-                                    "to_if_canceled": [],
+                                    "to_if_canceled": [
+                                        {
+                                            "set_variable": {
+                                                "name": "q_pressed",
+                                                "value": 0
+                                            }
+                                        }
+                                    ],
                                     "to_if_invoked": [
                                         {
                                             "set_variable": {
@@ -375,7 +384,8 @@
                                     ]
                                 },
                                 "parameters": {
-                                    "basic.to_delayed_action_delay_milliseconds": 300
+                                    "basic.to_delayed_action_delay_milliseconds": 250,
+                                    "basic.to_if_alone_timeout_milliseconds": 250
                                 },
                                 "conditions": [
                                     {
@@ -392,7 +402,6 @@
                                     "modifiers": { "optional": ["any"] }
                                 },
                                 "to": [
-                                    { "key_code": "delete_or_backspace" },
                                     { "key_code": "escape" },
                                     {
                                         "set_variable": {
