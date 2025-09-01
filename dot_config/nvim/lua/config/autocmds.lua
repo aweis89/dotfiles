@@ -5,6 +5,10 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("config_" .. name, { clear = true })
 end
 
+local function log(msg, level)
+  vim.notify(msg, level, { title = "autocmd.lua" })
+end
+
 vim.api.nvim_create_autocmd("TermOpen", {
   group = augroup("terminal_setup"),
   callback = function()
@@ -54,24 +58,20 @@ vim.api.nvim_create_autocmd("BufEnter", {
     if vim.env.HOME and root:sub(1, #vim.env.HOME) == vim.env.HOME then
       display_root = "~" .. root:sub(#vim.env.HOME + 1)
     end
-    vim.notify(display_root, vim.log.levels.INFO, { title = "cwd" })
+    log(display_root, vim.log.levels.INFO)
   end,
 })
 
 vim.keymap.set("n", "<leader>fd", function()
   local cwd = "~" .. string.sub(vim.fn.getcwd(), #vim.env.HOME + 1)
-  vim.notify(cwd, vim.log.levels.INFO, { title = "cwd" })
+  log(cwd, vim.log.levels.INFO)
 end, { desc = "Show CWD" })
 
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
-vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
+vim.api.nvim_create_autocmd({ "DirChanged" }, {
   group = augroup("direnv_auto_load"),
   pattern = "*",
   callback = function()
-    local function log(msg, level)
-      vim.notify("[direnv] " .. msg, level)
-    end
-
     local cmd = { "direnv", "export", "vim" }
 
     vim.system(cmd, { text = true }, function(res)
@@ -79,7 +79,7 @@ vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
         vim.schedule(function()
           local output = res.stdout
           if output and #output > 0 then
-            log("Loaded environment variables", vim.log.levels.INFO)
+            log("Direnv loaded env variables", vim.log.levels.INFO)
             vim.cmd(output)
           end
         end)
