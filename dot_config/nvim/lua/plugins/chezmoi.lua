@@ -6,7 +6,8 @@ return {
       vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
         pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
         callback = function()
-          if vim.bo.filetype == "gitcommit" then
+          local buf_name = vim.api.nvim_buf_get_name(0)
+          if buf_name:match("COMMIT_EDITMSG$") then
             return
           end
           vim.schedule(require("chezmoi.commands.__edit").watch)
