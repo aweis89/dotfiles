@@ -9,7 +9,6 @@ return {
           if vim.bo.filetype == "gitcommit" then
             return
           end
-
           vim.schedule(require("chezmoi.commands.__edit").watch)
         end,
       })
