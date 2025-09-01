@@ -210,7 +210,7 @@ return {
           level = vim.log.levels.INFO,
           -- show messages on bottom right as not to conflict with cmdline
           top_down = false,
-          style = "fancy",
+          style = "compact",
         },
         gitbrowse = {
           config = function(opts, defaults)
