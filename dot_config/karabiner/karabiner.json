@@ -7,7 +7,7 @@
       "complex_modifications": {
         "rules": [
           {
-            "description": "Map Ctrl+J/K to Down/Up Arrow",
+            "description": "Map Ctrl+JK to Down/Up Arrow",
             "manipulators": [
               {
                 "from": {
@@ -37,6 +37,27 @@
                 "to": [
                   {
                     "key_code": "up_arrow"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "Map Ctrl+E to Escape",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "e",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "escape"
                   }
                 ],
                 "type": "basic"
@@ -493,6 +514,34 @@
                     "modifiers": [
                       "left_command"
                     ]
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "(S)uper(D)uper + E -> Escape",
+            "manipulators": [
+              {
+                "conditions": [
+                  {
+                    "name": "superduper-mode",
+                    "type": "variable_if",
+                    "value": 1
+                  }
+                ],
+                "from": {
+                  "key_code": "e",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "escape"
                   }
                 ],
                 "type": "basic"
