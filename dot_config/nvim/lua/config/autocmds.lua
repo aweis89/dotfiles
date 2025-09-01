@@ -57,9 +57,10 @@ vim.api.nvim_create_autocmd("BufEnter", {
     vim.notify(display_root, vim.log.levels.INFO, { title = "cwd" })
   end,
 })
+
 vim.keymap.set("n", "<leader>fd", function()
   local cwd = "~" .. string.sub(vim.fn.getcwd(), #vim.env.HOME + 1)
-  vim.notify(cwd, vim.log.levels.INFO, { title = "CWD" })
+  vim.notify(cwd, vim.log.levels.INFO, { title = "cwd" })
 end, { desc = "Show CWD" })
 
 -- Run at startup and on every :cd / :lcd / :tcd or autochdir change
