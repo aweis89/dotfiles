@@ -30,7 +30,7 @@ end
 return {
 	{ "m", "Music" }, -- "M" for "Music"
 	-- { "b", "Arc" }, -- "B" for "Browser"
-	{ "b", "Zen Browser", focusMainWindow("Zen Browser") }, -- "B" for "Browser"
+	{ "b", "Zen Browser" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"
 	-- { "t", "Neovide" }, -- "T" for "Terminal"
