@@ -11,4 +11,8 @@ fullscreen = true
 confirm-close-surface = false
 mouse-hide-while-typing = true
 custom-shader = ?shaders/cursor_smear.glsl
-auto-update-channel = stable
+auto-update-channel = tip
+
+keybind = global:ctrl+q=toggle_quick_terminal
+quick-terminal-position = right
+quick-terminal-size = 45%

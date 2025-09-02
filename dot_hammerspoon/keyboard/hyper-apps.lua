@@ -9,7 +9,31 @@ return {
 	{ "s", "Slack" }, -- "S" for "Slack"
 	-- { "t", "Neovide" }, -- "T" for "Terminal"
 	-- { "t", "Kitty" }, -- "T" for "Terminal"
-	{ "t", "Ghostty" }, -- "T" for "Terminal"
+	{
+		"t",
+		"Ghostty",
+		function()
+			local app = hs.application.find("Ghostty")
+			if app then
+				local allWindows = app:allWindows()
+				local standardWindows = hs.fnutils.filter(allWindows, function(win)
+					return win:isStandard() and win:isVisible() and win:subrole() == "AXStandardWindow"
+				end)
+
+				if #standardWindows > 0 then
+					standardWindows[1]:focus()
+				else
+					-- Fallback to any standard window if no AXStandardWindow found
+					local anyStandardWindows = hs.fnutils.filter(allWindows, function(win)
+						return win:isStandard() and win:isVisible()
+					end)
+					if #anyStandardWindows > 0 then
+						anyStandardWindows[1]:focus()
+					end
+				end
+			end
+		end,
+	}, -- "T" for "Terminal"
 	{ "c", "calendar" }, -- "C" for "Calendar"
 	{ "z", "zoom.us" }, -- "Z" for "Zoom"
 	{ "a", "ChatGPT" }, -- "A" for "AI"
