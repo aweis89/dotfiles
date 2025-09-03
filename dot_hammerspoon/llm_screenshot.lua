@@ -31,7 +31,7 @@ M.systemPrompt = table.concat({
 	"You are assisting in a software engineering interview.",
 	"Briefly summarize the problem.",
 	"Then list the key insights the solution relies on.",
-	"If code is required, implement it in Go (Golang).",
+	"Implement any coding solutions using Go (Golang).",
 }, " ")
 
 local function ensureDir(path)
