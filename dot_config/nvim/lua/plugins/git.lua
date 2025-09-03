@@ -34,7 +34,12 @@ return {
     "aweis89/ai-commit-msg.nvim",
     dir = "~/p/ai-commit-msg.nvim",
     ft = "gitcommit",
+    cmd = { "AiCommitMsgAllModels" },
     config = true,
+    ---@class AiCommitMsgConfig
+    opts = {
+      provider = "openai",
+    },
   },
   {
     "lewis6991/gitsigns.nvim",
