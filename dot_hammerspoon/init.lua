@@ -120,3 +120,11 @@ end)
 caffeinateWatcher:start()
 
 -- hs.loadSpoon("ControlEscape"):start()
+
+-- Screenshot active window and send to tmux: llm -a <file>
+local llmshot = require("llm_screenshot")
+-- Optional: target a specific tmux pane (e.g., "main:1.0")
+-- llmshot.tmuxTarget = "main:1.0"
+hs.hotkey.bind({ "ctrl" }, "s", function()
+	llmshot.captureAndSend()
+end)
