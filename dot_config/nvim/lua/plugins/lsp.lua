@@ -74,6 +74,32 @@ return {
         --   virtual_text = false,
         -- },
         servers = {
+          -- Lua language server: include Hammerspoon EmmyLua annotations
+          lua_ls = {
+            settings = {
+              Lua = {
+                runtime = { version = "LuaJIT" },
+                diagnostics = {
+                  -- Recognize Hammerspoon and Neovim globals
+                  globals = { "vim", "hs", "spoon" },
+                },
+                workspace = (function()
+                  local home = vim.fn.expand("~")
+                  local lib = {
+                    -- PR #240 suggested path
+                    home .. "/.hammerspoon/Spoons/EmmyLua.spoon/annotations",
+                    -- Some builds may generate under config dir
+                    home .. "/.hammerspoon/annotations",
+                  }
+                  return {
+                    library = lib,
+                    checkThirdParty = false,
+                  }
+                end)(),
+                telemetry = { enable = false },
+              },
+            },
+          },
           pyright = {
             settings = {
               python = {

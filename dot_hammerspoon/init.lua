@@ -1,4 +1,14 @@
 require("keyboard")
+
+-- Generate EmmyLua annotations for Hammerspoon + Spoons (PR #240)
+-- If the Spoon is installed, loading it will auto-generate/update
+-- annotations under an `annotations` directory.
+-- Tip: add the annotations path to your editor's Lua workspace library, e.g.:
+--   Lua.workspace.library = {
+--     os.getenv("HOME") .. "/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
+--   }
+hs.loadSpoon("EmmyLua")
+
 local reload_theme_path = "~/tmp/theme-reload"
 
 -- Map URL patterns to Edge/Zen containers (display names for Edge)
@@ -118,8 +128,6 @@ local caffeinateWatcher = hs.caffeinate.watcher.new(function(eventType)
 	end
 end)
 caffeinateWatcher:start()
-
--- hs.loadSpoon("ControlEscape"):start()
 
 -- Screenshot active window and send to tmux: llm -a <file>
 local llmshot = require("llm_screenshot")
