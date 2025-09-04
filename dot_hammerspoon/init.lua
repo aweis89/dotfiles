@@ -17,7 +17,7 @@ url.setDefaultBrowser(url.zen_browser)
 url.installHandler()
 
 -- Screenshot active window and send to tmux: llm -a <file>
-local llmshot = require("lua.llm_screenshot")
 hs.hotkey.bind({ "cmd" }, "s", function()
+	local llmshot = require("lua.llm_screenshot")
 	llmshot.captureAndSend()
 end)
