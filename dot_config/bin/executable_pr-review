@@ -17,7 +17,7 @@ if [[ -z "$pr_num" ]]; then
   fi
 
   # Single-command preview under bash: details then diff; {1} = first column (PR number)
-  preview_cmd="bash -lc 'gh pr view {1} --comments; echo; echo --- DIFF ---; gh pr diff {1} | delta 2>/dev/null || gh pr diff {1}'"
+  preview_cmd="bash -lc 'gh pr view {1}; echo; echo --- DIFF ---; gh pr diff {1} | delta 2>/dev/null || gh pr diff {1}'"
 
   selection=$( (echo "$header"; echo "$rows") \
     | column -t -s $'\t' \
