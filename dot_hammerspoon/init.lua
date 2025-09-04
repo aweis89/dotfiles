@@ -10,11 +10,7 @@ hs.loadSpoon("EmmyLua")
 require("lua.apps")
 require("lua.windows")
 require("lua.theme")
-local url = require("lua.url")
-
--- URL routing logic moved to lua/url.lua
-url.setDefaultBrowser(url.zen_browser)
-url.installHandler()
+require("lua.url")
 
 -- Screenshot active window and send to tmux: llm -a <file>
 hs.hotkey.bind({ "cmd" }, "s", function()
