@@ -11,9 +11,11 @@
   ],
   "Lua.workspace.library": [
     "./dot_hammerspoon",
-    "./dot_hammerspoon/Spoons/EmmyLua.spoon/annotations"
+    "~/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
   ],
   "Lua.workspace.checkThirdParty": false,
-  "Lua.diagnostics.globals": ["hs", "spoon"]
+  "Lua.diagnostics.globals": [
+    "hs",
+    "spoon"
+  ]
 }
-
