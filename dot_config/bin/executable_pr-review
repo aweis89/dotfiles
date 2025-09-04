@@ -4,5 +4,9 @@ pr_num=$1
 
 gh pr diff $pr_num | delta
 
-#  AI! prompt whether to approve here
-gh pr review $pr_num --approve
+read -r -p "Approve PR #$pr_num? [y/N] " reply
+if [[ "$reply" =~ ^[Yy]([Ee][Ss])?$ ]]; then
+  gh pr review "$pr_num" --approve
+else
+  echo "Skipped approval."
+fi
