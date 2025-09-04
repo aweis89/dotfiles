@@ -1,0 +1,9 @@
+approval_policy = "never"
+preferred_auth_method = "apikey"
+tools.web_search = true
+
+[projects."/Users/aaron.weisberg/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/aaron.weisberg/c/billing"]
+trust_level = "trusted"

@@ -113,7 +113,7 @@ return {
           },
           claude = {
             cmd = function()
-              local claude_path = "~/.config/bin/claude"
+              local claude_path = "direnv exec ~/.config/bin/claude"
               return string.format(
                 "%s config set -g theme %s && %s --permission-mode default",
                 claude_path,
@@ -123,11 +123,13 @@ return {
             end,
           },
           codex = {
-            cmd = "~/.local/bin/codex --full-auto -s danger-full-access",
+            cmd = "direnv exec ~/.local/bin/codex --full-auto -s danger-full-access",
           },
           aider = {
             cmd = function()
               local cmd_parts = {
+                "direnv",
+                "exec",
                 "~/.config/bin/aider",
                 "--watch-files",
                 string.format("--%s-mode", vim.o.background),
