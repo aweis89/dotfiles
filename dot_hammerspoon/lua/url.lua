@@ -4,9 +4,8 @@ local M = {}
 
 -- Map URL patterns to Edge/Zen containers (display names for Edge)
 local container_map = {
-	["quizlet"] = "qz",
 	["calendly"] = "cl",
-	["meet%.google%.com"] = "qz",
+	["workday"] = "wd",
 }
 
 -- App names/paths
