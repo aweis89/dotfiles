@@ -1,12 +1,49 @@
 #!/bin/bash
 
+set -o pipefail
+
 pr_num=$1
 
-gh pr diff $pr_num | delta
+# If no PR number provided, interactively select one via fzf from JSON
+if [[ -z "$pr_num" ]]; then
+  # Produce tab-separated fields: NUMBER, AUTHOR, BASE, TITLE and pretty-print to columns
+  header=$'NUMBER\tAUTHOR\tBASE\tTITLE'
+  rows=$(gh pr list --json number,title,author,baseRefName \
+    --jq '.[] | select(.author.login != null) | [.number, .author.login, .title, .baseRefName] | @tsv')
+
+  if [[ -z "$rows" ]]; then
+    echo "No open pull requests found." >&2
+    exit 1
+  fi
+
+  # Single-command preview under bash: details then diff; {1} = first column (PR number)
+  preview_cmd="bash -lc 'gh pr view {1} --comments; echo; echo --- DIFF ---; gh pr diff {1} | delta 2>/dev/null || gh pr diff {1}'"
+
+  selection=$( (echo "$header"; echo "$rows") \
+    | column -t -s $'\t' \
+    | fzf --header-lines=1 --prompt='Select PR > ' --height=90% --border \
+          --preview-window='right:50%:wrap' --preview "$preview_cmd")
+
+  if [[ -z "$selection" ]]; then
+    echo "No PR selected." >&2
+    exit 1
+  fi
+
+  # Extract PR number from the first whitespace-delimited column
+  pr_num=$(echo "$selection" | awk '{print $1}')
+fi
+
+# Show the diff for confirmation
+if command -v delta >/dev/null 2>&1; then
+  gh pr diff "$pr_num" | delta --side-by-side
+else
+  gh pr diff "$pr_num"
+fi
 
 read -r -p "Approve PR #$pr_num? [y/N] " reply
 if [[ "$reply" =~ ^[Yy]([Ee][Ss])?$ ]]; then
   gh pr review "$pr_num" --approve
+  gh pr view "$pr_num"
 else
   echo "Skipped approval."
 fi
