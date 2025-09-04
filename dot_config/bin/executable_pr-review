@@ -1,0 +1,8 @@
+#!/bin/bash
+
+pr_num=$1
+
+gh pr diff $pr_num | delta
+
+#  AI! prompt whether to approve here
+gh pr review $pr_num --approve
