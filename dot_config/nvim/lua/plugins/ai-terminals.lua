@@ -78,10 +78,14 @@ return {
     "aweis89/ai-terminals.nvim",
     lazy = false,
     dir = "~/p/ai-terminals.nvim",
-    ---@type fun(): ConfigType
     opts = function()
       return {
-        -- backend = "tmux",
+        watch_cwd = {
+          enabled = true,
+        },
+        trigger_formatting = {
+          enabled = true,
+        },
         auto_terminal_keymaps = {
           enabled = true,
           terminals = {
@@ -122,7 +126,7 @@ return {
                 "direnv",
                 "exec",
                 "~/.config/bin/aider",
-                "--watch-files",
+                "--watch-files --no-auto-commits",
                 string.format("--%s-mode", vim.o.background),
               }
               local selected_model_name = read_cache("aider-model")
