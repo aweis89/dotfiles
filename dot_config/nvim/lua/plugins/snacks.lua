@@ -98,6 +98,32 @@ end
 
 return {
   {
+    "dmtrKovalenko/fff.nvim",
+    -- fff.nvim depends on a Rust crate that uses nightly-only features.
+    -- Build with nightly to avoid stable-channel feature errors.
+    build = "cargo build --release",
+    -- or if you are using nixos
+    -- build = "nix run .#release",
+    opts = { -- (optional)
+      debug = {
+        enabled = true, -- we expect your collaboration at least during the beta
+        show_scores = true, -- to help us optimize the scoring system, feel free to share your scores!
+      },
+    },
+    -- No need to lazy-load with lazy.nvim.
+    -- This plugin initializes itself lazily.
+    lazy = false,
+    keys = {
+      {
+        "ff", -- try it if you didn't it is a banger keybinding for a picker
+        function()
+          require("fff").find_files()
+        end,
+        desc = "FFFind files",
+      },
+    },
+  },
+  {
     "folke/snacks.nvim",
     repo = "aweis89/snacks.nvim",
     branch = "fix-relative-path",
@@ -235,30 +261,6 @@ return {
             },
           },
           actions = {
-            ["aider_search"] = function(picker)
-              picker:close()
-              send_search(picker)
-            end,
-            ["aider_add"] = function(picker)
-              picker:close()
-              add_files_from_picker(picker, "aider")
-            end,
-            ["aider_read_only"] = function(picker)
-              picker:close()
-              add_files_from_picker(picker, "aider", { read_only = true }) -- Send /read-only
-            end,
-            ["claude_add"] = function(picker)
-              picker:close()
-              add_files_from_picker(picker, "claude")
-            end,
-            ["codex_add"] = function(picker)
-              picker:close()
-              add_files_from_picker(picker, "codex")
-            end,
-            ["opencode_add"] = function(picker)
-              picker:close()
-              add_files_from_picker(picker, "opencode")
-            end,
             ["commit"] = function(picker)
               picker:close()
               -- see autocmds.lua for AI auto-generated functionality
@@ -352,17 +354,15 @@ return {
         win = {
           input = {
             keys = {
-              ["<localleader>aa"] = { "aider_add", mode = { "n", "i" } },
-              ["<localleader>Aa"] = { "aider_read_only", mode = { "n", "i" } },
-              ["<localleader>ac"] = { "claude_add", mode = { "n", "i" } },
-              ["<localleader>ad"] = { "codex_add", mode = { "n", "i" } },
-              ["<localleader>ao"] = { "opencode_add", mode = { "n", "i" } },
               ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
               -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
             },
           },
         },
       }
+
+      local sa = require("ai-terminals.snacks_actions")
+      sa.apply(overrides)
 
       -- Apply file action keybindings
       for _, picker_name in ipairs(file_action_pickers) do

@@ -185,13 +185,6 @@ return {
         desc = "Revert AI changes from backup",
       },
       {
-        "<leader>ac",
-        function()
-          require("ai-terminals").aider_comment("AI!") -- Adds comment and saves file
-        end,
-        desc = "Add 'AI!' comment above line",
-      },
-      {
         "<leader>aC",
         function()
           require("ai-terminals").aider_comment("AI?") -- Adds comment and saves file
