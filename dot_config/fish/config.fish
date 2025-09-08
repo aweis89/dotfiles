@@ -8,6 +8,7 @@ fish_add_path \
     ~/.asdf/shims \
     ~/go/bin \
     /opt/homebrew/bin \
+    /opt/homebrew/opt/rustup/bin \
     /opt/homebrew/share/google-cloud-sdk/bin \
     /Applications/Docker.app/Contents/Resources/bin
 

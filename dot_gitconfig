@@ -2,7 +2,7 @@
 	name = Aaron Weisberg
 	email = aaronweisberg@gmail.com
 [pull]
-	rebase = false
+	rebase = true
 [push]
 	autoSetupRemote = true
 [core]

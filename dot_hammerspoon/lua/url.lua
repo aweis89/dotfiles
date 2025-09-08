@@ -64,12 +64,12 @@ function M.openURLWith(url, browser)
 	end
 
 	-- Branch: Zen with ext+container scheme
-	if browser == M.zen_browser and container then
-		local containerURL = string.format("ext+container:name=%s&url=%s", container, url)
-		local command = string.format('/usr/bin/open -a "%s" "%s"', browser, containerURL)
-		hs.execute(command)
-		return
-	end
+	-- if browser == M.zen_browser and container then
+	-- 	local containerURL = string.format("ext+container:name=%s&url=%s", container, url)
+	-- 	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, containerURL)
+	-- 	hs.execute(command)
+	-- 	return
+	-- end
 
 	-- Fallback: open with the browser directly
 	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
