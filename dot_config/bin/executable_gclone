@@ -3,3 +3,5 @@
 repo=$1
 
 git clone "https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
+
+cd "$repo" || exit
