@@ -27,6 +27,13 @@ return {
     keys = {
       -- see autocmds.lua for AI auto-generated functionality
       { "<leader>gc", "<cmd>tab Git commit -v<cr>", desc = "Git commit" },
+      { "<leader>gp", "<cmd>Git pull | Git push<cr>", desc = "Git commit" },
+      {
+        "<leader>gp",
+        "<cmd>Git pull --rebase --autostash | Git push<cr>",
+        desc = "Git push (pull+rebase+stash)",
+      },
+      { "<leader>gA", "<cmd>Git add --all<cr>", desc = "Git add --all" },
     },
   },
   {

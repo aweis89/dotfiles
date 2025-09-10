@@ -22,7 +22,6 @@ M.tmuxWindowName = "llm-shot"
 -- If true, switch the client to the new window after creating it.
 M.focusNewWindow = false
 
--- Command to run after the initial llm attachment to keep the session interactive
 M.postCommand = "llm chat --continue"
 
 -- Model and system prompt for the initial llm call
@@ -123,13 +122,15 @@ local function sendToTmux(typed)
 	local model = M.model or "gpt-5"
 	local sys = M.systemPrompt
 		or "You are assisting in a software engineering interview. Briefly summarize the problem. Then list the key insights the solution relies on. If code is required, implement it in Go (Golang)."
-	-- Pipe the first llm command through rich for markdown; do not pipe chat continuation
+	-- Pipe the first llm command through the user's rich CLI for markdown; do not pipe chat continuation
+	local richPath = os.getenv("HOME") .. "/.local/bin/rich"
 	local firstCmd = string.format(
-		'%s --model %s --system "%s" "%s" | rich - --markdown --force-terminal',
+		'%s --model %s --system "%s" "%s" | "%s" - --markdown --force-terminal',
 		typed,
 		model,
 		escapeForDoubleQuotes(sys),
-		escapeForDoubleQuotes(prompt)
+		escapeForDoubleQuotes(prompt),
+		richPath
 	)
 	local fullCmd = string.format("%s; %s", firstCmd, postCmd)
 	log.i("new-window command: " .. fullCmd)

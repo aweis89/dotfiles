@@ -36,11 +36,13 @@ local themes = {
       "catppuccin/nvim",
       name = "catppuccin",
       priority = 1000,
-      opts = {
-        styles = {
-          keywords = { "italic" },
-        },
-      },
+      opts = function(_, opts)
+        opts = opts or {}
+        opts.background = { light = "latte", dark = "mocha" }
+        opts.styles = opts.styles or {}
+        opts.styles.keywords = { "italic" }
+        return opts
+      end,
     },
   },
   onedark = {
@@ -156,8 +158,9 @@ local function set_background(light_theme, dark_theme)
   end
 end
 
-local light_theme = themes.gruvbox
-local dark_theme = themes.onedark
+-- Use Catppuccin for both light and dark; flavour maps via plugin opts
+local light_theme = themes.catppuccin
+local dark_theme = "catppuccin"
 
 local plugins = {
   {
@@ -185,8 +188,5 @@ local plugins = {
 }
 
 table.insert(plugins, light_theme.plugin)
-if type(dark_theme) == "table" and dark_theme.plugin then
-  table.insert(plugins, dark_theme.plugin)
-end
 
 return plugins
