@@ -8,105 +8,162 @@ REPO="openai/codex"
 ARCH=$(uname -m)
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
+# Fetch latest release JSON (supports optional GITHUB_TOKEN for higher rate limits)
+get_latest_release_json() {
+	if [ -n "${GITHUB_TOKEN:-}" ]; then
+		curl -sfL -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPO}/releases/latest"
+	else
+		curl -sfL "https://api.github.com/repos/${REPO}/releases/latest"
+	fi
+}
+
+# Parse latest version tag (e.g., v0.31.0)
 get_latest_version() {
-    curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | cut -d '"' -f 4
+	local json
+	if ! json=$(get_latest_release_json); then
+		echo ""
+		return 1
+	fi
+	if command -v jq >/dev/null 2>&1; then
+		echo "$json" | jq -r '.tag_name'
+	else
+		echo "$json" | grep -m1 '"tag_name"' | cut -d '"' -f 4
+	fi
 }
 
 get_current_version() {
-    if [ -x "${INSTALL_DIR}/${BINARY_NAME}" ]; then
-        "${INSTALL_DIR}/${BINARY_NAME}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.0"
-    else
-        echo "0.0.0"
-    fi
+	if [ -x "${INSTALL_DIR}/${BINARY_NAME}" ]; then
+		"${INSTALL_DIR}/${BINARY_NAME}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.0"
+	else
+		echo "0.0.0"
+	fi
 }
 
 map_arch() {
-    case "$ARCH" in
-        x86_64)
-            echo "x86_64"
-            ;;
-        arm64|aarch64)
-            echo "aarch64"
-            ;;
-        *)
-            echo "Unsupported architecture: $ARCH" >&2
-            exit 1
-            ;;
-    esac
+	case "$ARCH" in
+	x86_64)
+		echo "x86_64"
+		;;
+	arm64 | aarch64)
+		echo "aarch64"
+		;;
+	*)
+		echo "Unsupported architecture: $ARCH" >&2
+		exit 1
+		;;
+	esac
 }
 
 map_os() {
-    case "$OS" in
-        darwin)
-            echo "apple-darwin"
-            ;;
-        linux)
-            echo "unknown-linux-gnu"
-            ;;
-        *)
-            echo "Unsupported OS: $OS" >&2
-            exit 1
-            ;;
-    esac
+	case "$OS" in
+	darwin)
+		echo "apple-darwin"
+		;;
+	linux)
+		echo "unknown-linux-gnu"
+		;;
+	*)
+		echo "Unsupported OS: $OS" >&2
+		exit 1
+		;;
+	esac
 }
 
 main() {
-    echo "Checking for codex updates..."
-    
-    mkdir -p "$INSTALL_DIR"
-    
-    LATEST_VERSION=$(get_latest_version)
-    CURRENT_VERSION=$(get_current_version)
-    
-    LATEST_VERSION_NUM=$(echo "$LATEST_VERSION" | sed 's/[^0-9.]//g')
-    
-    if [ "$CURRENT_VERSION" = "$LATEST_VERSION_NUM" ]; then
-        echo "Codex is already up to date (version $CURRENT_VERSION)"
-        exit 0
-    fi
-    
-    echo "Current version: $CURRENT_VERSION"
-    echo "Latest version: $LATEST_VERSION_NUM"
-    echo "Installing codex ${LATEST_VERSION}..."
-    
-    MAPPED_ARCH=$(map_arch)
-    MAPPED_OS=$(map_os)
-    PLATFORM="${MAPPED_ARCH}-${MAPPED_OS}"
-    
-    DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${LATEST_VERSION}/codex-${PLATFORM}.tar.gz"
-    TEMP_DIR=$(mktemp -d)
-    
-    trap "rm -rf $TEMP_DIR" EXIT
-    
-    echo "Downloading from: $DOWNLOAD_URL"
-    curl -L -o "${TEMP_DIR}/codex.tar.gz" "$DOWNLOAD_URL"
-    
-    echo "Extracting..."
-    tar -xzf "${TEMP_DIR}/codex.tar.gz" -C "$TEMP_DIR"
-    
-    EXTRACTED_BINARY="${TEMP_DIR}/codex-${PLATFORM}"
-    if [ ! -f "$EXTRACTED_BINARY" ]; then
-        EXTRACTED_BINARY="${TEMP_DIR}/codex"
-    fi
-    
-    if [ ! -f "$EXTRACTED_BINARY" ]; then
-        echo "Error: Could not find extracted binary" >&2
-        exit 1
-    fi
-    
-    echo "Installing to ${INSTALL_DIR}/${BINARY_NAME}..."
-    mv "$EXTRACTED_BINARY" "${INSTALL_DIR}/${BINARY_NAME}"
-    chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
-    
-    NEW_VERSION=$("${INSTALL_DIR}/${BINARY_NAME}" --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-    echo "Successfully installed codex version $NEW_VERSION"
-    
-    if ! echo "$PATH" | grep -q "${INSTALL_DIR}"; then
-        echo ""
-        echo "NOTE: ${INSTALL_DIR} is not in your PATH."
-        echo "Add the following to your shell configuration file:"
-        echo "  export PATH=\"\${PATH}:${INSTALL_DIR}\""
-    fi
+	echo "Checking for codex updates..."
+
+	mkdir -p "$INSTALL_DIR"
+
+	# Grab release JSON up front to reliably resolve asset URL
+	RELEASE_JSON=$(get_latest_release_json || true)
+	if echo "${RELEASE_JSON}" | grep -qi 'API rate limit exceeded'; then
+		echo "GitHub API rate limit exceeded. Try again later or set GITHUB_TOKEN for higher limits." >&2
+		exit 1
+	fi
+
+	LATEST_VERSION=$(get_latest_version || true)
+	CURRENT_VERSION=$(get_current_version)
+
+	LATEST_VERSION_NUM=$(echo "$LATEST_VERSION" | sed 's/[^0-9.]//g')
+
+	if [ "$CURRENT_VERSION" = "$LATEST_VERSION_NUM" ]; then
+		echo "Codex is already up to date (version $CURRENT_VERSION)"
+		exit 0
+	fi
+
+	echo "Current version: $CURRENT_VERSION"
+	echo "Latest version: $LATEST_VERSION_NUM"
+	echo "Installing codex ${LATEST_VERSION:-unknown}..."
+
+	MAPPED_ARCH=$(map_arch)
+	MAPPED_OS=$(map_os)
+	PLATFORM="${MAPPED_ARCH}-${MAPPED_OS}"
+
+	# Resolve the correct asset URL from the release JSON instead of constructing it
+	if command -v jq >/dev/null 2>&1; then
+		DOWNLOAD_URL=$(echo "$RELEASE_JSON" | jq -r \
+			".assets[] | select(.name == \"codex-${PLATFORM}.tar.gz\") | .browser_download_url")
+	else
+		DOWNLOAD_URL=$(echo "$RELEASE_JSON" |
+			grep -A2 'browser_download_url' |
+			grep "codex-${PLATFORM}\.tar\.gz" |
+			head -n1 |
+			sed -E 's/.*"(https?:[^" ]+)".*/\1/')
+	fi
+
+	if [ -z "${DOWNLOAD_URL:-}" ] || ! echo "$DOWNLOAD_URL" | grep -q '^https://'; then
+		echo "Failed to determine download URL for platform ${PLATFORM}." >&2
+		echo "Ensure a release asset named codex-${PLATFORM}.tar.gz exists for ${LATEST_VERSION}." >&2
+		exit 1
+	fi
+	TEMP_DIR=$(mktemp -d)
+
+	trap "rm -rf $TEMP_DIR" EXIT
+
+	echo "Downloading from: $DOWNLOAD_URL"
+	if [ -n "${GITHUB_TOKEN:-}" ]; then
+		curl -fL -H "Authorization: Bearer ${GITHUB_TOKEN}" -o "${TEMP_DIR}/codex.tar.gz" "$DOWNLOAD_URL" || {
+			echo "Download failed from: $DOWNLOAD_URL" >&2
+			exit 1
+		}
+	else
+		curl -fL -o "${TEMP_DIR}/codex.tar.gz" "$DOWNLOAD_URL" || {
+			echo "Download failed from: $DOWNLOAD_URL" >&2
+			exit 1
+		}
+	fi
+
+	echo "Extracting..."
+	if ! tar -xzf "${TEMP_DIR}/codex.tar.gz" -C "$TEMP_DIR" 2>/dev/null; then
+		echo "Extraction failed. The downloaded file may be invalid." >&2
+		echo "First bytes (hex):" >&2
+		head -c 64 "${TEMP_DIR}/codex.tar.gz" | xxd -g 1 >&2 || true
+		exit 1
+	fi
+
+	EXTRACTED_BINARY="${TEMP_DIR}/codex-${PLATFORM}"
+	if [ ! -f "$EXTRACTED_BINARY" ]; then
+		EXTRACTED_BINARY="${TEMP_DIR}/codex"
+	fi
+
+	if [ ! -f "$EXTRACTED_BINARY" ]; then
+		echo "Error: Could not find extracted binary" >&2
+		exit 1
+	fi
+
+	echo "Installing to ${INSTALL_DIR}/${BINARY_NAME}..."
+	mv "$EXTRACTED_BINARY" "${INSTALL_DIR}/${BINARY_NAME}"
+	chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
+
+	NEW_VERSION=$("${INSTALL_DIR}/${BINARY_NAME}" --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+	echo "Successfully installed codex version $NEW_VERSION"
+
+	if ! echo "$PATH" | grep -q "${INSTALL_DIR}"; then
+		echo ""
+		echo "NOTE: ${INSTALL_DIR} is not in your PATH."
+		echo "Add the following to your shell configuration file:"
+		echo "  export PATH=\"\${PATH}:${INSTALL_DIR}\""
+	fi
 }
 
 main "$@"
