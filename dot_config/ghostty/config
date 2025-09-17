@@ -5,7 +5,7 @@ font-size = 18
 # theme = light:GruvboxLight,dark:GruvboxDark
 # theme = light:GruvboxLight,dark:~/.local/share/nvim/lazy/onedarkpro.nvim/extras/ghostty/onedarkpro_onedark_dark
 # Switch to Catppuccin and follow macOS appearance
-theme = light:catppuccin-latte,dark:catppuccin-mocha
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 window-padding-y = 0
 window-padding-x = 0
