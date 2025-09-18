@@ -126,6 +126,12 @@ return {
         close_diffview_diff("q")
       end
     end,
+    opts = {
+      default_args = {
+        -- required to be able to modify diffs against remote branches
+        DiffviewOpen = { "--imply-local" },
+      },
+    },
     keys = {
       {
         "<leader>dvh",
