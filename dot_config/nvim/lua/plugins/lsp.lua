@@ -26,7 +26,7 @@ return {
         },
         virtual_text = {
           spacing = 0,
-          source = false,
+          source = true,
           prefix = function(diagnostic)
             return diagnostic_icon_map[diagnostic.severity] or ""
           end,
