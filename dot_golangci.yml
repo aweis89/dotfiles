@@ -8,6 +8,10 @@ linters:
     - nlreturn
     - funlen
     - mnd
+    - err113
+    - exhaustruct
+    - gochecknoglobals
+    - depgaurd
   exclusions:
     generated: lax
     presets:
