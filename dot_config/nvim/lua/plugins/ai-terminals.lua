@@ -77,7 +77,7 @@ return {
   {
     "aweis89/ai-terminals.nvim",
     lazy = false,
-    dir = "~/p/ai-terminals.nvim",
+    -- dir = "~/p/ai-terminals.nvim",
     opts = function()
       return {
         watch_cwd = {

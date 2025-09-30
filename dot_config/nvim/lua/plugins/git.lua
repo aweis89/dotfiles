@@ -39,7 +39,7 @@ return {
   {
     -- AI-powered commit message generation
     "aweis89/ai-commit-msg.nvim",
-    dir = "~/p/ai-commit-msg.nvim",
+    -- dir = "~/p/ai-commit-msg.nvim",
     ft = "gitcommit",
     cmd = { "AiCommitMsgAllModels" },
     config = true,

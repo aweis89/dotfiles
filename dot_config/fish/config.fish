@@ -3,6 +3,7 @@ set -g fish_greeting
 
 # Add paths
 fish_add_path \
+    ~/bin \
     ~/.config/bin \
     ~/.local/bin \
     ~/.asdf/shims \
