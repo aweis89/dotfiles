@@ -92,7 +92,7 @@ return {
             { name = "aider", key = "a" },
             { name = "claude", key = "c" },
             { name = "codex", key = "d" },
-            { name = "cursor", key = "s" },
+            { name = "cursor", key = "<space>" },
             { name = "gemini", key = "g" },
             { name = "opencode", key = "o" },
           },
