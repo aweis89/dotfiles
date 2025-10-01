@@ -25,7 +25,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.splitjoin",
+    "nvim-mini/mini.splitjoin",
     version = false,
     config = true,
     keys = { {
@@ -58,7 +58,7 @@ return {
     end,
   },
   {
-    "echasnovski/mini.snippets",
+    "nvim-mini/mini.snippets",
     opts = function()
       local gen_loader = require("mini.snippets").gen_loader
       return {
