@@ -10,6 +10,12 @@ end
 ---@param term string
 ---@param opts? { read_only?: boolean } Options for the command
 local function add_files_from_picker(picker, term, opts)
+  local ok, ai_terminals = pcall(require, "ai-terminals")
+  if not ok then
+    vim.notify("ai-terminals plugin not installed", vim.log.levels.WARN)
+    return
+  end
+
   local selected = picker:selected({ fallback = true })
   local files_to_add = {}
   for _, item in pairs(selected) do
@@ -25,22 +31,28 @@ local function add_files_from_picker(picker, term, opts)
     end
   end
   if term == "claude" and #files_to_add == 1 and is_dir(files_to_add[1]) then
-    require("ai-terminals").send_term(term, "/add-dir " .. files_to_add[1], { focus = true, submit = true })
+    ai_terminals.send_term(term, "/add-dir " .. files_to_add[1], { focus = true, submit = true })
     return
   end
-  require("ai-terminals").add_files_to_terminal(term, files_to_add, opts)
+  ai_terminals.add_files_to_terminal(term, files_to_add, opts)
 end
 
 --- Helper function to extract search results and send them to aider
 ---@param picker snacks.Picker
 local function send_search(picker)
+  local ok, ai_terminals = pcall(require, "ai-terminals")
+  if not ok then
+    vim.notify("ai-terminals plugin not installed", vim.log.levels.WARN)
+    return
+  end
+
   local selected = picker:selected({ fallback = true })
   local items = {}
   for _, item in pairs(selected) do
     table.insert(items, item.text)
   end
-  local term = require("ai-terminals").get("aider")
-  require("ai-terminals").send(table.concat(items, "\n"), { term = term })
+  local term = ai_terminals.get("aider")
+  ai_terminals.send(table.concat(items, "\n"), { term = term })
 end
 
 ---@param args table
@@ -335,8 +347,10 @@ return {
         },
       }
 
-      local sa = require("ai-terminals.snacks_actions")
-      sa.apply(overrides)
+      local ok, sa = pcall(require, "ai-terminals.snacks_actions")
+      if ok then
+        sa.apply(overrides)
+      end
 
       -- Apply file action keybindings
       for _, picker_name in ipairs(file_action_pickers) do

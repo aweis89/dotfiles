@@ -75,14 +75,28 @@ end
 
 return {
   {
+    "folke/sidekick.nvim",
+    keys = {
+      { "<leader>a", false, mode = { "n", "v" } },
+      { "<leader>aa", false },
+      { "<leader>as", false, mode = { "n" } },
+      { "<leader>as", false, mode = { "v" } },
+      { "<leader>ap", false, mode = { "n", "v" } },
+      { "<c-.>", false, mode = { "n", "x", "i", "t" } },
+    },
+  },
+  {
     "aweis89/ai-terminals.nvim",
     lazy = false,
-    -- dir = "~/p/ai-terminals.nvim",
+    dir = (function()
+      local local_dir = vim.fn.expand("~/p/ai-terminals.nvim")
+      if vim.fn.isdirectory(local_dir) == 1 then
+        return local_dir
+      end
+      return nil
+    end)(),
     opts = function()
       return {
-        watch_cwd = {
-          enabled = true,
-        },
         trigger_formatting = {
           enabled = true,
         },
