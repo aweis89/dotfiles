@@ -45,7 +45,7 @@ return {
     config = true,
     ---@class AiCommitMsgConfig
     opts = {
-      provider = "openai",
+      provider = "gemini",
     },
   },
   {
