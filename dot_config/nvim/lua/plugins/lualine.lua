@@ -1,3 +1,12 @@
+local copilot_icons = function()
+  return {
+    Error = { " ", "DiagnosticError" },
+    Inactive = { " ", "MsgArea" },
+    Warning = { " ", "DiagnosticWarn" },
+    Normal = { LazyVim.config.icons.kinds.Copilot, "Special" },
+  }
+end
+
 return {
   { "akinsho/bufferline.nvim", enabled = false },
   { "vimpostor/vim-tpipeline", event = "VeryLazy" },
@@ -41,7 +50,22 @@ return {
             end,
           },
         },
-        lualine_c = {},
+        lualine_c = {
+          {
+            function()
+              local status = require("sidekick.status").get()
+              return status and vim.tbl_get(copilot_icons(), status.kind, 1)
+            end,
+            cond = function()
+              return require("sidekick.status").get() ~= nil
+            end,
+            color = function()
+              local status = require("sidekick.status").get()
+              local hl = status and (status.busy and "DiagnosticWarn" or vim.tbl_get(copilot_icons(), status.kind, 2))
+              return { fg = Snacks.util.color(hl) }
+            end,
+          },
+        },
         lualine_y = {},
         -- remove diff
         lualine_x = {},
