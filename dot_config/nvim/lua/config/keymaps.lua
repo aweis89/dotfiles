@@ -11,8 +11,11 @@ map("i", "<C-l>", "<Right>", { desc = "Insert mode move right" })
 map("i", "<C-h>", "<Left>", { desc = "Insert mode move left" })
 map("i", "jj", "<Esc>", { desc = "escape" })
 
-map("i", "<C-j", "<C-n>", { desc = "next" })
-map("i", "<C-k", "<C-p>", { desc = "prev" })
+map("i", "<C-j>", "<C-n>", { desc = "next" })
+map("i", "<C-k>", "<C-p>", { desc = "prev" })
+
+-- Show signature help in insert mode
+map("i", "<C-s>", "<Esc>:lua vim.lsp.buf.signature_help()<cr>a", { desc = "Show signature help" })
 
 map("n", "L", "$", { desc = "Go to end of line" })
 map("n", "H", "^", { desc = "Go to beginning of line" })
