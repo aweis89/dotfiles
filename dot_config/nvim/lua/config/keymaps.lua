@@ -71,45 +71,6 @@ map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.
 map("x", "p", "pgvy")
 
-map("n", "<leader>wr", function()
-  -- Attempt to write the current buffer
-  -- pcall (protected call) allows us to catch errors if the write fails
-  local write_ok, write_err = pcall(vim.cmd, "write")
-
-  if not write_ok then
-    -- If write failed (e.g., no filename, permissions issue), notify the user and stop.
-    vim.notify("Write failed: " .. (write_err or "Unknown error"), vim.log.levels.ERROR)
-    return
-  end
-
-  -- If the write was successful (or the buffer was not modified, in which case :write does nothing),
-  -- then attempt to switch to the alternate buffer.
-  -- 'noautocmd' is used to prevent BufLeave/BufEnter autocommands from triggering during the switch,
-  -- which can make the switch feel faster and avoid unintended side effects.
-  local switch_ok, switch_err = pcall(vim.cmd, "noautocmd b#")
-
-  if not switch_ok then
-    -- If switching failed (e.g., "E23: No alternate file"), notify the user.
-    -- Vim will usually also display its own error message for this.
-    vim.notify("Could not switch to alternate buffer: " .. (switch_err or "Unknown error"), vim.log.levels.WARN)
-  end
-
-  -- Check if the returned to buffer is a terminal, if it is ensure we enter insert mode
-  local current_buf_id = vim.api.nvim_get_current_buf()
-  if vim.api.nvim_buf_is_valid(current_buf_id) then
-    local buftype = vim.api.nvim_get_option_value("buftype", { buf = current_buf_id })
-    if buftype == "terminal" then
-      vim.cmd.startinsert()
-    end
-  end
-end, {
-  desc = "Writes the current buffer and then switches to the alternate buffer (#).",
-})
-
-vim.diagnostic.config({
-  float = { border = "rounded" },
-})
-
 -- Create command mode alias for git=Git only when it's the first word
 vim.cmd([[
   cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Git' : 'git'
