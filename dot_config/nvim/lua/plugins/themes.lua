@@ -67,7 +67,7 @@ local themes = {
   },
   tokyonight = {
     light = "tokyonight-day",
-    dark = "tokyonight",
+    dark = "tokyonight-night",
     plugin = {},
   },
   gruvbox = {
@@ -159,8 +159,8 @@ local function set_background(light_theme, dark_theme)
 end
 
 -- Use Catppuccin for both light and dark; flavour maps via plugin opts
-local light_theme = themes.catppuccin
-local dark_theme = "catppuccin"
+local light_theme = themes.tokyonight.light
+local dark_theme = themes.tokyonight.dark
 
 local plugins = {
   {
