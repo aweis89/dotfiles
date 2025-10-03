@@ -79,9 +79,10 @@ return {
     keys = {
       { "<leader>a", false, mode = { "n", "v" } },
       { "<leader>aa", false },
-      { "<leader>as", false, mode = { "n" } },
-      { "<leader>as", false, mode = { "v" } },
+      { "<leader>ac", false },
+      { "<leader>as", false, mode = { "n", "v" } },
       { "<leader>ap", false, mode = { "n", "v" } },
+      { "<leader>at", false, mode = { "n", "v" } },
       { "<c-.>", false, mode = { "n", "x", "i", "t" } },
     },
   },
