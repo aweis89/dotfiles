@@ -13,10 +13,6 @@ return {
     lazy = false,
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    enabled = false,
-  },
-  {
     "nvim-neotest/neotest",
     opts = {
       quickfix = {
