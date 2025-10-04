@@ -1,7 +1,7 @@
 -- ~/.hammerspoon/init.lua
 -- Idle → nudge to check Slack (no simulated input)
 
-local IDLE_MIN = 1 -- trigger after X minutes idle
+local IDLE_MIN = 5 -- trigger after X minutes idle
 
 local function makeSlackActive()
 	local currentApp = hs.application.frontmostApplication()
