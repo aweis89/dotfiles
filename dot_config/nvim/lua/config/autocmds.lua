@@ -75,19 +75,19 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
     local cmd = { "direnv", "export", "vim" }
 
     vim.system(cmd, { text = true }, function(res)
-      if res.code == 0 then
+      if res.code ~= 0 then
         vim.schedule(function()
-          local output = res.stdout
-          if output and #output > 0 then
-            log("Direnv loaded env variables", vim.log.levels.INFO)
-            vim.cmd(output)
-          end
+          log(res.stderr ~= "" and res.stderr or "direnv export failed", vim.log.levels.WARN)
         end)
-      else
-        vim.schedule(function()
-          log(res.stderr ~= "" and res.stderr or "export failed", vim.log.levels.WARN)
-        end)
+        return
       end
+      vim.schedule(function()
+        local output = res.stdout
+        if output and #output > 0 then
+          log("Direnv loaded env variables", vim.log.levels.INFO)
+          vim.cmd(output)
+        end
+      end)
     end)
   end,
 })
