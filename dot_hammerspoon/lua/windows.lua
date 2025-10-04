@@ -10,21 +10,19 @@ hs.loadSpoon("MiroWindowsManager")
 -- spoon.MiroWindowsManager.sizes = { 2, 3, 3/2 }
 -- spoon.MiroWindowsManager.GRID = { w = 24, h = 24 }
 
-local hyper = { "shift", "ctrl", "alt", "cmd" }
-
 -- Bind hjkl and fullscreen via the Spoon (no arrows)
 spoon.MiroWindowsManager:bindHotkeys({
-	up = { hyper, "k" },
-	right = { hyper, "l" },
-	down = { hyper, "j" },
-	left = { hyper, "h" },
-	fullscreen = { hyper, "return" },
+	up = { HYPER, "k" },
+	right = { HYPER, "l" },
+	down = { HYPER, "j" },
+	left = { HYPER, "h" },
+	fullscreen = { HYPER, "return" },
 })
 
 -- No extra aliases; hjkl are primary bindings
 
 -- Keep a simple next-screen binding to replace the old mapping
-hs.hotkey.bind(hyper, "n", function()
+hs.hotkey.bind(HYPER, "n", function()
 	local win = hs.window.focusedWindow()
 	if not win then
 		return
@@ -41,7 +39,7 @@ hs.hotkey.bind(hyper, "n", function()
 end)
 
 -- Optional: also allow Hyper+Space to maximize via Hammerspoon directly
-hs.hotkey.bind(hyper, "space", function()
+hs.hotkey.bind(HYPER, "space", function()
 	local win = hs.window.focusedWindow()
 	if win then
 		win:maximize()

@@ -7,10 +7,15 @@
 -- }
 hs.loadSpoon("EmmyLua")
 
+-- Define hyper key globally for reuse across modules
+-- hyper = { "shift", "ctrl", "alt", "cmd" }
+HYPER = { "alt" }
+
 require("lua.apps")
 require("lua.windows")
 require("lua.theme")
 require("lua.url")
+require("lua.slack")
 
 -- Screenshot active window and send to tmux: llm -a <file>
 hs.hotkey.bind({ "cmd" }, "s", function()

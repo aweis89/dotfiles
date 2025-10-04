@@ -62,7 +62,7 @@ for _, mapping in ipairs(hyperModeAppMappings) do
 	local key = mapping[1]
 	local app = mapping[2]
 	local postOpen = mapping[3]
-	hs.hotkey.bind({ "alt" }, key, function()
+	hs.hotkey.bind(HYPER, key, function()
 		hs.application.open(app)
 		if type(postOpen) == "function" then
 			postOpen()
