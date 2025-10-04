@@ -58,7 +58,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
     if vim.env.HOME and root:sub(1, #vim.env.HOME) == vim.env.HOME then
       display_root = "~" .. root:sub(#vim.env.HOME + 1)
     end
-    log(display_root, vim.log.levels.INFO)
+    log("Changed directory to " .. display_root, vim.log.levels.INFO)
   end,
 })
 
