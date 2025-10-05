@@ -41,6 +41,8 @@ return {
           env = "bash",
           html = "html",
           h = "cpp",
+          gotmpl = "gotmpl",
+          tmpl = "gotmpl",
         },
         filename = {
           config = "toml",

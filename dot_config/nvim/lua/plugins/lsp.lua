@@ -108,7 +108,6 @@ return {
             },
           },
           gopls = {
-            filetypes = { "go", "gomod", "gohtmltmpl", "gotexttmpl" },
             settings = {
               gopls = {
                 analyses = {
