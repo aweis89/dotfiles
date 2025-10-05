@@ -4,6 +4,6 @@ dest=$HOME/.local/share/nvim-macos-arm64
 
 curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz
 
-mkdir -p $dest
-tar -xzf nvim-macos-arm64.tar.gz -C $dest --strip-components 1
+mkdir -p "$dest"
+tar -xzf nvim-macos-arm64.tar.gz -C "$dest" --strip-components 1
 rm nvim-macos-arm64.tar.gz
