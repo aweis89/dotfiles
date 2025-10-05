@@ -135,6 +135,9 @@ return {
           codex = {
             cmd = "direnv exec ~/.local/bin/codex --full-auto -s danger-full-access",
           },
+          cursor = {
+            cmd = "direnv exec ~/.local/bin/cursor-agent",
+          },
           aider = {
             cmd = function()
               local cmd_parts = {
