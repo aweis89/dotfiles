@@ -119,18 +119,7 @@ return {
           goose = {
             cmd = function()
               return string.format("unset GITHUB_TOKEN; GOOSE_CLI_THEME=%s goose", vim.o.background)
-            end,
-          },
-          claude = {
-            cmd = function()
-              local claude_path = "~/.config/bin/claude"
-              return string.format(
-                "%s config set -g theme %s && direnv exec %s --permission-mode default",
-                claude_path,
-                vim.o.background,
-                claude_path
-              )
-            end,
+            elcnd,
           },
           codex = {
             cmd = "direnv exec ~/.local/bin/codex --full-auto -s danger-full-access",
