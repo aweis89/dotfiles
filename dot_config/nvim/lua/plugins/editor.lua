@@ -9,10 +9,6 @@ return {
     version = "*",
   },
   {
-    "arnamak/stay-centered.nvim",
-    lazy = false,
-  },
-  {
     "nvim-neotest/neotest",
     opts = {
       quickfix = {

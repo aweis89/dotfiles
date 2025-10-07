@@ -6,6 +6,9 @@
 -- To prevent this, set `splitkeep` to either `screen` or `topline`.
 vim.opt.splitkeep = "screen"
 
+-- Keep cursor centered when scrolling
+vim.opt.scrolloff = 1000
+
 -- Enable line wrapping with visual indicator
 vim.opt.wrap = true
 vim.opt.linebreak = true
