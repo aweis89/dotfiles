@@ -129,6 +129,9 @@ return {
               },
             },
           },
+          yamlls = {
+            enabled = false,
+          },
         },
       })
     end,
