@@ -1,5 +1,6 @@
-# font-family = Operator Mono Medium
-font-family = JetBrains Mono NL SemiBold
+font-family = JetBrains Mono
+font-style = Bold
+
 font-size = 18
 # theme = dark:everforest-dark,light:everforest-light
 # theme = light:GruvboxLight,dark:GruvboxDark
