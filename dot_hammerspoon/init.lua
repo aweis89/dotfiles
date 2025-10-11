@@ -18,7 +18,7 @@ require("lua.url")
 require("lua.slack")
 
 -- Screenshot active window and send to tmux: llm -a <file>
-hs.hotkey.bind({ "cmd" }, "s", function()
+hs.hotkey.bind({ "cmd", "shift" }, "s", function()
 	local llmshot = require("lua.llm_screenshot")
 	llmshot.captureAndSend()
 end)
