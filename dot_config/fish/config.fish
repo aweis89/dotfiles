@@ -27,6 +27,13 @@ alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
 alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
+
+function cluster-rename
+    set target $argv[1]
+    set context (kubectl config current-context)
+    kubectl config rename-context "$context" "$target"
+end
+
 function rms
     rm -f ~/.local/state/nvim/swap/*
 end
