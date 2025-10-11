@@ -1,0 +1,16 @@
+#!/bin/sh
+# This hook is triggered after git rebase (and git pull --rebase)
+# It automatically runs chezmoi apply to update configuration files
+# The first argument indicates what caused the rewrite (rebase or amend)
+
+if [ "$1" = "rebase" ]; then
+    echo "Running chezmoi apply after rebase to update configuration files..."
+    chezmoi apply
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ Configuration files updated successfully"
+    else
+        echo "✗ Error updating configuration files"
+        exit 1
+    fi
+fi

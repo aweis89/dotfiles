@@ -1,0 +1,13 @@
+#!/bin/sh
+# This hook is triggered after a successful git merge (including git pull with merge strategy)
+# It automatically runs chezmoi apply to update configuration files
+
+echo "Running chezmoi apply to update configuration files..."
+chezmoi apply
+
+if [ $? -eq 0 ]; then
+    echo "✓ Configuration files updated successfully"
+else
+    echo "✗ Error updating configuration files"
+    exit 1
+fi
