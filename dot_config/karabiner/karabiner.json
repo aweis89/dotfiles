@@ -133,265 +133,30 @@
             ]
           },
           {
-            "description": "S+D -> (S)uper(D)uper Mode",
-            "manipulators": [
-              {
-                "from": {
-                  "simultaneous": [
-                    {
-                      "key_code": "s"
-                    },
-                    {
-                      "key_code": "d"
-                    }
-                  ],
-                  "simultaneous_options": {
-                    "detect_key_down_uninterruptedly": true,
-                    "key_down_order": "insensitive",
-                    "key_up_order": "insensitive",
-                    "key_up_when": "any",
-                    "to_after_key_up": [
-                      {
-                        "set_variable": {
-                          "name": "superduper-mode",
-                          "value": 0
-                        }
-                      }
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "superduper-mode",
-                      "value": 1
-                    }
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + H -> Left",
+            "description": "[Firefox] Map Cmd+L to Ctrl+L (address bar)",
             "manipulators": [
               {
                 "conditions": [
                   {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "h",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "left_arrow"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + J -> Down",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "j",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "down_arrow"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + K -> Up",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "k",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "up_arrow"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + L -> Right",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
+                    "bundle_identifiers": [
+                      "^org\\.mozilla\\.firefox$"
+                    ],
+                    "type": "frontmost_application_if"
                   }
                 ],
                 "from": {
                   "key_code": "l",
                   "modifiers": {
-                    "optional": [
-                      "any"
+                    "mandatory": [
+                      "command"
                     ]
                   }
                 },
                 "to": [
                   {
-                    "key_code": "right_arrow"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + A -> Option",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "a",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "left_option"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + F -> Command",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "f",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "right_command"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + Space -> Shift",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "spacebar",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "right_shift"
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + U -> First Tab",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "u",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "1",
+                    "key_code": "l",
                     "modifiers": [
-                      "left_command"
+                      "left_control"
                     ]
                   }
                 ],
@@ -400,30 +165,30 @@
             ]
           },
           {
-            "description": "(S)uper(D)uper + I -> Prev Tab",
+            "description": "[Firefox] Map Cmd+T to Ctrl+T (new tab)",
             "manipulators": [
               {
                 "conditions": [
                   {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
+                    "bundle_identifiers": [
+                      "^org\\.mozilla\\.firefox$"
+                    ],
+                    "type": "frontmost_application_if"
                   }
                 ],
                 "from": {
-                  "key_code": "i",
+                  "key_code": "t",
                   "modifiers": {
-                    "optional": [
-                      "any"
+                    "mandatory": [
+                      "command"
                     ]
                   }
                 },
                 "to": [
                   {
-                    "key_code": "open_bracket",
+                    "key_code": "t",
                     "modifiers": [
-                      "left_command",
-                      "left_shift"
+                      "left_control"
                     ]
                   }
                 ],
@@ -432,90 +197,31 @@
             ]
           },
           {
-            "description": "(S)uper(D)uper + O -> Next Tab",
+            "description": "[Firefox] Map Cmd+W to Ctrl+W (close tab)",
             "manipulators": [
               {
                 "conditions": [
                   {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
+                    "bundle_identifiers": [
+                      "^org\\.mozilla\\.firefox$"
+                    ],
+                    "type": "frontmost_application_if"
                   }
                 ],
                 "from": {
-                  "key_code": "o",
+                  "key_code": "w",
                   "modifiers": {
-                    "optional": [
-                      "any"
+                    "mandatory": [
+                      "command"
                     ]
                   }
                 },
                 "to": [
                   {
-                    "key_code": "close_bracket",
+                    "key_code": "w",
                     "modifiers": [
-                      "left_command",
-                      "left_shift"
+                      "left_control"
                     ]
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + P -> Last Tab",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "p",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "9",
-                    "modifiers": [
-                      "left_command"
-                    ]
-                  }
-                ],
-                "type": "basic"
-              }
-            ]
-          },
-          {
-            "description": "(S)uper(D)uper + E -> Escape",
-            "manipulators": [
-              {
-                "conditions": [
-                  {
-                    "name": "superduper-mode",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "e",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "escape"
                   }
                 ],
                 "type": "basic"
