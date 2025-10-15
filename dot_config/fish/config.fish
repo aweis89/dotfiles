@@ -71,7 +71,11 @@ abbr -a -- vims 'cd ~/.config/nvim/lua && vim'
 abbr -a -- zshl 'edit-config ~/.zshrc.local'
 abbr -a -- zshp 'edit-config ~/.zsh/.zsh_plugins.txt'
 abbr -a -- zshs 'edit-config ~/.zshrc'
+abbr -a -- gck 'gcloud-update-kubeconfig --dns-endpoint'
+abbr -a -- gcl 'gcloud auth login'
+abbr -a -- gcp gcloud-project
 
+set -gx TMPDIR ~/tmp
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --multi --color=light' \
