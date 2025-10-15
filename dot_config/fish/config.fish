@@ -38,7 +38,10 @@ function rms
     rm -f ~/.local/state/nvim/swap/*
 end
 
-abbr -a -- ?? 'aichat -e'
+function ??
+    aichat -e "$argv"
+end
+
 abbr -a -- ag rg
 abbr -a -- k kubectl
 abbr -a -- ggpush 'git push origin (__git.current_branch)'
