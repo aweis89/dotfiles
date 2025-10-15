@@ -42,22 +42,6 @@ function ??
     aichat -e "$argv"
 end
 
-function aws-profile
-    if test (count $argv) -eq 0
-        if set -q AWS_PROFILE
-            echo "Current AWS profile: $AWS_PROFILE"
-        else
-            echo "No AWS profile set (using default)"
-        end
-        return
-    end
-    set -gx AWS_PROFILE $argv[1]
-    echo "Switched to AWS profile: $argv[1]"
-end
-
-# Dynamic autocomplete for aws-profile
-complete -c aws-profile -f -a "(grep -E '^\[profile ' ~/.aws/config | sed 's/\[profile \(.*\)\]/\1/' && grep -E '^\[default\]' ~/.aws/config | sed 's/\[default\]/default/')"
-
 abbr -a -- ag rg
 abbr -a -- k kubectl
 abbr -a -- ggpush 'git push origin (__git.current_branch)'
