@@ -13,12 +13,11 @@ function bw-file
         return 1
     end
     
-    # Expand ~ to home directory
+    # Expand ~ to home directory for file operations
     set file_path (string replace -r '^~' $HOME $file_path)
     
-    # Generate item name from file path
-    set -l item_name "File Backup: "(basename $file_path)" - "(dirname $file_path)
-    set -l file_name (basename $file_path)
+    # Normalize path for item name (replace $HOME with ~ for portability)
+    set -l item_name (string replace -r "^$HOME" '~' $file_path)
     
     # Check if logged in
     if not bw login --check &>/dev/null
@@ -49,32 +48,45 @@ function bw-file
             set item_id (bw list items --search "$item_name" 2>/dev/null | jq -r '.[0].id // empty')
             
             if test -z "$item_id"
-                echo "Creating new Bitwarden item..."
-                # Create new secure note with file path in notes
-                set item_id (bw get template item | jq '.type = 2 | .secureNote.type = 0 | .name = "'"$item_name"'" | .notes = "Original path: '"$file_path"'"' | bw encode | bw create item | jq -r '.id')
-                if test $status -ne 0
-                    echo "Failed to create Bitwarden item"
+                echo "Creating new Bitwarden secure note..."
+                # Create new secure note with file contents only
+                # Use jq --rawfile to properly read and encode the file with newlines preserved
+                set json_data (jq -n \
+                    --arg name "$item_name" \
+                    --rawfile contents "$file_path" \
+                    '{
+                        type: 2,
+                        secureNote: { type: 0 },
+                        name: $name,
+                        notes: $contents
+                    }')
+                
+                echo "$json_data" | bw encode | bw create item >/dev/null
+                if test $status -eq 0
+                    bw sync >/dev/null 2>&1
+                    echo "✓ File backed up successfully to Bitwarden"
+                    echo "  Item: $item_name"
+                else
+                    echo "✗ Failed to create Bitwarden item"
                     return 1
                 end
             else
-                echo "Found existing item, will update..."
-                # Delete old attachment if it exists
-                set attachment_id (bw get item "$item_id" 2>/dev/null | jq -r '.attachments[]? | select(.fileName == "'"$file_name"'") | .id')
-                if test -n "$attachment_id"
-                    bw delete attachment "$attachment_id" >/dev/null 2>&1
+                echo "Updating existing Bitwarden item..."
+                # Get existing item and update its notes with file contents only
+                # Use jq --rawfile to properly read and encode the file with newlines preserved
+                set json_data (bw get item "$item_id" | jq \
+                    --rawfile contents "$file_path" \
+                    '.notes = $contents')
+                
+                echo "$json_data" | bw encode | bw edit item "$item_id" >/dev/null
+                if test $status -eq 0
+                    bw sync >/dev/null 2>&1
+                    echo "✓ File backed up successfully to Bitwarden"
+                    echo "  Item: $item_name"
+                else
+                    echo "✗ Failed to update Bitwarden item"
+                    return 1
                 end
-            end
-            
-            # Attach the file
-            echo "Uploading file..."
-            bw create attachment --file "$file_path" --itemid "$item_id" >/dev/null
-            if test $status -eq 0
-                bw sync >/dev/null 2>&1
-                echo "✓ File backed up successfully to Bitwarden"
-                echo "  Item: $item_name"
-            else
-                echo "✗ Failed to upload file"
-                return 1
             end
             
         case restore
@@ -86,14 +98,6 @@ function bw-file
             if test -z "$item_id"
                 echo "✗ No backup found for this file in Bitwarden"
                 echo "Run 'bw-file backup $file_path' first"
-                return 1
-            end
-            
-            # Check if attachment exists
-            set attachment_exists (bw get item "$item_id" 2>/dev/null | jq -r '.attachments[]? | select(.fileName == "'"$file_name"'") | .fileName')
-            
-            if test -z "$attachment_exists"
-                echo "✗ No file attachment found in Bitwarden item"
                 return 1
             end
             
@@ -111,16 +115,15 @@ function bw-file
                 cp "$file_path" "$backup_path"
             end
             
-            # Download and restore
-            echo "Downloading file from Bitwarden..."
-            bw get attachment "$file_name" --itemid "$item_id" --output "$dir_path/" >/dev/null
+            # Write the file directly using jq -r to extract and preserve newlines
+            bw get item "$item_id" | jq -r '.notes' > "$file_path"
             if test $status -eq 0
                 echo "✓ File restored successfully to $file_path"
                 if test -f "$backup_path"
                     echo "  Previous file backed up to: $backup_path"
                 end
             else
-                echo "✗ Failed to download file from Bitwarden"
+                echo "✗ Failed to write file"
                 return 1
             end
             
