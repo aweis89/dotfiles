@@ -76,6 +76,7 @@ abbr -a -- zshp 'edit-config ~/.zsh/.zsh_plugins.txt'
 abbr -a -- zshs 'edit-config ~/.zshrc'
 abbr -a -- gk 'gcloud-project && gcloud-update-kubeconfig --dns-endpoint'
 abbr -a -- gl 'gcloud auth login'
+abbr -a -- al 'aws sso login'
 abbr -a -- gp gcloud-project
 
 set -gx TMPDIR ~/tmp
