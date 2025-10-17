@@ -1,12 +1,7 @@
 local AiderModels = {
-  { model = "openai/gemini-2.5-pro", alias = "copilot-gemini" },
-  { model = "openai/claude-sonnet-4", alias = "copilot-sonnet-4" },
-  { model = "openai/claude-sonnet-4-thought", alias = "copilot-sonnet-4" },
-  { model = "openai/gpt-5", alias = "copilot-gpt-5" },
-  { model = "vertex_ai/claude-sonnet-4", alias = "vertex-sonnet-4" },
-  { model = "vertex_ai/claude-opus-4", alias = "vertex-opus-4" },
-  { model = "gemini/gemini-2.5-pro" },
-  { model = "o4-mini", openai_env_key = "OPENAI_API_KEY_ORIG" },
+  { model = "github_copilot/gemini-2.5-pro", alias = "copilot-gemini" },
+  { model = "github_copilot/claude-sonnet-4.5", alias = "copilot-sonnet-4" },
+  { model = "github_copilot/gpt-5", alias = "copilot-gpt-5" },
 }
 
 -- Function to get the full path for a cache file
@@ -141,18 +136,6 @@ return {
               if selected_model_name and selected_model_name ~= "" then
                 table.insert(cmd_parts, "--model")
                 table.insert(cmd_parts, "'" .. selected_model_name .. "'")
-
-                -- Check for openai_env_key for the selected model
-                for _, model_entry in ipairs(AiderModels) do
-                  if model_entry.model == selected_model_name and model_entry.openai_env_key then
-                    local api_key = vim.fn.getenv(model_entry.openai_env_key)
-                    if api_key and api_key ~= "" then
-                      table.insert(cmd_parts, "--openai-api-key")
-                      table.insert(cmd_parts, api_key)
-                    end
-                    break -- Found the model, no need to continue loop
-                  end
-                end
               end
               return table.concat(cmd_parts, " ")
             end,
