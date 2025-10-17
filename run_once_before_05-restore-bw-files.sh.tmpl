@@ -1,0 +1,33 @@
+#!/usr/bin/env fish
+
+# Restore files from Bitwarden using bw-file function
+# This script runs once before other scripts (e.g., run_10-generate-envrcs.sh.tmpl)
+
+set -e
+
+echo "🔐 Restoring files from Bitwarden..."
+
+# Source the bw-file function if not already loaded
+if not type -q bw-file
+    source "{{ .chezmoi.homeDir }}/.config/fish/functions/bw-file.fish"
+end
+
+# Restore envrcs.yaml to chezmoi source directory
+set envrcs_path "{{ .chezmoi.sourceDir }}/envrcs.yaml"
+echo "Restoring $envrcs_path..."
+if bw-file restore "$envrcs_path"
+    echo "✓ envrcs.yaml restored"
+else
+    echo "⚠ Failed to restore envrcs.yaml (may not exist in Bitwarden yet)"
+end
+
+# Restore AWS config
+set aws_config_path "{{ .chezmoi.homeDir }}/.aws/config"
+echo "Restoring $aws_config_path..."
+if bw-file restore "$aws_config_path"
+    echo "✓ ~/.aws/config restored"
+else
+    echo "⚠ Failed to restore ~/.aws/config (may not exist in Bitwarden yet)"
+end
+
+echo "✅ Bitwarden file restoration complete!"
