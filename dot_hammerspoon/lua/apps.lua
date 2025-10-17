@@ -62,6 +62,7 @@ end
 -- Default keybindings for launching apps in Hyper Mode
 local defaultHyperModeAppMappings = {
 	{ "m", "Music" }, -- "M" for "Music"
+	{ "i", "Messages" }, -- "I" for "Imessages"
 	-- { "b", "Zen Browser" }, -- "B" for "Browser"
 	{ "b", "Microsoft Edge" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
