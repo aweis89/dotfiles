@@ -97,10 +97,11 @@ local auto_terminal_keymaps = {
 local function get_sidekick_keys()
   local keys = { { "<leader>at", false, mode = { "x", "n" } } }
   for _, terminal in ipairs(auto_terminal_keymaps) do
+    local opts = { name = terminal.name, focus = true }
     table.insert(keys, {
       "<leader>at" .. terminal.key,
       function()
-        require("sidekick.cli").toggle({ name = terminal.name, focus = true })
+        require("sidekick.cli").toggle(opts)
       end,
       desc = "Toggle " .. terminal.name .. " in sidekick",
       mode = { "n" },
@@ -108,7 +109,7 @@ local function get_sidekick_keys()
     table.insert(keys, {
       "<leader>at" .. terminal.key,
       function()
-        require("sidekick.cli").send({ name = terminal.name, focus = true })
+        require("sidekick.cli").send(vim.tbl_extend("force", opts, { msg = "{file}\n\n{selection}\n" }))
       end,
       desc = "Send selection to " .. terminal.name .. " in sidekick",
       mode = { "x" },
@@ -116,7 +117,7 @@ local function get_sidekick_keys()
     table.insert(keys, {
       "<leader>al" .. terminal.key,
       function()
-        require("sidekick.cli").send({ msg = "{file}", name = terminal.name, focus = true })
+        require("sidekick.cli").send(vim.tbl_extend("force", opts, { msg = "{file}\n" }))
       end,
       desc = "Send file to " .. terminal.name,
     })
