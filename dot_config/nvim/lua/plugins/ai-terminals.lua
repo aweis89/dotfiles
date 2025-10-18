@@ -149,6 +149,25 @@ return {
     } or get_sidekick_keys(),
   },
   {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        actions = {
+          sidekick_send = function(...)
+            return require("sidekick.cli.snacks").send(...)
+          end,
+        },
+        win = {
+          input = {
+            keys = {
+              ["<localleader>a"] = { "sidekick_send", mode = { "n", "i" } },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
     "aweis89/ai-terminals.nvim",
     enabled = use_terminal_ai,
     lazy = false,
