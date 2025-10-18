@@ -4,27 +4,43 @@ local AiderModels = {
   { model = "github_copilot/gpt-5", alias = "copilot-gpt-5" },
 }
 
--- Function to get the full path for a cache file
 local function get_cache_filepath(key)
   return vim.fn.stdpath("state") .. "/" .. key .. ".txt"
 end
 
--- Read a value from cache
 local function read_cache(key)
   local filepath = get_cache_filepath(key)
   if vim.fn.filereadable(filepath) == 1 then
     local lines = vim.fn.readfile(filepath)
     if #lines > 0 and lines[1] ~= nil and lines[1] ~= "" then
-      return vim.fn.trim(lines[1]) -- Trim whitespace
+      return vim.fn.trim(lines[1])
     end
   end
   return nil
 end
 
--- Write a value to cache
 local function write_cache(key, value)
   local filepath = get_cache_filepath(key)
   vim.fn.writefile({ value }, filepath)
+end
+
+local function get_use_terminal_ai()
+  local cached = read_cache("use-terminal-ai")
+  if cached == "false" then
+    return false
+  end
+  return true
+end
+
+local function toggle_ai_plugin()
+  local current = get_use_terminal_ai()
+  local new_value = not current
+  write_cache("use-terminal-ai", tostring(new_value))
+  local plugin_name = new_value and "terminal-ai" or "sidekick"
+  vim.notify(
+    string.format("Switched to %s. Please restart Neovim for changes to take effect.", plugin_name),
+    vim.log.levels.WARN
+  )
 end
 
 local function select_aider_model_picker()
@@ -51,7 +67,7 @@ local function select_aider_model_picker()
     preview = function()
       return false
     end,
-    confirm = function(_, selected_item) -- First arg is picker instance, we don't need it
+    confirm = function(_, selected_item)
       if selected_item and selected_item.model then
         local model_to_write = selected_item.model
         local notify_msg = "Aider model set to: " .. model_to_write
@@ -60,7 +76,6 @@ local function select_aider_model_picker()
         end
         vim.notify(notify_msg)
         write_cache("aider-model", model_to_write)
-        -- restart aider
         require("ai-terminals").destroy_all()
         require("ai-terminals").toggle("aider")
       end
@@ -68,10 +83,61 @@ local function select_aider_model_picker()
   })
 end
 
+local use_terminal_ai = false
+
+local auto_terminal_keymaps = {
+  { name = "aider", key = "a" },
+  { name = "claude", key = "c" },
+  { name = "codex", key = "d" },
+  { name = "cursor", key = "<space>" },
+  { name = "gemini", key = "g" },
+  { name = "opencode", key = "o" },
+}
+
+local function get_sidekick_keys()
+  local keys = { { "<leader>at", false, mode = { "x", "n" } } }
+  for _, terminal in ipairs(auto_terminal_keymaps) do
+    table.insert(keys, {
+      "<leader>at" .. terminal.key,
+      function()
+        require("sidekick.cli").toggle({ name = terminal.name, focus = true })
+      end,
+      desc = "Toggle " .. terminal.name .. " in sidekick",
+      mode = { "n" },
+    })
+    table.insert(keys, {
+      "<leader>at" .. terminal.key,
+      function()
+        require("sidekick.cli").send({ name = terminal.name, focus = true })
+      end,
+      desc = "Send selection to " .. terminal.name .. " in sidekick",
+      mode = { "x" },
+    })
+    table.insert(keys, {
+      "<leader>al" .. terminal.key,
+      function()
+        require("sidekick.cli").send({ msg = "{file}", name = terminal.name, focus = true })
+      end,
+      desc = "Send file to " .. terminal.name,
+    })
+  end
+  return keys
+end
+
 return {
   {
     "folke/sidekick.nvim",
-    keys = {
+    opts = {
+      cli = {
+        win = {
+          layout = "float",
+          keys = {
+            hide_ctrl_q = { "<c-h>", "hide", mode = "nt", desc = "hide the terminal window" },
+          },
+        },
+      },
+    },
+    keys = use_terminal_ai and {
       { "<leader>a", false, mode = { "n", "v" } },
       { "<leader>aa", false },
       { "<leader>ac", false },
@@ -79,10 +145,11 @@ return {
       { "<leader>ap", false, mode = { "n", "v" } },
       { "<leader>at", false, mode = { "n", "v" } },
       { "<c-.>", false, mode = { "n", "x", "i", "t" } },
-    },
+    } or get_sidekick_keys(),
   },
   {
     "aweis89/ai-terminals.nvim",
+    enabled = use_terminal_ai,
     lazy = false,
     dir = (function()
       local local_dir = vim.fn.expand("~/p/ai-terminals.nvim")
@@ -98,24 +165,11 @@ return {
         },
         auto_terminal_keymaps = {
           enabled = true,
-          terminals = {
-            { name = "aider", key = "a" },
-            { name = "claude", key = "c" },
-            { name = "codex", key = "d" },
-            { name = "cursor", key = "<space>" },
-            { name = "gemini", key = "g" },
-            { name = "opencode", key = "o" },
-          },
+          terminals = auto_terminal_keymaps,
         },
         enable_diffing = true,
         default_position = "right",
-        -- show_diffs_on_leave = { delta = true },
         terminals = {
-          goose = {
-            cmd = function()
-              return string.format("unset GITHUB_TOKEN; GOOSE_CLI_THEME=%s goose", vim.o.background)
-            end,
-          },
           codex = {
             cmd = "direnv exec ~/.local/bin/codex --full-auto -s danger-full-access",
           },
@@ -144,7 +198,6 @@ return {
       }
     end,
     keys = {
-      -- Aider model selection
       {
         "<leader>am",
         function()
@@ -152,7 +205,6 @@ return {
         end,
         desc = "Select Aider Model (Picker)",
       },
-      -- Diff Tools
       {
         "<leader>dva",
         function()
@@ -168,7 +220,7 @@ return {
         desc = "Show diff of last AI changes using terminal cmd",
       },
       {
-        "<leader>dvr", -- Mnemonic: Diff View Revert
+        "<leader>dvr",
         function()
           require("ai-terminals").revert_changes()
         end,
@@ -177,30 +229,35 @@ return {
       {
         "<leader>aC",
         function()
-          require("ai-terminals").aider_comment("AI?") -- Adds comment and saves file
+          require("ai-terminals").aider_comment("AI?")
         end,
         desc = "Add 'AI?' comment above line",
       },
       {
-        "<leader>aR", -- Mnemonic: AI add Read-only
+        "<leader>aR",
         function()
           require("ai-terminals").add_files_to_terminal("aider", { vim.fn.expand("%") }, { read_only = true })
         end,
         desc = "Add current file to Aider (read-only)",
       },
       {
-        "<leader>ax", -- Mnemonic: AI Close (X) all terminals
+        "<leader>ax",
         function()
           require("ai-terminals").destroy_all()
         end,
         desc = "Close all AI terminals",
       },
       {
-        "<leader>af", -- Mnemonic: AI focus
+        "<leader>af",
         function()
           require("ai-terminals").focus()
         end,
         desc = "Focus AI terminal",
+      },
+      {
+        "<leader>aT",
+        toggle_ai_plugin,
+        desc = "Toggle between terminal-ai and sidekick",
       },
     },
   },
