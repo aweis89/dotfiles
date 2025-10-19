@@ -48,7 +48,7 @@ return {
         win = {
           layout = "float",
           keys = {
-            hide_ctrl_q = { "<c-h>", "hide", mode = "nt", desc = "hide the terminal window" },
+            hide_ctrl_h = { "<c-h>", "hide", mode = "nt", desc = "hide the terminal window" },
           },
         },
       },
