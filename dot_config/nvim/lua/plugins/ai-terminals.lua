@@ -43,6 +43,7 @@ end
 return {
   {
     "folke/sidekick.nvim",
+    --- @type sidekick.Config
     opts = {
       cli = {
         win = {
