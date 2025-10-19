@@ -24,7 +24,9 @@ local function get_sidekick_keys()
     table.insert(keys, {
       "<leader>at" .. terminal.key,
       function()
-        require("sidekick.cli").send(vim.tbl_extend("force", opts, { msg = "{file}\n\n{selection}\n" }))
+        require("sidekick.cli").send(vim.tbl_extend("force", opts, {
+          msg = "{file}\n\n{selection}\n",
+        }))
       end,
       desc = "Send selection to " .. terminal.name .. " in sidekick",
       mode = { "x" },
@@ -32,7 +34,9 @@ local function get_sidekick_keys()
     table.insert(keys, {
       "<leader>al" .. terminal.key,
       function()
-        require("sidekick.cli").send(vim.tbl_extend("force", opts, { msg = "{file}\n" }))
+        require("sidekick.cli").send(vim.tbl_extend("force", opts, {
+          msg = "{file}\n",
+        }))
       end,
       desc = "Send file to " .. terminal.name,
     })
