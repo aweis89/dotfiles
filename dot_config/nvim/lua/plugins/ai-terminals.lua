@@ -40,6 +40,16 @@ local function get_sidekick_keys()
       end,
       desc = "Send file to " .. terminal.name,
     })
+    table.insert(keys, {
+      "<leader>ad" .. terminal.key,
+      function()
+        require("sidekick.cli").send(vim.tbl_extend("force", opts, {
+          msg = "{diagnostics}\n",
+        }))
+      end,
+      desc = "Send diagnostics to " .. terminal.name,
+      mode = { "n", "x" },
+    })
   end
   return keys
 end
