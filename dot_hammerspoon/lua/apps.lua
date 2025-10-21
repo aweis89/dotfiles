@@ -7,8 +7,10 @@ hs.application.enableSpotlightForNameSearches(true)
 -- Get current hostname for hostname-specific configuration
 local function getCurrentHostname()
 	local handle = io.popen("hostname")
-	local hostname = handle:read("*a"):gsub("%s+", "") -- Remove whitespace
-	handle:close()
+	local hostname = handle and handle:read("*a"):gsub("%s+", "") -- Remove whitespace
+	if handle then
+		handle:close()
+	end
 	return hostname
 end
 
@@ -44,14 +46,14 @@ local function focusMainWindow(appName)
 				return win:isStandard() and win:isVisible() and win:subrole() == "AXStandardWindow"
 			end)
 
-			if #mainWindows > 0 then
+			if mainWindows and #mainWindows > 0 then
 				mainWindows[1]:focus()
 			else
 				-- Fallback to any standard window if no AXStandardWindow found
 				local anyStandardWindows = hs.fnutils.filter(allWindows, function(win)
 					return win:isStandard() and win:isVisible()
 				end)
-				if #anyStandardWindows > 0 then
+				if anyStandardWindows and #anyStandardWindows > 0 then
 					anyStandardWindows[1]:focus()
 				end
 			end
