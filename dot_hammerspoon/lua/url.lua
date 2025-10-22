@@ -46,22 +46,22 @@ end
 
 -- Public API: open a URL with a browser, applying container/profile routing
 function M.openURLWith(url, browser)
-	-- First, decide if this URL maps to a "container"/profile by display name
-	local container = nil
-	for pattern, container_name in pairs(container_map) do
-		if string.find(url, pattern) then
-			container = container_name
-			break
-		end
-	end
-
-	-- Branch: Microsoft Edge with profile directories
-	if browser == M.edge_browser then
-		local profileDir = getEdgeProfileDir(container) -- "Profile 2", "Profile 3", or "Default"
-		local command = string.format('"%s" --profile-directory="%s" "%s"', edge_bin, profileDir, url)
-		hs.execute(command)
-		return
-	end
+	-- -- First, decide if this URL maps to a "container"/profile by display name
+	-- local container = nil
+	-- for pattern, container_name in pairs(container_map) do
+	-- 	if string.find(url, pattern) then
+	-- 		container = container_name
+	-- 		break
+	-- 	end
+	-- end
+	--
+	-- -- Branch: Microsoft Edge with profile directories
+	-- if browser == M.edge_browser then
+	-- 	local profileDir = getEdgeProfileDir(container) -- "Profile 2", "Profile 3", or "Default"
+	-- 	local command = string.format('"%s" --profile-directory="%s" "%s"', edge_bin, profileDir, url)
+	-- 	hs.execute(command)
+	-- 	return
+	-- end
 
 	-- Branch: Zen with ext+container scheme
 	-- if browser == M.zen_browser and container then
@@ -71,16 +71,23 @@ function M.openURLWith(url, browser)
 	-- 	return
 	-- end
 
+	-- check if it's a zoom url
+	if string.find(url, "zoom.us/j/") then --
+		local zoom_command = string.format('/usr/bin/open -a "zoom.us" "%s"', url)
+		hs.execute(zoom_command)
+		return
+	end
+
 	-- Fallback: open with the browser directly
 	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
 	hs.execute(command)
 end
 
 -- Default browser for handler
-M.defaultBrowser = M.zen_browser
+M.defaultBrowser = M.edge_browser
 
 function M.setDefaultBrowser(browser)
-	M.defaultBrowser = browser or M.zen_browser
+	M.defaultBrowser = browser or M.edge_browser
 end
 
 -- Install Hammerspoon URL callback that routes via openURLWith
