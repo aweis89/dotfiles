@@ -10,7 +10,22 @@ local auto_terminal_keymaps = {
 }
 
 local function get_sidekick_keys()
-  local keys = { { "<leader>at", false, mode = { "x", "n" } } }
+  local keys = {
+    { "<leader>at", false, mode = { "x", "n" } },
+    {
+      "<C-t>",
+      function()
+        require("sidekick.cli").toggle({ name = "opencode", focus = true })
+      end,
+    },
+    {
+      "<C-t>",
+      function()
+        require("sidekick.cli").send({ name = "opencode", focus = true })
+      end,
+      mode = { "x" },
+    },
+  }
   for _, terminal in ipairs(auto_terminal_keymaps) do
     local opts = { name = terminal.name, focus = true }
     table.insert(keys, {
@@ -63,7 +78,7 @@ return {
         win = {
           layout = "float",
           keys = {
-            hide_ctrl_h = { "<c-h>", "hide", mode = "nt", desc = "hide the terminal window" },
+            hide_ctrl_t = { "<C-t>", "hide", mode = "nt", desc = "hide the terminal window" },
           },
         },
       },
