@@ -10,18 +10,26 @@ local auto_terminal_keymaps = {
 }
 
 local function get_sidekick_keys()
+  local default_terminal = "opencode"
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
     {
       "<C-t>",
       function()
-        require("sidekick.cli").toggle({ name = "opencode", focus = true })
+        require("sidekick.cli").toggle({
+          name = default_terminal,
+          focus = true,
+        })
       end,
     },
     {
       "<C-t>",
       function()
-        require("sidekick.cli").send({ name = "opencode", focus = true })
+        require("sidekick.cli").send({
+          name = default_terminal,
+          focus = true,
+          msg = "{file}\n\n{selection}\n",
+        })
       end,
       mode = { "x" },
     },
