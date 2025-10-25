@@ -1,0 +1,37 @@
+createdAt: 2025-10-20T16:23:03Z
+defaults:
+  cluster: []
+endpoints: []
+name: calendly-iamt-355
+routingKey: 2jzjus8hx17yn
+spec:
+  cluster: calendly-trial
+  endpoints: []
+  forks:
+  - customizations:
+      env: []
+      images:
+      - container: calendly-main
+        image: us-docker.pkg.dev/global-288513/calendly/calendly:rc-b27499a66b3d016d7b60068994e7937947bb064f
+      patch:
+        type: strategic
+        value: "{\"spec\": {\"strategy\": {\"type\": \"RollingUpdate\"}, \"template\": {\"spec\": {\"containers\": [{\"env\": [{\"name\": \"ALLOWED_HOSTS\", \"value\": \".*\"}], \"name\": \"calendly-main\"}]}}}}"
+    endpoints: []
+    forkOf:
+      kind: Deployment
+      name: calendly-main
+      namespace: staging
+  labels:
+    sandbox: calendly-IAMT-355
+  local: []
+  resources: []
+  ttl:
+    duration: 3d
+    offsetFrom: updatedAt
+status:
+  local: []
+  message: All desired workloads are available.
+  ready: true
+  reason: AllDesiredWorkloadsReady
+  scheduledDeleteTime: 2025-10-23T16:23:03Z
+updatedAt: 2025-10-20T16:23:03Z

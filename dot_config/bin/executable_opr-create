@@ -1,0 +1,333 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# --- Default values ---
+default_base_remote="origin"
+default_head_remote="origin"
+
+# --- Argument Parsing ---
+base_remote="$default_base_remote"
+base_branch=""
+head_remote="$default_head_remote"
+additional_prompt=""
+
+# Read from stdin if available (non-blocking)
+if [ -t 0 ]; then
+	stdin_prompt=""
+else
+	stdin_prompt=$(cat)
+fi
+additional_prompt="$stdin_prompt"
+
+# Check if branch name contains a Jira ticket pattern and add ticket info to context
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+jira_ticket=$(echo "$current_branch" | grep -o -E '^[A-Z]+-[0-9]+' || echo "")
+
+if [ -n "$jira_ticket" ]; then
+	echo "Found Jira ticket ID in branch name: $jira_ticket"
+	jira_info=$(jira issue view --plain "$jira_ticket" 2>/dev/null || echo "Could not fetch Jira ticket info")
+
+	if [ -n "$additional_prompt" ]; then
+		additional_prompt="$additional_prompt"$'\n\n'"Jira Ticket: $jira_ticket"$'\n'"$jira_info"
+	else
+		additional_prompt="Jira Ticket: $jira_ticket"$'\n'"$jira_info"
+	fi
+fi
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+	-br | --base-remote)
+		if [ -z "$2" ] || [[ "$2" == --* ]]; then
+			echo "Error: Missing value for $1" >&2
+			exit 1
+		fi
+		base_remote="$2"
+		shift 2
+		;;
+	-bb | --base-branch)
+		if [ -z "$2" ] || [[ "$2" == --* ]]; then
+			echo "Error: Missing value for $1" >&2
+			exit 1
+		fi
+		base_branch="$2"
+		shift 2
+		;;
+	-hr | --head-remote)
+		if [ -z "$2" ] || [[ "$2" == --* ]]; then
+			echo "Error: Missing value for $1" >&2
+			exit 1
+		fi
+		head_remote="$2"
+		shift 2
+		;;
+	-p | --prompt)
+		if [ -z "$2" ] || [[ "$2" == --* ]]; then
+			echo "Error: Missing value for $1" >&2
+			exit 1
+		fi
+		if [ -n "$stdin_prompt" ]; then
+			additional_prompt="$additional_prompt"$'\n'"$2"
+		else
+			additional_prompt="$2"
+		fi
+		shift 2
+		;;
+	-h | --help)
+		echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-p <prompt>] [-h|--help]"
+		echo "  -br, --base-remote <remote>  Remote containing the target branch (default: $default_base_remote)."
+		echo "  -bb, --base-branch <branch>  Target branch name (default: auto-detect from base-remote)."
+		echo "  -hr, --head-remote <remote>  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
+		echo "  -p, --prompt <prompt>        Additional context/instructions for the AI generating the title/body."
+		echo "  -h, --help                   Show this help message."
+		exit 0
+		;;
+	--)
+		shift
+		break
+		;;
+	*)
+		echo "Error: Unknown option: $1" >&2
+		exit 1
+		;;
+	esac
+done
+
+echo "Base Remote: $base_remote"
+echo "Head Remote: $head_remote"
+if [ -n "$additional_prompt" ]; then
+	echo "Additional Prompt: $additional_prompt"
+fi
+
+# --- Get current branch (head branch) ---
+head_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ -z "$head_branch" ] || [ "$head_branch" = "HEAD" ]; then
+	echo "Error: Could not determine the current branch name." >&2
+	exit 1
+fi
+echo "Head Branch (Current): $head_branch"
+
+# --- Check for uncommitted changes ---
+if ! git diff --quiet --exit-code; then
+	echo "Warning: You have uncommitted changes." >&2
+fi
+if ! git diff --cached --quiet --exit-code; then
+	echo "Warning: You have staged changes." >&2
+fi
+
+# --- Fetch base remote ---
+echo "Fetching base remote '$base_remote'..."
+git fetch "$base_remote"
+
+# --- Determine Base Branch and Ref ---
+if [ -z "$base_branch" ]; then
+	base_ref=$(git symbolic-ref "refs/remotes/$base_remote/HEAD")
+	if [ -z "$base_ref" ]; then
+		echo "Error: Could not automatically determine the default branch for remote '$base_remote'." >&2
+		echo "Please specify the target branch using --base-branch." >&2
+		exit 1
+	fi
+	base_branch=$(basename "$base_ref")
+	echo "Auto-detected base branch: $base_branch"
+else
+	base_ref="refs/remotes/$base_remote/$base_branch"
+	if ! git show-ref --verify --quiet "$base_ref"; then
+		echo "Error: Branch '$base_branch' not found on remote '$base_remote'." >&2
+		echo "Please ensure the branch exists and the remote is fetched." >&2
+		exit 1
+	fi
+	echo "Using specified base branch: $base_branch"
+fi
+
+# --- Handle Forking and Pushing ---
+base_remote_url=$(git remote get-url "$base_remote" 2>/dev/null) || {
+	echo "Error: Could not get URL for base remote '$base_remote'." >&2
+	exit 1
+}
+
+head_specifier="$head_branch"
+
+if ! [[ "$base_remote" == "$head_remote" ]]; then
+	echo "Base and head remotes differ. Ensuring head remote '$head_remote' exists and is up-to-date."
+	head_remote_url=$(git remote get-url "$head_remote" 2>/dev/null)
+
+	if [ -z "$head_remote_url" ]; then
+		echo "Head remote '$head_remote' not found."
+		read -rp "Do you want to fork '$base_remote_url' and add it as remote '$head_remote'? [y/N] " fork_confirm
+		if [[ "$fork_confirm" =~ ^[Yy]$ ]]; then
+			echo "Forking repository..."
+			gh repo fork "$base_remote_url" --clone=false --remote=true --remote-name "$head_remote" || {
+				echo "Error: Failed to fork repository." >&2
+				exit 1
+			}
+			echo "Fork created and added as remote '$head_remote'."
+			head_remote_url=$(git remote get-url "$head_remote")
+		else
+			echo "Aborting. Head remote '$head_remote' is required." >&2
+			exit 1
+		fi
+	fi
+
+	echo "Pushing branch '$head_branch' to head remote '$head_remote'..."
+	git push --set-upstream "$head_remote" "$head_branch" || {
+		echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+		exit 1
+	}
+
+	head_owner=$(echo "$head_remote_url" | sed -E 's#^https://([^@]+@)?github.com/([^/]+)/.*#\2#; s#^git@github.com:([^/]+)/.*#\1#')
+	if [[ "$head_owner" != "$head_remote_url" ]] && [ -n "$head_owner" ]; then
+		head_specifier="$head_owner:$head_branch"
+		echo "Using head specifier for fork: $head_specifier"
+	else
+		echo "Warning: Could not determine owner for head remote '$head_remote' from URL: $head_remote_url" >&2
+		echo "Using default head specifier: $head_specifier"
+	fi
+
+else
+	git push "$head_remote" "$head_branch" || {
+		echo "Error: Failed to push branch '$head_branch' to remote '$head_remote'." >&2
+		exit 1
+	}
+fi
+
+# --- Verify remote head branch exists after push ---
+echo "Verifying remote head branch '$head_branch' exists on '$head_remote'..."
+if ! git ls-remote --exit-code --heads "$head_remote" "$head_branch" >/dev/null; then
+	echo "Error: Head branch '$head_branch' not found on remote '$head_remote' after push." >&2
+	echo "This could be a synchronization delay or a push failure." >&2
+	echo "Please check the remote repository manually." >&2
+	exit 1
+fi
+echo "Remote head branch verified."
+
+# --- Quick check for changes ---
+echo "Checking for changes between $base_ref and HEAD..."
+if ! git diff --quiet "$base_ref...HEAD"; then
+	echo "Changes detected."
+else
+	echo "No differences found between $base_ref and HEAD. Have you pushed your latest changes?"
+	exit 0
+fi
+
+# --- Extract repo owner/name for gh pr create ---
+repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^[^/]+//[^/]+/(.*)#\1#; s#^[^:]+:(.*)#\1#; s#\.git$##')
+
+# --- Find PR template ---
+template_path=""
+if [ -d ".github" ]; then
+	template_path=$(find .github -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+if [ -z "$template_path" ] && [ -d "docs" ]; then
+	template_path=$(find docs -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+if [ -z "$template_path" ]; then
+	template_path=$(find . -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+fi
+
+if [ -n "$template_path" ]; then
+	echo "Found PR template: $template_path"
+else
+	echo "No PR template found."
+fi
+
+# --- Build opencode prompt ---
+echo ""
+echo "========================================"
+echo "Invoking opencode to generate PR..."
+echo "========================================"
+echo ""
+
+opencode_prompt="Create a GitHub Pull Request by following these steps:
+
+1. Run this git command to see the changes:
+   git diff -U500 $base_ref...HEAD
+
+2. Run this git command to see commit messages:
+   git log $base_ref..HEAD --pretty=format:'%s'
+"
+
+if [ -n "$template_path" ]; then
+	opencode_prompt+="
+3. Read the PR template file at: $template_path
+   Use its structure and sections as a guide for the PR body.
+"
+fi
+
+if [ -n "$additional_prompt" ]; then
+	opencode_prompt+="
+4. Additional context from the user:
+---
+$additional_prompt
+---
+"
+fi
+
+opencode_prompt+="
+5. Generate a PR title and body that describes these changes:
+   - The PR title should be concise and descriptive
+   - The PR body should follow the template structure if one exists
+   - Focus on WHY these changes were made, not just WHAT changed
+
+6. Create the PR using this command:"
+
+if [[ -z "$repo_owner_name" ]] || [[ "$repo_owner_name" == *"/"* && "$repo_owner_name" == *":"* ]] || [[ "$repo_owner_name" == *"//"* ]]; then
+	opencode_prompt+="
+   gh pr create --base \"$base_branch\" --head \"$head_specifier\" --title \"<TITLE>\" --body \"<BODY>\""
+else
+	opencode_prompt+="
+   gh pr create --repo \"$repo_owner_name\" --base \"$base_branch\" --head \"$head_specifier\" --title \"<TITLE>\" --body \"<BODY>\""
+fi
+
+opencode_prompt+="
+
+IMPORTANT: Output the PR title and body in the following parsable format:
+---PR-TITLE---
+<title>
+---PR-BODY---
+<body>
+---END---
+
+DO NOT run the gh pr create command yourself. Just output the title and body in the format above."
+
+# --- Run opencode and capture output ---
+opencode_output=$(opencode run "$opencode_prompt")
+echo "$opencode_output"
+
+# --- Parse the output ---
+pr_title=$(echo "$opencode_output" | sed -n '/---PR-TITLE---/,/---PR-BODY---/p' | sed '1d;$d')
+pr_body=$(echo "$opencode_output" | sed -n '/---PR-BODY---/,/---END---/p' | sed '1d;$d')
+
+if [ -z "$pr_title" ] || [ -z "$pr_body" ]; then
+	echo ""
+	echo "Error: Could not parse PR title and body from opencode output." >&2
+	exit 1
+fi
+
+echo ""
+echo "========================================"
+echo "PR Title:"
+echo "$pr_title"
+echo ""
+echo "PR Body:"
+echo "$pr_body"
+echo "========================================"
+echo ""
+
+read -rp "Create PR with this title and body? [y/N] " confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+	echo "Aborting PR creation."
+	exit 0
+fi
+
+# --- Create the PR ---
+echo "Creating PR..."
+if [[ -z "$repo_owner_name" ]] || [[ "$repo_owner_name" == *"/"* && "$repo_owner_name" == *":"* ]] || [[ "$repo_owner_name" == *"//"* ]]; then
+	gh pr create --base "$base_branch" --head "$head_specifier" --title "$pr_title" --body "$pr_body"
+else
+	gh pr create --repo "$repo_owner_name" --base "$base_branch" --head "$head_specifier" --title "$pr_title" --body "$pr_body"
+fi
+
+echo ""
+echo "========================================"
+echo "Done!"
+echo "========================================"

@@ -1,0 +1,34 @@
+name: calendly-iamt-internal
+spec:
+  cluster: calendly-trial
+  endpoints: []
+  forks:
+  - customizations:
+      env: []
+      images:
+      - container: calendly-main
+        image: us-docker.pkg.dev/global-288513/calendly/calendly:rc-b27499a66b3d016d7b60068994e7937947bb064f
+      patch:
+        type: strategic
+        value: "{\"spec\": {\"strategy\": {\"type\": \"RollingUpdate\"}, \"template\": {\"spec\": {\"containers\": [{\"env\": [{\"name\": \"ALLOWED_HOSTS\", \"value\": \".*\"}], \"name\": \"calendly-main\"}]}}}}"
+    forkOf:
+      kind: Deployment
+      name: calendly-main
+      namespace: staging
+  - customizations:
+      env: []
+      images:
+      - container: calendly-internal
+        image: us-docker.pkg.dev/global-288513/calendly/calendly:rc-b27499a66b3d016d7b60068994e7937947bb064f
+      patch:
+        type: strategic
+        value: "{\"spec\": {\"strategy\": {\"type\": \"RollingUpdate\"}, \"template\": {\"spec\": {\"containers\": [{\"env\": [{\"name\": \"ALLOWED_HOSTS\", \"value\": \".*\"}], \"name\": \"calendly-internal\"}]}}}}"
+    forkOf:
+      kind: Deployment
+      name: calendly-internal
+      namespace: staging
+  labels:
+    sandbox: calendly-IAMT-internal
+  ttl:
+    duration: 3d
+    offsetFrom: updatedAt
