@@ -9,26 +9,6 @@ local function log(msg, level)
   vim.notify(msg, level, { title = "autocmd.lua" })
 end
 
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = augroup("terminal_setup"),
-  callback = function()
-    local function tmap(key, val)
-      local opts = { buffer = 0 }
-      vim.keymap.set("t", key, val, opts)
-    end
-    -- exit insert mode
-    tmap("jj", "<C-\\><C-n>")
-    -- enter command mode
-    tmap("<C-;>", "<C-\\><C-n>:")
-    -- scrolling up/down
-    tmap("<C-u>", "<C-\\><C-n><C-u>")
-    tmap("<C-d>", "<C-\\><C-n><C-d>")
-    -- remove line numbers
-    vim.wo.number = false
-    vim.wo.relativenumber = false
-  end,
-})
-
 vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod", "base" }, "cwd" }
 -- vim.g.root_spec = { ".git" }
 
