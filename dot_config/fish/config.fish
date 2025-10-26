@@ -44,8 +44,11 @@ end
 
 abbr -a -- ag rg
 abbr -a -- k kubectl
+abbr -a -- ka kubectl-ai
 abbr -a -- ggpush 'git push origin (__git.current_branch)'
 abbr -a -- ggpull 'git pull origin (__git.current_branch)'
+abbr -a -- gc 'git commit -v --no-verify'
+abbr -a -- gs 'git status -suno'
 abbr -a -- ai aichat
 abbr -a -- dc docker-compose
 abbr -a -- fd 'fd --hidden'
