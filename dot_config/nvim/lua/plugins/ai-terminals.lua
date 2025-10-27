@@ -84,7 +84,15 @@ return {
     opts = {
       cli = {
         win = {
-          layout = "float",
+          layout = vim.o.columns < 150 and "float" or "right",
+          ---@type vim.api.keyset.win_config
+          float = {
+            width = 1.0,
+            height = 1.0,
+          },
+          split = {
+            width = 60,
+          },
           keys = {
             hide_ctrl_t = { "<C-t>", "hide", mode = "nt", desc = "hide the terminal window" },
           },
