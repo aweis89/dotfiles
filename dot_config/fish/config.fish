@@ -66,6 +66,7 @@ abbr -a -- kb kubebuilder
 abbr -a -- kcn kubens
 abbr -a -- kcu kubectx
 abbr -a -- kw 'watch kubectl'
+abbr -a -- oc 'nvim "+call feedkeys(\"\<C-t>\")"'
 abbr -a -- s signadot
 abbr -a -- tf terraform
 abbr -a -- tfa 'terraform apply -auto-approve'
