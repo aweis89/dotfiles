@@ -91,7 +91,7 @@ return {
             height = 1.0,
           },
           split = {
-            width = 60,
+            width = 0.6,
           },
           keys = {
             hide_ctrl_t = { "<C-t>", "hide", mode = "nt", desc = "hide the terminal window" },
