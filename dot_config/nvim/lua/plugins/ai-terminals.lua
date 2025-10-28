@@ -84,7 +84,7 @@ return {
     opts = {
       cli = {
         win = {
-          layout = "float"
+          layout = "float",
           ---@type vim.api.keyset.win_config
           float = {
             width = 1.0,
