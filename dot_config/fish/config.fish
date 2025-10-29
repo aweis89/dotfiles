@@ -25,6 +25,7 @@ end
 
 alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
+alias oc='nvim "+call feedkeys(\"\<C-t>\")"'
 alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
 
@@ -66,7 +67,6 @@ abbr -a -- kb kubebuilder
 abbr -a -- kcn kubens
 abbr -a -- kcu kubectx
 abbr -a -- kw 'watch kubectl'
-abbr -a -- oc 'nvim "+call feedkeys(\"\<C-t>\")"'
 abbr -a -- s signadot
 abbr -a -- tf terraform
 abbr -a -- tfa 'terraform apply -auto-approve'
