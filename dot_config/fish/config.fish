@@ -116,14 +116,13 @@ end
 
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jj repaint
-bind --mode insert \co pass_to_aichat_widget
+bind --mode insert \co ask_ai
 bind --mode insert \cw forward-word
 bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
 bind --mode insert \cj complete
 bind --mode insert \ck complete
 bind --mode insert \cq watch_wrap
-bind --mode insert \cp ask_ai
 bind --mode insert \cg _fish_ai_autocomplete_or_fix
 
 cache_tool_init zoxide "zoxide init fish" true
