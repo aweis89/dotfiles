@@ -80,6 +80,7 @@ end
 return {
   {
     "folke/sidekick.nvim",
+    url = "https://github.com/aweis89/sidekick.nvim",
     --- @type sidekick.Config
     opts = {
       cli = {
