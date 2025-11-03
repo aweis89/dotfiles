@@ -84,6 +84,11 @@ return {
     --- @type sidekick.Config
     opts = {
       cli = {
+        tools = {
+          opencode = {
+            keys = { prompt = { "<a-p>", "prompt" } },
+          },
+        },
         win = {
           layout = "float",
           ---@type vim.api.keyset.win_config

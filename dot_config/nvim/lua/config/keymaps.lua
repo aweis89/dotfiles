@@ -17,6 +17,9 @@ map("i", "<C-k>", "<C-p>", { desc = "prev" })
 -- Show signature help in insert mode
 map("i", "<C-s>", "<Esc>:lua vim.lsp.buf.signature_help()<cr>a", { desc = "Show signature help" })
 
+-- map ctrl-c to escape in insert mode
+map("i", "<C-c>", "<Esc>", { desc = "Escape" })
+
 map("n", "L", "$", { desc = "Go to end of line" })
 map("n", "H", "^", { desc = "Go to beginning of line" })
 map("n", "<C-q>", "<cmd>q<cr>", { desc = "Quit" })
