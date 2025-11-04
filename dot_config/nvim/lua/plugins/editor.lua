@@ -29,7 +29,12 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, _)
+    opts = function(_, opts)
+      --remove markdown from ensure_installed
+      opts.ensure_installed = vim.tbl_filter(function(lang)
+        return lang ~= "markdown"
+      end, opts.ensure_installed)
+
       vim.filetype.add({
         extension = {
           tf = "terraform",
