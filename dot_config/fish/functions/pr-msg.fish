@@ -9,7 +9,10 @@ function pr-msg
     set url (echo $pr | jq -r '.url')
     set isDraft (echo $pr | jq -r '.isDraft')
     # Construct the message
-    set msg "[$repo#$number: $title]($url)"
+    # Replace square brackets in title with parentheses to avoid markdown conflicts
+    set clean_title (string replace -a '[' '(' -- $title)
+    set clean_title (string replace -a ']' ')' -- $clean_title)
+    set msg "[$repo#$number: $clean_title]($url)"
     if test "$isDraft" = true
         set msg ":draft-pr: $msg"
     end
