@@ -213,15 +213,61 @@ fi
 repo_owner_name=$(echo "$base_remote_url" | sed -E 's#^[^/]+//[^/]+/(.*)#\1#; s#^[^:]+:(.*)#\1#; s#\.git$##')
 
 # --- Find PR template ---
+# GitHub supports PR templates in these locations (in order of precedence):
+# 1. .github/pull_request_template.md
+# 2. .github/PULL_REQUEST_TEMPLATE/*.md (multiple templates)
+# 3. docs/pull_request_template.md
+# 4. docs/PULL_REQUEST_TEMPLATE/*.md (multiple templates)
+# 5. pull_request_template.md (root)
+# 6. PULL_REQUEST_TEMPLATE/*.md (root, multiple templates)
+
 template_path=""
-if [ -d ".github" ]; then
-	template_path=$(find .github -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+template_dir=""
+
+# Check .github/pull_request_template.md
+if [ -z "$template_path" ] && [ -f ".github/pull_request_template.md" ]; then
+	template_path=".github/pull_request_template.md"
 fi
-if [ -z "$template_path" ] && [ -d "docs" ]; then
-	template_path=$(find docs -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+
+# Check .github/PULL_REQUEST_TEMPLATE/ directory
+if [ -z "$template_path" ] && [ -d ".github/PULL_REQUEST_TEMPLATE" ]; then
+	template_dir=".github/PULL_REQUEST_TEMPLATE"
+	# Look for a default template or just use the first one
+	if [ -f "$template_dir/pull_request_template.md" ]; then
+		template_path="$template_dir/pull_request_template.md"
+	else
+		template_path=$(find "$template_dir" -maxdepth 1 -type f -name '*.md' -print -quit)
+	fi
 fi
-if [ -z "$template_path" ]; then
-	template_path=$(find . -maxdepth 1 -type f -iname 'pull_request_template.md' -print -quit)
+
+# Check docs/pull_request_template.md
+if [ -z "$template_path" ] && [ -f "docs/pull_request_template.md" ]; then
+	template_path="docs/pull_request_template.md"
+fi
+
+# Check docs/PULL_REQUEST_TEMPLATE/ directory
+if [ -z "$template_path" ] && [ -d "docs/PULL_REQUEST_TEMPLATE" ]; then
+	template_dir="docs/PULL_REQUEST_TEMPLATE"
+	if [ -f "$template_dir/pull_request_template.md" ]; then
+		template_path="$template_dir/pull_request_template.md"
+	else
+		template_path=$(find "$template_dir" -maxdepth 1 -type f -name '*.md' -print -quit)
+	fi
+fi
+
+# Check root pull_request_template.md
+if [ -z "$template_path" ] && [ -f "pull_request_template.md" ]; then
+	template_path="pull_request_template.md"
+fi
+
+# Check root PULL_REQUEST_TEMPLATE/ directory
+if [ -z "$template_path" ] && [ -d "PULL_REQUEST_TEMPLATE" ]; then
+	template_dir="PULL_REQUEST_TEMPLATE"
+	if [ -f "$template_dir/pull_request_template.md" ]; then
+		template_path="$template_dir/pull_request_template.md"
+	else
+		template_path=$(find "$template_dir" -maxdepth 1 -type f -name '*.md' -print -quit)
+	fi
 fi
 
 if [ -n "$template_path" ]; then
@@ -264,7 +310,13 @@ fi
 
 opencode_prompt+="
 5. Generate a PR title and body that describes these changes:
-   - The PR title should be concise and descriptive
+   - The PR title MUST follow Semantic PR title conventions:
+     * Format: <type>(<scope>): <subject>
+     * Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert
+     * Example: feat(api): add user authentication endpoint
+     * Example: fix(ui): resolve button alignment issue
+     * Keep subject lowercase and under 72 characters
+     * Use imperative mood (\"add\" not \"added\" or \"adds\")
    - The PR body should follow the template structure if one exists
    - Focus on WHY these changes were made, not just WHAT changed
 
