@@ -39,13 +39,18 @@ return {
   {
     -- AI-powered commit message generation
     "aweis89/ai-commit-msg.nvim",
-    -- dir = "~/p/ai-commit-msg.nvim",
+    dir = "~/p/ai-commit-msg.nvim",
     ft = "gitcommit",
     cmd = { "AiCommitMsgAllModels" },
     config = true,
     ---@class AiCommitMsgConfig
     opts = {
       provider = "copilot",
+      providers = {
+        copilot = {
+          model = "openai/gpt-4o-mini",
+        },
+      },
     },
   },
   {
