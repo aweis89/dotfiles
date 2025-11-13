@@ -56,6 +56,13 @@ return {
     "folke/snacks.nvim",
     keys = {
       {
+        "<leader>gP",
+        function()
+          Snacks.picker.gh_actions()
+        end,
+        desc = "Github PR Actions",
+      },
+      {
         "<leader><space>",
         function()
           Snacks.picker.smart()
