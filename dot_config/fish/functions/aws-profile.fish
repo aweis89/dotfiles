@@ -110,4 +110,9 @@ function aws-profile
             echo "Switched to AWS profile: $profile_name"
         end
     end
+
+    # Update kubeconfig after switching profiles
+    if type -q aws-update-kubeconfig
+        aws-update-kubeconfig
+    end
 end
