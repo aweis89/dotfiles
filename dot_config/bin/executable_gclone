@@ -1,7 +1,18 @@
 #!/bin/bash
 
 repo=$1
+url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
 
-git clone "https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
+# If already inside a git repository, just (re)set origin remote
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if git remote | grep -q '^origin$'; then
+    git remote set-url origin "$url"
+  else
+    git remote add origin "$url"
+  fi
+  exit 0
+fi
 
+# Otherwise clone and enter the repo
+git clone "$url"
 cd "$repo" || exit
