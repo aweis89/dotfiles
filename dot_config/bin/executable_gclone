@@ -2,39 +2,59 @@
 
 # Validate required environment variables
 if [ -z "$GITHUB_ORG" ]; then
-    echo "GITHUB_ORG not set" >&2
-    exit 1
+	echo "GITHUB_ORG not set" >&2
+	exit 1
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
-    echo "GITHUB_TOKEN not set" >&2
-    exit 1
+	echo "GITHUB_TOKEN not set" >&2
+	exit 1
 fi
 
 repo=$1
 
-# Inside an existing git repo: require repo arg and set/reset origin
+# Inside an existing git repo: determine repo name and set/reset origin
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if [ -z "$repo" ]; then
-        echo "Usage: gclone <repo> (inside existing git repository)" >&2
-        exit 1
-    fi
-    url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
-    if git remote | grep -q '^origin$'; then
-        git remote set-url origin "$url"
-    else
-        git remote add origin "$url"
-    fi
-    exit 0
+	# If no arg provided, try to extract from remote URL, otherwise use directory name
+	if [ -z "$repo" ]; then
+		# Try to get repo name from existing origin remote URL
+		origin_url=$(git remote get-url origin 2>/dev/null)
+		if [ -n "$origin_url" ]; then
+			# Extract repo name from URL (handles both SSH and HTTPS formats)
+			repo=$(echo "$origin_url" | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|' | cut -d'/' -f2)
+		fi
+		# Fallback to current directory name if still empty
+		if [ -z "$repo" ]; then
+			repo=$(basename "$PWD")
+		fi
+	fi
+
+	# Verify repo exists in the org using gh cli
+	if ! gh repo view "$GITHUB_ORG/$repo" >/dev/null 2>&1; then
+		repo=$(gh repo list "$GITHUB_ORG" --limit 1000 --json name --jq '.[].name' | fzf)
+		echo "Selected repo: $repo"
+		if [ -z "$repo" ]; then
+			echo "No repository selected" >&2
+			exit 1
+		fi
+	fi
+
+	url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
+	if git remote | grep -q '^origin$'; then
+		git remote set-url origin "$url"
+	else
+		git remote add origin "$url"
+	fi
+	exit 0
 fi
 
 # Not inside a git repo: if no arg provided, interactive selection via fzf
 if [ -z "$repo" ]; then
-    repo=$(gh repo list "$GITHUB_ORG" --limit 1000 --json name --jq '.[].name' | fzf)
-    if [ -z "$repo" ]; then
-        echo "No repository selected" >&2
-        exit 1
-    fi
+	repo=$(gh repo list "$GITHUB_ORG" --limit 1000 --json name --jq '.[].name' | fzf)
+	if [ -z "$repo" ]; then
+		echo "No repository selected" >&2
+		exit 1
+	fi
 fi
 
 url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
