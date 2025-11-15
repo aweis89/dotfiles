@@ -315,6 +315,18 @@ $additional_prompt
 fi
 
 opencode_prompt+="
+4b. If you need more context to produce an accurate PR title/body, you MAY:
+   - Run additional read-only git commands (e.g.: git diff -U200 $base_ref...HEAD, git log --oneline $base_ref..HEAD, git show <commit>, git blame <file>)
+   - Read any project files relevant to the changes (source, README, docs, config, build scripts)
+   - List directories or files (e.g.: ls -1, find . -maxdepth 3 -type f)
+   - Inspect build or config files for intent (Makefile, go.mod, package.json, Dockerfile, CI workflows)
+DO NOT:
+   - Modify files
+   - Stage/commit changes
+   - Push to remotes
+   - Run destructive or write-producing commands
+Only gather context needed for an accurate summary of WHY + WHAT changed.
+
 5. Generate a PR title and body that describes these changes:
    - The PR title MUST follow Semantic PR title conventions:
      * Format: <type>(<scope>): <subject>
@@ -326,7 +338,7 @@ opencode_prompt+="
    - The PR body should follow the template structure if one exists
    - Focus on WHY these changes were made, not just WHAT changed
 
-IMPORTANT: Output the PR title and body in the following parsable format:
+IMPORTANT: Output the PR title and body in the following parsable format:"
 ---PR-TITLE---
 <title>
 ---PR-BODY---
