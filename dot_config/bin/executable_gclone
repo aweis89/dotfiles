@@ -1,18 +1,44 @@
 #!/bin/bash
 
-repo=$1
-url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
-
-# If already inside a git repository, just (re)set origin remote
-if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-	if git remote | grep -q '^origin$'; then
-		git remote set-url origin "$url"
-	else
-		git remote add origin "$url"
-	fi
-	exit 0
+# Validate required environment variables
+if [ -z "$GITHUB_ORG" ]; then
+    echo "GITHUB_ORG not set" >&2
+    exit 1
 fi
 
-# Otherwise clone and enter the repo
-git clone "$url"
-cd "$repo" || exit
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "GITHUB_TOKEN not set" >&2
+    exit 1
+fi
+
+repo=$1
+
+# Inside an existing git repo: require repo arg and set/reset origin
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if [ -z "$repo" ]; then
+        echo "Usage: gclone <repo> (inside existing git repository)" >&2
+        exit 1
+    fi
+    url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
+    if git remote | grep -q '^origin$'; then
+        git remote set-url origin "$url"
+    else
+        git remote add origin "$url"
+    fi
+    exit 0
+fi
+
+# Not inside a git repo: if no arg provided, interactive selection via fzf
+if [ -z "$repo" ]; then
+    repo=$(gh repo list "$GITHUB_ORG" --limit 1000 --json name --jq '.[].name' | fzf)
+    if [ -z "$repo" ]; then
+        echo "No repository selected" >&2
+        exit 1
+    fi
+fi
+
+url="https://$GITHUB_TOKEN@github.com/$GITHUB_ORG/$repo"
+
+# Clone and enter the repo
+git clone "$url" || exit 1
+cd "$repo" || exit 1
