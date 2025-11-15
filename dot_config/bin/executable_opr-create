@@ -11,6 +11,7 @@ base_remote="$default_base_remote"
 base_branch=""
 head_remote="$default_head_remote"
 additional_prompt=""
+debug=0
 
 # Read from stdin if available (non-blocking)
 if [ -t 0 ]; then
@@ -73,12 +74,17 @@ while [ $# -gt 0 ]; do
 		fi
 		shift 2
 		;;
+	-d | --debug)
+		debug=1
+		shift
+		;;
 	-h | --help)
-		echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-p <prompt>] [-h|--help]"
+		echo "Usage: $0 [-br <remote>] [-bb <branch>] [-hr <remote>] [-p <prompt>] [-d|--debug] [-h|--help]"
 		echo "  -br, --base-remote <remote>  Remote containing the target branch (default: $default_base_remote)."
 		echo "  -bb, --base-branch <branch>  Target branch name (default: auto-detect from base-remote)."
 		echo "  -hr, --head-remote <remote>  Remote to push the source branch to (default: value of --base-remote, or '$default_head_remote' if --base-remote is not set)."
 		echo "  -p, --prompt <prompt>        Additional context/instructions for the AI generating the title/body."
+		echo "  -d, --debug                  Print the generated prompt and exit (no opencode run)."
 		echo "  -h, --help                   Show this help message."
 		exit 0
 		;;
@@ -320,26 +326,27 @@ opencode_prompt+="
    - The PR body should follow the template structure if one exists
    - Focus on WHY these changes were made, not just WHAT changed
 
-6. Create the PR using this command:"
-
-if [[ -z "$repo_owner_name" ]] || [[ "$repo_owner_name" == *"/"* && "$repo_owner_name" == *":"* ]] || [[ "$repo_owner_name" == *"//"* ]]; then
-	opencode_prompt+="
-   gh pr create --base \"$base_branch\" --head \"$head_specifier\" --title \"<TITLE>\" --body \"<BODY>\""
-else
-	opencode_prompt+="
-   gh pr create --repo \"$repo_owner_name\" --base \"$base_branch\" --head \"$head_specifier\" --title \"<TITLE>\" --body \"<BODY>\""
-fi
-
-opencode_prompt+="
-
 IMPORTANT: Output the PR title and body in the following parsable format:
 ---PR-TITLE---
 <title>
 ---PR-BODY---
 <body>
----END---
+---END---"
 
-DO NOT run the gh pr create command yourself. Just output the title and body in the format above."
+# --- Debug mode: print prompt and exit ---
+if [ "$debug" -eq 1 ]; then
+	echo ""
+	echo "========================================"
+	echo "DEBUG MODE: Printing opencode prompt"
+	echo "========================================"
+	echo ""
+	echo "$opencode_prompt"
+	echo ""
+	echo "========================================"
+	echo "Debug mode enabled - exiting without running opencode"
+	echo "========================================"
+	exit 0
+fi
 
 # --- Run opencode and capture output ---
 opencode_output=$(opencode run "$opencode_prompt")
