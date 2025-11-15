@@ -1,7 +1,7 @@
 ---
 description: Reviews code changes for bugs, improvements, and best practices in local changes or remote PRs
 mode: subagent
-model: github-copilot/gpt-5
+model: github-copilot/claude-sonnet-4.5
 temperature: 0.1
 tools:
   write: false
