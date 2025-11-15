@@ -93,6 +93,4 @@ end
 -- Install Hammerspoon URL callback that routes via openURLWith
 hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
 	M.openURLWith(fullURL, M.defaultBrowser)
-	-- copy url to clipboard for convenience
-	hs.pasteboard.setContents(fullURL)
 end
