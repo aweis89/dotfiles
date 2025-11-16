@@ -9,6 +9,11 @@ return {
         nls.builtins.diagnostics.golangci_lint,
       })
 
+      -- Disable markdown diagnostics
+      opts.sources = vim.tbl_filter(function(source)
+        return source.name ~= "markdownlint-cli2" and source.name ~= "markdownlint"
+      end, opts.sources)
+
       local diagnostic_icon_map = {
         [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,
         [vim.diagnostic.severity.WARN] = LazyVim.config.icons.diagnostics.Warn,
