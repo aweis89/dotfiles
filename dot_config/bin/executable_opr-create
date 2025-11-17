@@ -338,7 +338,7 @@ Only gather context needed for an accurate summary of WHY + WHAT changed.
    - The PR body should follow the template structure if one exists
    - Focus on WHY these changes were made, not just WHAT changed
 
-IMPORTANT: Output the PR title and body in the following parsable format:"
+IMPORTANT: Output the PR title and body in the following parsable format:
 ---PR-TITLE---
 <title>
 ---PR-BODY---
