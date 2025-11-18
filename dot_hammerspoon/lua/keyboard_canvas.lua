@@ -16,8 +16,8 @@ function M.createCanvas(imagePath)
 	local screenFrame = screen:frame()
 
 	-- Canvas dimensions (adjust as needed)
-	local canvasWidth = screenFrame.w * 0.8
-	local canvasHeight = screenFrame.h * 0.8
+	local canvasWidth = screenFrame.w * 0.95
+	local canvasHeight = screenFrame.h * 0.95
 	local canvasX = (screenFrame.w - canvasWidth) / 2
 	local canvasY = (screenFrame.h - canvasHeight) / 2
 
