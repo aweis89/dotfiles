@@ -11,7 +11,7 @@ local auto_terminal_keymaps = {
 
 local function get_sidekick_keys()
   local default_terminal = "cursor"
-  local defaults = { focus = true, filter = { cwd = true } }
+  local defaults = { focus = true }
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
     {
@@ -113,6 +113,42 @@ return {
       { "<leader>at", false, mode = { "n", "v" } },
       { "<c-.>", false, mode = { "n", "x", "i", "t" } },
     } or get_sidekick_keys(),
+    config = function(_, opts)
+      require("sidekick").setup(opts)
+
+      local function kill_session(state)
+        if not state or not state.session then
+          return
+        end
+
+        pcall(function()
+          require("sidekick.cli").close()
+        end)
+
+        if state.session.mux_session then
+          -- Kill tmux session using vim.system
+          vim.system({ "tmux", "kill-session", "-t", state.session.mux_session })
+        else
+          pcall(function()
+            require("sidekick.cli.state").detach(state)
+          end)
+        end
+      end
+
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          local ok, sidekick_state = pcall(require, "sidekick.cli.state")
+          if not ok then
+            return
+          end
+
+          local attached = sidekick_state.get({ attached = true })
+          for _, state in ipairs(attached) do
+            kill_session(state)
+          end
+        end,
+      })
+    end,
   },
   {
     "folke/snacks.nvim",
