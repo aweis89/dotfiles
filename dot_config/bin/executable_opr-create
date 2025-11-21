@@ -361,7 +361,7 @@ if [ "$debug" -eq 1 ]; then
 fi
 
 # --- Run opencode and capture output ---
-opencode_output=$(opencode run "$opencode_prompt")
+opencode_output=$(opencode run --model github-copilot/claude-sonnet-4.5 "$opencode_prompt")
 echo "$opencode_output"
 
 # --- Parse the output ---
