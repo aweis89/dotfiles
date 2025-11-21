@@ -1,13 +1,15 @@
 function aws-profile
     # Select and/or set AWS profile. If no profile arg given, always invoke fzf.
     # Flags:
-    #   -p|--persist  Persist profile across sessions
-    #   -d|--delete   Remove persisted profile (unset)
-    #   -c|--current  Show current profile and exit
+    #   -p|--persist      Persist profile across sessions
+    #   -d|--delete       Remove persisted profile (unset)
+    #   -c|--current      Show current profile and exit
+    #   -k|--kubeconfig   Update kubeconfig after switching profiles
 
     set -l persist false
     set -l delete false
     set -l show_current false
+    set -l update_kubeconfig false
     set -l profile_name
 
     # Parse args / flags
@@ -19,9 +21,11 @@ function aws-profile
                 set delete true
             case -c --current
                 set show_current true
+            case -k --kubeconfig
+                set update_kubeconfig true
             case '-*'
                 echo "Unknown option: $arg"
-                echo "Usage: aws-profile [-p|--persist] [profile]"
+                echo "Usage: aws-profile [-p|--persist] [-k|--kubeconfig] [profile]"
                 echo "       aws-profile -d|--delete"
                 echo "       aws-profile -c|--current"
                 return 1
@@ -111,8 +115,10 @@ function aws-profile
         end
     end
 
-    # Update kubeconfig after switching profiles
-    if type -q aws-update-kubeconfig
-        aws-update-kubeconfig
+    # Update kubeconfig after switching profiles (only if -k flag was passed)
+    if test $update_kubeconfig = true
+        if type -q aws-update-kubeconfig
+            aws-update-kubeconfig
+        end
     end
 end
