@@ -10,7 +10,7 @@ local auto_terminal_keymaps = {
 }
 
 local function get_sidekick_keys()
-  local default_terminal = "cursor"
+  local default_terminal = "claude"
   local defaults = { focus = true }
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
@@ -80,8 +80,7 @@ return {
   {
     "folke/sidekick.nvim",
     -- url = "https://github.com/aweis89/sidekick.nvim",
-    --- @type sidekick.Config
-    opts = {
+    opts = { ---@type sidekick.Config
       cli = {
         mux = {
           enabled = true,
@@ -92,11 +91,14 @@ return {
           },
         },
         win = {
-          layout = "float",
+          layout = vim.o.columns > 300 and "right" or "float",
           ---@type vim.api.keyset.win_config
           float = {
             width = 1.0,
             height = 1.0,
+          },
+          split = {
+            width = 0.5, -- set to 0 for default split width
           },
           keys = {
             hide_ctrl_t = { "<C-t>", "hide", mode = "nt", desc = "hide the terminal window" },
