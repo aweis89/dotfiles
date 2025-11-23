@@ -42,6 +42,7 @@ local function rm_file(selected)
   end
 end
 
+-- modify snack's git stage/unstage with -f
 local function git_stage(picker)
   local items = picker:selected({ fallback = true })
   local first = items[1]
