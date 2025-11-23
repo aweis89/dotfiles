@@ -10,23 +10,20 @@ local auto_terminal_keymaps = {
 }
 
 local function get_sidekick_keys()
-  local default_terminal = "claude"
-  local defaults = { focus = true }
+  local default_terminal = "opencode"
+  local defaults = { focus = true, filter = { name = default_terminal } }
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
     {
       "<C-t>",
       function()
-        require("sidekick.cli").toggle(vim.tbl_deep_extend("force", defaults, {
-          name = default_terminal,
-        }))
+        require("sidekick.cli").toggle(vim.tbl_deep_extend("force", defaults, {}))
       end,
     },
     {
       "<C-t>",
       function()
         require("sidekick.cli").send(vim.tbl_deep_extend("force", defaults, {
-          name = default_terminal,
           msg = "{file}\n\n{selection}\n",
         }))
       end,
@@ -79,11 +76,11 @@ end
 return {
   {
     "folke/sidekick.nvim",
-    -- url = "https://github.com/aweis89/sidekick.nvim",
+    url = "https://github.com/aweis89/sidekick.nvim",
     opts = { ---@type sidekick.Config
       cli = {
         mux = {
-          enabled = true,
+          enabled = false,
         },
         tools = {
           opencode = {
