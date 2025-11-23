@@ -356,11 +356,13 @@ elif [[ ! -z $user_selected ]]; then
 	selected="$user_selected"
 else
 	RELOAD_MARKER="/tmp/tmux-sessionizer-reload-$$"
+	TELESCOPE_MARKER="/tmp/tmux-sessionizer-ai-agent-$$"
 	rm -f "$RELOAD_MARKER"
+	rm -f "$TELESCOPE_MARKER"
 
 	while true; do
 		selected=$(find_dirs | fzf \
-			--tmux 95% \
+			--tmux 99% \
 			--multi \
 			--preview 'if echo {} | grep -q "^\[TMUX\]"; then
 				session_name=$(echo {} | sed "s/^\[TMUX\] //" | sed "s/ (.*)$//");
@@ -384,6 +386,7 @@ else
 			--bind "ctrl-u:half-page-up" \
 			--bind "ctrl-f:preview-page-down" \
 			--bind "ctrl-b:preview-page-up" \
+			--bind "ctrl-t:execute-silent(touch $TELESCOPE_MARKER)+accept" \
 			--bind "ctrl-x:execute-silent(
 				current_session=\$(tmux display-message -p '#S' 2>/dev/null);
 				deleted_current=false;
@@ -413,7 +416,7 @@ else
 				done;
 				touch $RELOAD_MARKER
 			)+abort" \
-			--header $'ENTER=switch | TAB=select+next | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
+			--header $'ENTER=switch | TAB=select+next | CTRL-T=telescope | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
 
 		exit_code=$?
 
@@ -443,6 +446,14 @@ selected="${selected/#\~/$HOME}"
 selected_name=$(basename "$selected" | tr . _)
 
 session_start_cmd=$(get_session_command "$selected")
+
+# If ctrl-t was pressed (telescope marker exists), override nvim command
+if [[ -f "$TELESCOPE_MARKER" ]]; then
+	rm -f "$TELESCOPE_MARKER"
+	if [[ "$session_start_cmd" == "nvim" ]]; then
+		session_start_cmd='nvim "+call feedkeys(\"\<C-t>\")"'
+	fi
+fi
 
 if ! is_tmux_running; then
 	tmux new-session -ds "$selected_name" -c "$selected" "$session_start_cmd"
