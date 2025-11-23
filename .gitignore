@@ -14,3 +14,5 @@ Google
 .aider*
 .env
 envrcs.yaml*
+!dot_config/bin/
+!dot_config/bin/**
