@@ -368,30 +368,24 @@ else
 			--bind "ctrl-f:preview-page-down" \
 			--bind "ctrl-b:preview-page-up" \
 			--bind "ctrl-x:execute-silent(
-				IFS=\$'\n';
 				for line in {+}; do
 					if echo \"\$line\" | grep -q '^\[TMUX\]'; then
 						session_name=\$(echo \"\$line\" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//');
-						tmux kill-session -t \"\$session_name\" 2>/dev/null;
-					fi
-				done;
-				touch $RELOAD_MARKER
-			)+abort" \
-			--bind "shift-delete:execute-silent(
-				IFS=\$'\n';
-				for line in {+}; do
-					if ! echo \"\$line\" | grep -q '^\[TMUX\]'; then
+						tmux kill-session -t \"\$session_name\";
+					else
 						dir_path=\$(echo \"\$line\" | sed 's|^~|$HOME|');
-						rm -rf \"\$dir_path\" 2>/dev/null;
+						if [ -d \"\$dir_path\" ]; then
+							rm -rf \"\$dir_path\";
+						fi
 					fi
 				done;
 				touch $RELOAD_MARKER
 			)+abort" \
-			--header $'ENTER=switch | TAB=select+next | CTRL-X=delete sessions\nSHIFT-DEL=rm dirs | CTRL-D/U=scroll | CTRL-F/B=preview')
+			--header $'ENTER=switch | TAB=select+next | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
 
 		exit_code=$?
 
-		# If marker file exists, user pressed ctrl-x or shift-delete, so reload
+		# If marker file exists, user pressed ctrl-x, so reload
 		if [[ -f "$RELOAD_MARKER" ]]; then
 			rm -f "$RELOAD_MARKER"
 			exec "$0"
