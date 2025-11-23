@@ -239,7 +239,11 @@ find_dirs() {
 		# list TMUX sessions with current directory in parentheses
 		if [[ -n "${TMUX}" ]]; then
 			current_session=$(tmux display-message -p '#S')
-			tmux list-sessions -F "#{session_name}:#{pane_current_path}" 2>/dev/null | grep -v "^$current_session:" | while IFS=: read -r session_name session_path; do
+			tmux list-sessions -F "#{session_name}:#{pane_current_path}" 2>/dev/null | while IFS=: read -r session_name session_path; do
+				# Skip "default" session if it's the current session
+				if [[ "$session_name" == "default" && "$session_name" == "$current_session" ]]; then
+					continue
+				fi
 				# Get first word of session name
 				first_word=$(echo "$session_name" | awk '{print $1}')
 				# Replace $HOME with ~ in path
@@ -381,6 +385,21 @@ else
 			--bind "ctrl-f:preview-page-down" \
 			--bind "ctrl-b:preview-page-up" \
 			--bind "ctrl-x:execute-silent(
+				current_session=\$(tmux display-message -p '#S' 2>/dev/null);
+				deleted_current=false;
+				for line in {+}; do
+					if echo \"\$line\" | grep -q '^\[TMUX\]'; then
+						session_name=\$(echo \"\$line\" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//');
+						if [ \"\$session_name\" = \"\$current_session\" ]; then
+							deleted_current=true;
+						fi;
+					fi
+				done;
+				if [ \"\$deleted_current\" = true ]; then
+					if tmux has-session -t default 2>/dev/null; then
+						tmux switch-client -t default;
+					fi;
+				fi;
 				for line in {+}; do
 					if echo \"\$line\" | grep -q '^\[TMUX\]'; then
 						session_name=\$(echo \"\$line\" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//');
