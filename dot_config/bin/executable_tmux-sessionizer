@@ -146,6 +146,19 @@ has_session() {
 	tmux list-sessions | grep -q "^$1:"
 }
 
+get_session_command() {
+	local dir="$1"
+	if [[ ! -z $session_cmd ]]; then
+		echo "$session_cmd"
+	elif [ -f "$dir/.tmux-sessionizer" ]; then
+		echo "source $dir/.tmux-sessionizer"
+	elif [ -f "$HOME/.tmux-sessionizer" ]; then
+		echo "source $HOME/.tmux-sessionizer"
+	else
+		echo "nvim"
+	fi
+}
+
 hydrate() {
 	if [[ ! -z $session_cmd ]]; then
 		log "skipping hydrate for $1 -- using \"$session_cmd\" instead"
@@ -410,13 +423,15 @@ selected="${selected/#\~/$HOME}"
 
 selected_name=$(basename "$selected" | tr . _)
 
+session_start_cmd=$(get_session_command "$selected")
+
 if ! is_tmux_running; then
-	tmux new-session -ds "$selected_name" -c "$selected"
+	tmux new-session -ds "$selected_name" -c "$selected" "$session_start_cmd"
 	hydrate "$selected_name" "$selected"
 fi
 
 if ! has_session "$selected_name"; then
-	tmux new-session -ds "$selected_name" -c "$selected"
+	tmux new-session -ds "$selected_name" -c "$selected" "$session_start_cmd"
 	hydrate "$selected_name" "$selected"
 fi
 
