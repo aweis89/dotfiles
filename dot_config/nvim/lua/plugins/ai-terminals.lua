@@ -10,7 +10,7 @@ local auto_terminal_keymaps = {
 }
 
 local function get_sidekick_keys()
-  local default_terminal = "opencode"
+  local default_terminal = "claude"
   local defaults = { focus = true }
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
