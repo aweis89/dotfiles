@@ -1,11 +1,14 @@
 ---@param args table
-local function git_exec(args)
+---@param opts? { confirm?: boolean }
+local function git_exec(args, opts)
+  opts = opts or {}
+  local confirm = opts.confirm ~= false -- default to true if not specified
   local root = Snacks.git.get_root()
   local cmd = { "git", "-C", root }
   for _, arg in ipairs(args) do
     table.insert(cmd, arg)
   end
-  if vim.fn.confirm(table.concat(cmd, " "), "&Yes\n&No") == 1 then
+  if not confirm or vim.fn.confirm(table.concat(cmd, " "), "&Yes\n&No") == 1 then
     vim.fn.system(cmd)
     vim.cmd("checktime")
   end
@@ -39,10 +42,35 @@ local function rm_file(selected)
   end
 end
 
----@param picker snacks.Picker
-local function refresh_picker(picker)
-  picker:close()
-  Snacks.picker.resume()
+local function git_stage(picker)
+  local items = picker:selected({ fallback = true })
+  local first = items[1]
+  if not first or not (first.status or (first.diff and first.staged ~= nil)) then
+    Snacks.notify.error("Can't stage/unstage this change", { title = "Snacks Picker" })
+    return
+  end
+
+  local done = 0
+  for _, item in ipairs(items) do
+    local opts = { cwd = item.cwd } ---@type snacks.picker.util.cmd.Opts
+    local cmd ---@type string[]
+    if item.diff and item.staged ~= nil then
+      opts.input = item.diff
+      cmd = { "git", "apply", "--cached", item.staged and "--reverse" or nil }
+    elseif item.status then
+      cmd = item.status:sub(2) == " " and { "git", "restore", "--staged", item.file }
+        or { "git", "add", "-f", item.file }
+    else
+      Snacks.notify.error("Can't stage/unstage this change", { title = "Snacks Picker" })
+      return
+    end
+    Snacks.picker.util.cmd(cmd, function()
+      done = done + 1
+      if done == #items then
+        picker:refresh()
+      end
+    end, opts)
+  end
 end
 
 local function defer_insert()
@@ -201,15 +229,15 @@ return {
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
               git_reset_file(picker:selected({ fallback = true }))
-              refresh_picker(picker)
+              picker:refresh()
             end,
             ["git_reset_soft"] = function(picker)
               git_reset_soft(picker:selected({ fallback = true }))
-              refresh_picker(picker)
+              picker:refresh()
             end,
             ["rm_file"] = function(picker)
               rm_file(picker:selected({ fallback = true }))
-              refresh_picker(picker)
+              picker:refresh()
             end,
             ["copy_preview"] = function(picker)
               local selected = picker:selected({ fallback = true })
@@ -218,6 +246,7 @@ return {
               end
               picker:close()
             end,
+            ["git_stage"] = git_stage,
           },
           sources = {
             projects = {
