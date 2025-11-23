@@ -20,3 +20,5 @@ vim.opt.timeoutlen = 1000
 vim.g.lazyvim_picker = "snacks"
 
 vim.g.maplocalleader = ","
+
+vim.g.tpipeline_autoembed = 0
