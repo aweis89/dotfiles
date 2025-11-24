@@ -3,12 +3,12 @@ set -g fish_greeting
 
 # Add paths
 fish_add_path \
-    ~/bin \
+    ~/.asdf/shims \
+    ~/.cargo/bin \
     ~/.config/bin \
     ~/.local/bin \
-    ~/.asdf/shims \
+    ~/.opencode/bin \
     ~/go/bin \
-    ~/.cargo/bin \
     /opt/homebrew/bin \
     /opt/homebrew/opt/rustup/bin \
     /opt/homebrew/share/google-cloud-sdk/bin \
