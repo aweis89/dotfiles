@@ -220,6 +220,68 @@ cleanup_dead_panes() {
 	mv "$temp_file" "$PANE_CACHE_FILE" 2>/dev/null || touch "$PANE_CACHE_FILE"
 }
 
+# Helper function for fzf preview - ensures bash execution
+fzf_preview() {
+	if echo "$1" | grep -q "^\[TMUX\]"; then
+		session_name=$(echo "$1" | sed "s/^\[TMUX\] //" | sed "s/ (.*)$//")
+		session_path=$(tmux display-message -p -t "$session_name" "#{pane_current_path}" 2>/dev/null | sed "s|^$HOME|~|")
+		echo "$session_path"
+		echo ""
+		tmux capture-pane -ep -S - -t "$session_name" 2>/dev/null || echo "Session not available"
+	else
+		dir_path=$(echo "$1" | sed "s|^~|$HOME|")
+		echo "$1"
+		echo ""
+		if command -v eza >/dev/null 2>&1; then
+			eza -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
+		else
+			ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
+		fi
+	fi
+}
+
+# Helper function for fzf ctrl-x delete action
+fzf_delete() {
+	local RELOAD_MARKER="$1"
+	shift
+
+	current_session=$(tmux display-message -p '#S' 2>/dev/null)
+	deleted_current=false
+
+	for line in "$@"; do
+		if echo "$line" | grep -q '^\[TMUX\]'; then
+			session_name=$(echo "$line" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//')
+			if [ "$session_name" = "$current_session" ]; then
+				deleted_current=true
+			fi
+		fi
+	done
+
+	if [ "$deleted_current" = true ]; then
+		if tmux has-session -t default 2>/dev/null; then
+			tmux switch-client -t default
+		fi
+	fi
+
+	for line in "$@"; do
+		if echo "$line" | grep -q '^\[TMUX\]'; then
+			session_name=$(echo "$line" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//')
+			tmux kill-session -t "$session_name"
+		else
+			dir_path=$(echo "$line" | sed 's|^~|'"$HOME"'|')
+			if [ -d "$dir_path" ]; then
+				rm -rf "$dir_path"
+			fi
+		fi
+	done
+
+	touch "$RELOAD_MARKER"
+}
+
+# Export functions so they're available to subshells
+export -f fzf_preview
+export -f fzf_delete
+
 sanity_check
 
 # if TS_SEARCH_PATHS is not set use default
@@ -364,22 +426,7 @@ else
 		selected=$(find_dirs | fzf \
 			--tmux 99% \
 			--multi \
-			--preview 'if echo {} | grep -q "^\[TMUX\]"; then
-				session_name=$(echo {} | sed "s/^\[TMUX\] //" | sed "s/ (.*)$//");
-				session_path=$(tmux display-message -p -t "$session_name" "#{pane_current_path}" 2>/dev/null | sed "s|^$HOME|~|");
-				echo "$session_path";
-				echo "";
-				tmux capture-pane -ep -S - -t "$session_name" 2>/dev/null || echo "Session not available";
-			else
-				dir_path=$(echo {} | sed "s|^~|$HOME|");
-				echo "{}";
-				echo "";
-				if command -v eza >/dev/null 2>&1; then
-					eza -l "$dir_path" 2>/dev/null || echo "Directory not accessible";
-				else
-					ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible";
-				fi;
-			fi' \
+			--preview 'bash -c "fzf_preview {}"' \
 			--preview-window 'right:60%' \
 			--bind "tab:toggle+down" \
 			--bind "ctrl-d:half-page-down" \
@@ -387,35 +434,7 @@ else
 			--bind "ctrl-f:preview-page-down" \
 			--bind "ctrl-b:preview-page-up" \
 			--bind "ctrl-t:execute-silent(touch $TELESCOPE_MARKER)+accept" \
-			--bind "ctrl-x:execute-silent(
-				current_session=\$(tmux display-message -p '#S' 2>/dev/null);
-				deleted_current=false;
-				for line in {+}; do
-					if echo \"\$line\" | grep -q '^\[TMUX\]'; then
-						session_name=\$(echo \"\$line\" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//');
-						if [ \"\$session_name\" = \"\$current_session\" ]; then
-							deleted_current=true;
-						fi;
-					fi
-				done;
-				if [ \"\$deleted_current\" = true ]; then
-					if tmux has-session -t default 2>/dev/null; then
-						tmux switch-client -t default;
-					fi;
-				fi;
-				for line in {+}; do
-					if echo \"\$line\" | grep -q '^\[TMUX\]'; then
-						session_name=\$(echo \"\$line\" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//');
-						tmux kill-session -t \"\$session_name\";
-					else
-						dir_path=\$(echo \"\$line\" | sed 's|^~|$HOME|');
-						if [ -d \"\$dir_path\" ]; then
-							rm -rf \"\$dir_path\";
-						fi
-					fi
-				done;
-				touch $RELOAD_MARKER
-			)+abort" \
+			--bind "ctrl-x:execute-silent(bash -c \"fzf_delete '$RELOAD_MARKER' {+}\")+abort" \
 			--header $'ENTER=switch | TAB=select+next | CTRL-T=AI | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
 
 		exit_code=$?
