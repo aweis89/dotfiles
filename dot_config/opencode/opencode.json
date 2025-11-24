@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "system",
+  "theme": "tokyonight",
   "autoupdate": true,
   "share": "disabled",
   "permission": {
