@@ -416,7 +416,7 @@ else
 				done;
 				touch $RELOAD_MARKER
 			)+abort" \
-			--header $'ENTER=switch | TAB=select+next | CTRL-T=telescope | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
+			--header $'ENTER=switch | TAB=select+next | CTRL-T=AI | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
 
 		exit_code=$?
 
