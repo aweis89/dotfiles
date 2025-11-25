@@ -1,8 +1,6 @@
 # Disable fish greeting message
 set -g fish_greeting
 
-# set -gx CPPFLAGS "-I/opt/homebrew/opt/openjdk/include"
-
 # Add paths
 fish_add_path \
     ~/.asdf/shims \
@@ -96,8 +94,9 @@ abbr -a -- gp gcloud-project
 set -gx TMPDIR ~/tmp
 set -gx EDITOR nvim
 set -gx VISUAL nvim
-set -gx FZF_DEFAULT_OPTS '--tmux 80% --layout=reverse --multi --color=light' \
-    '--bind "tab:toggle,shift-tab:toggle+up,ctrl-d:preview-half-page-down,ctrl-u:preview-half-page-up"' \
+set -gx FZF_DEFAULT_OPTS '--tmux 95% --multi --ansi' \
+    '--bind "tab:toggle,shift-tab:toggle+up,ctrl-d:half-page-down,ctrl-u:half-page-up"' \
+    '--bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up"' \
     '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 set -gx pure_enable_k8s true
 
