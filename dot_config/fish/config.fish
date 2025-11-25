@@ -47,7 +47,7 @@ function ??
     aichat -e "$argv"
 end
 
-function pr
+function prc
     opr-create -p "$argv"
 end
 
