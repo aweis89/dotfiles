@@ -61,6 +61,8 @@ session_idx=""
 session_cmd=""
 user_selected=""
 split_type=""
+list_only=false
+ai_mode=false
 VERSION="0.1.0"
 
 while [[ "$#" -gt 0 ]]; do
@@ -104,6 +106,14 @@ while [[ "$#" -gt 0 ]]; do
 	-v | --version)
 		echo "tmux-sessionizer version $VERSION"
 		exit 0
+		;;
+	--list)
+		# Used internally for fzf reload
+		list_only=true
+		;;
+	--ai)
+		# Used internally to trigger AI agent on session start
+		ai_mode=true
 		;;
 	*)
 		user_selected="$1"
@@ -242,9 +252,6 @@ fzf_preview() {
 
 # Helper function for fzf ctrl-x delete action
 fzf_delete() {
-	local RELOAD_MARKER="$1"
-	shift
-
 	current_session=$(tmux display-message -p '#S' 2>/dev/null)
 	deleted_current=false
 
@@ -274,8 +281,6 @@ fzf_delete() {
 			fi
 		fi
 	done
-
-	touch "$RELOAD_MARKER"
 }
 
 # Export functions so they're available to subshells
@@ -344,6 +349,12 @@ find_dirs() {
 		done
 	} | sed "s|$HOME|~|g"
 }
+
+# Handle --list flag for fzf reload
+if [[ "$list_only" == true ]]; then
+	find_dirs
+	exit 0
+fi
 
 handle_session_cmd() {
 	log "executing session command $session_cmd with index $session_idx split_type=$split_type"
@@ -417,37 +428,19 @@ if [[ ! -z $session_cmd ]]; then
 elif [[ ! -z $user_selected ]]; then
 	selected="$user_selected"
 else
-	RELOAD_MARKER="/tmp/tmux-sessionizer-reload-$$"
-	TELESCOPE_MARKER="/tmp/tmux-sessionizer-ai-agent-$$"
-	rm -f "$RELOAD_MARKER"
-	rm -f "$TELESCOPE_MARKER"
-
-	while true; do
-		selected=$(find_dirs | fzf \
-			--tmux 99% \
-			--multi \
-			--preview 'bash -c "fzf_preview {}"' \
-			--preview-window 'right:60%' \
-			--bind "tab:toggle+down" \
-			--bind "ctrl-d:half-page-down" \
-			--bind "ctrl-u:half-page-up" \
-			--bind "ctrl-f:preview-page-down" \
-			--bind "ctrl-b:preview-page-up" \
-			--bind "ctrl-t:execute-silent(touch $TELESCOPE_MARKER)+accept" \
-			--bind "ctrl-x:execute-silent(bash -c \"fzf_delete '$RELOAD_MARKER' {+}\")+abort" \
-			--header $'ENTER=switch | TAB=select+next | CTRL-T=AI | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview')
-
-		exit_code=$?
-
-		# If marker file exists, user pressed ctrl-x, so reload
-		if [[ -f "$RELOAD_MARKER" ]]; then
-			rm -f "$RELOAD_MARKER"
-			exec "$0"
-		fi
-
-		# Otherwise normal exit (ESC, ctrl-c, or selected something)
-		break
-	done
+	selected=$(find_dirs | fzf \
+		--tmux 99% \
+		--multi \
+		--preview 'bash -c "fzf_preview {}"' \
+		--preview-window 'right:60%' \
+		--bind "tab:toggle+down" \
+		--bind "ctrl-d:half-page-down" \
+		--bind "ctrl-u:half-page-up" \
+		--bind "ctrl-f:preview-page-down" \
+		--bind "ctrl-b:preview-page-up" \
+		--bind "ctrl-t:become(tmux-sessionizer --ai {})" \
+		--bind "ctrl-x:execute-silent(bash -c \"fzf_delete {+}\")+reload(tmux-sessionizer --list)" \
+		--header $'ENTER=switch | TAB=select+next | CTRL-T=AI | CTRL-X=delete\nCTRL-D/U=scroll | CTRL-F/B=preview') || true
 fi
 
 if [[ -z $selected ]]; then
@@ -466,9 +459,8 @@ selected_name=$(basename "$selected" | tr . _)
 
 session_start_cmd=$(get_session_command "$selected")
 
-# If ctrl-t was pressed (telescope marker exists), override nvim command
-if [[ -f "$TELESCOPE_MARKER" ]]; then
-	rm -f "$TELESCOPE_MARKER"
+# If --ai flag was passed, override nvim command to trigger AI agent
+if [[ "$ai_mode" == true ]]; then
 	if [[ "$session_start_cmd" == "nvim" ]]; then
 		session_start_cmd='nvim "+call feedkeys(\"\<C-t>\")"'
 	fi
