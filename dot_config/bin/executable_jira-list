@@ -8,8 +8,7 @@ jira-done() {
 
 selected=$(
 	jira issue list --plain --no-headers \
-		--status 'In Progress' \
-		--status Open \
+		--columns "type,key,status,summary" \
 		--assignee "$(jira me)" |
 		fzf --layout reverse \
 			--header "enter: open in browser | ctrl-o: create branch | ctrl-d: mark done & open" \
