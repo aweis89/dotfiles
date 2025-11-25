@@ -89,6 +89,7 @@ abbr -a -- zshs 'edit-config ~/.zshrc'
 abbr -a -- gk 'gcloud-project && gcloud-update-kubeconfig --dns-endpoint'
 abbr -a -- gl 'gcloud auth login'
 abbr -a -- al 'aws sso login'
+abbr -a -- af aws-profile
 abbr -a -- ak aws-update-kubeconfig
 abbr -a -- gp gcloud-project
 
