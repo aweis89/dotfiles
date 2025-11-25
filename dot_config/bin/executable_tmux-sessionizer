@@ -243,7 +243,7 @@ fzf_preview() {
 		echo "$1"
 		echo ""
 		if command -v eza >/dev/null 2>&1; then
-			eza -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
+			eza --git -l --color=always "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		else
 			ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		fi
