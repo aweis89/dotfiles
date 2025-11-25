@@ -1,6 +1,8 @@
 # Disable fish greeting message
 set -g fish_greeting
 
+# set -gx CPPFLAGS "-I/opt/homebrew/opt/openjdk/include"
+
 # Add paths
 fish_add_path \
     ~/.asdf/shims \
@@ -9,6 +11,7 @@ fish_add_path \
     ~/.local/bin \
     ~/.opencode/bin \
     ~/go/bin \
+    /opt/homebrew/opt/openjdk/bin \
     /opt/homebrew/bin \
     /opt/homebrew/opt/rustup/bin \
     /opt/homebrew/share/google-cloud-sdk/bin \
@@ -42,6 +45,10 @@ end
 
 function ??
     aichat -e "$argv"
+end
+
+function pr
+    opr-create -p "$argv"
 end
 
 abbr -a -- ag rg
