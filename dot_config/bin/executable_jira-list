@@ -6,14 +6,62 @@ jira-done() {
 	jira issue move $id --resolution Done "Skip Review"
 }
 
+# Create temp files for state and helper script
+FILTER_STATE=$(mktemp)
+HELPER_SCRIPT=$(mktemp)
+echo "0" >"$FILTER_STATE"
+trap 'rm -f "$FILTER_STATE" "$HELPER_SCRIPT"' EXIT
+
+# Get jira user once
+JIRA_ME=$(jira me)
+
+# Create helper script for fzf to call
+cat >"$HELPER_SCRIPT" <<'HELPER'
+#!/bin/bash
+FILTER_STATE="$1"
+JIRA_ME="$2"
+ACTION="$3"
+
+jira_list() {
+    local filter="$1"
+    case "$filter" in
+        0) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -s~Done ;;
+        1) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -s Done ;;
+        2) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" ;;
+    esac
+}
+
+# cycle: update state and output the NEW filter name
+if [ "$ACTION" = "cycle" ]; then
+    state=$(cat "$FILTER_STATE")
+    case "$state" in
+        0) echo "1" > "$FILTER_STATE"; echo "Done" ;;
+        1) echo "2" > "$FILTER_STATE"; echo "All" ;;
+        2) echo "0" > "$FILTER_STATE"; echo "Not Done" ;;
+    esac
+# list: read current state and fetch issues
+elif [ "$ACTION" = "list" ]; then
+    state=$(cat "$FILTER_STATE")
+    jira_list "$state"
+# header: read current state and output header
+elif [ "$ACTION" = "header" ]; then
+    state=$(cat "$FILTER_STATE")
+    case "$state" in
+        0) echo "enter: open | ctrl-o: branch | ctrl-d: mark done | ctrl-f: filter [Not Done]" ;;
+        1) echo "enter: open | ctrl-o: branch | ctrl-d: mark done | ctrl-f: filter [Done]" ;;
+        2) echo "enter: open | ctrl-o: branch | ctrl-d: mark done | ctrl-f: filter [All]" ;;
+    esac
+fi
+HELPER
+chmod +x "$HELPER_SCRIPT"
+
 selected=$(
-	jira issue list --plain --no-headers \
-		--columns "type,key,status,summary" \
-		--assignee "$(jira me)" |
+	"$HELPER_SCRIPT" "$FILTER_STATE" "$JIRA_ME" list |
 		fzf --layout reverse \
-			--header "enter: open in browser | ctrl-o: create branch | ctrl-d: mark done & open" \
+			--header "enter: open | ctrl-o: branch | ctrl-d: mark done | ctrl-f: filter [Not Done]" \
 			--expect=ctrl-o \
 			--expect=ctrl-d \
+			--bind "ctrl-f:execute-silent($HELPER_SCRIPT $FILTER_STATE $JIRA_ME cycle > /dev/null)+reload($HELPER_SCRIPT $FILTER_STATE $JIRA_ME list)+transform-header($HELPER_SCRIPT $FILTER_STATE $JIRA_ME header)" \
 			--preview "jira issue view {2}" \
 			--preview-window "bottom:60%:wrap"
 )
