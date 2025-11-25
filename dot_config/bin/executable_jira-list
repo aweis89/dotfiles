@@ -1,33 +1,28 @@
 #!/bin/bash
 
-# Ensure JIRA_USER is set and not empty
-if [[ -z "$JIRA_USER" ]]; then
-  echo "Error: JIRA_USER environment variable is not set." >&2
-  exit 1
-fi
-
 jira-done() {
-  id="$1"
-  jira issue move $id Start
-  jira issue move $id --resolution Done "Skip Review"
+	id="$1"
+	jira issue move $id Start
+	jira issue move $id --resolution Done "Skip Review"
 }
 
 selected=$(
-  jira issue list --plain --no-headers \
-    --status 'In Progress' \
-    --status Open \
-    --assignee "$JIRA_USER" |
-    fzf --layout reverse \
-      --expect=ctrl-o \
-      --expect=ctrl-d \
-      --preview "jira issue view {2}" \
-      --preview-window "bottom:60%:wrap"
+	jira issue list --plain --no-headers \
+		--status 'In Progress' \
+		--status Open \
+		--assignee "$(jira me)" |
+		fzf --layout reverse \
+			--header "enter: open in browser | ctrl-o: create branch | ctrl-d: mark done & open" \
+			--expect=ctrl-o \
+			--expect=ctrl-d \
+			--preview "jira issue view {2}" \
+			--preview-window "bottom:60%:wrap"
 )
 
 # Check if fzf was cancelled (e.g., Esc key)
 if [[ -z "$selected" ]]; then
-  echo "No issue selected."
-  exit 1
+	echo "No issue selected."
+	exit 1
 fi
 
 # fzf with --expect outputs the key pressed on the first line,
@@ -37,32 +32,32 @@ selection_line=$(echo "$selected" | tail -n +2)
 
 # If Enter was pressed (or no key specified by --expect), proceed to open
 if [[ -z "$selection_line" ]]; then
-  echo "No selection line found."
-  exit 1
+	echo "No selection line found."
+	exit 1
 fi
 id=$(echo "$selection_line" | awk '{print $2}')
 if [[ -z "$id" ]]; then
-  echo "Could not extract issue ID from selection: $selection_line" >&2
-  exit 1
+	echo "Could not extract issue ID from selection: $selection_line" >&2
+	exit 1
 fi
 
 # Handle actions based on keypress
 case "$keypress" in
 ctrl-o)
-  # Create a new branch based on the issue ID and summary
-  git checkout -b "$id-$(jira issue view "$id" --raw |
-    jq -r '.fields.summary' |
-    tr '[:upper:]' '[:lower:]' |
-    tr -s ' ' '-' |
-    tr -dc '[:alnum:]-')"
-  exit 0 # Exit after creating the branch
-  ;;
+	# Create a new branch based on the issue ID and summary
+	git checkout -b "$id-$(jira issue view "$id" --raw |
+		jq -r '.fields.summary' |
+		tr '[:upper:]' '[:lower:]' |
+		tr -s ' ' '-' |
+		tr -dc '[:alnum:]-')"
+	exit 0 # Exit after creating the branch
+	;;
 ctrl-d)
-  # Mark the issue as done
-  jira issue move "$id" Start
-  jira issue move "$id" --resolution Done "Skip Review"
-  # Continue to open the issue in the browser after marking as done
-  ;;
+	# Mark the issue as done
+	jira issue move "$id" Start
+	jira issue move "$id" --resolution Done "Skip Review"
+	# Continue to open the issue in the browser after marking as done
+	;;
 esac
 
 echo "Opening issue: $id"
