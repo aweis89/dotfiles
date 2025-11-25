@@ -307,10 +307,6 @@ find_dirs() {
 		if [[ -n "${TMUX}" ]]; then
 			current_session=$(tmux display-message -p '#S')
 			tmux list-sessions -F "#{session_name}:#{pane_current_path}" 2>/dev/null | while IFS=: read -r session_name session_path; do
-				# Skip "default" session if it's the current session
-				if [[ "$session_name" == "default" && "$session_name" == "$current_session" ]]; then
-					continue
-				fi
 				# Get first word of session name
 				first_word=$(echo "$session_name" | awk '{print $1}')
 				# Replace $HOME with ~ in path
@@ -432,7 +428,7 @@ else
 		--tmux 99% \
 		--multi \
 		--preview 'bash -c "fzf_preview {}"' \
-		--preview-window 'right:60%' \
+		--preview-window 'right:60%:follow' \
 		--bind "tab:toggle+down" \
 		--bind "ctrl-d:half-page-down" \
 		--bind "ctrl-u:half-page-up" \
