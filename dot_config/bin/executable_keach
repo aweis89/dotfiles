@@ -1,0 +1,59 @@
+#!/bin/bash
+# Run kubectl command across multiple contexts matching a keyword
+# Usage: keach [-s|--serial] <keyword> <kubectl commands...>
+# Example: keach prod get pods -A
+
+set -eo pipefail
+
+serial=false
+if [ "$1" = "-s" ] || [ "$1" = "--serial" ]; then
+	serial=true
+	shift
+fi
+
+if [ $# -lt 2 ]; then
+	echo "Usage: keach [-s|--serial] <keyword> <kubectl commands...>"
+	echo "Example: keach prod get pods -A"
+	echo "  -s, --serial  Run commands sequentially instead of in parallel"
+	exit 1
+fi
+
+keyword="$1"
+shift
+
+contexts=$(kubectl config get-contexts -o name | grep -i "$keyword" || true)
+
+if [ -z "$contexts" ]; then
+	echo "No contexts found matching '$keyword'"
+	exit 1
+fi
+
+if [ "$serial" = true ]; then
+	for ctx in $contexts; do
+		echo "━━━ $ctx ━━━"
+		kubectl --context "$ctx" "$@"
+		echo
+	done
+else
+	# Run commands in parallel
+	tmpdir=$(mktemp -d)
+	trap 'rm -rf "$tmpdir"' EXIT
+
+	pids=()
+	ctx_list=()
+	for ctx in $contexts; do
+		ctx_list+=("$ctx")
+		(kubectl --context "$ctx" "$@" >"$tmpdir/$ctx.out" 2>&1) &
+		pids+=($!)
+	done
+
+	# Wait for all background jobs
+	wait "${pids[@]}" 2>/dev/null || true
+
+	# Print results in order
+	for ctx in "${ctx_list[@]}"; do
+		echo "━━━ $ctx ━━━"
+		cat "$tmpdir/$ctx.out"
+		echo
+	done
+fi
