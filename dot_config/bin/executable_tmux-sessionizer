@@ -232,8 +232,8 @@ cleanup_dead_panes() {
 
 # Helper function for fzf preview - ensures bash execution
 fzf_preview() {
-	if echo "$1" | grep -q "^\[TMUX\]"; then
-		session_name=$(echo "$1" | sed "s/^\[TMUX\] //" | sed "s/ (.*)$//")
+	if echo "$1" | grep -q "^\[TMUX"; then
+		session_name=$(echo "$1" | sed "s/^\[TMUX[^]]*\] //" | sed "s/ (.*)$//")
 		session_path=$(tmux display-message -p -t "$session_name" "#{pane_current_path}" 2>/dev/null | sed "s|^$HOME|~|")
 		echo "$session_path"
 		echo ""
@@ -256,8 +256,8 @@ fzf_delete() {
 	deleted_current=false
 
 	for line in "$@"; do
-		if echo "$line" | grep -q '^\[TMUX\]'; then
-			session_name=$(echo "$line" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//')
+		if echo "$line" | grep -q '^\[TMUX'; then
+			session_name=$(echo "$line" | sed 's/^\[TMUX[^]]*\] //' | sed 's/ (.*)$//')
 			if [ "$session_name" = "$current_session" ]; then
 				deleted_current=true
 			fi
@@ -271,8 +271,8 @@ fzf_delete() {
 	fi
 
 	for line in "$@"; do
-		if echo "$line" | grep -q '^\[TMUX\]'; then
-			session_name=$(echo "$line" | sed 's/^\[TMUX\] //' | sed 's/ (.*)$//')
+		if echo "$line" | grep -q '^\[TMUX'; then
+			session_name=$(echo "$line" | sed 's/^\[TMUX[^]]*\] //' | sed 's/ (.*)$//')
 			tmux kill-session -t "$session_name"
 		else
 			dir_path=$(echo "$line" | sed 's|^~|'"$HOME"'|')
@@ -311,7 +311,12 @@ find_dirs() {
 				first_word=$(echo "$session_name" | awk '{print $1}')
 				# Replace $HOME with ~ in path
 				display_path=$(echo "$session_path" | sed "s|^$HOME|~|")
-				echo "[TMUX] $first_word ($display_path)"
+				# Mark child sessions (those with spaces) differently
+				if [[ "$session_name" == *" "* ]]; then
+					echo "[TMUX:child] $first_word ($display_path)"
+				else
+					echo "[TMUX] $first_word ($display_path)"
+				fi
 			done
 		else
 			tmux list-sessions -F "#{session_name}:#{pane_current_path}" 2>/dev/null | while IFS=: read -r session_name session_path; do
@@ -319,7 +324,12 @@ find_dirs() {
 				first_word=$(echo "$session_name" | awk '{print $1}')
 				# Replace $HOME with ~ in path
 				display_path=$(echo "$session_path" | sed "s|^$HOME|~|")
-				echo "[TMUX] $first_word ($display_path)"
+				# Mark child sessions (those with spaces) differently
+				if [[ "$session_name" == *" "* ]]; then
+					echo "[TMUX:child] $first_word ($display_path)"
+				else
+					echo "[TMUX] $first_word ($display_path)"
+				fi
 			done
 		fi
 
@@ -440,6 +450,12 @@ else
 fi
 
 if [[ -z $selected ]]; then
+	exit 0
+fi
+
+# Child sessions cannot be attached to directly
+if [[ "$selected" =~ ^\[TMUX:child\] ]]; then
+	echo "Cannot attach to child session. Access through parent session." >&2
 	exit 0
 fi
 
