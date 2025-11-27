@@ -4,28 +4,56 @@ local auto_terminal_keymaps = {
   { name = "aider", key = "a" },
   { name = "claude", key = "c" },
   { name = "codex", key = "d" },
-  { name = "cursor", key = "<space>" },
+  { name = "cursor", key = "u" },
   { name = "gemini", key = "g" },
   { name = "opencode", key = "o" },
 }
 
+local default_terminal_file = vim.fn.stdpath("data") .. "/default_ai_terminal.txt"
+
+local function get_default_terminal()
+  local file = io.open(default_terminal_file, "r")
+  if file then
+    local content = file:read("*a")
+    file:close()
+    local terminal = vim.trim(content)
+    if terminal ~= "" then
+      return terminal
+    end
+  end
+  return "opencode"
+end
+
+local function set_default_terminal(name)
+  local file = io.open(default_terminal_file, "w")
+  if file then
+    file:write(name)
+    file:close()
+    vim.notify("Default AI terminal set to: " .. name, vim.log.levels.INFO)
+  end
+end
+
 local function get_sidekick_keys()
-  local default_terminal = "opencode"
+  local default_terminal = get_default_terminal()
   local defaults = { focus = true, filter = { name = default_terminal } }
   local keys = {
     { "<leader>at", false, mode = { "x", "n" } },
     {
       "<C-t>",
       function()
-        require("sidekick.cli").toggle(vim.tbl_deep_extend("force", defaults, {}))
+        local current_default = get_default_terminal()
+        require("sidekick.cli").toggle({ focus = true, filter = { name = current_default } })
       end,
     },
     {
       "<C-t>",
       function()
-        require("sidekick.cli").send(vim.tbl_deep_extend("force", defaults, {
+        local current_default = get_default_terminal()
+        require("sidekick.cli").send({
+          focus = true,
+          filter = { name = current_default },
           msg = "{file}\n\n{selection}\n",
-        }))
+        })
       end,
       mode = { "x" },
     },
@@ -35,9 +63,10 @@ local function get_sidekick_keys()
     table.insert(keys, {
       "<leader>at" .. terminal.key,
       function()
+        set_default_terminal(terminal.name)
         require("sidekick.cli").toggle(opts)
       end,
-      desc = "Toggle " .. terminal.name .. " in sidekick",
+      desc = "Toggle " .. terminal.name .. " in sidekick (sets as default)",
       mode = { "n" },
     })
     table.insert(keys, {
@@ -70,6 +99,56 @@ local function get_sidekick_keys()
       mode = { "n", "x" },
     })
   end
+
+  -- Add <space> keymaps for the default terminal
+  table.insert(keys, {
+    "<leader>at<space>",
+    function()
+      local current_default = get_default_terminal()
+      require("sidekick.cli").toggle({ focus = true, filter = { name = current_default } })
+    end,
+    desc = "Toggle default terminal in sidekick",
+    mode = { "n" },
+  })
+  table.insert(keys, {
+    "<leader>at<space>",
+    function()
+      local current_default = get_default_terminal()
+      require("sidekick.cli").send({
+        focus = true,
+        filter = { name = current_default },
+        msg = "{file}\n\n{selection}\n",
+      })
+    end,
+    desc = "Send selection to default terminal in sidekick",
+    mode = { "x" },
+  })
+  table.insert(keys, {
+    "<leader>al<space>",
+    function()
+      local current_default = get_default_terminal()
+      require("sidekick.cli").send({
+        focus = true,
+        filter = { name = current_default },
+        msg = "{file}\n",
+      })
+    end,
+    desc = "Send file to default terminal",
+  })
+  table.insert(keys, {
+    "<leader>ad<space>",
+    function()
+      local current_default = get_default_terminal()
+      require("sidekick.cli").send({
+        focus = true,
+        filter = { name = current_default },
+        msg = "{diagnostics}\n",
+      })
+    end,
+    desc = "Send diagnostics to default terminal",
+    mode = { "n", "x" },
+  })
+
   return keys
 end
 
@@ -80,7 +159,7 @@ return {
     opts = { ---@type sidekick.Config
       cli = {
         mux = {
-          enabled = false,
+          enabled = true,
         },
         tools = {
           opencode = {
