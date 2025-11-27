@@ -313,7 +313,7 @@ find_dirs() {
 				display_path=$(echo "$session_path" | sed "s|^$HOME|~|")
 				# Mark child sessions (those with spaces) differently
 				if [[ "$session_name" == *" "* ]]; then
-					echo "[TMUX:child] $first_word ($display_path)"
+					echo "[TMUX:child] $session_name ($display_path)"
 				else
 					echo "[TMUX] $first_word ($display_path)"
 				fi
@@ -326,7 +326,7 @@ find_dirs() {
 				display_path=$(echo "$session_path" | sed "s|^$HOME|~|")
 				# Mark child sessions (those with spaces) differently
 				if [[ "$session_name" == *" "* ]]; then
-					echo "[TMUX:child] $first_word ($display_path)"
+					echo "[TMUX:child] $session_name ($display_path)"
 				else
 					echo "[TMUX] $first_word ($display_path)"
 				fi
