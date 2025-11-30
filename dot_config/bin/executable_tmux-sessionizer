@@ -236,14 +236,11 @@ fzf_preview() {
 		session_name=$(echo "$1" | sed "s/^\[TMUX[^]]*\] //" | sed "s/ (.*)$//")
 		session_path=$(tmux display-message -p -t "$session_name" "#{pane_current_path}" 2>/dev/null | sed "s|^$HOME|~|")
 		echo "$session_path"
-		echo ""
 		tmux capture-pane -ep -S - -t "$session_name" 2>/dev/null || echo "Session not available"
 	else
-		dir_path=$(echo "$1" | sed "s|^~|$HOME|")
-		echo "$1"
-		echo ""
+		dir_path="${1/#\~/$HOME}"
 		if command -v eza >/dev/null 2>&1; then
-			eza --git --color=always --tree "$dir_path" 2>/dev/null || echo "Directory not accessible"
+			eza --color=always --tree --icons "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		else
 			ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		fi
