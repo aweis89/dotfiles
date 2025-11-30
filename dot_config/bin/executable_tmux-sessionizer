@@ -243,7 +243,7 @@ fzf_preview() {
 		echo "$1"
 		echo ""
 		if command -v eza >/dev/null 2>&1; then
-			eza --git -l --color=always "$dir_path" 2>/dev/null || echo "Directory not accessible"
+			eza --git --color=always --tree "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		else
 			ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		fi
@@ -438,7 +438,7 @@ else
 		--tmux 99% \
 		--multi \
 		--preview 'bash -c "fzf_preview {}"' \
-		--preview-window 'right:60%:follow' \
+		--preview-window 'right:60%' \
 		--bind "tab:toggle+down" \
 		--bind "ctrl-d:half-page-down" \
 		--bind "ctrl-u:half-page-up" \
