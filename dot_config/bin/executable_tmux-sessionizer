@@ -240,7 +240,7 @@ fzf_preview() {
 	else
 		dir_path="${1/#\~/$HOME}"
 		if command -v eza >/dev/null 2>&1; then
-			eza --color=always --tree --icons "$dir_path" 2>/dev/null || echo "Directory not accessible"
+			eza --color=always --tree --icons always "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		else
 			ls -l --color=always "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		fi
