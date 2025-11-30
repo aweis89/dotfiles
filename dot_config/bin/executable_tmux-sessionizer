@@ -272,7 +272,7 @@ fzf_delete() {
 			session_name=$(echo "$line" | sed 's/^\[TMUX[^]]*\] //' | sed 's/ (.*)$//')
 			tmux kill-session -t "$session_name"
 		else
-			dir_path=$(echo "$line" | sed 's|^~|'"$HOME"'|')
+			dir_path="${line/#\~/$HOME}"
 			if [ -d "$dir_path" ]; then
 				rm -rf "$dir_path"
 			fi
