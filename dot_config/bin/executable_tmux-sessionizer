@@ -242,7 +242,7 @@ fzf_preview() {
 		if command -v eza >/dev/null 2>&1; then
 			eza --color=always --tree --icons "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		else
-			ls -l "$dir_path" 2>/dev/null || echo "Directory not accessible"
+			ls -l --color=always "$dir_path" 2>/dev/null || echo "Directory not accessible"
 		fi
 	fi
 }
