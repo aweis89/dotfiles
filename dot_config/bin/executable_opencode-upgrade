@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$HOME/p/opencode"
+
+if [[ "${1:-}" == "--pull" ]] || [[ "${1:-}" == "-p" ]]; then
+    echo "Pulling latest changes..."
+    cd "$REPO_ROOT"
+    git fetch upstream
+    git rebase upstream/dev
+fi
+
+echo "Building opencode..."
+cd "$REPO_ROOT/packages/opencode"
+bun run build --single
+
+echo "Installing to ~/.local/bin..."
+mkdir -p ~/.local/bin
+cp -f ./dist/opencode-darwin-arm64/bin/opencode ~/.local/bin/opencode
+
+echo "Done! opencode installed to ~/.local/bin/opencode"
