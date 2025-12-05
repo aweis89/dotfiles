@@ -22,6 +22,6 @@ bun run build --single
 
 echo "Installing to ~/.local/bin..."
 mkdir -p ~/.local/bin
-cp -f ./dist/opencode-darwin-arm64/bin/opencode ~/.local/bin/opencode
+ln -sf $PWD/dist/opencode-darwin-arm64/bin/opencode ~/.local/bin/opencode
 
 echo "Done! opencode installed to ~/.local/bin/opencode"
