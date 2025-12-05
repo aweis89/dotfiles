@@ -270,6 +270,10 @@ fzf_delete() {
 	for line in "$@"; do
 		if echo "$line" | grep -q '^\[TMUX'; then
 			session_name=$(echo "$line" | sed 's/^\[TMUX[^]]*\] //' | sed 's/ (.*)$//')
+			if [ "$session_name" = "default" ]; then
+				echo "Cannot delete 'default' session" >&2
+				continue
+			fi
 			tmux kill-session -t "$session_name"
 		else
 			dir_path="${line/#\~/$HOME}"
