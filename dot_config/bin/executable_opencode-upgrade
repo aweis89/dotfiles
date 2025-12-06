@@ -7,6 +7,7 @@ if [[ ! -d "$REPO_ROOT" ]]; then
 	echo "Repository not found. Cloning opencode..."
 	cd "$HOME/p"
 	gclone opencode
+	git remote add upstream https://github.com/sst/opencode
 fi
 
 if [[ "${1:-}" == "--pull" ]] || [[ "${1:-}" == "-p" ]]; then
