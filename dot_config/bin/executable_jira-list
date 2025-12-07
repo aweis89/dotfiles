@@ -2,8 +2,7 @@
 
 jira-done() {
 	id="$1"
-	jira issue move $id Start
-	jira issue move $id --resolution Done "Skip Review"
+	jira issue move $id "Done"
 }
 
 # Create temp files for state and helper script
@@ -100,10 +99,15 @@ ctrl-o)
 	exit 0 # Exit after creating the branch
 	;;
 ctrl-d)
-	# Mark the issue as done
-	jira issue move "$id" Start
-	jira issue move "$id" --resolution Done "Skip Review"
-	# Continue to open the issue in the browser after marking as done
+	story_points=$(jira issue view "$id" --raw | jq -r '.fields.customfield_10016 // empty')
+	if [[ -z "$story_points" ]] || [[ "$story_points" == "null" ]]; then
+		echo "Issue $id has no story points."
+		read -p "Enter story points: " points
+		if [[ -n "$points" ]]; then
+			jira issue edit "$id" --custom Story\ Points="$points" --no-input
+		fi
+	fi
+	jira issue move "$id" "Done"
 	;;
 esac
 
