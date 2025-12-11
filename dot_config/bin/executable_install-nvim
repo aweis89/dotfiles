@@ -1,9 +1,22 @@
 #!/bin/bash
 
+set -e
+
 dest=$HOME/.local/share/nvim-macos-arm64
 
+echo "Downloading nvim-macos-arm64..."
 curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz
 
+echo "Extracting to $dest..."
 mkdir -p "$dest"
 tar -xzf nvim-macos-arm64.tar.gz -C "$dest" --strip-components 1
 rm nvim-macos-arm64.tar.gz
+
+echo "Re-signing nvim binary and bundled parsers..."
+codesign --force --sign - "$dest/bin/nvim" 2>/dev/null || true
+find "$dest/lib/nvim/parser" -name "*.so" -exec codesign --force --sign - {} \; 2>/dev/null || true
+
+echo "Re-signing installed treesitter parsers..."
+find "$HOME/.local/share/nvim/site/parser" -name "*.so" -exec codesign --force --sign - {} \; 2>/dev/null || true
+
+echo "nvim installation and code signing complete!"
