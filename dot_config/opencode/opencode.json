@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "tokyonight",
   "autoupdate": true,
   "share": "disabled",
   "permission": {
@@ -19,7 +18,9 @@
       "name": "Cursor Agent (ACP)",
       "options": {
         "command": "cursor-agent",
-        "args": ["acp"]
+        "args": [
+          "acp"
+        ]
       },
       "models": {
         "composer-1": {
