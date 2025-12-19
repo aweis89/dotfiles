@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Validate required environment variables
-if [ -z "$GITHUB_TOKEN" ]; then
-	echo "GITHUB_TOKEN not set" >&2
-	exit 1
-fi
-
 input=$1
 
 # Parse input to determine org and repo
@@ -56,7 +50,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 		fi
 	fi
 
-	url="https://$GITHUB_TOKEN@github.com/$org/$repo"
+	url="https://github.com/$org/$repo"
 	if git remote | grep -q '^origin$'; then
 		git remote set-url origin "$url"
 	else
@@ -79,7 +73,7 @@ if [ -z "$repo" ]; then
 	fi
 fi
 
-url="https://$GITHUB_TOKEN@github.com/$org/$repo"
+url="https://github.com/$org/$repo"
 
 # Clone and enter the repo
 git clone "$url" || exit 1
