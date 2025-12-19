@@ -16,12 +16,9 @@ return {
 
               if #files > 0 then
                 local context = require("opencode.context")
-                require("opencode.ui.mention").mention(function(mention_cb)
-                  for _, file in ipairs(files) do
-                    mention_cb(file)
-                    context.add_file(file)
-                  end
-                end)
+                for _, file in ipairs(files) do
+                  context.add_file(file)
+                end
               end
             end
 
@@ -48,7 +45,9 @@ return {
       require("opencode.state").required_version = 0
       require("opencode").setup({
         context = {
-          enabled = true,
+          current_file = {
+            enabled = false,
+          },
           diagnostics = {
             info = false, -- Include diagnostics info in the context (default to false
             warn = false, -- Include diagnostics warnings in the context
