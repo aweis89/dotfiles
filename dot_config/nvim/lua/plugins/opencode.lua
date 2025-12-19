@@ -24,6 +24,10 @@ return {
                 end)
               end
             end
+
+            vim.defer_fn(function()
+              require("opencode.api").open_input()
+            end, 100)
           end,
         },
         win = {
@@ -52,6 +56,9 @@ return {
           },
           selection = {
             enabled = true, -- Include selected text in the context
+          },
+          cursor_data = {
+            enabled = false,
           },
         },
         hooks = {
