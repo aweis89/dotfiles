@@ -7,10 +7,26 @@ return {
       require("opencode.state").required_version = 0
       require("opencode").setup({
         context = {
-          enabled = false,
+          enabled = true,
+          diagnostics = {
+            info = false, -- Include diagnostics info in the context (default to false
+            warn = false, -- Include diagnostics warnings in the context
+            error = false, -- Include diagnostics errors in the context
+          },
+          selection = {
+            enabled = true, -- Include selected text in the context
+          },
+        },
+        hooks = {
+          on_done_thinking = function()
+            vim.notify("Done thinking ")
+          end,
         },
         ui = {
           position = "current",
+          output = {
+            show_thinking_tokens = true,
+          },
         },
       })
     end,

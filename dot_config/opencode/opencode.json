@@ -3,7 +3,7 @@
   "theme": "tokyonight",
   "autoupdate": true,
   "share": "disabled",
-  "model": "cursor-acp/gemini-3-flash",
+  "model": "cursor-acp/sonnet-4.5",
   "permission": {
     "edit": "allow",
     "bash": "allow",
