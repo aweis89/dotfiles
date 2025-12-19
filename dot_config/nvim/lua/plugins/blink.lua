@@ -8,6 +8,8 @@ return {
       local overrides = {
         keymap = {
           preset = "super-tab",
+          ["<C-j>"] = { "select_next", "fallback" },
+          ["<C-k>"] = { "select_prev", "fallback" },
         },
       }
       opts = vim.tbl_deep_extend("force", opts or {}, overrides)
