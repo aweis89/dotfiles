@@ -12,8 +12,14 @@ return {
   { "vimpostor/vim-tpipeline", event = "VeryLazy" },
   {
     "nvim-lualine/lualine.nvim",
+    enabled = true,
     -- https://github.com/vimpostor/vim-tpipeline/issues/53
     config = function(_, opts)
+      -- disable statusline in horizontal splits
+      -- https://github.com/vimpostor/vim-tpipeline/issues/19
+      vim.g.tpipeline_clearstl = 1
+
+      opts.globalstatus = true
       require("lualine").setup(opts)
 
       if vim.env.TMUX then
