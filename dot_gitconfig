@@ -23,6 +23,9 @@
 	process = git-lfs filter-process
 	required = true
 
+[credential]
+  helper = "!f() { test \"$1\" = get && echo \"username=token\" && echo \"password=${GITHUB_TOKEN}\"; }; f"
+
 [delta "nvim"]
   file-style = omit
   # hunk-header-style= omit
