@@ -228,25 +228,25 @@ return {
       })
     end,
   },
-  {
-    "folke/snacks.nvim",
-    opts = {
-      picker = {
-        actions = {
-          sidekick_send = function(...)
-            return require("sidekick.cli.picker.snacks").send(...)
-          end,
-        },
-        win = {
-          input = {
-            keys = {
-              ["<localleader>a"] = { "sidekick_send", mode = { "n", "i" } },
-            },
-          },
-        },
-      },
-    },
-  },
+  -- {
+  --   "folke/snacks.nvim",
+  --   opts = {
+  --     picker = {
+  --       actions = {
+  --         sidekick_send = function(...)
+  --           return require("sidekick.cli.picker.snacks").send(...)
+  --         end,
+  --       },
+  --       win = {
+  --         input = {
+  --           keys = {
+  --             ["<localleader>a"] = { "sidekick_send", mode = { "n", "i" } },
+  --           },
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
   {
     "aweis89/ai-terminals.nvim",
     enabled = use_terminal_ai,

@@ -1,5 +1,42 @@
 return {
   {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        actions = {
+          sidekick_send = function(picker)
+            local selected = picker:selected({ fallback = true })
+            if selected and #selected > 0 then
+              local files = {}
+              for _, item in ipairs(selected) do
+                if item.file then
+                  table.insert(files, item.file)
+                end
+              end
+
+              if #files > 0 then
+                local context = require("opencode.context")
+                require("opencode.ui.mention").mention(function(mention_cb)
+                  for _, file in ipairs(files) do
+                    mention_cb(file)
+                    context.add_file(file)
+                  end
+                end)
+              end
+            end
+          end,
+        },
+        win = {
+          input = {
+            keys = {
+              ["<localleader>a"] = { "sidekick_send", mode = { "n", "i" } },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
     "sudo-tee/opencode.nvim",
     lazy = false,
     config = function()
