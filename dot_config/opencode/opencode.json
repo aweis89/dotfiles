@@ -14,6 +14,12 @@
     "session_child_cycle": "ctrl+l",
     "session_child_cycle_reverse": "ctrl+h"
   },
+  "command": {
+    "update-cursor-models": {
+      "template": "Run `cursor-agent --model invalid` to get the list of all available Cursor models. Compare this list with the models defined in the cursor-acp provider section of dot_config/opencode/opencode.json. Add any missing models to the config file with appropriate configuration (tool_call: true, temperature: true, attachment: true, and reasonable context/output limits based on similar models). Apply the changes using chezmoi.",
+      "description": "Update cusor ACP models"
+    }
+  },
   "provider": {
     "cursor-acp": {
       "name": "Cursor Agent (ACP)",
@@ -93,6 +99,17 @@
         "gemini-3-pro": {
           "id": "gemini-3-pro",
           "name": "Gemini 3 Pro",
+          "tool_call": true,
+          "temperature": true,
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 8192
+          }
+        },
+        "gemini-3-flash": {
+          "id": "gemini-3-flash",
+          "name": "Gemini 3 Flash",
           "tool_call": true,
           "temperature": true,
           "attachment": true,
