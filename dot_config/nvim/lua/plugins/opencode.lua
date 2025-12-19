@@ -6,6 +6,9 @@ return {
       ---@diagnostic disable
       require("opencode.state").required_version = 0
       require("opencode").setup({
+        context = {
+          enabled = false,
+        },
         ui = {
           position = "current",
         },

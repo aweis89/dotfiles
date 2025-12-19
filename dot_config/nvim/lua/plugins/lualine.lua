@@ -9,19 +9,12 @@ end
 
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  { "vimpostor/vim-tpipeline", event = "VeryLazy" },
   {
-    "nvim-lualine/lualine.nvim",
-    enabled = true,
-    -- https://github.com/vimpostor/vim-tpipeline/issues/53
-    config = function(_, opts)
-      -- disable statusline in horizontal splits
-      -- https://github.com/vimpostor/vim-tpipeline/issues/19
-      vim.g.tpipeline_clearstl = 1
-
-      opts.globalstatus = true
-      require("lualine").setup(opts)
-
+    "vimpostor/vim-tpipeline",
+    event = "VeryLazy",
+    enabled = false,
+    config = function()
+      -- https://github.com/vimpostor/vim-tpipeline/issues/53
       if vim.env.TMUX then
         vim.api.nvim_create_autocmd({ "FocusGained", "ColorScheme" }, {
           callback = function()
@@ -30,11 +23,15 @@ return {
             end, 100)
           end,
         })
-
         vim.o.laststatus = 0
       end
     end,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    enabled = true,
     opts = {
+      globalstatus = true,
       sections = {
         lualine_b = {
           {
