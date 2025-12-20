@@ -56,7 +56,7 @@ return {
             enabled = false,
           },
           files = {
-            enabled = false,
+            enabled = true,
           },
           selection = {
             enabled = true,
