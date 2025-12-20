@@ -45,18 +45,23 @@ return {
       require("opencode.state").required_version = 0
       require("opencode").setup({
         context = {
-          current_file = {
+          enabled = true,
+          cursor_data = {
             enabled = false,
           },
           diagnostics = {
-            info = false, -- Include diagnostics info in the context (default to false
-            warn = false, -- Include diagnostics warnings in the context
-            error = false, -- Include diagnostics errors in the context
+            enabled = false,
+          },
+          current_file = {
+            enabled = false,
+          },
+          files = {
+            enabled = false,
           },
           selection = {
-            enabled = true, -- Include selected text in the context
+            enabled = true,
           },
-          cursor_data = {
+          agents = {
             enabled = false,
           },
         },
