@@ -4,7 +4,7 @@ return {
     opts = {
       picker = {
         actions = {
-          sidekick_send = function(picker)
+          opencode_send = function(picker)
             local selected = picker:selected({ fallback = true })
             if selected and #selected > 0 then
               local files = {}
@@ -30,7 +30,7 @@ return {
         win = {
           input = {
             keys = {
-              ["<localleader>a"] = { "sidekick_send", mode = { "n", "i" } },
+              ["<localleader>o"] = { "opencode_send", mode = { "n", "i" } },
             },
           },
         },

@@ -19,4 +19,7 @@ find "$dest/lib/nvim/parser" -name "*.so" -exec codesign --force --sign - {} \; 
 echo "Re-signing installed treesitter parsers..."
 find "$HOME/.local/share/nvim/site/parser" -name "*.so" -exec codesign --force --sign - {} \; 2>/dev/null || true
 
+echo "Running TSUpdate..."
+"$dest/bin/nvim" --headless "+TSUpdate" +qa
+
 echo "nvim installation and code signing complete!"

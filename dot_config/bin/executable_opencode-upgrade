@@ -17,6 +17,10 @@ if [[ "${1:-}" == "--pull" ]] || [[ "${1:-}" == "-p" ]]; then
 	git rebase upstream/dev
 fi
 
+echo "Installing dependencies..."
+cd "$REPO_ROOT"
+bun install
+
 echo "Building opencode..."
 cd "$REPO_ROOT/packages/opencode"
 bun run build --single
