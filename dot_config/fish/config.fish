@@ -37,6 +37,14 @@ function cluster-rename
     kubectl config rename-context "$context" "$target"
 end
 
+function opencode-model
+    if argv[1]
+        set -Ux OPENCODE_MODEL $argv[1]
+        return
+    end
+    set -Ux OPENCODE_MODEL (opencode models | fzf)
+end
+
 function rms
     rm -f ~/.local/state/nvim/swap/*
 end

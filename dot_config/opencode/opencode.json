@@ -3,7 +3,7 @@
   "theme": "tokyonight",
   "autoupdate": true,
   "share": "disabled",
-  "model": "cursor-acp/sonnet-4.5",
+  "model": "{env:OPENCODE_MODEL}",
   "permission": {
     "edit": "allow",
     "bash": "allow",
