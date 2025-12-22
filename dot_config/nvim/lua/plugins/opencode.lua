@@ -40,43 +40,45 @@ return {
   {
     "sudo-tee/opencode.nvim",
     lazy = false,
-    config = function()
+    opts = {
+      -- default_global_keymaps = false, -- If false, disables all default global keymaps
+      context = {
+        enabled = true,
+        cursor_data = {
+          enabled = false,
+        },
+        diagnostics = {
+          enabled = false,
+        },
+        current_file = {
+          enabled = false,
+        },
+        files = {
+          enabled = true,
+        },
+        selection = {
+          enabled = true,
+        },
+        agents = {
+          enabled = false,
+        },
+      },
+      ui = {
+        position = "current",
+        output = {
+          show_thinking_tokens = true,
+        },
+      },
+    },
+    config = function(_, opts)
+      -- enable local build version to work
       ---@diagnostic disable
       require("opencode.state").required_version = 0
-      require("opencode").setup({
-        context = {
-          enabled = true,
-          cursor_data = {
-            enabled = false,
-          },
-          diagnostics = {
-            enabled = false,
-          },
-          current_file = {
-            enabled = false,
-          },
-          files = {
-            enabled = true,
-          },
-          selection = {
-            enabled = true,
-          },
-          agents = {
-            enabled = false,
-          },
-        },
-        hooks = {
-          on_done_thinking = function()
-            vim.notify("Done thinking ")
-          end,
-        },
-        ui = {
-          position = "current",
-          output = {
-            show_thinking_tokens = true,
-          },
-        },
-      })
+      require("opencode").setup(opts)
+
+      vim.keymap.set("n", "<leader>ob", "<cmd>Opencode agent build<cr>", { desc = "Opencode Agent Build" })
+      vim.keymap.set("n", "<leader>op", "<cmd>Opencode agent plan<cr>", { desc = "Opencode Agent Plan" })
+      vim.keymap.set("n", "<leader>om", "<cmd>OpencodeConfigureProvider<cr>", { desc = "Opencode Configure Provider" })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
