@@ -1,3 +1,18 @@
+local function open_with_files(files)
+  if #files > 0 then
+    local context = require("opencode.context")
+    for _, file in ipairs(files) do
+      context.add_file(file)
+    end
+  end
+
+  vim.defer_fn(function()
+    require("opencode.core").open_if_closed():and_then(function()
+      require("opencode.api").open_input()
+    end)
+  end, 100)
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -13,21 +28,10 @@ return {
                   table.insert(files, item.file)
                 end
               end
+              picker:close()
 
-              if #files > 0 then
-                local context = require("opencode.context")
-                for _, file in ipairs(files) do
-                  context.add_file(file)
-                end
-              end
+              open_with_files(files)
             end
-            picker:close()
-
-            vim.defer_fn(function()
-              require("opencode.core").open_if_closed():and_then(function()
-                require("opencode.api").open_input()
-              end)
-            end, 100)
           end,
         },
         win = {
@@ -66,6 +70,11 @@ return {
           enabled = false,
         },
       },
+      keymap = {
+        input_window = {
+          ["<C-p>"] = { "switch_mode", mode = { "n", "i" } }, -- Switch between modes (build/plan)
+        },
+      },
       ui = {
         position = "current",
         output = {
@@ -77,11 +86,15 @@ return {
       -- enable local build version to work
       ---@diagnostic disable
       require("opencode.state").required_version = 0
-      require("opencode").setup(opts)
 
+      require("opencode").setup(opts)
       vim.keymap.set("n", "<leader>ob", "<cmd>Opencode agent build<cr>", { desc = "Opencode Agent Build" })
       vim.keymap.set("n", "<leader>op", "<cmd>Opencode agent plan<cr>", { desc = "Opencode Agent Plan" })
       vim.keymap.set("n", "<leader>om", "<cmd>OpencodeConfigureProvider<cr>", { desc = "Opencode Configure Provider" })
+      vim.keymap.set("n", "<leader>ol", function()
+        local current_file = vim.api.nvim_buf_get_name(0)
+        open_with_files({ current_file })
+      end, { desc = "Opencode add file" })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
