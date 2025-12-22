@@ -76,8 +76,8 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   group = augroup("auto_save_on_insert_leave"),
   callback = function()
-    if vim.bo.filetype ~= "gitcommit" then
-      vim.cmd("silent update")
+    if vim.bo.buftype == "" and vim.bo.filetype ~= "gitcommit" then
+      vim.cmd("silent! update")
     end
   end,
 })
