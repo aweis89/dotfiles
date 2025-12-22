@@ -21,9 +21,12 @@ return {
                 end
               end
             end
+            picker:close()
 
             vim.defer_fn(function()
-              require("opencode.api").open_input()
+              require("opencode.core").open_if_closed():and_then(function()
+                require("opencode.api").open_input()
+              end)
             end, 100)
           end,
         },
