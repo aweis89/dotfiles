@@ -45,7 +45,8 @@ return {
     },
   },
   {
-    "sudo-tee/opencode.nvim",
+    -- "sudo-tee/opencode.nvim",
+    "aweis89/opencode.nvim",
     lazy = false,
     opts = {
       -- default_global_keymaps = false, -- If false, disables all default global keymaps
