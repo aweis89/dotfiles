@@ -8,11 +8,9 @@ local function open_with_files(files)
     context.add_file(file)
   end
 
-  vim.defer_fn(function()
-    require("opencode.core").open_if_closed():and_then(function()
-      require("opencode.api").open_input()
-    end)
-  end, 100)
+  require("opencode.core").open_if_closed():and_then(function()
+    require("opencode.api").open_input()
+  end)
 end
 
 return {
