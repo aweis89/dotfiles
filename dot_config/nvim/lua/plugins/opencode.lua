@@ -1,9 +1,11 @@
 local function open_with_files(files)
-  if #files > 0 then
-    local context = require("opencode.context")
-    for _, file in ipairs(files) do
-      context.add_file(file)
-    end
+  if #files == 0 then
+    return
+  end
+
+  local context = require("opencode.context")
+  for _, file in ipairs(files) do
+    context.add_file(file)
   end
 
   vim.defer_fn(function()
@@ -71,8 +73,38 @@ return {
         },
       },
       keymap = {
+        editor = {
+          ["<leader>om"] = { "configure_provider" }, -- Open provider configuration
+          ["<leader>ol"] = {
+            function()
+              open_with_files({ vim.api.nvim_buf_get_name(0) })
+            end,
+          },
+        },
         input_window = {
           ["<C-p>"] = { "switch_mode", mode = { "n", "i" } }, -- Switch between modes (build/plan)
+          ["<C-u>"] = {
+            function()
+              local core = require("opencode.core")
+              core.open({ new_session = false, focus = "output" }):wait()
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-b>", true, false, true), "n", true)
+            end,
+            mode = { "n", "i" },
+          },
+          ["<C-o>"] = {
+            function()
+              require("opencode.core").open({ new_session = false, focus = "output" })
+            end,
+            mode = { "n", "i" },
+          },
+        },
+        output_window = {
+          ["<C-i>"] = {
+            function()
+              require("opencode.core").open({ new_session = false, focus = "input" })
+            end,
+            mode = { "n", "i" },
+          },
         },
       },
       ui = {
@@ -86,11 +118,8 @@ return {
       -- enable local build version to work
       ---@diagnostic disable
       require("opencode.state").required_version = 0
-
       require("opencode").setup(opts)
-      vim.keymap.set("n", "<leader>ob", "<cmd>Opencode agent build<cr>", { desc = "Opencode Agent Build" })
-      vim.keymap.set("n", "<leader>op", "<cmd>Opencode agent plan<cr>", { desc = "Opencode Agent Plan" })
-      vim.keymap.set("n", "<leader>om", "<cmd>OpencodeConfigureProvider<cr>", { desc = "Opencode Configure Provider" })
+
       vim.keymap.set("n", "<leader>ol", function()
         local current_file = vim.api.nvim_buf_get_name(0)
         open_with_files({ current_file })
