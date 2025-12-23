@@ -7,7 +7,6 @@ return {
       ---@type blink.cmp.Config
       local overrides = {
         keymap = {
-          preset = "super-tab",
           ["<C-j>"] = { "select_next", "fallback" },
           ["<C-k>"] = { "select_prev", "fallback" },
         },
