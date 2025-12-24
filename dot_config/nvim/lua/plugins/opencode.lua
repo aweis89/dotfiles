@@ -71,12 +71,12 @@ return {
       },
       keymap = {
         editor = {
-          ["<leader>ox"] = { "cancel" },
-          ["<leader>om"] = { "configure_provider" }, -- Open provider configuration
+          ["<leader>ox"] = { "cancel", desc = "Cancel Request" },
           ["<leader>ol"] = {
             function()
               open_with_files({ vim.api.nvim_buf_get_name(0) })
             end,
+            desc = "Load Current File",
           },
         },
         input_window = {
