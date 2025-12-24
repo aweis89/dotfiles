@@ -34,7 +34,6 @@ return {
     "nvim-lualine/lualine.nvim",
     enabled = true,
     opts = {
-      globalstatus = true,
       sections = {
         lualine_b = {
           {
