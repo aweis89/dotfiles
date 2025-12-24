@@ -7,12 +7,15 @@ local copilot_icons = function()
   }
 end
 
+vim.g.tpipeline_clearstl = 1
+vim.opt.fillchars = { stlnc = "─", stl = "─", vert = "│" }
+
 return {
   { "akinsho/bufferline.nvim", enabled = false },
   {
     "vimpostor/vim-tpipeline",
     event = "VeryLazy",
-    enabled = false,
+    enabled = true,
     config = function()
       -- https://github.com/vimpostor/vim-tpipeline/issues/53
       if vim.env.TMUX then
