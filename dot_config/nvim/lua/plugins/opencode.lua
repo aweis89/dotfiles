@@ -80,7 +80,7 @@ return {
           },
         },
         input_window = {
-          ["<C-x>"] = { "cancel" },
+          ["<C-x>"] = { "cancel", mode = { "n", "i" } },
           ["<C-p>"] = { "switch_mode", mode = { "n", "i" } }, -- Switch between modes (build/plan)
           ["<C-u>"] = {
             function()
@@ -98,7 +98,7 @@ return {
           },
         },
         output_window = {
-          ["<C-x>"] = { "cancel" },
+          ["<C-x>"] = { "cancel", mode = { "n", "i" } },
           ["<C-i>"] = {
             function()
               require("opencode.core").open({ new_session = false, focus = "input" })
