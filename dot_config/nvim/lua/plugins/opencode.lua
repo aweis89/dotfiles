@@ -125,20 +125,21 @@ return {
       require("opencode").setup(opts)
     end,
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      {
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = {
-          file_types = { "markdown", "opencode_output" },
-          checkbox = { enabled = true },
-          heading = {
-            icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
-          },
-        },
-        ft = { "markdown", "opencode_output" },
-      },
-      "saghen/blink.cmp",
+      "MeanderingProgrammer/render-markdown.nvim",
       "folke/snacks.nvim",
+      "nvim-lua/plenary.nvim",
+      "saghen/blink.cmp",
     },
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      file_types = { "markdown", "opencode_output" },
+      checkbox = { enabled = true },
+      heading = {
+        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+      },
+    },
+    ft = { "markdown", "norg", "rmd", "org", "opencode_output" },
   },
 }
