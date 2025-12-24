@@ -135,7 +135,7 @@ return {
         ft = { "markdown", "Avante", "copilot-chat", "opencode_output" },
       },
       "saghen/blink.cmp",
-      -- "folke/snacks.nvim",
+      "folke/snacks.nvim",
     },
   },
 }
