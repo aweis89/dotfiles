@@ -135,7 +135,7 @@ return {
             icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
           },
         },
-        ft = { "markdown", "Avante", "copilot-chat", "opencode_output" },
+        ft = { "markdown", "opencode_output" },
       },
       "saghen/blink.cmp",
       "folke/snacks.nvim",
