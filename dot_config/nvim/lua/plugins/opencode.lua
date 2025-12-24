@@ -8,9 +8,7 @@ local function open_with_files(files)
     context.add_file(file)
   end
 
-  require("opencode.core").open_if_closed():and_then(function()
-    require("opencode.api").open_input()
-  end)
+  require("opencode.core").open_if_closed({ focus = "input" })
 end
 
 return {
@@ -45,8 +43,8 @@ return {
     },
   },
   {
-    -- "sudo-tee/opencode.nvim",
-    "aweis89/opencode.nvim",
+    "sudo-tee/opencode.nvim",
+    -- "aweis89/opencode.nvim",
     lazy = false,
     opts = {
       -- default_global_keymaps = false, -- If false, disables all default global keymaps
@@ -73,6 +71,7 @@ return {
       },
       keymap = {
         editor = {
+          ["<leader>ox"] = { "cancel" },
           ["<leader>om"] = { "configure_provider" }, -- Open provider configuration
           ["<leader>ol"] = {
             function()
@@ -81,6 +80,7 @@ return {
           },
         },
         input_window = {
+          ["<C-x>"] = { "cancel" },
           ["<C-p>"] = { "switch_mode", mode = { "n", "i" } }, -- Switch between modes (build/plan)
           ["<C-u>"] = {
             function()
@@ -98,6 +98,7 @@ return {
           },
         },
         output_window = {
+          ["<C-x>"] = { "cancel" },
           ["<C-i>"] = {
             function()
               require("opencode.core").open({ new_session = false, focus = "input" })
@@ -108,8 +109,12 @@ return {
       },
       ui = {
         position = "current",
-        output = {
-          show_thinking_tokens = true,
+        input_height = 0.10, -- Input height as percentage of window height
+        input_position = "bottom", -- 'bottom' (default) or 'top'. Position of the input window
+        input = {
+          text = {
+            wrap = true, -- Wraps text inside input window
+          },
         },
       },
     },
@@ -118,11 +123,6 @@ return {
       ---@diagnostic disable
       require("opencode.state").required_version = 0
       require("opencode").setup(opts)
-
-      vim.keymap.set("n", "<leader>ol", function()
-        local current_file = vim.api.nvim_buf_get_name(0)
-        open_with_files({ current_file })
-      end, { desc = "Opencode add file" })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -135,7 +135,7 @@ return {
         ft = { "markdown", "Avante", "copilot-chat", "opencode_output" },
       },
       "saghen/blink.cmp",
-      "folke/snacks.nvim",
+      -- "folke/snacks.nvim",
     },
   },
 }
