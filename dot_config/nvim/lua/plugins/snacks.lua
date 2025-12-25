@@ -217,9 +217,13 @@ return {
             },
           },
           previewers = {
-            -- use delta for git diffs
-            -- git = { builtin = false },
-            -- diff = { builtin = false },
+            diff = {
+              style = "terminal",
+              cmd = { "delta", "--side-by-side" },
+            },
+            git = {
+              args = { "-c", "delta.side-by-side=true" },
+            },
           },
           win = {
             input = {
@@ -299,6 +303,13 @@ return {
           },
         },
       }
+
+      local use_delta = true
+      if use_delta then
+        overrides.picker.previewers.diff.style = "terminal"
+        overrides.picker.previewers.diff.cmd = { "delta", "--side-by-side" }
+        overrides.picker.previewers.git.args = { "-c", "delta.side-by-side=true" }
+      end
 
       local file_action_pickers = {
         "buffers",
