@@ -7,6 +7,7 @@ local copilot_icons = function()
   }
 end
 
+vim.g.tpipeline_autoembed = 0
 vim.g.tpipeline_clearstl = 1
 vim.opt.fillchars = { stlnc = "─", stl = "─", vert = "│" }
 
@@ -14,10 +15,21 @@ return {
   { "akinsho/bufferline.nvim", enabled = false },
   {
     "vimpostor/vim-tpipeline",
-    event = "VeryLazy",
+    dependencies = { "nvim-lualine/lualine.nvim" },
+    lazy = false,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
     enabled = true,
-    config = function()
-      -- https://github.com/vimpostor/vim-tpipeline/issues/53
+    -- https://github.com/vimpostor/vim-tpipeline/issues/53
+    config = function(_, opts)
+      -- disable statusline in horizontal splits
+      -- https://github.com/vimpostor/vim-tpipeline/issues/19
+      vim.g.tpipeline_clearstl = 1
+
+      opts.globalstatus = true
+      require("lualine").setup(opts)
+
       if vim.env.TMUX then
         vim.api.nvim_create_autocmd({ "FocusGained", "ColorScheme" }, {
           callback = function()
@@ -26,13 +38,10 @@ return {
             end, 100)
           end,
         })
+
         vim.o.laststatus = 0
       end
     end,
-  },
-  {
-    "nvim-lualine/lualine.nvim",
-    enabled = true,
     opts = {
       sections = {
         lualine_b = {

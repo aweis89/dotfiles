@@ -206,6 +206,11 @@ return {
           end,
         },
         picker = {
+          layout = {
+            cycle = true,
+            preset = "ivy",
+            preview = "main",
+          },
           formatters = {
             file = {
               truncate = 90,
