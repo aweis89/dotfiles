@@ -135,6 +135,7 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
       file_types = { "markdown", "opencode_output" },
+      anti_conceal = { enabled = false },
       checkbox = { enabled = true },
       heading = {
         icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
