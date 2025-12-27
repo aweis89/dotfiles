@@ -43,8 +43,8 @@ return {
     },
   },
   {
-    "sudo-tee/opencode.nvim",
-    -- "aweis89/opencode.nvim",
+    -- "sudo-tee/opencode.nvim",
+    "aweis89/opencode.nvim",
     lazy = false,
     opts = {
       -- default_global_keymaps = false, -- If false, disables all default global keymaps
@@ -109,9 +109,10 @@ return {
       },
       ui = {
         position = "current",
-        input_height = 0.10, -- Input height as percentage of window height
+        input_height = 0.30, -- Input height as percentage of window height
         input_position = "bottom", -- 'bottom' (default) or 'top'. Position of the input window
         input = {
+          dynamic = true,
           text = {
             wrap = true, -- Wraps text inside input window
           },
