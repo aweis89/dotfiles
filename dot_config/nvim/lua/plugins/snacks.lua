@@ -178,7 +178,18 @@ return {
     opts = function(_, opts)
       -- opts.dashboard.enabled = false
       opts.dashboard.preset.header = ""
+
+      -- Shared layout for git pickers (status, diff, log)
+      local git_picker_layout = {
+        preview = "main",
+        fullscreen = false,
+        layout = {
+          height = 0.25,
+        },
+      }
+
       local git_log_settings = {
+        layout = git_picker_layout,
         win = {
           input = {
             keys = {
@@ -306,15 +317,11 @@ return {
               unloaded = false,
             },
             git_status = {
-              layout = {
-                preview = "main",
-                fullscreen = false,
-              },
+              layout = git_picker_layout,
               win = {
                 input = {
                   keys = {
                     ["<localleader>r"] = { "git_reset_file", mode = { "n", "i" } },
-
                     ["<localleader>s"] = { "git_stage", mode = { "n", "i" } },
                     ["<localleader>g"] = { "commit", mode = { "n", "i" } },
                   },
@@ -322,15 +329,11 @@ return {
               },
             },
             git_diff = {
-              layout = {
-                preview = "main",
-                fullscreen = false,
-              },
+              layout = git_picker_layout,
               win = {
                 input = {
                   keys = {
                     ["<localleader>r"] = { "git_reverse_hunk", mode = { "n", "i" } },
-
                     ["<localleader>s"] = { "git_stage", mode = { "n", "i" } },
                     ["<localleader>g"] = { "commit", mode = { "n", "i" } },
                   },
