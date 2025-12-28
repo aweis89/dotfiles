@@ -208,9 +208,8 @@ return {
         picker = {
           layout = {
             cycle = true,
+            fullscreen = true,
             preset = "ivy",
-            preview = "main",
-            layout = { position = "bottom" },
           },
           formatters = {
             file = {
@@ -229,7 +228,8 @@ return {
           win = {
             input = {
               keys = {
-                ["<c-v>"] = { "explorer_paste", mode = { "n", "x" } },
+                ["<C-v>"] = { "explorer_paste", mode = { "n", "x" } },
+                ["<C-h>"] = { "toggle_hidden", mode = { "i", "n" } },
                 ["<localleader>c"] = { "toggle_cwd", mode = { "n", "i" } },
               },
             },
@@ -306,6 +306,10 @@ return {
               unloaded = false,
             },
             git_status = {
+              layout = {
+                preview = "main",
+                fullscreen = false,
+              },
               win = {
                 input = {
                   keys = {
@@ -318,6 +322,10 @@ return {
               },
             },
             git_diff = {
+              layout = {
+                preview = "main",
+                fullscreen = false,
+              },
               win = {
                 input = {
                   keys = {
