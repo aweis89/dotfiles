@@ -219,7 +219,7 @@ return {
           previewers = {
             diff = {
               style = "terminal",
-              cmd = { "delta", "--side-by-side" },
+              cmd = { "delta" },
             },
             git = {
               args = { "-c", "delta.side-by-side=true" },
@@ -260,6 +260,23 @@ return {
               picker:close()
             end,
             ["git_stage"] = git_stage,
+            ["git_reverse_hunk"] = function(picker)
+              local items = picker:selected({ fallback = true })
+              local done = 0
+              for _, item in ipairs(items) do
+                if item.diff then
+                  Snacks.picker.util.cmd({ "git", "apply", "--reverse" }, function()
+                    done = done + 1
+                    if done == #items then
+                      picker:refresh()
+                    end
+                  end, { cwd = item.cwd, input = item.diff })
+                else
+                  Snacks.notify.error("Can't reverse this change", { title = "Snacks Picker" })
+                  return
+                end
+              end
+            end,
           },
           sources = {
             projects = {
@@ -291,9 +308,22 @@ return {
               win = {
                 input = {
                   keys = {
+                    ["<localleader>r"] = { "git_reset_file", mode = { "n", "i" } },
+
                     ["<localleader>s"] = { "git_stage", mode = { "n", "i" } },
                     ["<localleader>g"] = { "commit", mode = { "n", "i" } },
-                    ["<localleader>r"] = { "git_reset_file", mode = { "n", "i" } },
+                  },
+                },
+              },
+            },
+            git_diff = {
+              win = {
+                input = {
+                  keys = {
+                    ["<localleader>r"] = { "git_reverse_hunk", mode = { "n", "i" } },
+
+                    ["<localleader>s"] = { "git_stage", mode = { "n", "i" } },
+                    ["<localleader>g"] = { "commit", mode = { "n", "i" } },
                   },
                 },
               },

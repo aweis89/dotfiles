@@ -8,7 +8,10 @@ local function open_with_files(files)
     context.add_file(file)
   end
 
-  require("opencode.core").open_if_closed({ focus = "input" })
+  require("opencode.core").open({
+    focus = "input",
+    start_insert = true,
+  })
 end
 
 return {
