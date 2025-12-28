@@ -12,36 +12,6 @@ end
 vim.g.root_spec = { "lsp", { ".git", "lua", "go.mod", "base" }, "cwd" }
 -- vim.g.root_spec = { ".git" }
 
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = augroup("auto_root"),
-  callback = function(arg)
-    local root = LazyVim.root.get()
-    if root == vim.fn.getcwd() then
-      return
-    end
-
-    -- List of filenames to skip
-    local skip_dir_change_files = { "COMMIT_EDITMSG" }
-    local buf_name = vim.api.nvim_buf_get_name(arg.buf)
-
-    if buf_name then
-      local current_filename = vim.fn.fnamemodify(buf_name, ":t")
-      for _, skip_file in ipairs(skip_dir_change_files) do
-        if current_filename == skip_file then
-          return
-        end
-      end
-    end
-
-    vim.fn.chdir(root)
-    local display_root = root
-    if vim.env.HOME and root:sub(1, #vim.env.HOME) == vim.env.HOME then
-      display_root = "~" .. root:sub(#vim.env.HOME + 1)
-    end
-    log("Changed directory to " .. display_root, vim.log.levels.INFO)
-  end,
-})
-
 vim.keymap.set("n", "<leader>fd", function()
   local cwd = "~" .. string.sub(vim.fn.getcwd(), #vim.env.HOME + 1)
   log(cwd, vim.log.levels.INFO)

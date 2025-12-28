@@ -69,6 +69,13 @@ map("c", "<C-v>", "<C-R>+", { noremap = false, desc = "Paste from clipboard" })
 map({ "t", "n" }, "<localleader>q", "<cmd>bwipeout!<cr>")
 map({ "t", "n" }, "<localleader>c", "<cmd>close<cr>")
 
+-- cd to LazyVim root
+map("n", "<leader>W", function()
+  local root = LazyVim.root()
+  vim.fn.chdir(root)
+  vim.notify("cd " .. root)
+end, { desc = "cd to Root" })
+
 -- Keep cursor at the bottom of the visual selection after you yank it.
 map("v", "y", "ygv<Esc>")
 -- Prevent selecting and pasting from overwriting what you originally copied.

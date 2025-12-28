@@ -227,7 +227,10 @@ return {
           },
           win = {
             input = {
-              keys = { ["<c-v>"] = { "explorer_paste", mode = { "n", "x" } } },
+              keys = {
+                ["<c-v>"] = { "explorer_paste", mode = { "n", "x" } },
+                ["<localleader>c"] = { "toggle_cwd", mode = { "n", "i" } },
+              },
             },
           },
           actions = {
@@ -303,13 +306,6 @@ return {
           },
         },
       }
-
-      local use_delta = true
-      if use_delta then
-        overrides.picker.previewers.diff.style = "terminal"
-        overrides.picker.previewers.diff.cmd = { "delta", "--side-by-side" }
-        overrides.picker.previewers.git.args = { "-c", "delta.side-by-side=true" }
-      end
 
       local file_action_pickers = {
         "buffers",
