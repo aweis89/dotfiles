@@ -210,6 +210,7 @@ return {
             cycle = true,
             preset = "ivy",
             preview = "main",
+            layout = { position = "bottom" },
           },
           formatters = {
             file = {

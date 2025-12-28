@@ -1,4 +1,4 @@
-local function open_with_files(files)
+local function open_with_files(files, new_session)
   if #files == 0 then
     return
   end
@@ -9,6 +9,7 @@ local function open_with_files(files)
   end
 
   require("opencode.core").open({
+    new_session = new_session,
     focus = "input",
     start_insert = true,
   })
@@ -74,10 +75,22 @@ return {
       },
       keymap = {
         editor = {
+          ["<leader>oG"] = {
+            function()
+              require("opencode.api").toggle(true)
+            end,
+            desc = "Toggle OpenCode (new session)",
+          },
           ["<leader>ox"] = { "cancel", desc = "Cancel Request" },
           ["<leader>ol"] = {
             function()
               open_with_files({ vim.api.nvim_buf_get_name(0) })
+            end,
+            desc = "Load Current File",
+          },
+          ["<leader>oL"] = {
+            function()
+              open_with_files({ vim.api.nvim_buf_get_name(0) }, true)
             end,
             desc = "Load Current File",
           },
