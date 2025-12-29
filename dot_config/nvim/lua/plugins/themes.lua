@@ -159,8 +159,9 @@ local function set_background(light_theme, dark_theme)
 end
 
 -- Use Catppuccin for both light and dark; flavour maps via plugin opts
-local light_theme = themes.tokyonight.light
-local dark_theme = themes.tokyonight.dark
+local selected_theme = themes.everforest
+local light_theme = selected_theme.light
+local dark_theme = selected_theme.dark
 
 local plugins = {
   {
@@ -187,6 +188,6 @@ local plugins = {
   },
 }
 
-table.insert(plugins, light_theme.plugin)
+table.insert(plugins, selected_theme.plugin)
 
 return plugins
