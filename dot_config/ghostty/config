@@ -1,5 +1,6 @@
-font-family = JetBrains Mono
-font-style = Bold
+# font-family = JetBrains Mono
+font-family = Comic Code Ligatures
+font-style = light
 
 font-size = 18
 # theme = dark:everforest-dark,light:everforest-light
