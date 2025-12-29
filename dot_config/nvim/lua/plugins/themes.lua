@@ -159,7 +159,7 @@ local function set_background(light_theme, dark_theme)
 end
 
 -- Use Catppuccin for both light and dark; flavour maps via plugin opts
-local selected_theme = themes.everforest
+local selected_theme = themes.rosepine
 local light_theme = selected_theme.light
 local dark_theme = selected_theme.dark
 

@@ -1,9 +1,8 @@
-# font-family = JetBrains Mono
 font-family = Comic Code Ligatures
 # font-style = light
 
 font-size = 18
-theme = light:TokyoNight Day,dark:TokyoNight Night
+theme = light:Rose Pine Dawn,dark:Rose Pine Moon
 
 window-padding-y = 0
 window-padding-x = 0
