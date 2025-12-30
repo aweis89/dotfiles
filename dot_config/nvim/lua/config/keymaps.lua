@@ -86,15 +86,14 @@ vim.cmd([[
   cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Git' : 'git'
 ]])
 
-local function create_tmux_split_command(direction)
-  vim.api.nvim_create_user_command("TmuxSplit" .. direction, function()
-    vim.cmd(
-      string.format('silent !tmux split-window -%s -e "cd %s"', direction == "H" and "h" or "v", vim.fn.expand("%:p:h"))
-    )
+local function create_tmux_split_command(cmd_suffix, tmux_flag)
+  vim.api.nvim_create_user_command("TmuxSplit" .. cmd_suffix, function()
+    local path = vim.fn.expand("%:p:h")
+    vim.cmd(string.format('silent !tmux split-window -%s -e "cd %s"', tmux_flag, path))
   end, {})
 end
-create_tmux_split_command("V")
-create_tmux_split_command("H")
+create_tmux_split_command("V", "v")
+create_tmux_split_command("H", "h")
 
 -- neovim pager: https://github.com/I60R/page
 vim.env.PAGER = "page" -- -q 90000 -z 90000
