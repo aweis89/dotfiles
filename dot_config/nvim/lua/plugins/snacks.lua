@@ -227,15 +227,15 @@ return {
               truncate = 90,
             },
           },
-          previewers = {
-            diff = {
-              style = "terminal",
-              cmd = { "delta" },
-            },
-            git = {
-              args = { "-c", "delta.side-by-side=true" },
-            },
-          },
+          -- previewers = {
+          --   diff = {
+          --     style = "terminal",
+          --     cmd = { "delta" },
+          --   },
+          --   git = {
+          --     args = { "-c", "delta.side-by-side=true" },
+          --   },
+          -- },
           win = {
             input = {
               keys = {

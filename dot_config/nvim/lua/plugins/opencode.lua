@@ -3,16 +3,16 @@ local function open_with_files(files, new_session)
     return
   end
 
-  local context = require("opencode.context")
-  for _, file in ipairs(files) do
-    context.add_file(file)
-  end
-
   require("opencode.core").open({
     new_session = new_session,
     focus = "input",
     start_insert = true,
   })
+
+  local context = require("opencode.context")
+  for _, file in ipairs(files) do
+    context.add_file(file)
+  end
 end
 
 return {
