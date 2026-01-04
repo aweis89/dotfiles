@@ -38,6 +38,7 @@ function cluster-rename
 end
 
 function opencode-model
+    set -e OPENCODE_MODEL
     if test (count $argv) -gt 0
         set -Ux OPENCODE_MODEL $argv[1]
         return
