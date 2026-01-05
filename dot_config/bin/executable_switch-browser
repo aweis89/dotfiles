@@ -1,0 +1,42 @@
+#!/bin/bash
+set -eo pipefail
+
+BROWSER="$1"
+CONFIG_FILE="$HOME/.local/share/chezmoi/dot_hammerspoon/lua/browser_config.lua"
+
+if [[ -z "$BROWSER" ]]; then
+    echo "Usage: switch-browser <zen|edge>"
+    exit 1
+fi
+
+# Normalize input to lowercase
+BROWSER=$(echo "$BROWSER" | tr '[:upper:]' '[:lower:]')
+
+if [[ "$BROWSER" == "zen" ]]; then
+    # Use sed to replace the line. macOS sed requires an extension for -i, or use empty string ''
+    sed -i '' 's/M.default_browser = .*/M.default_browser = M.ZEN_BROWSER/' "$CONFIG_FILE"
+    echo "Switched to Zen Browser"
+elif [[ "$BROWSER" == "edge" ]]; then
+    sed -i '' 's/M.default_browser = .*/M.default_browser = M.EDGE_BROWSER/' "$CONFIG_FILE"
+    echo "Switched to Microsoft Edge"
+else
+    echo "Unknown browser: $BROWSER"
+    echo "Usage: switch-browser <zen|edge>"
+    exit 1
+fi
+
+echo "Applying changes with chezmoi..."
+chezmoi apply ~/.hammerspoon/lua/browser_config.lua
+
+# Reload Hammerspoon config
+echo "Reloading Hammerspoon..."
+if pgrep -x Hammerspoon > /dev/null; then
+    # Try to use 'hs' command if available, otherwise just notify
+    if command -v hs >/dev/null 2>&1; then
+        hs -c "hs.reload()"
+    else
+        echo "Command 'hs' not found. Please reload Hammerspoon manually."
+    fi
+else
+    echo "Hammerspoon is not running."
+fi
