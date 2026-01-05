@@ -19,6 +19,11 @@
     "update-cursor-models": {
       "template": "Run `cursor-agent --model invalid` to get the list of all available Cursor models. Compare this list with the models defined in the cursor-acp provider section of dot_config/opencode/opencode.json. Add any missing models to the config file with appropriate configuration (tool_call: true, temperature: true, attachment: true, and reasonable context/output limits based on similar models). Apply the changes using chezmoi.",
       "description": "Update cusor ACP models"
+    },
+    "commit-staged": {
+      "template": "Run `git diff --staged` to see all staged changes. Analyze the changes and generate a concise commit message following the conventional commit format (type(scope): description). Common types: feat, fix, refactor, docs, style, test, chore. The description should focus on 'what' and 'why' rather than 'how', be concise (50 chars or less for the subject), and accurately reflect the changes. After generating the message, create the commit using `git commit -m \"<your generated message>\"`. Show the user the commit message you generated and confirm the commit was created successfully.",
+      "model": "github-copilot/claude-haiku-4.5",
+      "description": "Generate commit message for staged changes"
     }
   },
   "provider": {
