@@ -25,8 +25,7 @@ return {
     "tpope/vim-fugitive",
     cmd = { "Git" },
     keys = {
-      -- see autocmds.lua for AI auto-generated functionality
-      { "<leader>gc", "<cmd>tab Git commit -v<cr>", desc = "Git commit" },
+      { "<leader>gc", function() vim.fn.system("opencode run /commit-staged") end, desc = "Git commit" },
       {
         "<leader>ggp",
         "<cmd>Git pull --rebase --autostash | Git push<cr>",

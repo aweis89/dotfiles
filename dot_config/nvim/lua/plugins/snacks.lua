@@ -248,8 +248,7 @@ return {
           actions = {
             ["commit"] = function(picker)
               picker:close()
-              -- see autocmds.lua for AI auto-generated functionality
-              vim.cmd("tab Git commit -v")
+              vim.fn.system("opencode run /commit-staged")
             end,
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
