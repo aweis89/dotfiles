@@ -164,6 +164,9 @@ return {
         tools = {
           opencode = {
             keys = { prompt = { "<a-p>", "prompt" } },
+            env = {
+              OPENCODE_MODEL = vim.env.OPENCODE_MODEL or "cursor-acp/sonnet-4.5",
+            },
           },
         },
         win = {
