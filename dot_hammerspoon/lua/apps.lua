@@ -1,6 +1,8 @@
 -- Consolidated Hyper app mappings and bindings
 -- Previously split across `hyper.lua` and `hyper-apps.lua`.
 
+local browser_config = require("lua.browser_config")
+
 -- Enable Spotlight-backed name searches for app launching
 hs.application.enableSpotlightForNameSearches(true)
 
@@ -65,7 +67,7 @@ end
 local defaultHyperModeAppMappings = {
 	{ "m", "Music" }, -- "M" for "Music"
 	{ "i", "Messages" }, -- "I" for "Imessages"
-	{ "b", "Zen Browser" }, -- "B" for "Browser"
+	{ "b", browser_config.default_browser }, -- "B" for "Browser"
 	-- { "b", "Microsoft Edge" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"

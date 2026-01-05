@@ -1,5 +1,6 @@
 -- URL routing and browser/container handling
 
+local browser_config = require("lua.browser_config")
 local M = {}
 
 -- Map URL patterns to Edge/Zen containers (display names for Edge)
@@ -9,8 +10,8 @@ local container_map = {
 }
 
 -- App names/paths
-M.zen_browser = "Zen Browser"
-M.edge_browser = "Microsoft Edge"
+M.zen_browser = browser_config.ZEN_BROWSER
+M.edge_browser = browser_config.EDGE_BROWSER
 local edge_bin = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
 local edge_local_state = os.getenv("HOME") .. "/Library/Application Support/Microsoft Edge/Local State"
 
@@ -84,7 +85,7 @@ function M.openURLWith(url, browser)
 end
 
 -- Default browser for handler
-M.defaultBrowser = M.zen_browser
+M.defaultBrowser = browser_config.default_browser
 
 function M.setDefaultBrowser(browser)
 	M.defaultBrowser = browser or M.edge_browser
