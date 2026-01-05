@@ -23,7 +23,7 @@
     "commit-staged": {
       "template": "Analyze staged changes and create a commit following conventional commit format (type(scope): description). Common types: feat, fix, refactor, docs, style, test, chore. Keep subject under 50 chars. Create the commit and output only the final commit message.",
       "model": "github-copilot/claude-haiku-4.5",
-      "agent": "general",
+      "agent": "build",
       "description": "Generate commit message for staged changes"
     }
   },
