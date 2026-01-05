@@ -4,6 +4,9 @@ font-family = Comic Code Ligatures
 font-size = 18
 theme = light:Rose Pine Dawn,dark:Rose Pine Moon
 
+# Disable cursor blinking (prevents apps from overriding)
+cursor-style-blink = false
+
 window-padding-y = 0
 window-padding-x = 0
 window-step-resize = true
