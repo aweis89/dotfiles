@@ -65,8 +65,8 @@ end
 local defaultHyperModeAppMappings = {
 	{ "m", "Music" }, -- "M" for "Music"
 	{ "i", "Messages" }, -- "I" for "Imessages"
-	-- { "b", "Zen Browser" }, -- "B" for "Browser"
-	{ "b", "Microsoft Edge" }, -- "B" for "Browser"
+	{ "b", "Zen Browser" }, -- "B" for "Browser"
+	-- { "b", "Microsoft Edge" }, -- "B" for "Browser"
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"
 	{ "t", "Ghostty", focusMainWindow("Ghostty") }, -- "T" for "Terminal"

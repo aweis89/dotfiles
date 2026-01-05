@@ -84,7 +84,7 @@ function M.openURLWith(url, browser)
 end
 
 -- Default browser for handler
-M.defaultBrowser = M.edge_browser
+M.defaultBrowser = M.zen_browser
 
 function M.setDefaultBrowser(browser)
 	M.defaultBrowser = browser or M.edge_browser
