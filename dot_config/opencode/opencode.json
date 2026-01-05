@@ -21,8 +21,9 @@
       "description": "Update cusor ACP models"
     },
     "commit-staged": {
-      "template": "Run `git diff --staged` to see all staged changes. Analyze the changes and generate a concise commit message following the conventional commit format (type(scope): description). Common types: feat, fix, refactor, docs, style, test, chore. The description should focus on 'what' and 'why' rather than 'how', be concise (50 chars or less for the subject), and accurately reflect the changes. After generating the message, create the commit using `git commit -m \"<your generated message>\"`. Show the user the commit message you generated and confirm the commit was created successfully.",
+      "template": "Analyze staged changes and create a commit following conventional commit format (type(scope): description). Common types: feat, fix, refactor, docs, style, test, chore. Keep subject under 50 chars. Create the commit and output only the final commit message.",
       "model": "github-copilot/claude-haiku-4.5",
+      "agent": "general",
       "description": "Generate commit message for staged changes"
     }
   },
