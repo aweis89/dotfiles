@@ -125,7 +125,7 @@ return {
       },
       ui = {
         picker_width = vim.o.columns,
-        position = "current",
+        -- position = "current",
         input_height = 0.30, -- Input height as percentage of window height
         input_position = "bottom", -- 'bottom' (default) or 'top'. Position of the input window
         input = {
