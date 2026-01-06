@@ -129,7 +129,7 @@ return {
         input_height = 0.30, -- Input height as percentage of window height
         input_position = "bottom", -- 'bottom' (default) or 'top'. Position of the input window
         input = {
-          dynamic = true,
+          auto_hide = true,
           text = {
             wrap = true, -- Wraps text inside input window
           },
