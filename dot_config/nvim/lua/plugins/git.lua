@@ -25,7 +25,13 @@ return {
     "tpope/vim-fugitive",
     cmd = { "Git" },
     keys = {
-      { "<leader>gc", function() vim.fn.system("opencode run /commit-staged") end, desc = "Git commit" },
+      {
+        "<leader>gc",
+        function()
+          vim.cmd("Opencode command commit-staged")
+        end,
+        desc = "Git commit",
+      },
       {
         "<leader>ggp",
         "<cmd>Git pull --rebase --autostash | Git push<cr>",
