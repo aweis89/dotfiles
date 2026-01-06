@@ -8,13 +8,13 @@ local function findZenBrowser()
 	if status then
 		return "Zen Browser"
 	end
-	
+
 	-- Fall back to "Zen" (older naming)
 	local _, status2 = hs.execute("open -a 'Zen' --background 2>/dev/null")
 	if status2 then
 		return "Zen"
 	end
-	
+
 	-- Default to "Zen Browser" if we can't determine
 	return "Zen Browser"
 end
