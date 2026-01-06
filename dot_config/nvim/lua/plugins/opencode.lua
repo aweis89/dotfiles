@@ -75,6 +75,12 @@ return {
       },
       keymap = {
         editor = {
+          ["<leader>oC"] = {
+            function()
+              vim.cmd("tab Opencode command commit-staged")
+            end,
+            desc = "OpenCode: Commit Staged Changes",
+          },
           ["<leader>oG"] = {
             function()
               require("opencode.api").toggle(true)

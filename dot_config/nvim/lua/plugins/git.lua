@@ -28,7 +28,7 @@ return {
       {
         "<leader>gc",
         function()
-          vim.cmd("tab Opencode command commit-staged")
+          vim.cmd("tab Git commit -v")
         end,
         desc = "Git commit",
       },
