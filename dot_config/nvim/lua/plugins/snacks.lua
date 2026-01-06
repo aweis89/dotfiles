@@ -248,7 +248,7 @@ return {
           actions = {
             ["commit"] = function(picker)
               picker:close()
-              vim.cmd("Opencode command commit-staged")
+              vim.cmd("tab Opencode command commit-staged")
             end,
             ---@param picker snacks.Picker
             ["git_reset_file"] = function(picker)
