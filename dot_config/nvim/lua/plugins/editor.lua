@@ -32,7 +32,7 @@ return {
     opts = function(_, opts)
       --remove markdown from ensure_installed
       opts.ensure_installed = vim.tbl_filter(function(lang)
-        return lang ~= "markdown"
+        return lang ~= "markdown" or lang ~= "jsonc"
       end, opts.ensure_installed)
 
       vim.filetype.add({

@@ -17,6 +17,6 @@ vim.opt.showbreak = "↪ "
 
 vim.opt.timeoutlen = 1000
 
--- vim.g.lazyvim_picker = "snacks"
+vim.g.lazyvim_picker = "snacks"
 
 vim.g.maplocalleader = ","
