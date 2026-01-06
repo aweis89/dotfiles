@@ -79,7 +79,7 @@ return {
             function()
               vim.cmd("tab Opencode command commit-staged")
             end,
-            desc = "OpenCode: Commit Staged Changes",
+            desc = "Commit Staged Changes",
           },
           ["<leader>oG"] = {
             function()
