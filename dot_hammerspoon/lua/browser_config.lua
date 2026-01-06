@@ -4,14 +4,14 @@ local M = {}
 -- Tries to launch both "Zen Browser" and "Zen" to see which one exists
 local function findZenBrowser()
 	-- Try "Zen Browser" first (newer naming)
-	local result = hs.execute("open -a 'Zen Browser' --background 2>/dev/null")
-	if result then
+	local _, status = hs.execute("open -a 'Zen Browser' --background 2>/dev/null")
+	if status then
 		return "Zen Browser"
 	end
 	
 	-- Fall back to "Zen" (older naming)
-	local result2 = hs.execute("open -a 'Zen' --background 2>/dev/null")
-	if result2 then
+	local _, status2 = hs.execute("open -a 'Zen' --background 2>/dev/null")
+	if status2 then
 		return "Zen"
 	end
 	
