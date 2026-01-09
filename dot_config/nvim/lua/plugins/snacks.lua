@@ -344,6 +344,11 @@ return {
             grep = {
               hidden = true,
             },
+            explorer = {
+              layout = {
+                fullscreen = false,
+              },
+            },
           },
         },
       }
