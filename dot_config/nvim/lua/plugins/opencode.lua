@@ -51,7 +51,7 @@ return {
     "aweis89/opencode.nvim",
     lazy = false,
     opts = {
-      -- default_global_keymaps = false, -- If false, disables all default global keymaps
+      preferred_picker = "snacks",
       context = {
         enabled = true,
         cursor_data = {
