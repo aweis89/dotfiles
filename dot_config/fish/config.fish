@@ -38,12 +38,13 @@ function cluster-rename
 end
 
 function opencode-model
-    set -e -g OPENCODE_MODEL
+    set -e -U OPENCODE_MODEL
     if test (count $argv) -gt 0
         set -Ux OPENCODE_MODEL $argv[1]
-        return
+    else
+        set -Ux OPENCODE_MODEL (opencode models | fzf)
     end
-    set -Ux OPENCODE_MODEL (opencode models | fzf)
+    test -n "$TMUX" && tmux setenv OPENCODE_MODEL $OPENCODE_MODEL
 end
 
 function rms
