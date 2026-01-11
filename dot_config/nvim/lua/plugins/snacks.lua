@@ -94,9 +94,23 @@ return {
       {
         "<leader><space>",
         function()
-          Snacks.picker.smart()
+          Snacks.picker.git_files()
         end,
         desc = "Smart Find Files",
+      },
+      {
+        "<leader>gb",
+        function()
+          Snacks.picker.git_branches()
+        end,
+        desc = "Git branches",
+      },
+      {
+        "<leader>gD",
+        function()
+          Snacks.picker.git_diff({ base = "origin/HEAD" })
+        end,
+        desc = "Git diff origin/HEAD",
       },
       {
         "<leader>gL",
@@ -217,6 +231,9 @@ return {
           end,
         },
         picker = {
+          matcher = {
+            frecency = true,
+          },
           layout = {
             cycle = true,
             fullscreen = true,
