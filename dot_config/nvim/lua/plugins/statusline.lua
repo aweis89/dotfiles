@@ -25,17 +25,7 @@ return {
             local diff = MiniStatusline.section_diff({ trunc_width = 75 })
             local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
             local lsp = MiniStatusline.section_lsp({ trunc_width = 75 })
-            -- Use tail (filename only) instead of full path
-            local filename = vim.fn.expand("%:t")
-            if filename == "" then
-              filename = "[No Name]"
-            end
-            if vim.bo.modified then
-              filename = filename .. " [+]"
-            end
-            if vim.bo.readonly then
-              filename = filename .. " [RO]"
-            end
+            local filename = MiniStatusline.section_filename({ trunc_width = 500 })
             local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
             local location = MiniStatusline.section_location({ trunc_width = 75 })
             local search = MiniStatusline.section_searchcount({ trunc_width = 75 })
