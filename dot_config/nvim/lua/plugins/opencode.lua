@@ -11,33 +11,41 @@ local function open_with_files(files, new_session)
   end
 end
 
-local function add_visual_selection()
-  vim.cmd("normal! \27")
-  local start_line = vim.fn.line("'<")
-  local end_line = vim.fn.line("'>")
+local function toggle_opencode(new_session)
+  local mode = vim.fn.mode()
+  local selection = nil
+  if mode == "v" or mode == "V" or mode == "\22" then
+    vim.cmd("normal! \27")
+    local start_line = vim.fn.line("'<")
+    local end_line = vim.fn.line("'>")
 
-  local buf = vim.api.nvim_get_current_buf()
-  local lines_content = vim.api.nvim_buf_get_lines(buf, start_line - 1, end_line, false)
-  local text = table.concat(lines_content, "\n")
+    local buf = vim.api.nvim_get_current_buf()
+    local lines_content = vim.api.nvim_buf_get_lines(buf, start_line - 1, end_line, false)
+    local text = table.concat(lines_content, "\n")
 
-  local file = vim.api.nvim_buf_get_name(buf)
-  local file_info = {
-    path = file,
-    name = vim.fn.fnamemodify(file, ":t"),
-    extension = vim.fn.fnamemodify(file, ":e"),
-  }
+    local file = vim.api.nvim_buf_get_name(buf)
+    local file_info = {
+      path = file,
+      name = vim.fn.fnamemodify(file, ":t"),
+      extension = vim.fn.fnamemodify(file, ":e"),
+    }
 
-  local lines_str = start_line .. ", " .. end_line
-  local context = require("opencode.context")
-
-  for _, sel in ipairs(context.get_context().selections) do
-    if sel.file.path == file and sel.lines == lines_str then
-      return
-    end
+    local lines_str = start_line .. ", " .. end_line
+    selection = { file_info = file_info, text = text, lines_str = lines_str }
   end
 
-  local selection = context.new_selection(file_info, text, lines_str)
-  context.add_selection(selection)
+  require("opencode.api").toggle(new_session):and_then(function()
+    if selection then
+      local context = require("opencode.context")
+      for _, sel in ipairs(context.get_context().selections) do
+        if sel.file.path == selection.file_info.path and sel.lines == selection.lines_str then
+          return
+        end
+      end
+      local sel_obj = context.new_selection(selection.file_info, selection.text, selection.lines_str)
+      context.add_selection(sel_obj)
+    end
+  end)
 end
 
 return {
@@ -120,9 +128,15 @@ return {
           },
           ["<leader>oG"] = {
             function()
-              require("opencode.api").toggle(true)
+              toggle_opencode(true)
             end,
+            mode = { "n", "x" },
             desc = "Toggle OpenCode (new session)",
+          },
+          ["<leader>og"] = {
+            toggle_opencode,
+            mode = { "n", "x" },
+            desc = "Toggle OpenCode",
           },
           ["<leader>ox"] = { "cancel", desc = "Cancel Request" },
           ["<leader>ol"] = {
@@ -136,17 +150,6 @@ return {
               open_with_files({ vim.api.nvim_buf_get_name(0) }, true)
             end,
             desc = "Load Current File",
-          },
-          ["<leader>og"] = {
-            function()
-              local mode = vim.fn.mode()
-              if mode == "v" or mode == "V" or mode == "\22" then
-                add_visual_selection()
-              end
-              require("opencode.api").toggle()
-            end,
-            mode = { "n", "x" },
-            desc = "Toggle OpenCode",
           },
         },
         input_window = {
