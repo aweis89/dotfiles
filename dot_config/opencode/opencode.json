@@ -29,6 +29,7 @@
   "provider": {
     "cursor-acp": {
       "name": "Cursor Agent (ACP)",
+      "type": "acp",
       "options": {
         "command": "cursor-agent",
         "args": [
