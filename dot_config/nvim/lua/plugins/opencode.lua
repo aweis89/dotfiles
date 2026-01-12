@@ -135,11 +135,14 @@ return {
           },
           ["<leader>og"] = {
             function()
-              add_visual_selection()
+              local mode = vim.fn.mode()
+              if mode == "v" or mode == "V" or mode == "\22" then
+                add_visual_selection()
+              end
               require("opencode.api").toggle()
             end,
-            mode = "x",
-            desc = "Send Selection to OpenCode",
+            mode = { "n", "x" },
+            desc = "Toggle OpenCode",
           },
         },
         input_window = {
