@@ -1,8 +1,4 @@
 local function open_with_files(files, new_session)
-  if #files == 0 then
-    return
-  end
-
   require("opencode.core").open({
     new_session = new_session,
     focus = "input",
@@ -73,7 +69,7 @@ return {
     dir = "~/p/opencode.nvim",
     lazy = false,
     opts = {
-      preferred_picker = "snacks",
+      preferred_picker = vim.g.lazyvim_picker,
       context = {
         enabled = true,
         cursor_data = {
