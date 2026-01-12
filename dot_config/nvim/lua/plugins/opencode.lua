@@ -15,6 +15,27 @@ local function open_with_files(files, new_session)
   end
 end
 
+local function add_visual_selection()
+  vim.cmd("normal! \27")
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+
+  local buf = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(buf, start_line - 1, end_line, false)
+  local text = table.concat(lines, "\n")
+
+  local file = vim.api.nvim_buf_get_name(buf)
+  local file_info = {
+    path = file,
+    name = vim.fn.fnamemodify(file, ":t"),
+    extension = vim.fn.fnamemodify(file, ":e"),
+  }
+
+  local context = require("opencode.context")
+  local selection = context.new_selection(file_info, text, start_line .. ", " .. end_line)
+  context.add_selection(selection)
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -49,6 +70,7 @@ return {
   {
     -- "sudo-tee/opencode.nvim",
     "aweis89/opencode.nvim",
+    dir = "~/p/opencode.nvim",
     lazy = false,
     opts = {
       preferred_picker = "snacks",
@@ -110,6 +132,14 @@ return {
               open_with_files({ vim.api.nvim_buf_get_name(0) }, true)
             end,
             desc = "Load Current File",
+          },
+          ["<leader>og"] = {
+            function()
+              add_visual_selection()
+              require("opencode.api").toggle()
+            end,
+            mode = "x",
+            desc = "Send Selection to OpenCode",
           },
         },
         input_window = {
