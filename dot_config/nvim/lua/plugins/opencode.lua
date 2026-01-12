@@ -17,8 +17,8 @@ local function add_visual_selection()
   local end_line = vim.fn.line("'>")
 
   local buf = vim.api.nvim_get_current_buf()
-  local lines = vim.api.nvim_buf_get_lines(buf, start_line - 1, end_line, false)
-  local text = table.concat(lines, "\n")
+  local lines_content = vim.api.nvim_buf_get_lines(buf, start_line - 1, end_line, false)
+  local text = table.concat(lines_content, "\n")
 
   local file = vim.api.nvim_buf_get_name(buf)
   local file_info = {
@@ -27,8 +27,16 @@ local function add_visual_selection()
     extension = vim.fn.fnamemodify(file, ":e"),
   }
 
+  local lines_str = start_line .. ", " .. end_line
   local context = require("opencode.context")
-  local selection = context.new_selection(file_info, text, start_line .. ", " .. end_line)
+
+  for _, sel in ipairs(context.get_context().selections) do
+    if sel.file.path == file and sel.lines == lines_str then
+      return
+    end
+  end
+
+  local selection = context.new_selection(file_info, text, lines_str)
   context.add_selection(selection)
 end
 
