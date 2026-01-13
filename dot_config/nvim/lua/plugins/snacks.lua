@@ -42,6 +42,16 @@ local function rm_file(selected)
   end
 end
 
+---@param selected snacks.picker.Item[]
+local function git_delete_branch(selected)
+  for _, s in ipairs(selected) do
+    local branch = s.branch or s.text:match("^%s*(%S+)")
+    if branch then
+      git_exec({ "branch", "-D", branch })
+    end
+  end
+end
+
 -- modify snack's git stage/unstage with -f
 local function git_stage(picker)
   local items = picker:selected({ fallback = true })
@@ -276,10 +286,14 @@ return {
               git_reset_soft(picker:selected({ fallback = true }))
               picker:refresh()
             end,
-            ["rm_file"] = function(picker)
-              rm_file(picker:selected({ fallback = true }))
-              picker:refresh()
-            end,
+["rm_file"] = function(picker)
+                rm_file(picker:selected({ fallback = true }))
+                picker:refresh()
+              end,
+              ["git_delete_branch"] = function(picker)
+                git_delete_branch(picker:selected({ fallback = true }))
+                picker:refresh()
+              end,
             ["copy_preview"] = function(picker)
               local selected = picker:selected({ fallback = true })
               if selected[1] and selected[1].preview and selected[1].preview.text then
@@ -358,6 +372,15 @@ return {
             },
             git_log = git_log_settings,
             git_log_file = git_log_settings,
+            git_branches = {
+              win = {
+                input = {
+                  keys = {
+                    ["<C-d>"] = { "git_delete_branch", mode = { "n", "i" } },
+                  },
+                },
+              },
+            },
             grep = {
               hidden = true,
             },
