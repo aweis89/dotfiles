@@ -11,6 +11,20 @@ local function open_with_files(files, new_session)
   end
 end
 
+local function add_selection_if_new(selection)
+  if not selection then
+    return
+  end
+  local context = require("opencode.context")
+  for _, sel in ipairs(context.get_context().selections) do
+    if sel.file.path == selection.file_info.path and sel.lines == selection.lines_str then
+      return
+    end
+  end
+  local sel_obj = context.new_selection(selection.file_info, selection.text, selection.lines_str)
+  context.add_selection(sel_obj)
+end
+
 local function toggle_opencode(new_session)
   local mode = vim.fn.mode()
   local selection = nil
@@ -34,17 +48,16 @@ local function toggle_opencode(new_session)
     selection = { file_info = file_info, text = text, lines_str = lines_str }
   end
 
+  -- don't toggle close if sending selection
+  local state = require("opencode.state")
+  if selection and state.windows ~= nil then
+    add_selection_if_new(selection)
+    require("opencode.api").focus_input()
+    return
+  end
+
   require("opencode.api").toggle(new_session):and_then(function()
-    if selection then
-      local context = require("opencode.context")
-      for _, sel in ipairs(context.get_context().selections) do
-        if sel.file.path == selection.file_info.path and sel.lines == selection.lines_str then
-          return
-        end
-      end
-      local sel_obj = context.new_selection(selection.file_info, selection.text, selection.lines_str)
-      context.add_selection(sel_obj)
-    end
+    add_selection_if_new(selection)
   end)
 end
 
