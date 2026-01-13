@@ -44,12 +44,59 @@ end
 
 ---@param selected snacks.picker.Item[]
 local function git_delete_branch(selected)
+  local root = Snacks.git.get_root()
+  local branches = {}
+  local worktrees = {}
+
   for _, s in ipairs(selected) do
     local branch = s.branch or s.text:match("^%s*(%S+)")
     if branch then
-      git_exec({ "branch", "-D", branch })
+      local worktree_path = vim.fn.system({ "git", "-C", root, "worktree", "list", "--porcelain" })
+      local is_worktree = false
+      local wt_path = nil
+      for line in worktree_path:gmatch("[^\n]+") do
+        if line:match("^worktree ") then
+          wt_path = line:match("^worktree (.+)")
+        elseif line:match("^branch ") and wt_path then
+          local wt_branch = line:match("^branch refs/heads/(.+)")
+          if wt_branch == branch then
+            is_worktree = true
+            table.insert(worktrees, { branch = branch, path = wt_path })
+            break
+          end
+        end
+      end
+      if not is_worktree then
+        table.insert(branches, branch)
+      end
     end
   end
+
+  local items = {}
+  for _, b in ipairs(branches) do
+    table.insert(items, "branch: " .. b)
+  end
+  for _, w in ipairs(worktrees) do
+    table.insert(items, "worktree: " .. w.branch .. " (" .. w.path .. ")")
+  end
+
+  if #items == 0 then
+    return
+  end
+
+  local msg = "Delete the following?\n" .. table.concat(items, "\n")
+  if vim.fn.confirm(msg, "&Yes\n&No") ~= 1 then
+    return
+  end
+
+  for _, w in ipairs(worktrees) do
+    vim.fn.system({ "git", "-C", root, "worktree", "remove", "--force", w.path })
+    vim.fn.system({ "git", "-C", root, "branch", "-D", w.branch })
+  end
+  for _, b in ipairs(branches) do
+    vim.fn.system({ "git", "-C", root, "branch", "-D", b })
+  end
+  vim.cmd("checktime")
 end
 
 -- modify snack's git stage/unstage with -f
