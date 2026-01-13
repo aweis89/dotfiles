@@ -1,5 +1,5 @@
 vim.g.tpipeline_clearstl = 1
-vim.g.tpipeline_statusline = "  %{FugitiveHead()} %m%=%f  "
+vim.g.tpipeline_statusline = "  %{FugitiveHead()} %m%=%<%.40f  "
 vim.opt.fillchars = { stlnc = "─", stl = "─", vert = "│" }
 
 return {
