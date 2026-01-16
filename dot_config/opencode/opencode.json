@@ -147,6 +147,17 @@
             "output": 16384
           }
         },
+        "gpt-5.2-codex": {
+          "id": "gpt-5.2-codex",
+          "name": "GPT-5.2 Codex",
+          "tool_call": true,
+          "temperature": true,
+          "attachment": true,
+          "limit": {
+            "context": 200000,
+            "output": 16384
+          }
+        },
         "gpt-5.2-high": {
           "id": "gpt-5.2-high",
           "name": "GPT-5.2 High",
