@@ -68,7 +68,7 @@ local themes = {
   tokyonight = {
     light = "tokyonight-day",
     dark = "tokyonight-night",
-    plugin = {},
+    plugin = { "folke/tokyonight.nvim", priority = 1000 },
   },
   gruvbox = {
     light = "gruvbox",
@@ -163,6 +163,9 @@ local selected_theme = themes.everforest
 local light_theme = selected_theme.light
 local dark_theme = selected_theme.dark
 
+-- Set to true to install all theme plugins
+local install_all_theme_plugins = true
+
 local plugins = {
   {
     "LazyVim/LazyVim",
@@ -188,6 +191,27 @@ local plugins = {
   },
 }
 
-table.insert(plugins, selected_theme.plugin)
+local function add_theme_plugin(plugin)
+  if type(plugin) ~= "table" then
+    return
+  end
+  if next(plugin) == nil then
+    return
+  end
+  if type(plugin[1]) ~= "string" then
+    return
+  end
+  table.insert(plugins, plugin)
+end
+
+if install_all_theme_plugins then
+  local theme_names = vim.tbl_keys(themes)
+  table.sort(theme_names)
+  for _, theme_name in ipairs(theme_names) do
+    add_theme_plugin(themes[theme_name].plugin)
+  end
+else
+  add_theme_plugin(selected_theme.plugin)
+end
 
 return plugins
