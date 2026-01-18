@@ -2,7 +2,7 @@ font-family = Comic Code Ligatures
 # font-style = light
 
 font-size = 18
-theme = light:Everforest Light Med,dark:Everforest Dark Hard
+theme = light:Gruvbox Light,dark:Everforest Dark Hard
 
 # Disable cursor blinking (prevents apps from overriding)
 cursor-style-blink = false

@@ -159,9 +159,8 @@ local function set_background(light_theme, dark_theme)
 end
 
 -- Use Catppuccin for both light and dark; flavour maps via plugin opts
-local selected_theme = themes.everforest
-local light_theme = selected_theme.light
-local dark_theme = selected_theme.dark
+local light_theme = themes.gruvbox.light
+local dark_theme = themes.everforest.dark
 
 -- Set to true to install all theme plugins
 local install_all_theme_plugins = true
