@@ -78,6 +78,7 @@ local themes = {
       priority = 1000,
       opts = {
         overrides = {
+          SignColumn = { bg = "NONE" },
           LspReferenceRead = { link = "Underlined" },
           LspReferenceText = { link = "Underlined" },
           LspReferenceWrite = { link = "Underlined" },
