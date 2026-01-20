@@ -3,7 +3,7 @@
   "plugin": [
     "yet-another-opencode-cursor-auth"
   ],
-  "theme": "everforest",
+  "theme": "gruvbox",
   "autoupdate": true,
   "share": "disabled",
   "model": "{env:OPENCODE_MODEL}",

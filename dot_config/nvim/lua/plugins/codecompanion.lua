@@ -69,8 +69,8 @@ return {
             -- Picker interface (auto resolved to a valid picker)
             picker = "snacks", --- ("telescope", "snacks", "fzf-lua", or "default")
             picker_keymaps = {
-              rename = { n = "r", i = "<M-r>" },
-              delete = { n = "d", i = "<M-d>" },
+              rename = { n = "r", i = "<localleader>r" },
+              delete = { n = "d", i = "<localleader>d" },
               duplicate = { n = "<C-y>", i = "<C-y>" },
             },
             ---Automatically generate titles for new chats
@@ -152,6 +152,9 @@ return {
       strategies = {
         chat = {
           adapter = "opencode",
+          opts = {
+            system_prompt = "",
+          },
         },
         inline = {
           adapter = "copilot",
