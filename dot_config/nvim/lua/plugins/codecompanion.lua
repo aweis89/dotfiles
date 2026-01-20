@@ -68,21 +68,18 @@ return {
             expiration_days = 0,
             -- Picker interface (auto resolved to a valid picker)
             picker = "snacks", --- ("telescope", "snacks", "fzf-lua", or "default")
-            ---Optional filter function to control which chats are shown when browsing
-            chat_filter = nil, -- function(chat_data) return boolean end
-            -- Customize picker keymaps (optional)
             picker_keymaps = {
               rename = { n = "r", i = "<M-r>" },
               delete = { n = "d", i = "<M-d>" },
               duplicate = { n = "<C-y>", i = "<C-y>" },
             },
             ---Automatically generate titles for new chats
-            auto_generate_title = false,
+            auto_generate_title = true,
             title_generation_opts = {
               ---Adapter for generating titles (defaults to current chat adapter)
-              adapter = nil, -- "copilot"
+              adapter = "copilot", -- "copilot"
               ---Model for generating titles (defaults to current chat model)
-              model = nil, -- "gpt-4o"
+              model = "claude-haiku-4.5", -- "gpt-4o"
               ---Number of user prompts after which to refresh the title (0 to disable)
               refresh_every_n_prompts = 0, -- e.g., 3 to refresh after every 3rd user prompt
               ---Maximum number of times to refresh the title (default: 3)
@@ -96,7 +93,7 @@ return {
             ---On exiting and entering neovim, loads the last chat on opening chat
             continue_last_chat = false,
             ---When chat is cleared with `gx` delete the chat from history
-            delete_on_clearing_chat = false,
+            delete_on_clearing_chat = true,
             ---Directory path to save the chats
             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
             ---Enable detailed logging for history extension

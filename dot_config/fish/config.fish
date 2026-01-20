@@ -42,7 +42,10 @@ function opencode-model
     if test (count $argv) -gt 0
         set -Ux OPENCODE_MODEL $argv[1]
     else
-        set -Ux OPENCODE_MODEL (opencode models | fzf)
+        set selected_model (opencode models | fzf)
+        if test $status -eq 0
+            set -Ux OPENCODE_MODEL $selected_model
+        end
     end
     test -n "$TMUX" && tmux setenv OPENCODE_MODEL $OPENCODE_MODEL
 end
