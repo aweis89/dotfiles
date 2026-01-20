@@ -155,7 +155,6 @@ return {
       strategies = {
         chat = {
           adapter = "opencode",
-          env = {},
         },
         inline = {
           adapter = "copilot",
