@@ -141,15 +141,29 @@ return {
         },
         spinner = {},
       },
+      adapters = {
+        acp = {
+          opencode = function()
+            return require("codecompanion.adapters").extend("opencode", {
+              env = {
+                OPENCODE_MODEL = vim.env.OPENCODE_MODEL,
+              },
+            })
+          end,
+        },
+      },
       strategies = {
         chat = {
           adapter = "opencode",
+          env = {},
         },
         inline = {
-          adapter = "opencode",
+          adapter = "copilot",
+          model = "opus",
         },
         cmd = {
-          adapter = "opencode",
+          adapter = "copilot",
+          model = "opus",
         },
       },
       interactions = {

@@ -109,6 +109,8 @@ vim.cmd([[
   cnoreabbrev <expr> git getcmdtype() == ':' && getcmdline() =~ '^git$' ? 'Git' : 'git'
 ]])
 
+vim.cmd([[cab cc CodeCompanion]])
+
 local function create_tmux_split_command(cmd_suffix, tmux_flag)
   vim.api.nvim_create_user_command("TmuxSplit" .. cmd_suffix, function()
     local path = vim.fn.expand("%:p:h")
