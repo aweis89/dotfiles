@@ -43,12 +43,6 @@ return {
         desc = "CodeCompanion Chat Toggle",
         mode = { "n", "v" },
       },
-      {
-        "<LocalLeader>A",
-        "<cmd>CodeCompanionChat adapter=cursor/opus-4.5-thinking Toggle<cr>",
-        desc = "CodeCompanion Chat Toggle",
-        mode = { "n", "v" },
-      },
       { "ga", "<cmd>CodeCompanionChat Add<cr>", desc = "CodeCompanion Chat Add", mode = "v" },
       { "<leader>fa", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion Actions", mode = { "n", "v" } },
     },
@@ -159,6 +153,44 @@ return {
           adapter = "opencode",
           opts = {
             system_prompt = "",
+          },
+          keymaps = {
+            send = {
+              modes = { n = "<CR>", i = "<CR>" },
+            },
+            close = {
+              modes = { n = "q" },
+            },
+            select_model = {
+              modes = { n = "gm" },
+              description = "Select Model",
+              callback = function(chat)
+                if not chat.acp_connection then
+                  vim.notify("No ACP connection", vim.log.levels.WARN)
+                  return
+                end
+                vim.system({ "opencode", "models", "cursor" }, { text = true }, function(result)
+                  vim.schedule(function()
+                    if result.code ~= 0 then
+                      vim.notify("Failed to fetch models: " .. (result.stderr or ""), vim.log.levels.ERROR)
+                      return
+                    end
+                    local models = {}
+                    for line in result.stdout:gmatch("[^\r\n]+") do
+                      if line:match("^cursor/") then
+                        table.insert(models, line)
+                      end
+                    end
+                    vim.ui.select(models, { prompt = "Select Model:" }, function(choice)
+                      if choice then
+                        chat.acp_connection:set_model(choice)
+                        vim.notify("Model set to: " .. choice)
+                      end
+                    end)
+                  end)
+                end)
+              end,
+            },
           },
         },
         inline = {
