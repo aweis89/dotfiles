@@ -43,6 +43,12 @@ return {
         desc = "CodeCompanion Chat Toggle",
         mode = { "n", "v" },
       },
+      {
+        "<LocalLeader>A",
+        "<cmd>CodeCompanionChat adapter=cursor/opus-4.5-thinking Toggle<cr>",
+        desc = "CodeCompanion Chat Toggle",
+        mode = { "n", "v" },
+      },
       { "ga", "<cmd>CodeCompanionChat Add<cr>", desc = "CodeCompanion Chat Add", mode = "v" },
       { "<leader>fa", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion Actions", mode = { "n", "v" } },
     },
