@@ -37,8 +37,6 @@ return {
     "olimorris/codecompanion.nvim",
     cmd = { "CodeCompanionChat" },
     keys = {
-      { "<localleader>a", "<cmd>CodeCompanionChat Toggle<cr>", desc = "CodeCompanion Chat" },
-      { "<leader>fa", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion Actions", mode = { "n", "v" } },
       {
         "<LocalLeader>a",
         "<cmd>CodeCompanionChat Toggle<cr>",
@@ -46,6 +44,7 @@ return {
         mode = { "n", "v" },
       },
       { "ga", "<cmd>CodeCompanionChat Add<cr>", desc = "CodeCompanion Chat Add", mode = "v" },
+      { "<leader>fa", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion Actions", mode = { "n", "v" } },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
