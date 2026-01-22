@@ -3,6 +3,17 @@
   "plugin": [
     "yet-another-opencode-cursor-auth"
   ],
+  "mcp": {
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "enabled": true
+    }
+  },
   "theme": "gruvbox",
   "autoupdate": true,
   "share": "disabled",
@@ -19,10 +30,6 @@
     "session_child_cycle_reverse": "ctrl+h"
   },
   "command": {
-    "update-cursor-models": {
-      "template": "Run `cursor-agent --model invalid` to get the list of all available Cursor models. Compare this list with the models defined in the cursor-acp provider section of dot_config/opencode/opencode.json. Add any missing models to the config file with appropriate configuration (tool_call: true, temperature: true, attachment: true, and reasonable context/output limits based on similar models). Apply the changes using chezmoi.",
-      "description": "Update cusor ACP models"
-    },
     "commit-staged": {
       "template": "Analyze staged changes and create a commit following conventional commit format (type(scope): description). Common types: feat, fix, refactor, docs, style, test, chore. Keep subject under 50 chars. Create the commit and output only the final commit message.",
       "agent": "build",

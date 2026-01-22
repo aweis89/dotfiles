@@ -1,4 +1,4 @@
-local nodejs_version = "24.3.0"
+local nodejs_version = "25.4.0"
 return {
   {
     "zbirenbaum/copilot.lua",
