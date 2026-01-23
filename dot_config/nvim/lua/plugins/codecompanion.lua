@@ -209,13 +209,16 @@ return {
               default_tools = {
                 "full_stack_dev",
               },
+              folds = {
+                enabled = false,
+              },
             },
           },
         },
       },
       display = {
         chat = {
-          fold_context = true,
+          show_context = false,
           icons = {
             chat_context = "📎️", -- You can also apply an icon to the fold
           },
