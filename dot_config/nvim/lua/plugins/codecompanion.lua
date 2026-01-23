@@ -215,6 +215,10 @@ return {
       },
       display = {
         chat = {
+          fold_context = true,
+          icons = {
+            chat_context = "📎️", -- You can also apply an icon to the fold
+          },
           window = {
             layout = "buffer", -- float|vertical|horizontal|buffer
             relative = "editor",
