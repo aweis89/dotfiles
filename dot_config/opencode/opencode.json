@@ -21,7 +21,8 @@
   "permission": {
     "edit": "allow",
     "bash": "allow",
-    "webfetch": "allow"
+    "webfetch": "allow",
+    "question": "deny"
   },
   "keybinds": {
     "messages_half_page_up": "ctrl+u",
