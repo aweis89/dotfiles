@@ -52,6 +52,7 @@ return {
       "franco-ruggeri/codecompanion-spinner.nvim",
       "ravitemer/codecompanion-history.nvim",
     },
+    ---@module "codecompanion"
     opts = {
       extensions = {
         history = {
@@ -189,6 +190,72 @@ return {
                     end)
                   end)
                 end)
+              end,
+            },
+            show_context = {
+              modes = { n = "gc" },
+              description = "Show Context Files",
+              callback = function(chat)
+                local items = {}
+                local seen = {}
+
+                -- Get context from messages (works regardless of show_context setting)
+                for _, msg in ipairs(chat.messages) do
+                  if msg.context and msg.context.id and not seen[msg.context.id] then
+                    seen[msg.context.id] = true
+                    local id = msg.context.id
+
+                    -- Extract clean display name from id
+                    local display_name = id:gsub("^<buf>", "")
+                      :gsub("</buf>$", "")
+                      :gsub("^<file>", "")
+                      :gsub("</file>$", "")
+                      :gsub("^<image>", "")
+                      :gsub("</image>$", "")
+                      :gsub("^<rules>", "")
+                      :gsub("</rules>$", "")
+
+                    -- Determine the type icon
+                    local type_icon = ""
+                    if id:match("^<buf>") then
+                      type_icon = "buf"
+                    elseif id:match("^<file>") then
+                      type_icon = "file"
+                    elseif id:match("^<rules>") then
+                      type_icon = "rule"
+                    elseif id:match("^<image>") then
+                      type_icon = "image"
+                    end
+
+                    table.insert(items, {
+                      text = display_name,
+                      file = msg.context.path or display_name,
+                      type_icon = type_icon,
+                    })
+                  end
+                end
+
+                if #items == 0 then
+                  vim.notify("No context files", vim.log.levels.INFO)
+                  return
+                end
+
+                Snacks.picker({
+                  title = "Context Files (" .. #items .. ")",
+                  items = items,
+                  format = function(picker_item)
+                    return {
+                      { "[" .. picker_item.type_icon .. "] ", "Comment" },
+                      { picker_item.text },
+                    }
+                  end,
+                  confirm = function(picker, picker_item)
+                    picker:close()
+                    if picker_item.file then
+                      vim.cmd("edit " .. vim.fn.fnameescape(picker_item.file))
+                    end
+                  end,
+                })
               end,
             },
           },
