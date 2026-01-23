@@ -1,3 +1,7 @@
+if true  then
+  return {}
+end
+
 local use_terminal_ai = false
 
 local auto_terminal_keymaps = {
