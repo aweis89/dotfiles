@@ -16,6 +16,11 @@
     }
   },
   "theme": "gruvbox",
+  "tui": {
+    "scroll_acceleration": {
+      "enabled": true
+    }
+  },
   "autoupdate": true,
   "share": "disabled",
   "model": "{env:OPENCODE_MODEL}",
