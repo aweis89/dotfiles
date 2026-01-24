@@ -34,7 +34,8 @@
     "messages_half_page_up": "ctrl+u",
     "messages_half_page_down": "ctrl+d",
     "session_child_cycle": "ctrl+l",
-    "session_child_cycle_reverse": "ctrl+h"
+    "session_child_cycle_reverse": "ctrl+h",
+    "variant_cycle": "<leader>v"
   },
   "command": {
     "commit-staged": {
