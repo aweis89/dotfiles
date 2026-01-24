@@ -63,7 +63,6 @@ return {
   },
   {
     "aweis89/sidekick.nvim",
-    dir = "~/p/sidekick.nvim",
     keys = {
       {
         "<C-t>",
