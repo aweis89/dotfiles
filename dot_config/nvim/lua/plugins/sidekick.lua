@@ -60,7 +60,8 @@ return {
     },
   },
   {
-    "folke/sidekick.nvim",
+    "aweis89/sidekick.nvim",
+    dir = "~/p/sidekick.nvim",
     keys = {
       {
         "<C-t>",
@@ -75,11 +76,7 @@ return {
       -- add any options here
       cli = {
         win = {
-          layout = "float",
-          float = {
-            width = 1.0,
-            height = 1.0,
-          },
+          layout = "current",
         },
         mux = {
           enabled = false,
