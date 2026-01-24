@@ -2,12 +2,18 @@
 -- That creates an annoying picker when any opencode is running anywhere.
 -- For opencode only, force "embedded terminal sessions only" so we only ever
 -- attach to the session started by this Neovim instance.
-local function sidekick_toggle(opts)
+local function sidekick_toggle()
   local State = require("sidekick.cli.state")
   local Config = require("sidekick.config")
   -- Ensure session backends are registered (terminal/tmux/zellij/etc).
   -- `State.get({attached=true})` uses `Session.attached()` which does not call setup.
   require("sidekick.cli.session").setup()
+
+  -- check if in visual mode
+  local send = false
+  if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "\22" then
+    send = true
+  end
 
   local attached = State.get({ name = "opencode", attached = true, terminal = true })
   if #attached > 0 then
@@ -17,20 +23,22 @@ local function sidekick_toggle(opts)
     end
     state.terminal:toggle()
 
-    -- check if in visual mode
-    if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "\22" then
-      state.terminal:send("{file}\n\n{selection}\n")
+    if state.terminal:is_open() then
+      state.terminal:focus()
     end
 
-    if state.terminal:is_open() and (not opts or opts.focus ~= false) then
-      state.terminal:focus()
+    if send then
+      state.terminal:send("{file}\n\n{selection}\n")
     end
     return
   end
 
   local tool = Config.get_tool("opencode")
   local state = { tool = tool, installed = vim.fn.executable(tool.cmd[1]) == 1 }
-  State.attach(state, { show = true, focus = opts and opts.focus })
+  attached = State.attach(state, { show = true, focus = true })
+  if send then
+    attached.terminal:send("{file}\n\n{selection}\n")
+  end
 end
 
 return {
@@ -60,7 +68,7 @@ return {
       {
         "<C-t>",
         function()
-          sidekick_toggle({ focus = true, filter = { name = "opencode" } })
+          sidekick_toggle()
         end,
         desc = "Toggle Sidekick Terminal",
         mode = { "t", "n", "x" },
