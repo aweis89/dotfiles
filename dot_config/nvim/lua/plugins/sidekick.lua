@@ -30,13 +30,7 @@ local function sidekick_toggle(opts)
 
   local tool = Config.get_tool("opencode")
   local state = { tool = tool, installed = vim.fn.executable(tool.cmd[1]) == 1 }
-  local new_state = select(1, State.attach(state, { show = false, focus = opts and opts.focus }))
-  if new_state and new_state.terminal then
-    new_state.terminal:toggle()
-    if new_state.terminal:is_open() and (not opts or opts.focus ~= false) then
-      new_state.terminal:focus()
-    end
-  end
+  State.attach(state, { show = true, focus = opts and opts.focus })
 end
 
 return {
