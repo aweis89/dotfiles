@@ -35,6 +35,8 @@ return {
         return lang ~= "markdown" or lang ~= "jsonc"
       end, opts.ensure_installed)
 
+      vim.treesitter.language.register("markdown", "opencode_output")
+
       vim.filetype.add({
         extension = {
           tf = "terraform",

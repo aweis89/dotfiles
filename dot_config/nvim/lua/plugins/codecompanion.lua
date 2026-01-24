@@ -35,6 +35,7 @@ return {
   },
   {
     "olimorris/codecompanion.nvim",
+    dir = "~/p/codecompanion.nvim",
     cmd = { "CodeCompanionChat" },
     keys = {
       {
