@@ -77,6 +77,9 @@ return {
       cli = {
         win = {
           layout = "current",
+          keys = {
+            prompt = { "<a-p>", "prompt", mode = "t", desc = "insert prompt or context" },
+          },
         },
         mux = {
           enabled = false,
