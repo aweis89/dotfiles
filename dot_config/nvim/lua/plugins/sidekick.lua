@@ -1,3 +1,5 @@
+local default_tool = "opencode"
+
 -- Sidekick will detect *external* opencode sessions by scanning processes/ports.
 -- That creates an annoying picker when any opencode is running anywhere.
 -- For opencode only, force "embedded terminal sessions only" so we only ever
@@ -21,9 +23,8 @@ local function sidekick_toggle()
       attached.terminal:focus()
     end
   else
-    local tool = Config.get_tool("opencode")
-    local state = { tool = tool, installed = vim.fn.executable(tool.cmd[1]) == 1 }
-    attached = State.attach(state, { show = true, focus = true })
+    local tool = Config.get_tool(default_tool)
+    attached = State.attach({ tool = tool, installed = true }, { show = true, focus = true })
   end
 
   if from_visual_mode then
