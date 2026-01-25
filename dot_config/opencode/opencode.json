@@ -4,6 +4,9 @@
     "yet-another-opencode-cursor-auth@latest",
     "opencode-antigravity-auth@latest",
   ],
+  "experimental": {
+    "disable_paste_summary": true,
+  },
   "mcp": {
     "sequential-thinking": {
       "type": "local",
