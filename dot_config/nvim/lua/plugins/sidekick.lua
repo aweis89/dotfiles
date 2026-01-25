@@ -14,7 +14,7 @@ local function sidekick_toggle()
   local from_visual_mode = vim.fn.mode():find("^[vV]")
 
   local attached
-  local state = State.get({ name = "opencode", attached = true, terminal = true })
+  local state = State.get({ name = default_tool, attached = true, terminal = true })
   if #state > 0 then
     attached = state[1]
     attached.terminal:toggle()
