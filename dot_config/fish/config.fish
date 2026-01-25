@@ -114,7 +114,7 @@ set -gx FZF_DEFAULT_OPTS '--tmux 95% --multi --ansi' \
     '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 set -gx pure_enable_k8s true
 
-set -g CDPATH . ~/p ~/c ~/q
+set -g CDPATH . ~/p ~/c ~/wd
 set -g async_prompt_functions _pure_prompt_git
 set -g sponge_purge_only_on_exit true
 
