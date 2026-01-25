@@ -9,34 +9,24 @@ local function sidekick_toggle()
   -- `State.get({attached=true})` uses `Session.attached()` which does not call setup.
   require("sidekick.cli.session").setup()
 
-  -- check if in visual mode
-  local send = false
-  if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "\22" then
-    send = true
+  local from_visual_mode = vim.fn.mode():find("^[vV]")
+
+  local attached
+  local state = State.get({ name = "opencode", attached = true, terminal = true })
+  if #state > 0 then
+    attached = state[1]
+    attached.terminal:toggle()
+
+    if attached.terminal:is_open() then
+      attached.terminal:focus()
+    end
+  else
+    local tool = Config.get_tool("opencode")
+    local state = { tool = tool, installed = vim.fn.executable(tool.cmd[1]) == 1 }
+    attached = State.attach(state, { show = true, focus = true })
   end
 
-  local attached = State.get({ name = "opencode", attached = true, terminal = true })
-  if #attached > 0 then
-    local state = attached[1]
-    if not state.terminal then
-      return
-    end
-    state.terminal:toggle()
-
-    if state.terminal:is_open() then
-      state.terminal:focus()
-    end
-
-    if send then
-      state.terminal:send("{file}\n\n{selection}\n")
-    end
-    return
-  end
-
-  local tool = Config.get_tool("opencode")
-  local state = { tool = tool, installed = vim.fn.executable(tool.cmd[1]) == 1 }
-  attached = State.attach(state, { show = true, focus = true })
-  if send then
+  if from_visual_mode then
     attached.terminal:send("{file}\n\n{selection}\n")
   end
 end
@@ -66,15 +56,12 @@ return {
     keys = {
       {
         "<C-t>",
-        function()
-          sidekick_toggle()
-        end,
+        sidekick_toggle,
         desc = "Toggle Sidekick Terminal",
         mode = { "t", "n", "x" },
       },
     },
     opts = {
-      -- add any options here
       cli = {
         win = {
           layout = "current",
