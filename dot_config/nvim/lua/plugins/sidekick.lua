@@ -1,4 +1,5 @@
 local default_tool = "opencode"
+local first_open_send_delay = 10000 -- ms to wait before sending on first terminal open
 
 -- Sidekick will detect *external* opencode sessions by scanning processes/ports.
 -- That creates an annoying picker when any opencode is running anywhere.
@@ -34,9 +35,15 @@ local function sidekick_toggle()
   end
 
   if rendered then
-    require("sidekick.cli").send({
-      text = rendered,
-    })
+    local is_new_terminal = #state == 0
+    if is_new_terminal then
+      -- On first open, terminal needs time to initialize before send() works.
+      vim.defer_fn(function()
+        require("sidekick.cli").send({ text = rendered })
+      end, first_open_send_delay)
+    else
+      require("sidekick.cli").send({ text = rendered })
+    end
   end
 end
 
@@ -63,7 +70,15 @@ local function sidekick_open(text)
   end
 
   if text then
-    attached.terminal:send(text)
+    local is_new_terminal = #state == 0
+    if is_new_terminal then
+      -- On first open, terminal needs time to initialize before send() works.
+      vim.defer_fn(function()
+        attached.terminal:send(text)
+      end, first_open_send_delay)
+    else
+      attached.terminal:send(text)
+    end
   end
 end
 
