@@ -15,7 +15,7 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
-      "enabled": true
+      "enabled": false
     }
   },
   "theme": "gruvbox",
