@@ -3,6 +3,7 @@
   "plugin": [
     "yet-another-opencode-cursor-auth@latest",
     "opencode-antigravity-auth@latest",
+    "@mohak34/opencode-notifier@latest"
   ],
   "experimental": {
     "disable_paste_summary": true,
