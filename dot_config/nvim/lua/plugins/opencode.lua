@@ -5,7 +5,7 @@ local function open_with_files(files, new_session)
     start_insert = true,
   })
 
-  local context = require("opencode.context")
+  local context = require("opencode.context").ChatContext
   for _, file in ipairs(files) do
     context.add_file(file)
   end
@@ -93,9 +93,7 @@ return {
     },
   },
   {
-    -- "sudo-tee/opencode.nvim",
     "aweis89/opencode.nvim",
-    dir = "~/p/opencode.nvim",
     lazy = false,
     opts = {
       preferred_picker = vim.g.lazyvim_picker,
