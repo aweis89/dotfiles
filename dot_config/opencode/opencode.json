@@ -20,9 +20,9 @@
     }
   },
   "theme": "gruvbox",
-  "tui": {
-    "scroll_acceleration": {
-      "enabled": true
+  "formatter": {
+    "uv": {
+      "disabled": true
     }
   },
   "autoupdate": true,
