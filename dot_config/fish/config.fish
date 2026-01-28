@@ -54,10 +54,6 @@ function rms
     rm -f ~/.local/state/nvim/swap/*
 end
 
-function ??
-    aichat -e "$argv"
-end
-
 function prc
     opr-create -p "$argv"
 end
@@ -130,7 +126,12 @@ function watch_wrap
     commandline -f execute
 end
 
-function ask_ai
+function ??
+    _fish_ai_show_progress_indicator
+    commandline -r (_fish_ai_codify "# $argv")
+end
+
+function ask_ai_widget
     _fish_ai_show_progress_indicator
     set input (commandline)
     commandline -r (_fish_ai_codify "# $input")
@@ -138,7 +139,7 @@ end
 
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jj repaint
-bind --mode insert \co ask_ai
+bind --mode infunction ask_ai_widget
 bind --mode insert \cw forward-word
 bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
