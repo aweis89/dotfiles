@@ -20,11 +20,6 @@
     }
   },
   "theme": "gruvbox",
-  "formatter": {
-    "uv": {
-      "disabled": true
-    }
-  },
   "autoupdate": true,
   "share": "disabled",
   "model": "{env:OPENCODE_MODEL}",
