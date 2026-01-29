@@ -34,7 +34,7 @@ return {
       },
       {
         "<leader>ggp",
-        "<cmd>Git pull --rebase --autostash | Git push<cr>",
+        "<cmd>Git push<cr>",
         desc = "Git push (pull+rebase+stash)",
       },
       { "<leader>ga", "<cmd>Git add %<cr>", desc = "Git add current file" },
