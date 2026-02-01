@@ -139,7 +139,7 @@ end
 
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jj repaint
-bind --mode infunction ask_ai_widget
+bind --mode insert \co ask_ai_widget
 bind --mode insert \cw forward-word
 bind --mode insert \cl accept-autosuggestion
 bind --mode insert \cn accept-autosuggestion
