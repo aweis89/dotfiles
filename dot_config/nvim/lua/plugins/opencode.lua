@@ -93,7 +93,7 @@ return {
     },
   },
   {
-    "aweis89/opencode.nvim",
+    "sudo-tee/opencode.nvim",
     lazy = false,
     opts = {
       preferred_picker = vim.g.lazyvim_picker,
