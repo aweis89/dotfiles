@@ -1,7 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "yet-another-opencode-cursor-auth@latest",
+    "yet-another-opencode-cursor-auth@dev",
     "opencode-antigravity-auth@latest",
     "@mohak34/opencode-notifier@latest"
   ],
