@@ -149,11 +149,6 @@ return {
             mode = { "n", "x" },
             desc = "Toggle OpenCode",
           },
-          ["<C-t>"] = {
-            toggle_opencode,
-            mode = { "n", "x" },
-            desc = "Toggle OpenCode",
-          },
           ["<leader>ox"] = { "cancel", desc = "Cancel Request" },
           ["<leader>ol"] = {
             function()
