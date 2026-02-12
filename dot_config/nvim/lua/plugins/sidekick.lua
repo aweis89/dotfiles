@@ -1,5 +1,7 @@
-local default_tool = "opencode"
-local first_open_send_delay = 10000 -- ms to wait before sending on first terminal open
+local function default_tool()
+  return vim.env.SIDEKICK_DEFAULT or "opencode"
+end
+local first_open_send_delay = 1000
 
 -- Sidekick will detect *external* opencode sessions by scanning processes/ports.
 -- That creates an annoying picker when any opencode is running anywhere.
@@ -21,7 +23,8 @@ local function sidekick_toggle()
   end
 
   local attached
-  local state = State.get({ name = default_tool, attached = true, terminal = true })
+  local tool_name = default_tool()
+  local state = State.get({ name = tool_name, attached = true, terminal = true })
   if #state > 0 then
     attached = state[1]
     attached.terminal:toggle()
@@ -30,7 +33,7 @@ local function sidekick_toggle()
       attached.terminal:focus()
     end
   else
-    local tool = Config.get_tool(default_tool)
+    local tool = Config.get_tool(tool_name)
     attached = State.attach({ tool = tool, installed = true }, { show = true, focus = true })
   end
 
@@ -55,7 +58,8 @@ local function sidekick_open(text)
   require("sidekick.cli.session").setup()
 
   local attached
-  local state = State.get({ name = default_tool, attached = true, terminal = true })
+  local tool_name = default_tool()
+  local state = State.get({ name = tool_name, attached = true, terminal = true })
   if #state > 0 then
     attached = state[1]
 
@@ -65,7 +69,7 @@ local function sidekick_open(text)
       attached.terminal:show()
     end
   else
-    local tool = Config.get_tool(default_tool)
+    local tool = Config.get_tool(tool_name)
     attached = State.attach({ tool = tool, installed = true }, { show = true, focus = true })
   end
 
