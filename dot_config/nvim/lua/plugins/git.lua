@@ -88,6 +88,17 @@ return {
     end,
   },
   {
+    "axkirillov/unified.nvim",
+    dir = "~/p/unified.nvim",
+    cmd = "Unified",
+    config = true,
+    keys = {
+      { "<leader>dvu", "<cmd>Unified -s origin/HEAD<cr>", desc = "Unified: Snacks diff vs origin/HEAD" },
+      { "<leader>dvh", "<cmd>Unified HEAD<cr>", desc = "Unified: Default diff vs HEAD" },
+      { "<leader>dvr", "<cmd>Unified reset<cr>", desc = "Unified: Reset/close diff" },
+    },
+  },
+  {
     "sindrets/diffview.nvim",
     cmd = {
       "DiffviewOpen",
