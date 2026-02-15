@@ -126,6 +126,9 @@ return {
     },
     opts = {
       cli = {
+        tools = {
+          codex = { cmd = { "codex" } },
+        },
         win = {
           layout = "current",
           keys = {
