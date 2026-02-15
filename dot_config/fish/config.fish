@@ -28,7 +28,6 @@ end
 alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias d=z
 alias oc='nvim "+call feedkeys(\"\<C-t>\")"'
-alias tmux='TERM=screen-256color command tmux'
 alias vim=nvim
 
 function cluster-rename
