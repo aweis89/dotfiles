@@ -136,7 +136,7 @@ return {
           },
         },
         mux = {
-          enabled = false,
+          enabled = true,
         },
       },
     },
