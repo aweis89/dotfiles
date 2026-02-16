@@ -1,6 +1,8 @@
 approval_policy = "never"
 preferred_auth_method = "apikey"
-tools.web_search = true
+personality = "pragmatic"
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
 
 [projects."/Users/aaron.weisberg/.local/share/chezmoi"]
 trust_level = "trusted"
@@ -10,3 +12,7 @@ trust_level = "trusted"
 
 [mcp_servers.calendar]
 command = "/Users/aaron.weisberg/.local/bin/mcp-ical"
+enabled = false
+
+[notice]
+hide_full_access_warning = true
