@@ -1,7 +1,92 @@
-local function default_tool()
-  return vim.env.SIDEKICK_DEFAULT or "opencode"
+local default_tool_state_file = vim.fn.stdpath("state") .. "/sidekick_default_tool.txt"
+
+local function load_persisted_default_tool()
+  if vim.fn.filereadable(default_tool_state_file) ~= 1 then
+    return nil
+  end
+  local lines = vim.fn.readfile(default_tool_state_file)
+  local name = lines[1] and vim.trim(lines[1]) or ""
+  return name ~= "" and name or nil
 end
+
+local function persist_default_tool(name)
+  pcall(function()
+    vim.fn.mkdir(vim.fn.fnamemodify(default_tool_state_file, ":h"), "p")
+    vim.fn.writefile({ name }, default_tool_state_file)
+  end)
+end
+
+local function set_default_tool(name)
+  if not name or name == "" then
+    return
+  end
+  vim.g.sidekick_default_tool = name
+  vim.env.SIDEKICK_DEFAULT = name
+  persist_default_tool(name)
+end
+
+local function default_tool()
+  return vim.g.sidekick_default_tool or vim.env.SIDEKICK_DEFAULT or "opencode"
+end
+
+if not vim.g.sidekick_default_tool and not vim.env.SIDEKICK_DEFAULT then
+  local persisted = load_persisted_default_tool()
+  if persisted then
+    vim.g.sidekick_default_tool = persisted
+    vim.env.SIDEKICK_DEFAULT = persisted
+  end
+end
+
 local first_open_send_delay = 1000
+
+local function sidekick_select_default_tool()
+  local Config = require("sidekick.config")
+  local current = default_tool()
+  local items = {}
+
+  for name, tool in pairs(Config.tools()) do
+    local cmd = tool and tool.cmd and tool.cmd[1] or ""
+    local installed = cmd ~= "" and vim.fn.executable(cmd) == 1
+    table.insert(items, {
+      name = name,
+      cmd = cmd,
+      installed = installed,
+      text = name,
+    })
+  end
+
+  table.sort(items, function(a, b)
+    return a.name < b.name
+  end)
+
+  local function set_default(item)
+    if not item then
+      return
+    end
+    set_default_tool(item.name)
+    vim.notify(("Sidekick default tool: %s"):format(item.name), vim.log.levels.INFO)
+  end
+
+  local Snacks = require("snacks")
+  Snacks.picker({
+    title = "Select Sidekick Default Tool",
+    items = items,
+    format = function(item)
+      local ret = {}
+      local selected = item.name == current and "* " or "  "
+      table.insert(ret, { selected, "Comment" })
+      table.insert(ret, { item.name, item.installed and "DiagnosticOk" or "DiagnosticWarn" })
+      if item.cmd ~= "" then
+        table.insert(ret, { "  " .. item.cmd, "Comment" })
+      end
+      return ret
+    end,
+    confirm = function(picker, item)
+      picker:close()
+      set_default(item)
+    end,
+  })
+end
 
 -- Sidekick will detect *external* opencode sessions by scanning processes/ports.
 -- That creates an annoying picker when any opencode is running anywhere.
@@ -117,6 +202,11 @@ return {
   {
     "aweis89/sidekick.nvim",
     keys = {
+      {
+        "<leader>aa",
+        sidekick_select_default_tool,
+        desc = "Select Sidekick Default Tool",
+      },
       {
         "<C-t>",
         sidekick_toggle,
