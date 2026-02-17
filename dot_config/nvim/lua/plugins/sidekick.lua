@@ -71,14 +71,17 @@ local function sidekick_select_default_tool()
   Snacks.picker({
     title = "Select Sidekick Default Tool",
     items = items,
+    layout = {
+      preset = "select",
+    },
+    preview = function()
+      return false
+    end,
     format = function(item)
       local ret = {}
       local selected = item.name == current and "* " or "  "
       table.insert(ret, { selected, "Comment" })
       table.insert(ret, { item.name, item.installed and "DiagnosticOk" or "DiagnosticWarn" })
-      if item.cmd ~= "" then
-        table.insert(ret, { "  " .. item.cmd, "Comment" })
-      end
       return ret
     end,
     confirm = function(picker, item)
@@ -217,7 +220,7 @@ return {
     opts = {
       cli = {
         tools = {
-          codex = { cmd = { "codex" } },
+          codex = { cmd = { "codex", "-p", "unrestricted" } },
         },
         win = {
           layout = "current",

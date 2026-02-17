@@ -1,6 +1,4 @@
 approval_policy = "never"
-preferred_auth_method = "apikey"
-personality = "pragmatic"
 model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
 
@@ -16,3 +14,8 @@ enabled = false
 
 [notice]
 hide_full_access_warning = true
+
+[profiles.unrestricted]
+model = "gpt-5.3-codex"
+approval_policy = "never"
+sandbox = "danger-full-access"
