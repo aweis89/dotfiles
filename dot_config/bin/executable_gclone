@@ -2,6 +2,10 @@
 
 input=$1
 
+info() {
+	echo "gclone: $*" >&2
+}
+
 # Parse input to determine org and repo
 if [[ "$input" == *"/"* ]]; then
 	# Input is "owner/repo" format
@@ -19,6 +23,14 @@ fi
 
 # Inside an existing git repo: determine repo name and set/reset origin
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+	if [ -n "$repo_root" ]; then
+		info "detected existing git repo at $repo_root"
+	else
+		info "detected existing git repo"
+	fi
+	info "inside-repo mode updates 'origin' (it does not clone)"
+
 	# If no arg provided, try to extract from remote URL, otherwise use directory name
 	if [ -z "$input" ]; then
 		# Try to get repo name from existing origin remote URL
@@ -51,11 +63,15 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 	fi
 
 	url="https://github.com/$org/$repo"
+	info "target repository: $org/$repo"
 	if git remote | grep -q '^origin$'; then
+		info "setting origin to $url"
 		git remote set-url origin "$url"
 	else
+		info "adding origin $url"
 		git remote add origin "$url"
 	fi
+	info "done. current origin: $(git remote get-url origin 2>/dev/null)"
 	exit 0
 fi
 
@@ -74,6 +90,7 @@ if [ -z "$repo" ]; then
 fi
 
 url="https://github.com/$org/$repo"
+info "outside-repo mode cloning $url"
 
 # Clone and enter the repo
 git clone "$url" || exit 1
