@@ -2,7 +2,8 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "yet-another-opencode-cursor-auth@dev",
-    "opencode-antigravity-auth@latest"
+    "opencode-antigravity-auth@latest",
+    "@slkiser/opencode-quota@latest"
   ],
   "experimental": {
     "disable_paste_summary": true,
@@ -26,7 +27,13 @@
     "edit": "allow",
     "bash": "allow",
     "webfetch": "allow",
-    "question": "deny"
+    "question": "allow",
+    "external_directory": {
+      "~/.local/share/chezmoi": "allow",
+      "~/c/*": "allow",
+      "~/wd/*": "allow",
+      "~/p/*": "allow"
+    }
   },
   "keybinds": {
     "messages_half_page_up": "ctrl+u",
