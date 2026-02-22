@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Template dependency: change script hash when the plugin list changes.
+cat >/dev/null <<'EOF'
+{{ include "dot_config/fish/fish_plugins" }}
+EOF
+
+if ! command -v fish >/dev/null 2>&1; then
+    echo "fish is not installed; skipping fisher update"
+    exit 0
+fi
+
+if ! fish -c 'type -q fisher'; then
+    echo "fisher is not installed in fish; skipping plugin update"
+    exit 0
+fi
+
+echo "Updating fish plugins with fisher..."
+fish -c 'fisher update'
