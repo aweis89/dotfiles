@@ -6,12 +6,30 @@ function cache_tool_init
 
     if not set -q $cache_var
         set -U $cache_var ~/.local/share/fish/$tool.fish
-        if not test -f $$cache_var
-            if test "$should_install" = true
+    end
+
+    set -l cache_file $$cache_var
+    set -l cache_tmp "$cache_file.tmp"
+
+    if not test -s $cache_file
+        if test "$should_install" = true
+            if not type -q $tool
                 brew install $tool
             end
-            eval $init_cmd >$$cache_var
+        end
+
+        if eval $init_cmd >$cache_tmp
+            if test -s $cache_tmp
+                command mv $cache_tmp $cache_file
+            else
+                command rm -f $cache_tmp
+            end
+        else
+            command rm -f $cache_tmp
         end
     end
-    source $$cache_var
+
+    if test -s $cache_file
+        source $cache_file
+    end
 end
