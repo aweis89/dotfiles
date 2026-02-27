@@ -28,6 +28,7 @@
     "bash": "allow",
     "webfetch": "allow",
     "question": "allow",
+    "task": "allow",
     "external_directory": {
       "~/.local/share/chezmoi": "allow",
       "~/c/*": "allow",
