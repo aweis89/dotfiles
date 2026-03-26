@@ -1,3 +1,12 @@
 #!/bin/bash
 
-~/.local/bin/claude "$@" 2>/dev/null
+if [ -x /opt/homebrew/bin/claude ]; then
+  exec /opt/homebrew/bin/claude "$@"
+fi
+
+if [ -x "$HOME/.local/bin/claude" ]; then
+  exec "$HOME/.local/bin/claude" "$@"
+fi
+
+echo "claude not found in /opt/homebrew/bin or \$HOME/.local/bin" >&2
+exit 127
