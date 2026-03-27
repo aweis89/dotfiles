@@ -100,6 +100,8 @@ abbr -a -- al 'aws sso login'
 abbr -a -- af aws-profile
 abbr -a -- ak aws-update-kubeconfig
 abbr -a -- gp gcloud-project
+abbr -a -- cc 'claude --allow-dangerously-skip-permissions'
+abbr -a -- cca 'claude --dangerously-skip-permissions'
 
 set -gx TMPDIR ~/tmp
 set -gx EDITOR nvim
