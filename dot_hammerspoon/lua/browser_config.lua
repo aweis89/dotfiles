@@ -19,9 +19,40 @@ local function findZenBrowser()
 	return "Zen Browser"
 end
 
+local function getCurrentHostname()
+	local handle = io.popen("hostname")
+	local hostname = handle and handle:read("*a"):gsub("%s+", "")
+	if handle then
+		handle:close()
+	end
+	return hostname
+end
+
+local function loadHostnameDefaultBrowser()
+	local hostname = getCurrentHostname()
+	local overridesPath = hs.configdir .. "/hostname-app-overrides.lua"
+
+	if not hs.fs.attributes(overridesPath) then
+		return nil
+	end
+
+	local success, overrides = pcall(dofile, overridesPath)
+	if not success or type(overrides) ~= "table" then
+		return nil
+	end
+
+	local hostnameOverrides = overrides[hostname]
+	if type(hostnameOverrides) ~= "table" then
+		return nil
+	end
+
+	return hostnameOverrides.default_browser
+end
+
 M.ZEN_BROWSER = findZenBrowser()
 M.EDGE_BROWSER = "Microsoft Edge"
+M.CHROME_BROWSER = "Google Chrome"
 
-M.default_browser = M.ZEN_BROWSER
+M.default_browser = loadHostnameDefaultBrowser() or M.ZEN_BROWSER
 
 return M
