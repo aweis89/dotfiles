@@ -122,6 +122,14 @@ local themes = {
 
 local reload_theme_path = "~/tmp/theme-reload"
 
+local function apply_transparent_background()
+  local transparent_groups = { "Normal", "NormalNC", "SignColumn", "EndOfBuffer" }
+
+  for _, group in ipairs(transparent_groups) do
+    vim.api.nvim_set_hl(0, group, { bg = "NONE", ctermbg = "NONE" })
+  end
+end
+
 local function set_background(light_theme, dark_theme)
   local function is_macos()
     local handle = io.popen("uname")
@@ -147,12 +155,14 @@ local function set_background(light_theme, dark_theme)
       end
       vim.api.nvim_set_option_value("background", "dark", {})
       vim.cmd.colorscheme(dark_theme)
+      apply_transparent_background()
     else
       if vim.g.colors_name == light_theme and vim.o.background == "light" then
         return
       end
       vim.api.nvim_set_option_value("background", "light", {})
       vim.cmd.colorscheme(light_theme)
+      apply_transparent_background()
     end
   else
     vim.api.nvim_set_option_value("background", "dark", {})
@@ -172,6 +182,11 @@ local plugins = {
     opts = function()
       local light_name = type(light_theme) == "table" and light_theme.light or light_theme
       local dark_name = type(dark_theme) == "table" and dark_theme.dark or dark_theme
+
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = apply_transparent_background,
+      })
+
       set_background(light_name, dark_name)
 
       local theme_reload_path = vim.fn.expand(reload_theme_path)
