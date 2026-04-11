@@ -1,11 +1,30 @@
 sandbox = "danger-full-access"
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "high"
+developer_instructions = """
+For any git branch, commit message, or pull request title you create or suggest, use semantic naming.
+
+Commit messages and pull request titles must use conventional commit format:
+- `type(scope): summary`
+- `type: summary`
+
+Use lowercase types and an imperative summary. Prefer these types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `perf`, `revert`.
+
+Branch names must use this format:
+- `<type>/<short-kebab-summary>`
+- optionally include a ticket or scope inside the kebab summary when useful
+
+Examples:
+- `feat/add-semantic-branch-naming`
+- `fix/helm-template-rendering`
+- `chore/update-codex-config`
+
+Never use personal or tool prefixes such as `codex/`, `aw/`, `aaron/`, or similar.
+
+For GitHub operations, prefer the GitHub CLI `gh` when possible. Use `gh` for pull requests, reviews, issues, checks, releases, and other GitHub workflows instead of manual browser steps or lower-level alternatives unless `gh` cannot do the task.
+"""
 
 [projects."/Users/aaron.weisberg/.local/share/chezmoi"]
-trust_level = "trusted"
-
-[projects."/Users/aaron.weisberg/c/billing"]
 trust_level = "trusted"
 
 [mcp_servers.calendar]
@@ -15,7 +34,14 @@ enabled = false
 [notice]
 hide_full_access_warning = true
 
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"
+
 [profiles.unrestricted]
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 approval_policy = "never"
 sandbox = "danger-full-access"
+model_reasoning_effort = "high"
+
+[tui]
+status_line = ["model-with-reasoning", "context-remaining", "current-dir", "model-name", "git-branch", "five-hour-limit", "weekly-limit"]

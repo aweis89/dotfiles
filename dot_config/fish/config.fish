@@ -33,6 +33,14 @@ alias vim=nvim
 function cluster-rename
     set target $argv[1]
     set context (kubectl config current-context)
+    if test "$context" = "$target"
+        return 0
+    end
+
+    if contains -- "$target" (kubectl config get-contexts -o name 2>/dev/null)
+        kubectl config delete-context "$target"
+    end
+
     kubectl config rename-context "$context" "$target"
 end
 
