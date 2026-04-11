@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -eo pipefail
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+	echo "Skipping Ghostty wallpaper generation on non-macOS."
+	exit 0
+fi
+
+src="/System/Library/Desktop Pictures/Sonoma.heic"
+dst="${HOME}/.config/ghostty/wallpaper-sonoma.jpg"
+
+if [[ ! -f "${src}" ]]; then
+	echo "Ghostty wallpaper source not found: ${src}"
+	exit 0
+fi
+
+mkdir -p "$(dirname "${dst}")"
+
+if [[ ! -f "${dst}" || "${src}" -nt "${dst}" ]]; then
+	echo "Generating Ghostty wallpaper from ${src}..."
+	sips -s format jpeg "${src}" --out "${dst}" >/dev/null
+else
+	echo "Ghostty wallpaper already up to date."
+fi
