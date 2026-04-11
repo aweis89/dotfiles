@@ -28,9 +28,26 @@ hs.hotkey.bind({ "cmd", "shift" }, "s", function()
 	llmshot.captureAndSend()
 end)
 
--- Toggle keyboard layout canvas
-hs.hotkey.bind({ "cmd" }, "k", function()
-	local keyboard = require("lua.keyboard_canvas")
-	local imagePath = "/Users/aaron.weisberg/p/Adv360-Pro-ZMK/keymap-2col.png"
-	keyboard.toggle(imagePath)
-end)
+if ALT_COMMAND_TAP then
+	ALT_COMMAND_TAP:stop()
+	ALT_COMMAND_TAP = nil
+end
+
+local function bindAltCommandKey(key)
+	local targetApp = nil
+	hs.hotkey.bind(
+		{ "alt" },
+		key,
+		function()
+			targetApp = hs.application.frontmostApplication()
+		end,
+		function()
+			hs.eventtap.keyStroke({ "cmd" }, key, 0, targetApp or hs.application.frontmostApplication())
+			targetApp = nil
+		end
+	)
+end
+
+for _, key in ipairs({ "c", "v", "x" }) do
+	bindAltCommandKey(key)
+end

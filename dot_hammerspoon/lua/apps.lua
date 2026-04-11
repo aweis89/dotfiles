@@ -72,7 +72,7 @@ local defaultHyperModeAppMappings = {
 	{ "f", "Finder" }, -- "F" for "Finder"
 	{ "s", "Slack" }, -- "S" for "Slack"
 	{ "t", "Ghostty", focusMainWindow("Ghostty") }, -- "T" for "Terminal"
-	{ "c", "Codex" }, -- "C" for "Codex"
+	{ "d", "Codex" }, -- "D" for "CoDex"; keep Alt+C for copy
 	{ "z", "zoom.us" }, -- "Z" for "Zoom"
 	{ "a", "ChatGPT" }, -- "A" for "AI"
 	{ "n", "Neovide" }, -- "N" for "Neovide"
