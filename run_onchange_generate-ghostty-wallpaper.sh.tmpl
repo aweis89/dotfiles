@@ -8,7 +8,7 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
 fi
 
 src="/System/Library/Desktop Pictures/Sonoma.heic"
-dst="${HOME}/.config/ghostty/wallpaper-sonoma.jpg"
+dst="${HOME}/.config/ghostty/wallpaper-active.jpg"
 
 if [[ ! -f "${src}" ]]; then
 	echo "Ghostty wallpaper source not found: ${src}"
@@ -17,9 +17,9 @@ fi
 
 mkdir -p "$(dirname "${dst}")"
 
-if [[ ! -f "${dst}" || "${src}" -nt "${dst}" ]]; then
-	echo "Generating Ghostty wallpaper from ${src}..."
+if [[ ! -f "${dst}" ]]; then
+	echo "Seeding Ghostty wallpaper from ${src}..."
 	sips -s format jpeg "${src}" --out "${dst}" >/dev/null
 else
-	echo "Ghostty wallpaper already up to date."
+	echo "Ghostty wallpaper already exists; leaving current selection in place."
 fi

@@ -1,0 +1,123 @@
+#!/bin/bash
+
+set -eo pipefail
+
+src_root="/System/Library/Desktop Pictures"
+dst="${HOME}/.config/ghostty/wallpaper-active.jpg"
+
+if ! command -v fzf >/dev/null 2>&1; then
+	echo "fzf is required for ghostty-bg." >&2
+	exit 1
+fi
+
+if ! command -v sips >/dev/null 2>&1; then
+	echo "sips is required for ghostty-bg." >&2
+	exit 1
+fi
+
+if [[ ! -d "${src_root}" ]]; then
+	echo "Wallpaper directory not found: ${src_root}" >&2
+	exit 1
+fi
+
+preview_wallpaper() {
+	local file="$1"
+	local cols="${FZF_PREVIEW_COLUMNS:-40}"
+	local lines="${FZF_PREVIEW_LINES:-20}"
+
+	if command -v chafa >/dev/null 2>&1; then
+		chafa \
+			--format symbols \
+			--polite on \
+			--animate=off \
+			--colors full \
+			--symbols braille+block+border \
+			--size="${cols}x${lines}" \
+			"${file}" 2>/dev/null &&
+			return 0
+	fi
+
+	sips -g pixelWidth -g pixelHeight "${file}" 2>/dev/null
+}
+
+export -f preview_wallpaper
+
+list_wallpapers() {
+	{
+		find "${src_root}" -maxdepth 1 -type f -name '*.madesktop' -print0 |
+			while IFS= read -r -d '' file; do
+				label="$(basename "${file}" .madesktop)"
+				source_file="$(plutil -extract thumbnailPath raw -expect string "${file}" 2>/dev/null || true)"
+				if [[ -n "${source_file}" && -f "${source_file}" ]]; then
+					printf '%s\t%s\n' "${label}" "${source_file}"
+				fi
+			done
+
+		find "${src_root}" -maxdepth 1 -type f \( \
+			-iname '*.jpg' -o \
+			-iname '*.jpeg' -o \
+			-iname '*.png' -o \
+			-iname '*.heic' -o \
+			-iname '*.webp' \
+			\) -print0 |
+			while IFS= read -r -d '' file; do
+				printf '%s\t%s\n' "$(basename "${file%.*}")" "${file}"
+			done
+
+		find "${src_root}/.wallpapers" -type f \( \
+			-iname '*.jpg' -o \
+			-iname '*.jpeg' -o \
+			-iname '*.png' -o \
+			-iname '*.heic' -o \
+			-iname '*.webp' \
+			\) -print0 2>/dev/null |
+			while IFS= read -r -d '' file; do
+				label="${file#"${src_root}/.wallpapers/"}"
+				label="${label%.*}"
+				printf '%s\t%s\n' "${label}" "${file}"
+			done
+	} |
+		awk -F '\t' 'BEGIN { OFS = FS } { key = tolower($1); if (!seen[key]++) print }' |
+		LC_ALL=C sort -f
+}
+
+if ! selection="$(
+	list_wallpapers |
+		fzf \
+			--delimiter=$'\t' \
+			--with-nth=1 \
+			--prompt='Ghostty background > ' \
+			--layout=reverse \
+			--border \
+			--height=90% \
+			--preview-window='right,65%,border-left' \
+			--preview='bash -c '"'"'preview_wallpaper "$1"'"'"' _ {2}'
+)"; then
+	exit 0
+fi
+
+if [[ -z "${selection}" ]]; then
+	exit 0
+fi
+
+src="$(printf '%s\n' "${selection}" | cut -f2)"
+label="$(printf '%s\n' "${selection}" | cut -f1)"
+
+if [[ -z "${src}" || ! -f "${src}" ]]; then
+	echo "Selected wallpaper is not available." >&2
+	exit 1
+fi
+
+mkdir -p "$(dirname "${dst}")"
+
+tmp="$(mktemp "${TMPDIR:-/tmp}/ghostty-bg.XXXXXX.jpg")"
+trap 'rm -f "${tmp}"' EXIT
+
+sips -s format jpeg "${src}" --out "${tmp}" >/dev/null
+mv "${tmp}" "${dst}"
+
+echo "Updated Ghostty background: ${label}"
+
+if pgrep -x ghostty >/dev/null 2>&1; then
+	echo "Reload or reopen Ghostty to pick up the new background."
+fi
