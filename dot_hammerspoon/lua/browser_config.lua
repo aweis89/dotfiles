@@ -1,24 +1,5 @@
 local M = {}
 
--- Helper to find the correct Zen Browser app name
--- Tries to launch both "Zen Browser" and "Zen" to see which one exists
-local function findZenBrowser()
-	-- Try "Zen Browser" first (newer naming)
-	local _, status = hs.execute("open -a 'Zen Browser' --background 2>/dev/null")
-	if status then
-		return "Zen Browser"
-	end
-
-	-- Fall back to "Zen" (older naming)
-	local _, status2 = hs.execute("open -a 'Zen' --background 2>/dev/null")
-	if status2 then
-		return "Zen"
-	end
-
-	-- Default to "Zen Browser" if we can't determine
-	return "Zen Browser"
-end
-
 local function getCurrentHostname()
 	local handle = io.popen("hostname")
 	local hostname = handle and handle:read("*a"):gsub("%s+", "")
@@ -49,10 +30,17 @@ local function loadHostnameDefaultBrowser()
 	return hostnameOverrides.default_browser
 end
 
-M.ZEN_BROWSER = findZenBrowser()
 M.EDGE_BROWSER = "Microsoft Edge"
 M.CHROME_BROWSER = "Google Chrome"
+M.CHROMIUM_BROWSER = "Chromium"
 
-M.default_browser = loadHostnameDefaultBrowser() or M.ZEN_BROWSER
+M.CHROMIUM_PROFILE_RULES = {
+	{ pattern = "calendly", profile = "calendly" },
+	{ pattern = "evisort", profile = "workday" },
+	{ pattern = "workday", profile = "workday" },
+}
+
+M.fallback_browser = M.CHROMIUM_BROWSER
+M.default_browser = loadHostnameDefaultBrowser() or M.fallback_browser
 
 return M

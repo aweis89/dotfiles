@@ -5,23 +5,25 @@ BROWSER="$1"
 CONFIG_FILE="$HOME/.local/share/chezmoi/dot_hammerspoon/lua/browser_config.lua"
 
 if [[ -z "$BROWSER" ]]; then
-    echo "Usage: switch-browser <zen|edge>"
+    echo "Usage: switch-browser <chromium|chrome|edge>"
     exit 1
 fi
 
 # Normalize input to lowercase
 BROWSER=$(echo "$BROWSER" | tr '[:upper:]' '[:lower:]')
 
-if [[ "$BROWSER" == "zen" ]]; then
-    # Use sed to replace the line. macOS sed requires an extension for -i, or use empty string ''
-    sed -i '' 's/M.default_browser = .*/M.default_browser = M.ZEN_BROWSER/' "$CONFIG_FILE"
-    echo "Switched to Zen Browser"
+if [[ "$BROWSER" == "chromium" ]]; then
+    sed -i '' 's/M.fallback_browser = .*/M.fallback_browser = M.CHROMIUM_BROWSER/' "$CONFIG_FILE"
+    echo "Switched to Chromium"
+elif [[ "$BROWSER" == "chrome" ]]; then
+    sed -i '' 's/M.fallback_browser = .*/M.fallback_browser = M.CHROME_BROWSER/' "$CONFIG_FILE"
+    echo "Switched to Google Chrome"
 elif [[ "$BROWSER" == "edge" ]]; then
-    sed -i '' 's/M.default_browser = .*/M.default_browser = M.EDGE_BROWSER/' "$CONFIG_FILE"
+    sed -i '' 's/M.fallback_browser = .*/M.fallback_browser = M.EDGE_BROWSER/' "$CONFIG_FILE"
     echo "Switched to Microsoft Edge"
 else
     echo "Unknown browser: $BROWSER"
-    echo "Usage: switch-browser <zen|edge>"
+    echo "Usage: switch-browser <chromium|chrome|edge>"
     exit 1
 fi
 
@@ -33,7 +35,9 @@ echo "Reloading Hammerspoon..."
 if pgrep -x Hammerspoon > /dev/null; then
     # Try to use 'hs' command if available, otherwise just notify
     if command -v hs >/dev/null 2>&1; then
-        hs -c "hs.reload()"
+        if ! hs -c "hs.reload()"; then
+            echo "Unable to reload Hammerspoon via hs CLI. Restart Hammerspoon to pick up the new config."
+        fi
     else
         echo "Command 'hs' not found. Please reload Hammerspoon manually."
     fi

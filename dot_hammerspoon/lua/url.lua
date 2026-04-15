@@ -3,21 +3,19 @@
 local browser_config = require("lua.browser_config")
 local M = {}
 
--- Map URL patterns to Edge/Zen containers (display names for Edge)
-local container_map = {
-	["calendly"] = "cl",
-	["workday"] = "wd",
-}
-
 -- App names/paths
-M.zen_browser = browser_config.ZEN_BROWSER
-M.edge_browser = browser_config.EDGE_BROWSER
-local edge_bin = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
-local edge_local_state = os.getenv("HOME") .. "/Library/Application Support/Microsoft Edge/Local State"
+M.chromium_browser = browser_config.CHROMIUM_BROWSER
+local chromium_bin = "/Applications/Chromium.app/Contents/MacOS/Chromium"
+local chromium_local_state = os.getenv("HOME") .. "/Library/Application Support/Chromium/Local State"
+local chromium_profile_rules = browser_config.CHROMIUM_PROFILE_RULES or {}
 
--- Build a display-name -> profile-directory map from Edge Local State
-local function loadEdgeProfileMap()
-	local f = io.open(edge_local_state, "r")
+local function shellQuote(value)
+	return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
+end
+
+-- Build a display-name -> profile-directory map from Chromium Local State
+local function loadChromiumProfileMap()
+	local f = io.open(chromium_local_state, "r")
 	if not f then
 		return {}
 	end
@@ -31,56 +29,53 @@ local function loadEdgeProfileMap()
 	local map = {}
 	for dir, meta in pairs(json.profile.info_cache) do
 		if meta and meta.name then
-			map[meta.name] = dir -- e.g., ["qz"] = "Profile 2", ["cl"] = "Profile 3", ["Personal"] = "Default"
+			map[string.lower(meta.name)] = dir
 		end
 	end
 	return map
 end
 
 -- Cache the profile map so we don't read every time
-local edgeProfilesByName = loadEdgeProfileMap()
+local chromiumProfilesByName = loadChromiumProfileMap()
 
-local function getEdgeProfileDir(displayName)
+local function getChromiumProfileDir(displayName)
 	-- fall back to Default if not mapped or missing
-	return (displayName and edgeProfilesByName[displayName]) or "Default"
+	return (displayName and chromiumProfilesByName[string.lower(displayName)]) or "Default"
+end
+
+local function getChromiumProfileForURL(url)
+	local lowerURL = string.lower(url)
+	for _, rule in ipairs(chromium_profile_rules) do
+		if rule.pattern and rule.profile and string.match(lowerURL, string.lower(rule.pattern)) then
+			return rule.profile
+		end
+	end
 end
 
 -- Public API: open a URL with a browser, applying container/profile routing
 function M.openURLWith(url, browser)
-	-- -- First, decide if this URL maps to a "container"/profile by display name
-	-- local container = nil
-	-- for pattern, container_name in pairs(container_map) do
-	-- 	if string.find(url, pattern) then
-	-- 		container = container_name
-	-- 		break
-	-- 	end
-	-- end
-	--
-	-- -- Branch: Microsoft Edge with profile directories
-	-- if browser == M.edge_browser then
-	-- 	local profileDir = getEdgeProfileDir(container) -- "Profile 2", "Profile 3", or "Default"
-	-- 	local command = string.format('"%s" --profile-directory="%s" "%s"', edge_bin, profileDir, url)
-	-- 	hs.execute(command)
-	-- 	return
-	-- end
-
-	-- Branch: Zen with ext+container scheme
-	-- if browser == M.zen_browser and container then
-	-- 	local containerURL = string.format("ext+container:name=%s&url=%s", container, url)
-	-- 	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, containerURL)
-	-- 	hs.execute(command)
-	-- 	return
-	-- end
-
 	-- check if it's a zoom url
-	if string.find(url, "zoom.us/j/") then --
+	if string.find(url, "zoom.us/j/", 1, true) then
 		local zoom_command = string.format('/usr/bin/open -a "zoom.us" "%s"', url)
 		hs.execute(zoom_command)
 		return
 	end
 
+	local chromiumProfile = getChromiumProfileForURL(url)
+	if chromiumProfile then
+		local profileDir = getChromiumProfileDir(chromiumProfile)
+		local command = string.format(
+			"%s --profile-directory=%s %s >/dev/null 2>&1 &",
+			shellQuote(chromium_bin),
+			shellQuote(profileDir),
+			shellQuote(url)
+		)
+		hs.execute(command)
+		return
+	end
+
 	-- Fallback: open with the browser directly
-	local command = string.format('/usr/bin/open -a "%s" "%s"', browser, url)
+	local command = string.format("/usr/bin/open -a %s %s", shellQuote(browser), shellQuote(url))
 	hs.execute(command)
 end
 
@@ -88,7 +83,7 @@ end
 M.defaultBrowser = browser_config.default_browser
 
 function M.setDefaultBrowser(browser)
-	M.defaultBrowser = browser or M.edge_browser
+	M.defaultBrowser = browser or M.chromium_browser
 end
 
 -- Install Hammerspoon URL callback that routes via openURLWith
