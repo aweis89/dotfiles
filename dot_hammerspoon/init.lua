@@ -52,6 +52,135 @@ for _, key in ipairs({ "c", "v", "x" }) do
 	bindAltCommandKey(key)
 end
 
+local APP_SPECIFIC_REMAP_TAP = nil
+local APP_SPECIFIC_REMAPS = {
+	{
+		sourceMods = { ctrl = true },
+		sourceKey = "f",
+		targetMods = { "cmd" },
+		targetKey = "f",
+	},
+	{
+		appNames = {
+			Chromium = true,
+		},
+		bundleIDs = {
+			["org.chromium.Chromium"] = true,
+		},
+		sourceMods = { ctrl = true },
+		sourceKey = "l",
+		targetMods = { "cmd" },
+		targetKey = "l",
+	},
+	{
+		appNames = {
+			Chromium = true,
+		},
+		bundleIDs = {
+			["org.chromium.Chromium"] = true,
+		},
+		sourceMods = { ctrl = true },
+		sourceKey = "t",
+		targetMods = { "cmd" },
+		targetKey = "t",
+	},
+}
+
+local function matchesExactFlags(flags, expected)
+	for flag, enabled in pairs(expected) do
+		if flags[flag] ~= enabled then
+			return false
+		end
+	end
+
+	for _, flag in ipairs({ "cmd", "ctrl", "alt", "shift", "fn" }) do
+		if not expected[flag] and flags[flag] then
+			return false
+		end
+	end
+
+	return true
+end
+
+local function frontmostAppMatches(remap)
+	if not remap.appNames and not remap.bundleIDs then
+		return true
+	end
+
+	local app = hs.application.frontmostApplication()
+	if not app then
+		return false
+	end
+
+	local appName = app:name()
+	if appName and remap.appNames[appName] then
+		return true
+	end
+
+	local bundleID = app:bundleID()
+	return bundleID and remap.bundleIDs[bundleID] or false
+end
+
+if APP_SPECIFIC_REMAP_TAP then
+	APP_SPECIFIC_REMAP_TAP:stop()
+	APP_SPECIFIC_REMAP_TAP = nil
+end
+
+APP_SPECIFIC_REMAP_TAP = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
+	local keyCode = event:getKeyCode()
+	local flags = event:getFlags()
+
+	for _, remap in ipairs(APP_SPECIFIC_REMAPS) do
+		if keyCode == hs.keycodes.map[remap.sourceKey]
+			and matchesExactFlags(flags, remap.sourceMods)
+			and frontmostAppMatches(remap)
+		then
+			hs.eventtap.keyStroke(remap.targetMods, remap.targetKey, 0)
+			return true
+		end
+	end
+
+	return false
+end)
+APP_SPECIFIC_REMAP_TAP:start()
+
+local CONFIG_RELOAD_WATCHER = nil
+local CONFIG_RELOAD_TIMER = nil
+local EMMY_ANNOTATIONS_DIR = hs.configdir .. "/Spoons/EmmyLua.spoon/annotations/"
+
+local function shouldReloadForPath(path)
+	if not path or path == "" then
+		return false
+	end
+
+	if path:sub(1, #EMMY_ANNOTATIONS_DIR) == EMMY_ANNOTATIONS_DIR then
+		return false
+	end
+
+	return path:sub(1, #hs.configdir) == hs.configdir
+end
+
+if CONFIG_RELOAD_WATCHER then
+	CONFIG_RELOAD_WATCHER:stop()
+	CONFIG_RELOAD_WATCHER = nil
+end
+
+CONFIG_RELOAD_WATCHER = hs.pathwatcher.new(hs.configdir, function(paths)
+	for _, path in ipairs(paths) do
+		if shouldReloadForPath(path) then
+			if CONFIG_RELOAD_TIMER then
+				CONFIG_RELOAD_TIMER:stop()
+			end
+
+			CONFIG_RELOAD_TIMER = hs.timer.doAfter(0.3, function()
+				hs.reload()
+			end)
+			return
+		end
+	end
+end)
+CONFIG_RELOAD_WATCHER:start()
+
 for sourceKey, arrowKey in pairs({
 	j = "down",
 	k = "up",
