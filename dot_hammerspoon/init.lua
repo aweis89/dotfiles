@@ -52,7 +52,6 @@ for _, key in ipairs({ "c", "v", "x" }) do
 	bindAltCommandKey(key)
 end
 
-local APP_SPECIFIC_REMAP_TAP = nil
 local APP_SPECIFIC_REMAPS = {
 	{
 		sourceMods = { ctrl = true },
@@ -121,12 +120,12 @@ local function frontmostAppMatches(remap)
 	return bundleID and remap.bundleIDs[bundleID] or false
 end
 
-if APP_SPECIFIC_REMAP_TAP then
-	APP_SPECIFIC_REMAP_TAP:stop()
-	APP_SPECIFIC_REMAP_TAP = nil
+if _G.appSpecificRemapTap then
+	_G.appSpecificRemapTap:stop()
+	_G.appSpecificRemapTap = nil
 end
 
-APP_SPECIFIC_REMAP_TAP = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
+_G.appSpecificRemapTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
 	local keyCode = event:getKeyCode()
 	local flags = event:getFlags()
 
@@ -142,10 +141,8 @@ APP_SPECIFIC_REMAP_TAP = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, fu
 
 	return false
 end)
-APP_SPECIFIC_REMAP_TAP:start()
+_G.appSpecificRemapTap:start()
 
-local CONFIG_RELOAD_WATCHER = nil
-local CONFIG_RELOAD_TIMER = nil
 local EMMY_ANNOTATIONS_DIR = hs.configdir .. "/Spoons/EmmyLua.spoon/annotations/"
 
 local function shouldReloadForPath(path)
@@ -160,26 +157,26 @@ local function shouldReloadForPath(path)
 	return path:sub(1, #hs.configdir) == hs.configdir
 end
 
-if CONFIG_RELOAD_WATCHER then
-	CONFIG_RELOAD_WATCHER:stop()
-	CONFIG_RELOAD_WATCHER = nil
+if _G.configReloadWatcher then
+	_G.configReloadWatcher:stop()
+	_G.configReloadWatcher = nil
 end
 
-CONFIG_RELOAD_WATCHER = hs.pathwatcher.new(hs.configdir, function(paths)
+_G.configReloadWatcher = hs.pathwatcher.new(hs.configdir, function(paths)
 	for _, path in ipairs(paths) do
 		if shouldReloadForPath(path) then
-			if CONFIG_RELOAD_TIMER then
-				CONFIG_RELOAD_TIMER:stop()
+			if _G.configReloadTimer then
+				_G.configReloadTimer:stop()
 			end
 
-			CONFIG_RELOAD_TIMER = hs.timer.doAfter(0.3, function()
+			_G.configReloadTimer = hs.timer.doAfter(0.3, function()
 				hs.reload()
 			end)
 			return
 		end
 	end
 end)
-CONFIG_RELOAD_WATCHER:start()
+_G.configReloadWatcher:start()
 
 for sourceKey, arrowKey in pairs({
 	j = "down",
