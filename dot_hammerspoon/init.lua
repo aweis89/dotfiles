@@ -91,6 +91,18 @@ local APP_SPECIFIC_REMAPS = {
 			["org.chromium.Chromium"] = true,
 		},
 		sourceMods = { ctrl = true },
+		sourceKey = "a",
+		targetMods = { "cmd", "shift" },
+		targetKey = "a",
+	},
+	{
+		appNames = {
+			Chromium = true,
+		},
+		bundleIDs = {
+			["org.chromium.Chromium"] = true,
+		},
+		sourceMods = { ctrl = true },
 		sourceKey = "s",
 		targetMods = { "cmd", "alt" },
 		targetKey = "n",
