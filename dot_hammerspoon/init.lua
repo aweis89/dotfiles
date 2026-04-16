@@ -83,6 +83,30 @@ local APP_SPECIFIC_REMAPS = {
 		targetMods = { "cmd" },
 		targetKey = "t",
 	},
+	{
+		appNames = {
+			Chromium = true,
+		},
+		bundleIDs = {
+			["org.chromium.Chromium"] = true,
+		},
+		sourceMods = { ctrl = true },
+		sourceKey = "s",
+		targetMods = { "cmd", "alt" },
+		targetKey = "n",
+	},
+	{
+		appNames = {
+			Chromium = true,
+		},
+		bundleIDs = {
+			["org.chromium.Chromium"] = true,
+		},
+		sourceMods = { ctrl = true },
+		sourceKey = "x",
+		targetMods = { "cmd" },
+		targetKey = "w",
+	},
 }
 
 local function matchesExactFlags(flags, expected)
