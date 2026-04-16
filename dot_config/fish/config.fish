@@ -124,6 +124,7 @@ set -gx FZF_DEFAULT_OPTS '--tmux 95% --multi --ansi' \
     '--bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up"' \
     '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 set -gx pure_enable_k8s true
+set -gx pure_k8s_context_max_length 20
 
 set -g CDPATH . ~/p ~/c ~/wd
 set -g async_prompt_functions _pure_prompt_git
