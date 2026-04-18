@@ -59,67 +59,55 @@ local APP_SPECIFIC_REMAPS = {
 		targetMods = { "cmd" },
 		targetKey = "f",
 	},
+}
+
+local CHROMIUM_FAMILY_APP_NAMES = {
+	Chromium = true,
+	["Google Chrome"] = true,
+	Thorium = true,
+}
+
+local CHROMIUM_FAMILY_BUNDLE_IDS = {
+	["org.chromium.Chromium"] = true,
+	["com.google.Chrome"] = true,
+}
+
+for _, remap in ipairs({
 	{
-		appNames = {
-			Chromium = true,
-		},
-		bundleIDs = {
-			["org.chromium.Chromium"] = true,
-		},
 		sourceMods = { ctrl = true },
 		sourceKey = "l",
 		targetMods = { "cmd" },
 		targetKey = "l",
 	},
 	{
-		appNames = {
-			Chromium = true,
-		},
-		bundleIDs = {
-			["org.chromium.Chromium"] = true,
-		},
 		sourceMods = { ctrl = true },
 		sourceKey = "t",
 		targetMods = { "cmd" },
 		targetKey = "t",
 	},
 	{
-		appNames = {
-			Chromium = true,
-		},
-		bundleIDs = {
-			["org.chromium.Chromium"] = true,
-		},
 		sourceMods = { ctrl = true },
 		sourceKey = "a",
 		targetMods = { "cmd", "shift" },
 		targetKey = "a",
 	},
 	{
-		appNames = {
-			Chromium = true,
-		},
-		bundleIDs = {
-			["org.chromium.Chromium"] = true,
-		},
 		sourceMods = { ctrl = true },
 		sourceKey = "s",
 		targetMods = { "cmd", "alt" },
 		targetKey = "n",
 	},
 	{
-		appNames = {
-			Chromium = true,
-		},
-		bundleIDs = {
-			["org.chromium.Chromium"] = true,
-		},
 		sourceMods = { ctrl = true },
 		sourceKey = "x",
 		targetMods = { "cmd" },
 		targetKey = "w",
 	},
-}
+}) do
+	remap.appNames = CHROMIUM_FAMILY_APP_NAMES
+	remap.bundleIDs = CHROMIUM_FAMILY_BUNDLE_IDS
+	table.insert(APP_SPECIFIC_REMAPS, remap)
+end
 
 local function matchesExactFlags(flags, expected)
 	for flag, enabled in pairs(expected) do
