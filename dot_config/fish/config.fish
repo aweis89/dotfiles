@@ -126,6 +126,15 @@ set -gx FZF_DEFAULT_OPTS '--tmux 95% --multi --ansi' \
 set -gx pure_enable_k8s true
 set -gx pure_k8s_context_max_length 20
 
+# Keep a block cursor across all Fish modes.
+set -g fish_cursor_default block
+set -g fish_cursor_insert block
+set -g fish_cursor_replace block
+set -g fish_cursor_replace_one block
+set -g fish_cursor_visual block
+set -g fish_cursor_external block
+set -g fish_cursor_unknown block
+
 set -g CDPATH . ~/p ~/c ~/wd
 set -g async_prompt_functions _pure_prompt_git
 set -g sponge_purge_only_on_exit true
