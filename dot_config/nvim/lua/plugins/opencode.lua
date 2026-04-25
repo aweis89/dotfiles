@@ -1,3 +1,5 @@
+local opencode_enabled = false
+
 local function open_with_files(files, new_session)
   require("opencode.core").open({
     new_session = new_session,
@@ -64,7 +66,7 @@ end
 return {
   {
     "folke/snacks.nvim",
-    opts = {
+    opts = opencode_enabled and {
       picker = {
         actions = {
           opencode_send = function(picker)
@@ -90,10 +92,11 @@ return {
           },
         },
       },
-    },
+    } or {},
   },
   {
     "sudo-tee/opencode.nvim",
+    enabled = opencode_enabled,
     lazy = false,
     opts = {
       preferred_picker = vim.g.lazyvim_picker,
@@ -205,9 +208,8 @@ return {
       },
     },
     config = function(_, opts)
-      -- enable local build version to work
-      ---@diagnostic disable
-      require("opencode.state").required_version = 0
+      -- Enable local build versions to work.
+      require("opencode.state").store.set("required_version", "0.0.0")
       require("opencode").setup(opts)
     end,
     dependencies = {

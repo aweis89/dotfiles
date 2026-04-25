@@ -9,6 +9,7 @@ fish_add_path \
     ~/.local/bin \
     ~/.opencode/bin \
     ~/go/bin \
+    /opt/homebrew/opt/ruby/bin \
     /opt/homebrew/opt/openjdk/bin \
     /opt/homebrew/bin \
     /opt/homebrew/opt/rustup/bin \
@@ -26,6 +27,7 @@ if test -z "$TMUX" && test -z "$NVIM"
 end
 
 alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
+alias brew-upgrade='cd ~/.local/share/chezmoi; brew bundle --upgrade'
 alias co='codex --yolo'
 alias d=z
 alias oc='nvim "+call feedkeys(\"\<C-t>\")"'
