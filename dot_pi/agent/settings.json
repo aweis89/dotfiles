@@ -1,0 +1,10 @@
+{
+  "lastChangelogVersion": "0.73.0",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.5",
+  "packages": [
+    "npm:@mjakl/pi-dark-or-light"
+  ],
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": false
+}
