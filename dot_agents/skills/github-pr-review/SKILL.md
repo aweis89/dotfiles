@@ -1,6 +1,6 @@
 ---
 name: github-pr-review
-description: Review GitHub pull requests with the gh CLI, including inspecting diffs, approving good PRs, surfacing findings in chat before commenting on problematic PRs, submitting PR review comments when requested, editing previous review comments, and verifying review state.
+description: Review GitHub pull requests with the gh CLI
 metadata:
   short-description: Review GitHub PRs with gh CLI
 ---
