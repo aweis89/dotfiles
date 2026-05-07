@@ -27,9 +27,8 @@ For GitHub operations, prefer the GitHub CLI `gh` when possible. Use `gh` for pu
 [projects."/Users/aaron.weisberg/.local/share/chezmoi"]
 trust_level = "trusted"
 
-[mcp_servers.calendar]
-command = "/Users/aaron.weisberg/.local/bin/mcp-ical"
-enabled = false
+[features]
+apps = false
 
 [notice]
 hide_full_access_warning = true
