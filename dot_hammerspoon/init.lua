@@ -48,7 +48,7 @@ local function bindAltCommandKey(key)
 	)
 end
 
-for _, key in ipairs({ "c", "v", "x" }) do
+for _, key in ipairs({ "v", "x" }) do
 	bindAltCommandKey(key)
 end
 
