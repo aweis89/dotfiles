@@ -11,3 +11,6 @@
 ## GitHub
 - The GitHub CLI (`gh`) is available; prefer it for GitHub-related tasks where appropriate, including repositories, issues, pull requests, Actions, releases, and API queries.
 - Use the `github-pr-review` skill when reviewing, approving, commenting on, or editing GitHub PR reviews; the skill contains the detailed PR review workflow.
+
+## Git
+- Do not prefix branch names with an agent name such as `cursor/` or `codex/`. Descriptive prefixes like `fix/`, `feature/`, or similar are fine.
