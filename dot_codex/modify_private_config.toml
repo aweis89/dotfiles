@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# chezmoi modify_ script: reads ~/.codex/config.toml from stdin and writes
+# the new desired content to stdout. Only enforces the top-level
+# `developer_instructions` block — Codex's own writes (project trust
+# entries, model auto-migrations, mcp_servers, NUX counters, etc.) pass
+# through unchanged.
+
+import re
+import sys
+
+DEVELOPER_INSTRUCTIONS = '''\
+developer_instructions = """
+For any git branch, commit message, or pull request title you create or suggest, use semantic naming.
+
+Commit messages and pull request titles must use conventional commit format:
+- `type(scope): summary`
+- `type: summary`
+
+Use lowercase types and an imperative summary. Prefer these types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `perf`, `revert`.
+
+Branch names must use this format:
+- `<type>/<short-kebab-summary>`
+- optionally include a ticket or scope inside the kebab summary when useful
+
+Examples:
+- `feat/add-semantic-branch-naming`
+- `fix/helm-template-rendering`
+- `chore/update-codex-config`
+
+Never use personal or tool prefixes such as `codex/`, `aw/`, `aaron/`, or similar.
+
+For GitHub operations, prefer the GitHub CLI `gh` when possible. Use `gh` for pull requests, reviews, issues, checks, releases, and other GitHub workflows instead of manual browser steps or lower-level alternatives unless `gh` cannot do the task.
+
+Never add agent or tool attribution to commit messages or pull request bodies. Do not append trailers like `Co-authored-by: Codex`, do not include `Generated with Codex` / `Generated with OpenAI Codex` footers, and do not add any equivalent attribution for yourself or any other AI tool.
+"""
+'''
+
+DI_PATTERN = re.compile(
+    r'^developer_instructions\s*=\s*"""[\s\S]*?"""\n',
+    re.MULTILINE,
+)
+
+content = sys.stdin.read()
+if DI_PATTERN.search(content):
+    output = DI_PATTERN.sub(lambda _: DEVELOPER_INSTRUCTIONS, content, count=1)
+elif content.strip():
+    output = DEVELOPER_INSTRUCTIONS + '\n' + content.lstrip('\n')
+else:
+    output = DEVELOPER_INSTRUCTIONS
+sys.stdout.write(output)

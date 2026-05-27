@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+input=$(cat)
+if [ -z "$input" ]; then
+  input='{}'
+fi
+
+printf '%s' "$input" | jq '
+  .attribution.attributeCommitsToAgent = false
+  | .attribution.attributePRsToAgent = false
+'
