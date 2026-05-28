@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # chezmoi modify_ script: reads ~/.codex/config.toml from stdin and writes
-# the new desired content to stdout. Only enforces the top-level
-# `developer_instructions` block — Codex's own writes (project trust
-# entries, model auto-migrations, mcp_servers, NUX counters, etc.) pass
-# through unchanged.
+# the new desired content to stdout. Enforces the top-level
+# `developer_instructions` block and the Codex shell environment policy.
+# Codex's own writes (project trust entries, model auto-migrations,
+# mcp_servers, NUX counters, etc.) pass through unchanged.
 
 import re
 import sys
@@ -35,8 +35,32 @@ Never add agent or tool attribution to commit messages or pull request bodies. D
 """
 '''
 
+SHELL_ENVIRONMENT_POLICY = '''\
+[shell_environment_policy]
+inherit = "all"
+exclude = [
+  "HTTPS_PROXY",
+  "HTTP_PROXY",
+  "ALL_PROXY",
+  "NO_PROXY",
+  "https_proxy",
+  "http_proxy",
+  "all_proxy",
+  "no_proxy",
+  "WS_PROXY",
+  "WSS_PROXY",
+  "ws_proxy",
+  "wss_proxy",
+]
+'''
+
 DI_PATTERN = re.compile(
     r'^developer_instructions\s*=\s*"""[\s\S]*?"""\n',
+    re.MULTILINE,
+)
+
+SEP_PATTERN = re.compile(
+    r'^\[shell_environment_policy\]\n[\s\S]*?(?=^\[|\Z)',
     re.MULTILINE,
 )
 
@@ -47,4 +71,10 @@ elif content.strip():
     output = DEVELOPER_INSTRUCTIONS + '\n' + content.lstrip('\n')
 else:
     output = DEVELOPER_INSTRUCTIONS
+
+if SEP_PATTERN.search(output):
+    output = SEP_PATTERN.sub(lambda _: SHELL_ENVIRONMENT_POLICY + '\n', output, count=1)
+else:
+    output = output.rstrip() + '\n\n' + SHELL_ENVIRONMENT_POLICY
+
 sys.stdout.write(output)
