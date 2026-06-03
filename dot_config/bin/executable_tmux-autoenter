@@ -4,30 +4,45 @@
 # proceed? > 1. Yes").  Run again (same key) to stop.  The loop also stops on
 # its own when the target pane goes away.
 #
-# Usage: tmux-autoenter [pane_id] [interval_seconds]
+# Usage: tmux-autoenter [pane_id] [interval_seconds|stop]
 set -euo pipefail
 
 pane="${1:-$(tmux display-message -p '#{pane_id}')}"
 interval="${2:-1}"
 pidfile="/tmp/tmux-autoenter-${pane//%/}.pid"
 
-# Already running for this pane? -> toggle OFF.
-if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
-  kill "$(cat "$pidfile")" 2>/dev/null || true
-  rm -f "$pidfile"
-  tmux display-message "auto-enter: OFF (${pane})"
+stop_autoenter() {
+  if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+    kill "$(cat "$pidfile")" 2>/dev/null || true
+    rm -f "$pidfile"
+    tmux display-message "auto-enter: OFF (${pane})"
+  fi
+}
+
+if [ "$interval" = "stop" ] || [ "$interval" = "off" ]; then
+  stop_autoenter
   exit 0
 fi
 
-# Toggle ON: detach a loop that survives this script exiting.
+# Already running for this pane? -> toggle OFF.
+if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+  stop_autoenter
+  exit 0
+fi
+
+# Toggle ON: send the first Enter immediately, then detach a loop that survives
+# this script exiting for subsequent Enter presses.
+tmux send-keys -t "$pane" Enter
+
 nohup bash -c '
   pane="$1"; interval="$2"; pidfile="$3"
   trap "rm -f \"$pidfile\"" EXIT
   while tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -qx "$pane"; do
-    tmux send-keys -t "$pane" Enter
     sleep "$interval"
+    tmux send-keys -t "$pane" Enter
   done
 ' _ "$pane" "$interval" "$pidfile" >/dev/null 2>&1 &
 
 echo $! > "$pidfile"
+tmux switch-client -T tmux-autoenter 2>/dev/null || true
 tmux display-message "auto-enter: ON (${pane}, every ${interval}s) — same key to stop"

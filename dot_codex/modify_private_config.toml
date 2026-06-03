@@ -64,6 +64,35 @@ SEP_PATTERN = re.compile(
     re.MULTILINE,
 )
 
+FEATURES_PATTERN = re.compile(
+    r'^(\[features\]\n)([\s\S]*?)(?=^\[|\Z)',
+    re.MULTILINE,
+)
+
+
+def migrate_feature_flags(content: str) -> str:
+    def replace_features(match: re.Match[str]) -> str:
+        header, body = match.groups()
+        has_hooks = re.search(r'^\s*hooks\s*=', body, re.MULTILINE) is not None
+        lines = []
+
+        for line in body.splitlines(keepends=True):
+            codex_hooks = re.match(r'^(\s*)codex_hooks\s*=', line)
+            if not codex_hooks:
+                lines.append(line)
+                continue
+
+            if has_hooks:
+                continue
+
+            lines.append(f'{codex_hooks.group(1)}hooks =' + line.split('=', 1)[1])
+            has_hooks = True
+
+        return header + ''.join(lines)
+
+    return FEATURES_PATTERN.sub(replace_features, content, count=1)
+
+
 content = sys.stdin.read()
 if DI_PATTERN.search(content):
     output = DI_PATTERN.sub(lambda _: DEVELOPER_INSTRUCTIONS, content, count=1)
@@ -71,6 +100,8 @@ elif content.strip():
     output = DEVELOPER_INSTRUCTIONS + '\n' + content.lstrip('\n')
 else:
     output = DEVELOPER_INSTRUCTIONS
+
+output = migrate_feature_flags(output)
 
 if SEP_PATTERN.search(output):
     output = SEP_PATTERN.sub(lambda _: SHELL_ENVIRONMENT_POLICY + '\n', output, count=1)
