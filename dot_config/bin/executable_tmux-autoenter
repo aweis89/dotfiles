@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Toggle a background loop that repeatedly sends <Enter> to a tmux pane.
+# Handy for auto-confirming CLI prompts (e.g. Claude Code's "Do you want to
+# proceed? > 1. Yes").  Run again (same key) to stop.  The loop also stops on
+# its own when the target pane goes away.
+#
+# Usage: tmux-autoenter [pane_id] [interval_seconds]
+set -euo pipefail
+
+pane="${1:-$(tmux display-message -p '#{pane_id}')}"
+interval="${2:-1}"
+pidfile="/tmp/tmux-autoenter-${pane//%/}.pid"
+
+# Already running for this pane? -> toggle OFF.
+if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+  kill "$(cat "$pidfile")" 2>/dev/null || true
+  rm -f "$pidfile"
+  tmux display-message "auto-enter: OFF (${pane})"
+  exit 0
+fi
+
+# Toggle ON: detach a loop that survives this script exiting.
+nohup bash -c '
+  pane="$1"; interval="$2"; pidfile="$3"
+  trap "rm -f \"$pidfile\"" EXIT
+  while tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -qx "$pane"; do
+    tmux send-keys -t "$pane" Enter
+    sleep "$interval"
+  done
+' _ "$pane" "$interval" "$pidfile" >/dev/null 2>&1 &
+
+echo $! > "$pidfile"
+tmux display-message "auto-enter: ON (${pane}, every ${interval}s) — same key to stop"
