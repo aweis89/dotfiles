@@ -10,11 +10,23 @@ set -euo pipefail
 pane="${1:-$(tmux display-message -p '#{pane_id}')}"
 interval="${2:-1}"
 pidfile="/tmp/tmux-autoenter-${pane//%/}.pid"
+border_style_option="@tmux-autoenter-pane-active-border-style"
+
+restore_border_style() {
+  previous_border_style="$(tmux show-options -gqv "$border_style_option" 2>/dev/null || true)"
+  if [ -n "$previous_border_style" ]; then
+    tmux set-option -gq pane-active-border-style "$previous_border_style"
+    tmux set-option -guq "$border_style_option"
+  else
+    tmux set-option -guq pane-active-border-style
+  fi
+}
 
 stop_autoenter() {
   if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
     kill "$(cat "$pidfile")" 2>/dev/null || true
     rm -f "$pidfile"
+    restore_border_style
     tmux display-message "auto-enter: OFF (${pane})"
   fi
 }
@@ -30,13 +42,25 @@ if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
   exit 0
 fi
 
-# Toggle ON: send the first Enter immediately, then detach a loop that survives
-# this script exiting for subsequent Enter presses.
+# Toggle ON: mark auto mode visually, send the first Enter immediately, then
+# detach a loop that survives this script exiting for subsequent Enter presses.
+tmux set-option -gq "$border_style_option" "$(tmux show-options -gqv pane-active-border-style || true)"
+tmux set-option -gq pane-active-border-style "fg=colour208"
 tmux send-keys -t "$pane" Enter
 
 nohup bash -c '
   pane="$1"; interval="$2"; pidfile="$3"
-  trap "rm -f \"$pidfile\"" EXIT
+  border_style_option="@tmux-autoenter-pane-active-border-style"
+  restore_border_style() {
+    previous_border_style="$(tmux show-options -gqv "$border_style_option" 2>/dev/null || true)"
+    if [ -n "$previous_border_style" ]; then
+      tmux set-option -gq pane-active-border-style "$previous_border_style"
+      tmux set-option -guq "$border_style_option"
+    else
+      tmux set-option -guq pane-active-border-style
+    fi
+  }
+  trap "rm -f \"$pidfile\"; restore_border_style" EXIT
   while tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -qx "$pane"; do
     sleep "$interval"
     tmux send-keys -t "$pane" Enter
