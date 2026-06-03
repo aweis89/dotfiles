@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S PATH=/usr/bin:/bin:/opt/homebrew/bin:/usr/local/bin python3
 # chezmoi modify_ script: reads ~/.codex/config.toml from stdin and writes
 # the new desired content to stdout. Enforces the top-level
 # `developer_instructions` block and the Codex shell environment policy.
