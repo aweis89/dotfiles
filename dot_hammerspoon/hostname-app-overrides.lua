@@ -4,6 +4,10 @@
 
 return {
 	-- Override configurations for specific hostnames
+	["Aarons-MacBook-Air.local"] = {
+		["b"] = "Google Chrome", -- Browser: Google Chrome instead of Chromium
+	},
+
 	["ACV2MK4DXH0"] = {
 		-- Only specify the apps that should be different from default
 		["c"] = "Microsoft Outlook", -- Calendar: Microsoft Outlook instead of calendar
