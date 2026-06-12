@@ -27,6 +27,7 @@ stop_autoenter() {
     kill "$(cat "$pidfile")" 2>/dev/null || true
     rm -f "$pidfile"
     restore_border_style
+    tmux set-hook -gu pane-focus-in 2>/dev/null || true
     tmux display-message "auto-enter: OFF (${pane})"
   fi
 }
@@ -46,6 +47,9 @@ fi
 # detach a loop that survives this script exiting for subsequent Enter presses.
 tmux set-option -gq "$border_style_option" "$(tmux show-options -gqv pane-active-border-style || true)"
 tmux set-option -gq pane-active-border-style "fg=colour208"
+# Auto-disable when this pane is focused again. We toggle ON while already
+# focused (no focus-in fires now); the hook fires when you leave and return.
+tmux set-hook -g pane-focus-in "run-shell \"$HOME/.config/bin/tmux-autoenter '#{pane_id}' stop\""
 tmux send-keys -t "$pane" Enter
 
 nohup bash -c '
