@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# tmux-fzf-dir: fzf directory picker rooted at the parent of the current pane's
+# path. Sends the chosen path (relative to that parent) back to the pane so that
+# typing "../" first composes into "../selected/dir".
+# Bound in tmux.conf to C-p (no prefix) via a display-popup.
+#
+# Note: no `pipefail`. `fzf` exits as soon as you pick an entry, often before
+# `fd` finishes streaming a large tree; with pipefail, fd's resulting SIGPIPE
+# would mark the pipeline as failed and discard the selection.
+set -eu
+
+die() {
+	printf 'tmux-fzf-dir: %s\n' "$*" >&2
+	if [ -t 0 ]; then
+		printf 'Press Enter to close...' >&2
+		IFS= read -r _ || true
+	fi
+	exit 1
+}
+
+command -v fd >/dev/null 2>&1 || die "fd is not installed or not on PATH"
+command -v fzf >/dev/null 2>&1 || die "fzf is not installed or not on PATH"
+command -v tmux >/dev/null 2>&1 || die "tmux is not installed or not on PATH"
+
+pane_id="${1:-}"
+pane_path="${2:-}"
+
+if [ -z "$pane_id" ]; then
+	pane_id="$(tmux display-message -p '#{pane_id}')" || die "could not determine source pane"
+fi
+
+if [ -z "$pane_path" ]; then
+	pane_path="$(pwd -P)" || die "could not determine pane path"
+fi
+
+root="$pane_path/.."
+
+# Depth cap keeps the picker responsive in big trees; bump TMUX_FZF_DIR_DEPTH to
+# search deeper. fd respects .gitignore and skips .git by default here.
+depth="${TMUX_FZF_DIR_DEPTH:-6}"
+
+cd "$root" || die "could not cd to $root"
+
+selection_file="$(mktemp "${TMPDIR:-/tmp}/tmux-fzf-dir.XXXXXX")"
+trap 'rm -f "$selection_file"' EXIT
+
+fzf_args=(--prompt 'cd ../ ' --reverse)
+
+# In the C-p binding tmux has already created the popup. Clear global fzf
+# defaults such as --tmux so fzf draws inside this popup instead of trying to
+# create or modify another one.
+set +e
+if [ "${TMUX_FZF_DIR_POPUP:-}" = "1" ]; then
+	fd --type d --hidden --max-depth "$depth" --exclude .git . 2>/dev/null \
+		| FZF_DEFAULT_OPTS= fzf "${fzf_args[@]}" >"$selection_file"
+else
+	fd --type d --hidden --max-depth "$depth" --exclude .git . 2>/dev/null \
+		| fzf "${fzf_args[@]}" --height 100% >"$selection_file"
+fi
+status=$?
+set -e
+
+case "$status" in
+0) ;;
+1 | 130)
+	exit 0
+	;;
+*)
+	die "fzf failed with exit status $status"
+	;;
+esac
+
+selected="$(cat "$selection_file")"
+
+[ -z "$selected" ] && exit 0
+
+# Strip fd's trailing slash, then send the literal path to the originating pane.
+selected="${selected%/}"
+tmux send-keys -t "$pane_id" -l "$selected"
