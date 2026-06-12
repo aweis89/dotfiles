@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tmux-fzf-dir: fzf directory picker rooted at the parent of the current pane's
-# path. Sends the chosen path (relative to that parent) back to the pane so that
-# typing "../" first composes into "../selected/dir".
+# path. Sends the chosen path back to the pane prefixed with "../" so the
+# inserted text clearly refers to a directory under the parent.
 # Bound in tmux.conf to C-p (no prefix) via a display-popup.
 #
 # Note: no `pipefail`. `fzf` exits as soon as you pick an entry, often before
@@ -74,6 +74,6 @@ selected="$(cat "$selection_file")"
 
 [ -z "$selected" ] && exit 0
 
-# Strip fd's trailing slash, then send the literal path to the originating pane.
+# Strip fd's trailing slash, then send the parent-relative path to the originating pane.
 selected="${selected%/}"
-tmux send-keys -t "$pane_id" -l "$selected"
+tmux send-keys -t "$pane_id" -l "../$selected"
