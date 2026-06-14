@@ -37,11 +37,3 @@ hs.hotkey.bind(HYPER, "n", function()
 		win:moveToScreen(allScreens[1])
 	end
 end)
-
--- Optional: also allow Hyper+Space to maximize via Hammerspoon directly
-hs.hotkey.bind(HYPER, "space", function()
-	local win = hs.window.focusedWindow()
-	if win then
-		win:maximize()
-	end
-end)
