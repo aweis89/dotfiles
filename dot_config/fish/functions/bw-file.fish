@@ -3,9 +3,9 @@ function __bw_file_run_with_timeout
     set -e argv[1]
 
     if command -q timeout
-        command timeout "$seconds" $argv
+        command timeout -k 5 "$seconds" $argv
     else if command -q gtimeout
-        command gtimeout "$seconds" $argv
+        command gtimeout -k 5 "$seconds" $argv
     else
         command $argv
     end
@@ -23,14 +23,20 @@ function __bw_file_find_item
     set -e argv[1]
 
     for candidate in $argv
-        set -l items (__bw_file_run_with_timeout "$seconds" bw list items --search "$candidate" 2>/dev/null)
-        set -l list_status $status
+        echo "  Looking for Bitwarden item: $candidate" >&2
 
-        if test $list_status -ne 0
+        set -l item_json (__bw_file_run_with_timeout "$seconds" bw get item "$candidate" 2>/dev/null)
+        set -l get_status $status
+
+        if test $get_status -eq 124 -o $get_status -eq 137
             return 2
         end
 
-        set -l item_id (printf '%s\n' $items | jq -r --arg name "$candidate" '.[] | select(.name == $name) | .id' 2>/dev/null | head -n 1)
+        if test $get_status -ne 0
+            continue
+        end
+
+        set -l item_id (printf '%s\n' $item_json | jq -er --arg name "$candidate" 'select(.name == $name) | .id' 2>/dev/null)
         if test -n "$item_id"
             printf '%s\n%s\n' "$item_id" "$candidate"
             return 0
