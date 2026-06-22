@@ -19,18 +19,11 @@ function __bw_file_home_name
 end
 
 function __bw_file_find_item
-    set -l seconds $argv[1]
-    set -e argv[1]
-
     for candidate in $argv
         echo "  Looking for Bitwarden item: $candidate" >&2
 
-        set -l item_json (__bw_file_run_with_timeout "$seconds" bw get item "$candidate" 2>/dev/null)
+        set -l item_json (bw get item "$candidate" 2>/dev/null)
         set -l get_status $status
-
-        if test $get_status -eq 124 -o $get_status -eq 137
-            return 2
-        end
 
         if test $get_status -ne 0
             continue
@@ -137,7 +130,7 @@ function bw-file
                 return 1
             end
             # Ensure local cache is fresh to avoid stale cipher errors.
-            __bw_file_run_with_timeout "$bw_timeout" bw sync >/dev/null 2>&1
+            bw sync >/dev/null 2>&1
         case unlocked
             # Already usable.
         case '*'
@@ -155,15 +148,9 @@ function bw-file
             echo "Backing up $file_path to Bitwarden..."
 
             # Check if item already exists
-            set -l item_match (__bw_file_find_item "$bw_timeout" $candidate_names)
-            set -l find_status $status
+            set -l item_match (__bw_file_find_item $candidate_names)
             set -l item_id $item_match[1]
             set -l matched_item_name $item_match[2]
-
-            if test $find_status -eq 2
-                echo "Failed to search Bitwarden items"
-                return 1
-            end
 
             if test -z "$item_id"
                 echo "Creating new Bitwarden secure note..."
@@ -179,8 +166,8 @@ function bw-file
                         notes: $contents
                     }')
 
-                if printf '%s\n' "$json_data" | __bw_file_run_with_timeout "$bw_timeout" bw encode | __bw_file_run_with_timeout "$bw_timeout" bw create item >/dev/null
-                    __bw_file_run_with_timeout "$bw_timeout" bw sync >/dev/null 2>&1
+                if printf '%s\n' "$json_data" | bw encode | bw create item >/dev/null
+                    bw sync >/dev/null 2>&1
                     echo "✓ File backed up successfully to Bitwarden"
                     echo "  Item: $item_name"
                 else
@@ -191,7 +178,7 @@ function bw-file
                 echo "Updating existing Bitwarden item..."
                 # Get existing item and update its notes with file contents only
                 # Use jq --rawfile to properly read and encode the file with newlines preserved
-                set json_data (__bw_file_run_with_timeout "$bw_timeout" bw get item "$item_id" | jq -c \
+                set json_data (bw get item "$item_id" | jq -c \
                     --rawfile contents "$file_path" \
                     '.notes = $contents')
 
@@ -200,8 +187,8 @@ function bw-file
                     return 1
                 end
 
-                if printf '%s\n' "$json_data" | __bw_file_run_with_timeout "$bw_timeout" bw encode | __bw_file_run_with_timeout "$bw_timeout" bw edit item "$item_id" >/dev/null
-                    __bw_file_run_with_timeout "$bw_timeout" bw sync >/dev/null 2>&1
+                if printf '%s\n' "$json_data" | bw encode | bw edit item "$item_id" >/dev/null
+                    bw sync >/dev/null 2>&1
                     echo "✓ File backed up successfully to Bitwarden"
                     echo "  Item: $matched_item_name"
                 else
@@ -214,15 +201,9 @@ function bw-file
             echo "Restoring $file_path from Bitwarden..."
 
             # Find the item
-            set -l item_match (__bw_file_find_item "$bw_timeout" $candidate_names)
-            set -l find_status $status
+            set -l item_match (__bw_file_find_item $candidate_names)
             set -l item_id $item_match[1]
             set -l matched_item_name $item_match[2]
-
-            if test $find_status -eq 2
-                echo "Failed to search Bitwarden items"
-                return 1
-            end
 
             if test -z "$item_id"
                 echo "✗ No backup found for this file in Bitwarden"
@@ -244,7 +225,7 @@ function bw-file
             set -l item_json_path (mktemp "$dir_path/.bw-file-item.XXXXXX")
             set -l restore_path (mktemp "$dir_path/.bw-file-restore.XXXXXX")
 
-            if not __bw_file_run_with_timeout "$bw_timeout" bw get item "$item_id" >"$item_json_path"
+            if not bw get item "$item_id" >"$item_json_path"
                 rm -f "$item_json_path" "$restore_path"
                 echo "✗ Failed to read Bitwarden item: $matched_item_name"
                 return 1
