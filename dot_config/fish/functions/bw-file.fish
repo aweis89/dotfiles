@@ -19,18 +19,31 @@ function __bw_file_home_name
 end
 
 function __bw_file_find_item
+    set -l candidate_json (printf '%s\n' $argv | jq -R . | jq -s .)
+
+    echo "  Loading Bitwarden item list..." >&2
+    set -l item_match (bw list items 2>/dev/null | jq -er --argjson names "$candidate_json" '
+        first(
+            $names[] as $name
+            | .[]
+            | select(.name == $name)
+            | [.id, .name]
+            | @tsv
+        )
+    ' 2>/dev/null)
+
+    if test $status -ne 0 -o -z "$item_match"
+        return 1
+    end
+
+    set -l matched_item_parts (string split \t -- "$item_match")
+    set -l item_id $matched_item_parts[1]
+    set -l matched_name $matched_item_parts[2]
+
     for candidate in $argv
         echo "  Looking for Bitwarden item: $candidate" >&2
 
-        set -l item_json (bw get item "$candidate" 2>/dev/null)
-        set -l get_status $status
-
-        if test $get_status -ne 0
-            continue
-        end
-
-        set -l item_id (printf '%s\n' $item_json | jq -er --arg name "$candidate" 'select(.name == $name) | .id' 2>/dev/null)
-        if test -n "$item_id"
+        if test "$candidate" = "$matched_name"
             printf '%s\n%s\n' "$item_id" "$candidate"
             return 0
         end
