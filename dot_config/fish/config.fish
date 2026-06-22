@@ -28,14 +28,9 @@ end
 
 alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
 alias brew-upgrade='cd ~/.local/share/chezmoi; brew bundle --upgrade'
-alias co='codex --yolo'
 alias d=z
 alias oc='nvim "+call feedkeys(\"\<C-t>\")"'
 alias vim=nvim
-
-function codex
-    env NO_COLOR=1 command codex $argv
-end
 
 function cluster-rename
     set target $argv[1]
