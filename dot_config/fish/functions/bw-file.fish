@@ -110,8 +110,23 @@ function bw-file
             return 1
         case locked
             echo "Bitwarden vault is locked. Unlocking..."
-            set -gx BW_SESSION (__bw_file_run_with_timeout "$bw_unlock_timeout" bw unlock --raw)
-            if test $status -ne 0 -o -z "$BW_SESSION"
+            read --silent --local --prompt-str "Master password: " bw_master_password
+            set -l read_status $status
+            echo
+
+            if test $read_status -ne 0 -o -z "$bw_master_password"
+                echo "Failed to read master password"
+                return 1
+            end
+
+            set -lx BW_FILE_MASTER_PASSWORD "$bw_master_password"
+            set -e bw_master_password
+
+            set -gx BW_SESSION (__bw_file_run_with_timeout "$bw_unlock_timeout" bw unlock --raw --passwordenv BW_FILE_MASTER_PASSWORD 2>/dev/null)
+            set -l unlock_status $status
+            set -e BW_FILE_MASTER_PASSWORD
+
+            if test $unlock_status -ne 0 -o -z "$BW_SESSION"
                 echo "Failed to unlock vault"
                 return 1
             end
