@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+input=$(cat)
+if [ -z "$input" ]; then
+  input='{}'
+fi
+
+# Manage only these keys. Everything else in the local file (e.g.
+# lastChangelogVersion, defaultProvider, defaultModel, defaultThinkingLevel)
+# is passed through untouched so per-machine values are preserved/ignored by
+# chezmoi.
+printf '%s' "$input" | jq '
+  .packages = [
+    "npm:@mjakl/pi-dark-or-light",
+    "npm:pi-web-access",
+    "npm:@hypabolic/pi-hypa",
+    "npm:context-mode",
+    "npm:pi-subagents",
+    "npm:pi-mcp-adapter",
+    "npm:@juicesharp/rpiv-todo"
+  ]
+  | .hideThinkingBlock = false
+'
