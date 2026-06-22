@@ -12,13 +12,15 @@ fi
 # chezmoi.
 printf '%s' "$input" | jq '
   .packages = [
-    "npm:@mjakl/pi-dark-or-light",
-    "npm:pi-web-access",
-    "npm:@hypabolic/pi-hypa",
-    "npm:context-mode",
-    "npm:pi-subagents",
-    "npm:pi-mcp-adapter",
-    "npm:@juicesharp/rpiv-todo"
-  ]
+  "npm:@mjakl/pi-dark-or-light",
+  "npm:pi-web-access",
+  "npm:@hypabolic/pi-hypa",
+  "npm:context-mode",
+  "npm:pi-subagents",
+  "npm:pi-mcp-adapter",
+  "npm:pi-cursor-sdk",
+  "npm:pi-btw",
+  "npm:@juicesharp/rpiv-todo"
+]
   | .hideThinkingBlock = false
 '
