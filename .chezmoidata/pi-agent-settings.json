@@ -6,7 +6,10 @@
     "npm:context-mode",
     "npm:pi-subagents",
     "npm:pi-mcp-adapter",
-    "npm:pi-cursor-sdk",
+    {
+      "source": "npm:pi-cursor-sdk",
+      "skills": []
+    },
     "npm:pi-btw",
     "npm:@narumitw/pi-goal",
     "npm:@juicesharp/rpiv-todo",
