@@ -10,8 +10,6 @@
       "skills": []
     },
     "npm:pi-btw",
-    "npm:@narumitw/pi-goal",
-    "npm:context-mode",
     "npm:pi-tmux-thread"
   ],
   "hideThinkingBlock": true,
