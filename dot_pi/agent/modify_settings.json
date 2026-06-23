@@ -20,6 +20,7 @@ printf '%s' "$input" | jq '
   "npm:pi-mcp-adapter",
   "npm:pi-cursor-sdk",
   "npm:pi-btw",
+  "npm:@narumitw/pi-goal",
   "npm:@juicesharp/rpiv-todo"
 ]
   | .hideThinkingBlock = false
