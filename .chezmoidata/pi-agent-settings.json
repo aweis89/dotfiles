@@ -2,8 +2,6 @@
   "packages": [
     "npm:@mjakl/pi-dark-or-light",
     "npm:pi-web-access",
-    "npm:@hypabolic/pi-hypa",
-    "npm:context-mode",
     "npm:pi-subagents",
     "npm:pi-mcp-adapter",
     "npm:pi-vim",
@@ -13,7 +11,6 @@
     },
     "npm:pi-btw",
     "npm:@narumitw/pi-goal",
-    "npm:@juicesharp/rpiv-todo",
     "npm:pi-tmux-thread"
   ],
   "hideThinkingBlock": false,
