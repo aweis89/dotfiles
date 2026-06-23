@@ -10,7 +10,7 @@
     "npm:pi-btw",
     "npm:@narumitw/pi-goal",
     "npm:@juicesharp/rpiv-todo",
-    "git:github.com/aaronweisberg/pi-tmux-thread@v0.1.0"
+    "npm:pi-tmux-thread"
   ],
   "hideThinkingBlock": false,
   "steeringMode": "all",
