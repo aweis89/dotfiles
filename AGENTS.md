@@ -14,6 +14,7 @@
 
 ## Git
 - Do not prefix branch names with an agent name such as `cursor/` or `codex/`. Descriptive prefixes like `fix/`, `feature/`, or similar are fine.
+- After validating changes, commit and push them so the working tree is not left dirty, unless the user explicitly asks otherwise.
 
 ## AI Attribution
 - Never include AI agent identity or attribution in user-visible output. This includes names such as `codex`, `claude code`, or similar agent identifiers in GitHub comments, PR bodies, commit messages, review responses, Jira tickets, email, documentation, or comparable external-facing text.
