@@ -13,7 +13,7 @@
     "npm:@narumitw/pi-goal",
     "npm:pi-tmux-thread"
   ],
-  "hideThinkingBlock": false,
+  "hideThinkingBlock": true,
   "steeringMode": "all",
   "followUpMode": "all"
 }
