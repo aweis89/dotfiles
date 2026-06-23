@@ -1,0 +1,18 @@
+{
+  "packages": [
+    "npm:@mjakl/pi-dark-or-light",
+    "npm:pi-web-access",
+    "npm:@hypabolic/pi-hypa",
+    "npm:context-mode",
+    "npm:pi-subagents",
+    "npm:pi-mcp-adapter",
+    "npm:pi-cursor-sdk",
+    "npm:pi-btw",
+    "npm:@narumitw/pi-goal",
+    "npm:@juicesharp/rpiv-todo",
+    "git:github.com/aaronweisberg/pi-tmux-thread@v0.1.0"
+  ],
+  "hideThinkingBlock": false,
+  "steeringMode": "all",
+  "followUpMode": "all"
+}
