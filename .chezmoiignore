@@ -1,2 +1,3 @@
 envrcs.yaml
 CHEZMOI_AGENTS.md
+.chezmoi-helpers/**

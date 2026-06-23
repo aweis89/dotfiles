@@ -1,12 +1,10 @@
 #!/bin/sh
 set -eu
 
-input=$(cat)
-if [ -z "$input" ]; then
-  input='{}'
+source_dir=${CHEZMOI_SOURCE_DIR:-}
+if [ -z "$source_dir" ]; then
+  source_dir=$(chezmoi source-path)
 fi
 
-printf '%s' "$input" | jq '
-  .attribution.attributeCommitsToAgent = false
-  | .attribution.attributePRsToAgent = false
-'
+exec sh "$source_dir/.chezmoi-helpers/merge-json.sh" \
+  "$source_dir/.chezmoidata/cursor-cli-config.json"

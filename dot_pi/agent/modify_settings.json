@@ -6,20 +6,5 @@ if [ -z "$source_dir" ]; then
   source_dir=$(chezmoi source-path)
 fi
 
-managed_settings_file="$source_dir/.chezmoidata/pi-agent-settings.json"
-if [ ! -f "$managed_settings_file" ]; then
-  echo "missing managed pi settings: $managed_settings_file" >&2
-  exit 1
-fi
-
-input_file=$(mktemp)
-trap 'rm -f "$input_file"' EXIT
-
-cat >"$input_file"
-if ! grep -q '[^[:space:]]' "$input_file"; then
-  printf '{}\n' >"$input_file"
-fi
-
-# Merge local settings with the managed JSON. Managed keys win; everything
-# else in the local settings file is preserved for per-machine values.
-jq -s '.[0] * .[1]' "$input_file" "$managed_settings_file"
+exec sh "$source_dir/.chezmoi-helpers/merge-json.sh" \
+  "$source_dir/.chezmoidata/pi-agent-settings.json"
