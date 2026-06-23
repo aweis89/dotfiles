@@ -6,6 +6,7 @@
     "npm:context-mode",
     "npm:pi-subagents",
     "npm:pi-mcp-adapter",
+    "npm:pi-vim",
     {
       "source": "npm:pi-cursor-sdk",
       "skills": []

@@ -1,0 +1,5 @@
+{
+  "app.interrupt": ["ctrl+c"],
+  "app.clear": ["ctrl+x"],
+  "tui.input.copy": []
+}
