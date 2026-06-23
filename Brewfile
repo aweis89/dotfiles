@@ -40,3 +40,5 @@ cask 'hammerspoon'
 cask 'codex'
 cask 'chromium'
 cask 'codexbar'
+
+npm '@hypabolic/hypa'
