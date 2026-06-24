@@ -1,16 +1,19 @@
 {
   "packages": [
     "npm:@mjakl/pi-dark-or-light",
+    "npm:@vanillagreen/pi-background-tasks",
     "npm:pi-web-access",
     "npm:pi-subagents",
     "npm:pi-mcp-adapter",
     "npm:pi-vim",
+    "npm:pi-find-packages",
     {
       "source": "npm:pi-cursor-sdk",
       "skills": []
     },
     "npm:pi-btw",
-    "npm:pi-tmux-thread"
+    "npm:pi-tmux-thread",
+    "npm:@narumitw/pi-plan-mode"
   ],
   "hideThinkingBlock": true,
   "steeringMode": "all",
