@@ -1,3 +1,0 @@
-#!/bin/bash
-
-direnv exec . /opt/homebrew/bin/gh "$@"
