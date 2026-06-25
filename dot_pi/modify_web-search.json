@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+source_dir=${CHEZMOI_SOURCE_DIR:-}
+if [ -z "$source_dir" ]; then
+  source_dir=$(chezmoi source-path)
+fi
+
+exec sh "$source_dir/.chezmoi-helpers/merge-json.sh" \
+  "$source_dir/.chezmoidata/pi-web-search.json"
