@@ -4,6 +4,7 @@
     "npm:@vanillagreen/pi-background-tasks",
     "npm:pi-web-access",
     "npm:pi-subagents",
+    "npm:pi-caveman",
     "npm:pi-mcp-adapter",
     "npm:pi-vim",
     "npm:pi-find-packages",
