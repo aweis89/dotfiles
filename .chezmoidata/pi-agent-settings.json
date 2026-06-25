@@ -15,7 +15,12 @@
     "npm:pi-tmux-thread",
     "npm:@narumitw/pi-plan-mode"
   ],
-  "hideThinkingBlock": true,
+  "hideThinkingBlock": false,
   "steeringMode": "all",
-  "followUpMode": "all"
+  "followUpMode": "all",
+  "enabledModels": [
+    "openai-codex/gpt-5.5",
+    "anthropic/claude-opus-4-8:fast",
+    "cursor/opus-latest@300k:fast"
+  ]
 }
