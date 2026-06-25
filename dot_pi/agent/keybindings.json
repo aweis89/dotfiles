@@ -1,5 +1,6 @@
 {
   "app.interrupt": ["ctrl+c"],
   "app.clear": ["ctrl+x"],
+  "app.model.cycleForward": ["ctrl+m"],
   "tui.input.copy": []
 }
