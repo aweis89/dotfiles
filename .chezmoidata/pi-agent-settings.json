@@ -8,6 +8,7 @@
     "npm:pi-mcp-adapter",
     "npm:pi-vim",
     "npm:pi-find-packages",
+    "npm:@mjfuertesf/pi-quota-status",
     {
       "source": "npm:pi-cursor-sdk",
       "skills": []
