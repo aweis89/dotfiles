@@ -21,6 +21,7 @@
   "steeringMode": "all",
   "followUpMode": "all",
   "enabledModels": [
+    "anthropic/claude-sonnet-4-6",
     "openai-codex/gpt-5.5",
     "anthropic/claude-opus-4-8",
     "cursor/gpt-latest@272k:fast",
