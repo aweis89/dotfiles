@@ -112,7 +112,7 @@ function __envrcs_push
 
     if not test -f "$file"
         echo "✗ Missing $file" >&2
-        echo "  Run: envrcs-sync" >&2
+        echo "  Run: envrcs sync" >&2
         return 1
     end
 
@@ -140,26 +140,69 @@ function __envrcs_push
     echo "✓ Pushed envrc source"
 end
 
-function __envrcs_sync_usage
-    echo "Usage: envrcs-sync [--pull-only|--push|--path|--item]"
-    echo "  envrcs-sync        Pull rbw note to local envrcs.yaml, then chezmoi apply"
-    echo "  --pull-only        Pull only; no apply"
-    echo "  --push             Push local envrcs.yaml to rbw note"
-    echo "  --path             Print local envrcs.yaml path"
-    echo "  --item             Print rbw item name"
+function __envrcs_edit
+    __envrcs_pull 0; or return 1
+
+    set -l file (__envrcs_source_file); or return 1
+    set -l before (__envrcs_hash "$file")
+    set -l editor
+
+    if set -q EDITOR; and test -n "$EDITOR"
+        set editor "$EDITOR"
+    else
+        set editor nvim
+    end
+
+    echo "Editing $file"
+    eval "$editor "(string escape -- "$file")
+    set -l edit_status $status
+    if test $edit_status -ne 0
+        echo "✗ Editor exited with status $edit_status" >&2
+        return $edit_status
+    end
+
+    if not __envrcs_validate "$file"
+        return 1
+    end
+
+    set -l after (__envrcs_hash "$file")
+    if test "$before" = "$after"
+        echo "No changes; skipping push"
+        chezmoi apply
+        return $status
+    end
+
+    __envrcs_push; or return 1
+    chezmoi apply
+end
+
+function __envrcs_usage
+    echo "Usage: envrcs <command> [options]"
+    echo "Commands:"
+    echo "  sync        Pull rbw note to local envrcs.yaml, then chezmoi apply"
+    echo "  edit        Pull latest, edit envrcs.yaml, push to rbw, apply"
+    echo "  push        Push local envrcs.yaml to rbw note"
+    echo "  path        Print local envrcs.yaml path"
+    echo "  item        Print rbw item name"
+    echo ""
+    echo "sync options:"
+    echo "  --pull-only Pull only; no apply"
     echo ""
     echo "Config: ENVRCS_RBW_ITEM overrides rbw item name"
 end
 
-function envrcs-sync
-    switch "$argv[1]"
-        case -h --help help
-            __envrcs_sync_usage
+function envrcs
+    set -l command $argv[1]
+    set -e argv[1]
+
+    switch "$command"
+        case -h --help help ''
+            __envrcs_usage
             return 0
-        case --item
+        case item
             __envrcs_item
             return 0
-        case --path
+        case path
             if not command -q chezmoi
                 echo "✗ Missing required command: chezmoi" >&2
                 return 1
@@ -170,16 +213,35 @@ function envrcs-sync
 
     __envrcs_require; or return 1
 
-    switch "$argv[1]"
-        case '' --pull
-            __envrcs_pull 1
-        case --pull-only
-            __envrcs_pull 0
-        case --push
+    switch "$command"
+        case sync pull
+            switch "$argv[1]"
+                case '' --pull
+                    __envrcs_pull 1
+                case --pull-only
+                    __envrcs_pull 0
+                case '*'
+                    echo "✗ Unknown sync option: $argv[1]" >&2
+                    __envrcs_usage >&2
+                    return 1
+            end
+        case edit
+            if test (count $argv) -ne 0
+                echo "✗ edit takes no options" >&2
+                __envrcs_usage >&2
+                return 1
+            end
+            __envrcs_edit
+        case push
+            if test (count $argv) -ne 0
+                echo "✗ push takes no options" >&2
+                __envrcs_usage >&2
+                return 1
+            end
             __envrcs_push
         case '*'
-            echo "✗ Unknown option: $argv[1]" >&2
-            __envrcs_sync_usage >&2
+            echo "✗ Unknown command: $command" >&2
+            __envrcs_usage >&2
             return 1
     end
 end

@@ -1,6 +1,0 @@
-complete -c envrcs-sync -f -s h -l help -d 'Show help'
-complete -c envrcs-sync -f -l pull -d 'Pull rbw note and apply'
-complete -c envrcs-sync -f -l pull-only -d 'Pull rbw note without apply'
-complete -c envrcs-sync -f -l push -d 'Push local envrcs.yaml to rbw note'
-complete -c envrcs-sync -f -l path -d 'Print local envrcs.yaml path'
-complete -c envrcs-sync -f -l item -d 'Print rbw item name'
