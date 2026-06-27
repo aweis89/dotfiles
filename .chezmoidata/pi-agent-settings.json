@@ -2,6 +2,8 @@
   "packages": [
     "npm:@mjakl/pi-dark-or-light",
     "npm:@vanillagreen/pi-background-tasks",
+    "npm:pi-rtk-optimizer",
+    "npm:pi-goal-pro",
     "npm:pi-web-access",
     "npm:pi-subagents",
     "npm:pi-caveman",
