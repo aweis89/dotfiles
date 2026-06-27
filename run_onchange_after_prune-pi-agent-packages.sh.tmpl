@@ -4,10 +4,7 @@ set -eu
 
 # Template dependency: change script hash when the managed Pi package list changes.
 managed_settings_file=$(mktemp)
-managed_packages_file=$(mktemp)
-installed_packages_file=$(mktemp)
-stale_packages_file=$(mktemp)
-trap 'rm -f "$managed_settings_file" "$managed_packages_file" "$installed_packages_file" "$stale_packages_file"' EXIT
+trap 'rm -f "$managed_settings_file"' EXIT
 
 cat >"$managed_settings_file" <<'EOF'
 {{ include ".chezmoidata/pi-agent-settings.json" }}
@@ -31,33 +28,40 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
-jq -r '
-  def package_name:
-    sub("^npm:"; "")
-    | if startswith("@") then
-        capture("^(?<name>@[^/]+/[^@]+)").name
-      else
-        sub("@.*$"; "")
-      end;
+# Managed package names declared in pi-agent-settings.json (npm: sources only).
+managed_packages=$(
+  jq -r '
+    def package_name:
+      sub("^npm:"; "")
+      | if startswith("@") then
+          capture("^(?<name>@[^/]+/[^@]+)").name
+        else
+          sub("@.*$"; "")
+        end;
 
-  (.packages // [])
-  | .[]
-  | (if type == "string" then . elif type == "object" then (.source // empty) else empty end)
-  | select(startswith("npm:"))
-  | package_name
-' "$managed_settings_file" | sort -u >"$managed_packages_file"
+    (.packages // [])
+    | .[]
+    | (if type == "string" then . elif type == "object" then (.source // empty) else empty end)
+    | select(startswith("npm:"))
+    | package_name
+  ' "$managed_settings_file" | sort -u
+)
 
-jq -r '.dependencies // {} | keys[]' "$package_json" | sort -u >"$installed_packages_file"
+# Currently installed package names from the Pi agent npm dir.
+installed_packages=$(jq -r '.dependencies // {} | keys[]' "$package_json" | sort -u)
 
-comm -23 "$installed_packages_file" "$managed_packages_file" >"$stale_packages_file"
+# Installed but no longer managed → stale.
+stale=$(comm -23 \
+  <(printf '%s\n' "$installed_packages") \
+  <(printf '%s\n' "$managed_packages"))
 
-if [ ! -s "$stale_packages_file" ]; then
+if [ -z "$stale" ]; then
   echo "No stale Pi agent npm packages to prune."
   exit 0
 fi
 
 echo "Pruning Pi agent npm packages removed from managed settings:"
-sed 's/^/  - /' "$stale_packages_file"
+printf '  - %s\n' $stale
 
-# shellcheck disable=SC2046
-(cd "$pi_npm_dir" && npm uninstall --no-audit --no-fund -- $(cat "$stale_packages_file"))
+# shellcheck disable=SC2086
+(cd "$pi_npm_dir" && npm uninstall --no-audit --no-fund -- $stale)
