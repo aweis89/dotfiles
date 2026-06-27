@@ -81,9 +81,6 @@ abbr -a -- tmuxs 'edit-config ~/.config/tmux/tmux.conf'
 abbr -a -- tt gotestsum
 abbr -a -- v nvim
 abbr -a -- vims 'cd ~/.config/nvim/lua && vim'
-abbr -a -- zshl 'edit-config ~/.zshrc.local'
-abbr -a -- zshp 'edit-config ~/.zsh/.zsh_plugins.txt'
-abbr -a -- zshs 'edit-config ~/.zshrc'
 abbr -a -- gk 'gcloud-project && gcloud-update-kubeconfig --dns-endpoint'
 abbr -a -- gl 'gcloud auth login'
 abbr -a -- al 'aws sso login'

@@ -33,7 +33,6 @@ brew 'tmux'
 brew 'tree'
 brew 'watch'
 brew 'wget'
-brew 'zsh'
 
 cask 'docker-desktop'
 cask 'font-fira-code'

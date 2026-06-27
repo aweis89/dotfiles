@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # kitty_dir="${0:a:h}"
 # theme="$kitty_dir/current-theme.conf"

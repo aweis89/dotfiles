@@ -41,7 +41,7 @@ chezmoi apply
 
 ```bash
 # Edit a dotfile (opens source file in editor)
-chezmoi edit ~/.zshrc
+chezmoi edit ~/.config/fish/config.fish
 
 # Apply changes after editing
 chezmoi apply
@@ -66,7 +66,7 @@ chezmoi add --autotemplate ~/.someconfig
 ## Structure
 
 - **Homebrew packages**: `Brewfile` - managed by chezmoi run-once scripts
-- **Shell config**: `.zshrc`, `.p10k.zsh`, `.zsh/` directory
+- **Shell config**: `.config/fish/` - Fish shell configuration
 - **Application configs**: `.config/` directory with various app configurations
 - **Scripts**: `.config/bin/` - custom utility scripts
 - **Setup automation**: `run_once_*.sh` - automated setup scripts that run on first apply
