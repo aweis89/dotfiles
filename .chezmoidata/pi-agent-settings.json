@@ -1,32 +1,28 @@
 {
   "packages": [
     "npm:@mjakl/pi-dark-or-light",
-    "npm:@vanillagreen/pi-background-tasks",
-    "npm:pi-rtk-optimizer",
-    "npm:pi-goal-pro",
-    "npm:pi-web-access",
-    "npm:pi-subagents",
-    "npm:pi-caveman",
-    "npm:pi-mcp-adapter",
-    "npm:pi-vim",
-    "npm:pi-find-packages",
     "npm:@mjfuertesf/pi-quota-status",
-    {
-      "source": "npm:pi-cursor-sdk",
-      "skills": []
-    },
-    "npm:pi-btw",
+    "npm:@narumitw/pi-plan-mode",
+    "npm:@vanillagreen/pi-background-tasks",
+    "npm:pi-caveman",
+    "npm:pi-cursor-sdk",
+    "npm:pi-find-packages",
+    "npm:pi-goal-pro",
+    "npm:pi-mcp-adapter",
+    "npm:pi-rtk-optimizer",
+    "npm:pi-subagents",
     "npm:pi-tmux-thread",
-    "npm:@narumitw/pi-plan-mode"
+    "npm:pi-vim",
+    "npm:pi-web-access"
   ],
   "hideThinkingBlock": false,
   "steeringMode": "all",
   "followUpMode": "all",
   "enabledModels": [
-    "anthropic/claude-sonnet-4-6",
-    "openai-codex/gpt-5.5",
     "anthropic/claude-opus-4-8",
+    "anthropic/claude-sonnet-4-6",
     "cursor/gpt-latest@272k:fast",
-    "cursor/opus-latest@300k:fast"
+    "cursor/opus-latest@300k:fast",
+    "openai-codex/gpt-5.5"
   ]
 }
