@@ -1,5 +1,7 @@
 function __envrcs_item
-    if set -q ENVRCS_RBW_ITEM; and test -n "$ENVRCS_RBW_ITEM"
+    if set -q ENVRCS_ITEM; and test -n "$ENVRCS_ITEM"
+        printf '%s\n' "$ENVRCS_ITEM"
+    else if set -q ENVRCS_RBW_ITEM; and test -n "$ENVRCS_RBW_ITEM"
         printf '%s\n' "$ENVRCS_RBW_ITEM"
     else
         printf '%s\n' '~/.local/share/chezmoi/envrcs.yaml'
@@ -27,7 +29,7 @@ function __envrcs_plain_source_file
 end
 
 function __envrcs_require
-    for required_command in chezmoi jq mktemp rbw
+    for required_command in bw chezmoi jq mktemp rbw
         if not command -q "$required_command"
             echo "✗ Missing required command: $required_command" >&2
             return 1
@@ -174,6 +176,119 @@ end
     echo "⚠ ruby missing; skipping YAML shape validation" >&2
 end
 
+function __envrcs_bw_run_with_timeout
+    set -l seconds $argv[1]
+    set -e argv[1]
+
+    if command -q timeout
+        command timeout -k 5 "$seconds" $argv
+    else if command -q gtimeout
+        command gtimeout -k 5 "$seconds" $argv
+    else
+        command $argv
+    end
+end
+
+function __envrcs_bw_ensure
+    set -l bw_timeout 30
+    set -l bw_unlock_timeout 180
+
+    set -l status_json (__envrcs_bw_run_with_timeout "$bw_timeout" bw status 2>/dev/null)
+    if test $status -ne 0
+        echo "✗ Failed to read Bitwarden status" >&2
+        return 1
+    end
+
+    set -l vault_status (printf '%s\n' $status_json | jq -r '.status // empty' 2>/dev/null)
+    switch "$vault_status"
+        case unauthenticated
+            echo "✗ Not logged in to Bitwarden. Run: bw login" >&2
+            return 1
+        case locked
+            echo "Bitwarden vault locked. Unlocking..."
+            read --silent --local --prompt-str "Master password: " bw_master_password
+            set -l read_status $status
+            echo
+
+            if test $read_status -ne 0 -o -z "$bw_master_password"
+                echo "✗ Failed to read master password" >&2
+                return 1
+            end
+
+            set -lx ENVRCS_BW_MASTER_PASSWORD "$bw_master_password"
+            set -e bw_master_password
+
+            set -gx BW_SESSION (__envrcs_bw_run_with_timeout "$bw_unlock_timeout" bw unlock --raw --passwordenv ENVRCS_BW_MASTER_PASSWORD 2>/dev/null)
+            set -l unlock_status $status
+            set -e ENVRCS_BW_MASTER_PASSWORD
+
+            if test $unlock_status -ne 0 -o -z "$BW_SESSION"
+                echo "✗ Failed to unlock Bitwarden vault" >&2
+                return 1
+            end
+        case unlocked
+        case '*'
+            echo "✗ Unexpected Bitwarden status: $vault_status" >&2
+            return 1
+    end
+end
+
+function __envrcs_pull_bw
+    set -l item $argv[1]
+    set -l plain_file $argv[2]
+
+    __envrcs_bw_ensure; or return 1
+
+    echo "Pulling with bw fallback..."
+    if not bw get item "$item" | jq -er '.notes // empty' >"$plain_file"
+        echo "✗ Failed to read Bitwarden note with bw: $item" >&2
+        return 1
+    end
+end
+
+function __envrcs_push_bw
+    set -l item $argv[1]
+    set -l plain_file $argv[2]
+    set -l item_json (__envrcs_tmp_file)
+    set -l encoded_json (__envrcs_tmp_file)
+
+    __envrcs_bw_ensure; or begin
+        rm -f "$item_json" "$encoded_json"
+        return 1
+    end
+
+    if not bw get item "$item" >"$item_json"
+        rm -f "$item_json" "$encoded_json"
+        echo "✗ Failed to read Bitwarden item with bw: $item" >&2
+        echo "  Repair/create item in Bitwarden, then retry envrcs push" >&2
+        return 1
+    end
+
+    set -l item_id (jq -er '.id' "$item_json")
+    if test $status -ne 0 -o -z "$item_id"
+        rm -f "$item_json" "$encoded_json"
+        echo "✗ Bitwarden item missing id: $item" >&2
+        return 1
+    end
+
+    if not jq -c --rawfile contents "$plain_file" '.notes = $contents' "$item_json" >"$encoded_json"
+        rm -f "$item_json" "$encoded_json"
+        echo "✗ Failed to prepare Bitwarden item update" >&2
+        return 1
+    end
+
+    echo "Pushing with bw -> $item"
+    if not cat "$encoded_json" | bw encode | bw edit item "$item_id" >/dev/null
+        rm -f "$item_json" "$encoded_json"
+        echo "✗ Failed to update Bitwarden note with bw: $item" >&2
+        return 1
+    end
+
+    bw sync >/dev/null 2>&1 || true
+    rbw sync >/dev/null 2>&1 || true
+    rm -f "$item_json" "$encoded_json"
+end
+
 function __envrcs_encrypt_cache
     set -l plain_file $argv[1]
     set -l encrypted_file (__envrcs_source_file); or return 1
@@ -223,17 +338,15 @@ function __envrcs_pull
     set -l plain_file (__envrcs_tmp_file .yaml)
 
     echo "Syncing rbw..."
-    if not rbw sync
-        rm -f "$plain_file"
-        echo "✗ rbw sync failed" >&2
-        return 1
-    end
+    rbw sync >/dev/null 2>&1 || true
 
     echo "Pulling $item -> $encrypted_file"
-    if not rbw get --raw "$item" | jq -er '.notes // empty' >"$plain_file"
-        rm -f "$plain_file"
-        echo "✗ Failed to read rbw note: $item" >&2
-        return 1
+    if not rbw get --raw "$item" 2>/dev/null | jq -er '.notes // empty' >"$plain_file"
+        echo "rbw read failed; falling back to bw" >&2
+        if not __envrcs_pull_bw "$item" "$plain_file"
+            rm -f "$plain_file"
+            return 1
+        end
     end
     chmod 600 "$plain_file"
 
@@ -277,23 +390,9 @@ function __envrcs_push
         return 1
     end
 
-    echo "Syncing rbw..."
-    if not rbw sync
-        rm -f "$plain_file"
-        echo "✗ rbw sync failed" >&2
-        return 1
-    end
-
-    if not rbw get --raw "$item" >/dev/null
-        rm -f "$plain_file"
-        echo "✗ rbw item not found: $item" >&2
-        return 1
-    end
-
     echo "Pushing $encrypted_file -> $item"
-    if not rbw edit "$item" <"$plain_file"
+    if not __envrcs_push_bw "$item" "$plain_file"
         rm -f "$plain_file"
-        echo "✗ Failed to update rbw note: $item" >&2
         return 1
     end
 
@@ -354,17 +453,17 @@ end
 function __envrcs_usage
     echo "Usage: envrcs <command> [options]"
     echo "Commands:"
-    echo "  sync        Pull rbw note to encrypted envrcs.yaml.age, then chezmoi apply"
-    echo "  edit        Pull latest, edit temp plaintext, push to rbw, apply"
-    echo "  push        Push encrypted local cache to rbw note"
+    echo "  sync        Pull Bitwarden note to encrypted envrcs.yaml.age, then chezmoi apply"
+    echo "  edit        Pull latest, edit temp plaintext, push to Bitwarden, apply"
+    echo "  push        Push encrypted local cache to Bitwarden note"
     echo "  path        Print encrypted local cache path"
     echo "  plain-path  Print old plaintext cache path"
-    echo "  item        Print rbw item name"
+    echo "  item        Print Bitwarden item name"
     echo ""
     echo "sync options:"
     echo "  --pull-only Pull only; no apply"
     echo ""
-    echo "Config: ENVRCS_RBW_ITEM overrides rbw item name"
+    echo "Config: ENVRCS_ITEM overrides Bitwarden item name"
 end
 
 function envrcs

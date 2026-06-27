@@ -1,4 +1,4 @@
-# brew "bitwarden-cli"
+brew 'bitwarden-cli'
 brew 'bat'
 brew 'ccache'
 brew 'ccls'
