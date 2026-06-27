@@ -271,9 +271,6 @@ export PATH="$PATH:~/.asdf/installs/nodejs/23.6.1/bin"
 export PATH="$PATH:~/.asdf/installs/python/3.11.10/bin"
 
 alias codex='ASDF_NODEJS_VERSION=23.6.1 codex'
-alias '??'='command aichat -e'
-alias ai=aichat
-alias aig='aichat --model copilot:gemini-2.5-pro-preview-05-06'
 
 alias k=kubectl
 alias kcn=kubens
@@ -403,53 +400,6 @@ p() {
   go run $HOME/dotfiles/bin/perplexity.go "$@"
 }
 
-goose() {
-  local mode=$(defaults read -g AppleInterfaceStyle 2>/dev/null)
-  if [[ "$mode" == "Dark" ]]; then
-    command goose "$@"
-  else
-    GOOSE_CLI_THEME=light command goose "$@"
-  fi
-}
-
-_goose() {
-  local line
-  local cmd="${words[1]}"
-  local cur="${words[$CURRENT]}"
-
-  local -a commands
-  commands=(
-    "configure:Configure Goose settings"
-    "info:Display Goose information"
-    "mcp:Run one of the mcp servers bundled with goose"
-    "session:Start or resume interactive chat sessions"
-    "run:Execute commands from an instruction file or stdin"
-    "agents:List available agent versions"
-    "update:Update the goose CLI version"
-    "bench:"
-    "help:Print this message or the help of the given subcommand(s)"
-  )
-
-  local -a options
-  options=(
-    "-h:Print help"
-    "--help:Print help"
-    "-V:Print version"
-    "--version:Print version"
-  )
-
-  case "$cmd" in
-    goose)
-      _describe 'command' commands
-      _arguments $options
-      ;;
-    *)
-      _arguments $options
-      ;;
-  esac
-}
-compdef _goose goose
-
 ggmain_or_master() {
   git checkout main 2>/dev/null || git checkout master
   ggpull
@@ -546,16 +496,9 @@ temporal() {
     $0 "$@"
 }
 
-pass-to-aichat-widget() {
-    BUFFER="aichat -e $BUFFER"
-    zle accept-line
-}
-zle -N pass-to-aichat-widget
-
 bindkey -r '^t'
 
 bindkey -M menuselect '\r' .accept-line
-bindkey '^o' pass-to-aichat-widget
 bindkey '^w' forward-word
 # bindkey '^r' fzf-history-widget
 bindkey '^l' autosuggest-accept
@@ -611,21 +554,6 @@ typeset -ag preexec_functions
 if (( ! ${preexec_functions[(I)_set_nvim_term_buffer_name]} )); then
   preexec_functions+=(_set_nvim_term_buffer_name)
 fi
-
-# bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
-_aichat_zsh() {
-    if [[ -n "$BUFFER" ]]; then
-        local _old=$BUFFER
-        BUFFER+="  󰚭"
-        zle -I && zle redisplay
-        BUFFER=$(command aichat -r '%shell%' "$_old")
-        # change to this when issue is resolved: https://github.com/sigoden/aichat/issues/531
-        # BUFFER=$(command aichat -e "$_old")
-        zle end-of-line
-    fi
-}
-zle -N _aichat_zsh
-bindkey '^o' _aichat_zsh
 
 # Function to edit the current ZLE buffer, adapting to Neovim environment
 nvim-edit-cmd() {
@@ -683,21 +611,6 @@ nvim-edit-cmd() {
 zle -N nvim-edit-cmd
 # Bind the widget to a key sequence
 bindkey '^e' nvim-edit-cmd
-
-# argc-completions
-export ARGC_COMPLETIONS_ROOT="$HOME/.local/argc-completions"
-if [[ ! -d "$ARGC_COMPLETIONS_ROOT" ]]; then
-  mkdir -p $ARGC_COMPLETIONS_ROOT
-  git clone https://github.com/sigoden/argc-completions.git $ARGC_COMPLETIONS_ROOT
-  $ARGC_COMPLETIONS_ROOT/scripts/download-tools.sh
-  $ARGC_COMPLETIONS_ROOT/scripts/setup-shell.sh zsh
-fi
-export ARGC_COMPLETIONS_PATH="$ARGC_COMPLETIONS_ROOT/completions/macos:$ARGC_COMPLETIONS_ROOT/completions"
-export PATH="$ARGC_COMPLETIONS_ROOT/bin:$PATH"
-argc_scripts=(aichat)
-# To add completions for all:
-# argc_scripts=( $(ls -p -1 "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions" | sed -n 's/\.sh$//p') )
-source <(argc --argc-completions zsh $argc_scripts)
 
 # Created by `pipx` on 2024-11-26 01:38:49
 export PATH="$PATH:$HOME/.local/bin"
