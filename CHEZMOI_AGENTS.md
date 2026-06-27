@@ -18,8 +18,6 @@ Chezmoi-managed dotfiles for Fish shell, Neovim (LazyVim), Hammerspoon, tmux, an
 
 ## Key Patterns
 - After editing a file, run `chezmoi apply <target>` to apply your changes (e.g., after editing `dot_config/fish/config.fish`, run `chezmoi apply ~/.config/fish/config.fish`)
-- After `chezmoi apply` succeeds, validate the result (e.g., `fish -n`, `bash -n`, run the changed script) before committing
-- After validation passes, commit and push the changes so the working tree is not left dirty
 - Always edit in chezmoi source (`~/.local/share/chezmoi`), not home directory targets
 - Git hooks auto-run `chezmoi apply` after merge/rebase
 - Skip run-once scripts with env vars (e.g., `SKIP_BREW=1`)
