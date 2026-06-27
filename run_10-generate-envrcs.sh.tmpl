@@ -10,7 +10,7 @@ set -eu
 dest={{ $rawPath | quote }}
 case "$dest" in
   "~") dest="$HOME" ;;
-  "~/"*) dest="$HOME/${dest#~/}" ;;
+  "~/"*) dest="$HOME/${dest#\~/}" ;;
 esac
 
 mkdir -p "$(dirname "$dest")"
