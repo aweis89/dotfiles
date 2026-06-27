@@ -48,14 +48,96 @@ function __envrcs_hash
 end
 
 function __envrcs_tmp_file
-    set -l suffix $argv[1]
     set -l tmpdir /tmp
 
     if set -q TMPDIR; and test -n "$TMPDIR"
         set tmpdir "$TMPDIR"
     end
 
-    mktemp "$tmpdir/envrcs.XXXXXX$suffix"
+    mktemp "$tmpdir/envrcs.XXXXXX"
+end
+
+function __envrcs_encryption_works
+    set -l plain_file (__envrcs_tmp_file .txt)
+    set -l encrypted_file (__envrcs_tmp_file .age)
+    set -l decrypted_file (__envrcs_tmp_file .txt)
+
+    printf 'envrcs encryption test\n' >"$plain_file"
+
+    if chezmoi encrypt "$plain_file" >"$encrypted_file" 2>/dev/null
+        and chezmoi decrypt "$encrypted_file" >"$decrypted_file" 2>/dev/null
+        and cmp -s "$plain_file" "$decrypted_file"
+        rm -f "$plain_file" "$encrypted_file" "$decrypted_file"
+        return 0
+    end
+
+    rm -f "$plain_file" "$encrypted_file" "$decrypted_file"
+    return 1
+end
+
+function __envrcs_ensure_encryption
+    if __envrcs_encryption_works
+        return 0
+    end
+
+    set -l chezmoi_config_dir "$HOME/.config/chezmoi"
+    set -l key_file "$chezmoi_config_dir/key.txt"
+    set -l config_file (chezmoi execute-template '{{ .chezmoi.configFile }}' 2>/dev/null)
+
+    if test -z "$config_file"
+        set config_file "$chezmoi_config_dir/chezmoi.toml"
+    end
+
+    mkdir -p "$chezmoi_config_dir" (dirname "$config_file")
+
+    if not test -f "$key_file"
+        echo "Creating chezmoi age key: $key_file"
+        if not chezmoi age-keygen --output "$key_file" >/dev/null
+            echo "✗ Failed to generate chezmoi age key" >&2
+            return 1
+        end
+    end
+    chmod 600 "$key_file"
+
+    set -l recipient (awk '/^# public key: / { print $4; exit }' "$key_file")
+    if test -z "$recipient"
+        echo "✗ Failed to read age recipient from $key_file" >&2
+        return 1
+    end
+
+    if test -f "$config_file"
+        if grep -Eq '^[[:space:]]*encryption[[:space:]]*=' "$config_file"
+            echo "✗ chezmoi encryption config exists but encrypt/decrypt failed: $config_file" >&2
+            return 1
+        end
+
+        if not string match -q '*.toml' "$config_file"
+            echo "✗ Cannot auto-edit non-TOML chezmoi config: $config_file" >&2
+            echo "  Add encryption = \"age\" with identity $key_file" >&2
+            return 1
+        end
+
+        if grep -Eq '^[[:space:]]*\[age\]' "$config_file"
+            echo "✗ chezmoi [age] config exists but encryption not enabled: $config_file" >&2
+            return 1
+        end
+
+        echo "Adding chezmoi age encryption config: $config_file"
+        set -l tmp_config (__envrcs_tmp_file .toml)
+        printf 'encryption = "age"\n\n[age]\nidentity = "~/.config/chezmoi/key.txt"\nrecipient = "%s"\n\n' "$recipient" >"$tmp_config"
+        cat "$config_file" >>"$tmp_config"
+        chmod 600 "$tmp_config"
+        mv "$tmp_config" "$config_file"
+    else
+        echo "Creating chezmoi age encryption config: $config_file"
+        printf 'encryption = "age"\n\n[age]\nidentity = "~/.config/chezmoi/key.txt"\nrecipient = "%s"\n' "$recipient" >"$config_file"
+        chmod 600 "$config_file"
+    end
+
+    if not __envrcs_encryption_works
+        echo "✗ chezmoi age encryption still not working after setup" >&2
+        return 1
+    end
 end
 
 function __envrcs_validate
@@ -98,6 +180,11 @@ function __envrcs_encrypt_cache
     set -l encrypted_dir (dirname "$encrypted_file")
     set -l tmp_encrypted (mktemp "$encrypted_dir/.envrcs.yaml.age.XXXXXX")
 
+    if not __envrcs_ensure_encryption
+        rm -f "$tmp_encrypted"
+        return 1
+    end
+
     if not chezmoi encrypt "$plain_file" >"$tmp_encrypted"
         rm -f "$tmp_encrypted"
         echo "✗ chezmoi encryption failed" >&2
@@ -112,6 +199,8 @@ end
 function __envrcs_decrypt_cache
     set -l plain_file $argv[1]
     set -l encrypted_file (__envrcs_source_file); or return 1
+
+    __envrcs_ensure_encryption; or return 1
 
     if not test -f "$encrypted_file"
         echo "✗ Missing encrypted cache: $encrypted_file" >&2
