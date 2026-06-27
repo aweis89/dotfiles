@@ -7,7 +7,6 @@ fish_add_path \
     ~/.cargo/bin \
     ~/.config/bin \
     ~/.local/bin \
-    ~/.opencode/bin \
     ~/go/bin \
     /opt/homebrew/opt/ruby/bin \
     /opt/homebrew/opt/openjdk/bin \
@@ -46,25 +45,8 @@ function cluster-rename
     kubectl config rename-context "$context" "$target"
 end
 
-function opencode-model
-    set -e OPENCODE_MODEL
-    if test (count $argv) -gt 0
-        set -Ux OPENCODE_MODEL $argv[1]
-    else
-        set selected_model (opencode models | fzf)
-        if test $status -eq 0
-            set -Ux OPENCODE_MODEL $selected_model
-        end
-    end
-    test -n "$TMUX" && tmux setenv OPENCODE_MODEL $OPENCODE_MODEL
-end
-
 function rms
     rm -f ~/.local/state/nvim/swap/*
-end
-
-function prc
-    opr-create -p "$argv"
 end
 
 abbr -a -- ag rg

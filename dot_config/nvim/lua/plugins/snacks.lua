@@ -462,7 +462,6 @@ return {
           input = {
             keys = {
               ["<localleader>d"] = { "rm_file", mode = { "n", "i" } },
-              -- ["<localleader>s"] = { "aider_search", mode = { "n", "i" } },
             },
           },
         },

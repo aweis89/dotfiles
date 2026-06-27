@@ -26,7 +26,7 @@ local function set_default_tool(name)
 end
 
 local function default_tool()
-  return vim.g.sidekick_default_tool or vim.env.SIDEKICK_DEFAULT or "opencode"
+  return vim.g.sidekick_default_tool or vim.env.SIDEKICK_DEFAULT or "codex"
 end
 
 if not vim.g.sidekick_default_tool and not vim.env.SIDEKICK_DEFAULT then
@@ -91,10 +91,6 @@ local function sidekick_select_default_tool()
   })
 end
 
--- Sidekick will detect *external* opencode sessions by scanning processes/ports.
--- That creates an annoying picker when any opencode is running anywhere.
--- For opencode only, force "embedded terminal sessions only" so we only ever
--- attach to the session started by this Neovim instance.
 local function sidekick_toggle()
   local State = require("sidekick.cli.state")
   local Config = require("sidekick.config")
