@@ -2,9 +2,9 @@
 
 set -eu
 
-{{- $envrcPath := (joinPath .chezmoi.sourceDir "envrcs.yaml") -}}
+{{- $envrcPath := (joinPath .chezmoi.sourceDir "envrcs.yaml.age") -}}
 {{- if (stat $envrcPath) -}}
-{{- $envrcMap := (fromYaml (include $envrcPath)) -}}
+{{- $envrcMap := (fromYaml (decrypt (include $envrcPath))) -}}
 
 {{- range $rawPath, $content := $envrcMap }}
 dest={{ $rawPath | quote }}
@@ -29,5 +29,5 @@ if command -v direnv >/dev/null 2>&1; then
 fi
 {{- end }}
 {{- else }}
-echo "envrcs.yaml missing; run 'envrcs sync' to pull secrets from rbw"
+echo "envrcs.yaml.age missing; run 'envrcs sync' to pull secrets from rbw"
 {{- end }}

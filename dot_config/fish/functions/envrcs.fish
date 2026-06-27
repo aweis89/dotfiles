@@ -6,13 +6,23 @@ function __envrcs_item
     end
 end
 
-function __envrcs_source_file
+function __envrcs_source_dir
     set -l source_dir (chezmoi source-path 2>/dev/null)
     if test $status -ne 0 -o -z "$source_dir"
         echo "✗ Failed to find chezmoi source dir" >&2
         return 1
     end
 
+    printf '%s\n' "$source_dir"
+end
+
+function __envrcs_source_file
+    set -l source_dir (__envrcs_source_dir); or return 1
+    printf '%s\n' "$source_dir/envrcs.yaml.age"
+end
+
+function __envrcs_plain_source_file
+    set -l source_dir (__envrcs_source_dir); or return 1
     printf '%s\n' "$source_dir/envrcs.yaml"
 end
 
@@ -35,6 +45,17 @@ function __envrcs_hash
     else
         wc -c <"$file"
     end
+end
+
+function __envrcs_tmp_file
+    set -l suffix $argv[1]
+    set -l tmpdir /tmp
+
+    if set -q TMPDIR; and test -n "$TMPDIR"
+        set tmpdir "$TMPDIR"
+    end
+
+    mktemp "$tmpdir/envrcs.XXXXXX$suffix"
 end
 
 function __envrcs_validate
@@ -71,35 +92,74 @@ end
     echo "⚠ ruby missing; skipping YAML shape validation" >&2
 end
 
+function __envrcs_encrypt_cache
+    set -l plain_file $argv[1]
+    set -l encrypted_file (__envrcs_source_file); or return 1
+    set -l encrypted_dir (dirname "$encrypted_file")
+    set -l tmp_encrypted (mktemp "$encrypted_dir/.envrcs.yaml.age.XXXXXX")
+
+    if not chezmoi encrypt "$plain_file" >"$tmp_encrypted"
+        rm -f "$tmp_encrypted"
+        echo "✗ chezmoi encryption failed" >&2
+        echo "  Configure chezmoi encryption first, then retry" >&2
+        return 1
+    end
+
+    chmod 600 "$tmp_encrypted"
+    mv "$tmp_encrypted" "$encrypted_file"
+end
+
+function __envrcs_decrypt_cache
+    set -l plain_file $argv[1]
+    set -l encrypted_file (__envrcs_source_file); or return 1
+
+    if not test -f "$encrypted_file"
+        echo "✗ Missing encrypted cache: $encrypted_file" >&2
+        echo "  Run: envrcs sync" >&2
+        return 1
+    end
+
+    if not chezmoi decrypt "$encrypted_file" >"$plain_file"
+        echo "✗ chezmoi decryption failed" >&2
+        return 1
+    end
+
+    chmod 600 "$plain_file"
+end
+
 function __envrcs_pull
     set -l run_apply $argv[1]
     set -l item (__envrcs_item)
-    set -l file (__envrcs_source_file); or return 1
-    set -l dir (dirname "$file")
-    set -l tmp (mktemp "$dir/.envrcs.yaml.XXXXXX")
+    set -l encrypted_file (__envrcs_source_file); or return 1
+    set -l plain_file (__envrcs_tmp_file .yaml)
 
     echo "Syncing rbw..."
     if not rbw sync
-        rm -f "$tmp"
+        rm -f "$plain_file"
         echo "✗ rbw sync failed" >&2
         return 1
     end
 
-    echo "Pulling $item -> $file"
-    if not rbw get --raw "$item" | jq -er '.notes // empty' >"$tmp"
-        rm -f "$tmp"
+    echo "Pulling $item -> $encrypted_file"
+    if not rbw get --raw "$item" | jq -er '.notes // empty' >"$plain_file"
+        rm -f "$plain_file"
         echo "✗ Failed to read rbw note: $item" >&2
         return 1
     end
+    chmod 600 "$plain_file"
 
-    if not __envrcs_validate "$tmp"
-        rm -f "$tmp"
+    if not __envrcs_validate "$plain_file"
+        rm -f "$plain_file"
         return 1
     end
 
-    chmod 600 "$tmp"
-    mv "$tmp" "$file"
-    echo "✓ Pulled envrc source"
+    if not __envrcs_encrypt_cache "$plain_file"
+        rm -f "$plain_file"
+        return 1
+    end
+
+    rm -f "$plain_file"
+    echo "✓ Pulled encrypted envrc source"
 
     if test "$run_apply" = 1
         chezmoi apply
@@ -108,43 +168,60 @@ end
 
 function __envrcs_push
     set -l item (__envrcs_item)
-    set -l file (__envrcs_source_file); or return 1
+    set -l encrypted_file (__envrcs_source_file); or return 1
+    set -l plain_file (__envrcs_tmp_file .yaml)
 
-    if not test -f "$file"
-        echo "✗ Missing $file" >&2
+    if not test -f "$encrypted_file"
+        rm -f "$plain_file"
+        echo "✗ Missing $encrypted_file" >&2
         echo "  Run: envrcs sync" >&2
         return 1
     end
 
-    if not __envrcs_validate "$file"
+    if not __envrcs_decrypt_cache "$plain_file"
+        rm -f "$plain_file"
+        return 1
+    end
+
+    if not __envrcs_validate "$plain_file"
+        rm -f "$plain_file"
         return 1
     end
 
     echo "Syncing rbw..."
     if not rbw sync
+        rm -f "$plain_file"
         echo "✗ rbw sync failed" >&2
         return 1
     end
 
     if not rbw get --raw "$item" >/dev/null
+        rm -f "$plain_file"
         echo "✗ rbw item not found: $item" >&2
         return 1
     end
 
-    echo "Pushing $file -> $item"
-    if not rbw edit "$item" <"$file"
+    echo "Pushing $encrypted_file -> $item"
+    if not rbw edit "$item" <"$plain_file"
+        rm -f "$plain_file"
         echo "✗ Failed to update rbw note: $item" >&2
         return 1
     end
 
+    rm -f "$plain_file"
     echo "✓ Pushed envrc source"
 end
 
 function __envrcs_edit
     __envrcs_pull 0; or return 1
 
-    set -l file (__envrcs_source_file); or return 1
-    set -l before (__envrcs_hash "$file")
+    set -l plain_file (__envrcs_tmp_file .yaml)
+    if not __envrcs_decrypt_cache "$plain_file"
+        rm -f "$plain_file"
+        return 1
+    end
+
+    set -l before (__envrcs_hash "$plain_file")
     set -l editor
 
     if set -q EDITOR; and test -n "$EDITOR"
@@ -153,25 +230,34 @@ function __envrcs_edit
         set editor nvim
     end
 
-    echo "Editing $file"
-    eval "$editor "(string escape -- "$file")
+    echo "Editing temporary decrypted envrcs.yaml"
+    eval "$editor "(string escape -- "$plain_file")
     set -l edit_status $status
     if test $edit_status -ne 0
+        rm -f "$plain_file"
         echo "✗ Editor exited with status $edit_status" >&2
         return $edit_status
     end
 
-    if not __envrcs_validate "$file"
+    if not __envrcs_validate "$plain_file"
+        rm -f "$plain_file"
         return 1
     end
 
-    set -l after (__envrcs_hash "$file")
+    set -l after (__envrcs_hash "$plain_file")
     if test "$before" = "$after"
+        rm -f "$plain_file"
         echo "No changes; skipping push"
         chezmoi apply
         return $status
     end
 
+    if not __envrcs_encrypt_cache "$plain_file"
+        rm -f "$plain_file"
+        return 1
+    end
+
+    rm -f "$plain_file"
     __envrcs_push; or return 1
     chezmoi apply
 end
@@ -179,10 +265,11 @@ end
 function __envrcs_usage
     echo "Usage: envrcs <command> [options]"
     echo "Commands:"
-    echo "  sync        Pull rbw note to local envrcs.yaml, then chezmoi apply"
-    echo "  edit        Pull latest, edit envrcs.yaml, push to rbw, apply"
-    echo "  push        Push local envrcs.yaml to rbw note"
-    echo "  path        Print local envrcs.yaml path"
+    echo "  sync        Pull rbw note to encrypted envrcs.yaml.age, then chezmoi apply"
+    echo "  edit        Pull latest, edit temp plaintext, push to rbw, apply"
+    echo "  push        Push encrypted local cache to rbw note"
+    echo "  path        Print encrypted local cache path"
+    echo "  plain-path  Print old plaintext cache path"
     echo "  item        Print rbw item name"
     echo ""
     echo "sync options:"
@@ -208,6 +295,13 @@ function envrcs
                 return 1
             end
             __envrcs_source_file
+            return $status
+        case plain-path
+            if not command -q chezmoi
+                echo "✗ Missing required command: chezmoi" >&2
+                return 1
+            end
+            __envrcs_plain_source_file
             return $status
     end
 
