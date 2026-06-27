@@ -46,7 +46,8 @@ background-image =
 background-image-opacity = 0
 background-opacity = ${transparent_bg_opacity}
 background-opacity-cells = true
-fullscreen = false
+fullscreen = non-native
+macos-non-native-fullscreen = true
 EOF
 }
 
