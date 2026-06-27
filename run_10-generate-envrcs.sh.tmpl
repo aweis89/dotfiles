@@ -2,18 +2,32 @@
 
 set -eu
 
-{{- $envrcMap := (fromYaml (include (joinPath .chezmoi.sourceDir "envrcs.yaml"))) -}}
+{{- $envrcPath := (joinPath .chezmoi.sourceDir "envrcs.yaml") -}}
+{{- if (stat $envrcPath) -}}
+{{- $envrcMap := (fromYaml (include $envrcPath)) -}}
 
 {{- range $rawPath, $content := $envrcMap }}
-dest={{ $rawPath }}
+dest={{ $rawPath | quote }}
+case "$dest" in
+  "~") dest="$HOME" ;;
+  "~/"*) dest="$HOME/${dest#~/}" ;;
+esac
 
 mkdir -p "$(dirname "$dest")"
 umask 077
-cat > "$dest" <<'EOF'
-{{ $content }}
-EOF
+python3 - "$dest" <<'PY'
+import base64
+import pathlib
+import sys
+
+pathlib.Path(sys.argv[1]).write_bytes(base64.b64decode("{{ $content | b64enc }}"))
+PY
+chmod 600 "$dest"
 
 if command -v direnv >/dev/null 2>&1; then
   (cd "$(dirname "$dest")" && direnv allow || true)
 fi
+{{- end }}
+{{- else }}
+echo "envrcs.yaml missing; run envrcs-sync to pull secrets from rbw"
 {{- end }}
