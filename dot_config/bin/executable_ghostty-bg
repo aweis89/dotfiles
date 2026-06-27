@@ -34,6 +34,7 @@ background-image-position = center
 background-image-fit = cover
 background-opacity = 1
 background-opacity-cells = false
+fullscreen = true
 EOF
 }
 
@@ -45,6 +46,7 @@ background-image =
 background-image-opacity = 0
 background-opacity = ${transparent_bg_opacity}
 background-opacity-cells = true
+fullscreen = false
 EOF
 }
 
