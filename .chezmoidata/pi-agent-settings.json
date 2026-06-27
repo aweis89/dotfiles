@@ -23,6 +23,7 @@
     "anthropic/claude-sonnet-4-6",
     "cursor/gpt-latest@272k:fast",
     "cursor/opus-latest@300k:fast",
-    "openai-codex/gpt-5.5"
+    "openai-codex/gpt-5.5",
+    "z-ai/glm-5.2"
   ]
 }
