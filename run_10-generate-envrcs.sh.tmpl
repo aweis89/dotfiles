@@ -1,33 +1,105 @@
 #!/usr/bin/env bash
-
+# Renders envrc files from envrcs.yaml.age (a chezmoi-encrypted YAML map of
+# path => content, both strings).
+#
+# Key format (contract unchanged for existing entries):
+#   "<path>"                # applies on every host (default)
+#   "<path>@<hostname>"     # applies only when hostname matches
+#
+# The suffix after the last '@' is treated as a host restriction only when it
+# looks like a hostname (alnum, '.', '-'); otherwise the whole key is a path.
+# Hostname matching compares the chezmoi hostname exactly and via its first
+# label, so "@laptop" matches hostname "laptop.local".
+#
+# When both a default and a host-specific entry target the same path, the
+# host-specific entry wins on its host and the default is used everywhere
+# else. Two host-specific entries for different hosts can target the same
+# path; only the matching one is written.
 set -eu
 
 {{- $envrcPath := (joinPath .chezmoi.sourceDir "envrcs.yaml.age") -}}
 {{- if (stat $envrcPath) -}}
 {{- $envrcMap := (fromYaml (decrypt (include $envrcPath))) -}}
-
-{{- range $rawPath, $content := $envrcMap }}
-dest={{ $rawPath | quote }}
-case "$dest" in
-  "~") dest="$HOME" ;;
-  "~/"*) dest="$HOME/${dest#\~/}" ;;
-esac
-
-mkdir -p "$(dirname "$dest")"
-umask 077
-python3 - "$dest" <<'PY'
+{{- $b64Map := dict -}}
+{{- range $k, $v := $envrcMap -}}
+{{- $_ := set $b64Map $k ($v | b64enc) -}}
+{{- end }}
+python3 - "{{ .chezmoi.hostname }}" <<'PY'
 import base64
+import os
 import pathlib
+import re
+import shutil
+import subprocess
 import sys
 
-pathlib.Path(sys.argv[1]).write_bytes(base64.b64decode("{{ $content | b64enc }}"))
-PY
-chmod 600 "$dest"
+HOSTNAME = sys.argv[1]
+# Only base64 lands in the rendered script; plaintext stays out.
+B64 = {{ $b64Map | toJson }}
 
-if command -v direnv >/dev/null 2>&1; then
-  (cd "$(dirname "$dest")" && direnv allow || true)
-fi
-{{- end }}
+_HOST_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9.-]*\Z")
+
+
+def split_host(raw):
+    """Split a key into (path, host). A suffix after the last '@' is a host
+    restriction only when it is hostname-shaped; otherwise the key is a path
+    that happens to contain '@'."""
+    if "@" not in raw:
+        return raw, ""
+    path, _, host = raw.rpartition("@")
+    if host and _HOST_RE.match(host):
+        return path, host
+    return raw, ""
+
+
+def host_match(restrict):
+    """No restriction matches everywhere. Otherwise compare exactly and via
+    the first label so short names match FQDNs and vice versa."""
+    if not restrict:
+        return True
+    if restrict == HOSTNAME:
+        return True
+    short = HOSTNAME.split(".", 1)[0]
+    return restrict == short or restrict.split(".", 1)[0] == short
+
+
+def expand_dest(path):
+    if path == "~":
+        return os.environ["HOME"]
+    if path.startswith("~/"):
+        return os.path.join(os.environ["HOME"], path[2:])
+    return path
+
+
+# Group by destination so order in the YAML map cannot cause a default to
+# clobber a host-specific entry (or the reverse).
+defaults = {}
+specific = {}
+for raw, b64 in B64.items():
+    path, host = split_host(raw)
+    if host:
+        if host_match(host):
+            specific[path] = b64
+    else:
+        defaults[path] = b64
+
+chosen = dict(defaults)
+chosen.update(specific)
+
+direnv = shutil.which("direnv")
+for path, b64 in chosen.items():
+    dest = expand_dest(path)
+    pathlib.Path(dest).parent.mkdir(parents=True, exist_ok=True)
+    prev_umask = os.umask(0o077)
+    try:
+        pathlib.Path(dest).write_bytes(base64.b64decode(b64))
+    finally:
+        os.umask(prev_umask)
+    os.chmod(dest, 0o600)
+    print("wrote " + dest)
+    if direnv:
+        subprocess.run([direnv, "allow"], cwd=os.path.dirname(dest), check=False)
+PY
 {{- else }}
 echo "envrcs.yaml.age missing; run 'envrcs sync' to pull secrets from rbw"
 {{- end }}

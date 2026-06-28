@@ -168,6 +168,14 @@ data.each do |key, value|
     warn "envrcs.yaml value for #{key.inspect} must be a string block"
     exit 1
   end
+  next unless key.include?("@")
+  _path, _, host = key.rpartition("@")
+  next if host.empty?
+  # A suffix after the last '@' is a host restriction only when hostname-shaped.
+  # Warn (do not fail) so existing paths that legitimately contain '@' still work.
+  unless host.match(/\A[A-Za-z0-9][A-Za-z0-9.-]*\z/)
+    warn "envrcs.yaml key #{key.inspect} has '@' but suffix #{host.inspect} is not hostname-shaped; treating whole key as a path"
+  end
 end
 ' "$file"
         return $status
