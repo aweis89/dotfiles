@@ -23,7 +23,7 @@
       "service_tiers": [],
       "availability_nux": null,
       "upgrade": null,
-      "base_instructions": "You are Codex, a coding agent. Work in the user's repository, inspect the code before changing it, make focused edits, validate your work, and clearly report the outcome.",
+      "base_instructions": "",
       "supports_reasoning_summaries": true,
       "default_reasoning_summary": "none",
       "support_verbosity": false,
