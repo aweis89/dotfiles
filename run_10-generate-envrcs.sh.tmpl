@@ -24,7 +24,8 @@ set -eu
 {{- range $k, $v := $envrcMap -}}
 {{- $_ := set $b64Map $k ($v | b64enc) -}}
 {{- end }}
-python3 - "{{ .chezmoi.hostname }}" <<'PY'
+PYTHON=$(asdf which python3 2>/dev/null || command -v python3 2>/dev/null || echo /usr/bin/python3)
+"$PYTHON" - "{{ .chezmoi.hostname }}" <<'PY'
 import base64
 import os
 import pathlib
