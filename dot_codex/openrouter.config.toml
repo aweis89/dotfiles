@@ -1,3 +1,8 @@
 model_provider = "openrouter"
 model = "z-ai/glm-5.2"
+model_catalog_json = "/Users/aaron/.codex/model-catalogs/openrouter.json"
+model_context_window = 1048576
+model_auto_compact_token_limit = 900000
 model_reasoning_effort = "high"
+model_reasoning_summary = "none"
+model_supports_reasoning_summaries = true
