@@ -20,7 +20,7 @@
   "followUpMode": "all",
   "enabledModels": [
     "anthropic/claude-opus-4-8",
-    "anthropic/claude-sonnet-4-6",
+    "anthropic/claude-sonnet-5",
     "cursor/gpt-latest@272k:fast",
     "cursor/opus-latest@300k:fast",
     "openai-codex/gpt-5.5",
