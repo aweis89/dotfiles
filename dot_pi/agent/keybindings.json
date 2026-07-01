@@ -2,5 +2,6 @@
   "app.interrupt": ["ctrl+c"],
   "app.clear": ["ctrl+x"],
   "app.model.cycleForward": ["ctrl+e"],
+  "tui.editor.cursorLeft": ["left"],
   "tui.input.copy": []
 }
