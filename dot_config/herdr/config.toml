@@ -1,0 +1,69 @@
+# Herdr config tuned for tmux muscle memory.
+# Full reference: https://herdr.dev/docs/configuration/
+
+onboarding = false
+
+[terminal]
+# Match tmux default shell and keep new panes in current pane/workspace cwd.
+default_shell = "/opt/homebrew/bin/fish"
+shell_mode = "auto"
+new_cwd = "follow"
+
+[keys]
+# tmux prefix muscle memory.
+prefix = "ctrl+a"
+
+# tmux-like pane/tab basics.
+new_tab = "prefix+c"
+copy_mode = "prefix+["
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+switch_tab = "prefix+1..9"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+
+# tmux splits: prefix+\ creates side-by-side split; prefix+- creates stacked split.
+split_vertical = 'prefix+\'
+split_horizontal = "prefix+minus"
+
+# tmux config uses prefix+i for zoom; keep Herdr default prefix+z too.
+zoom = ["prefix+i", "prefix+z"]
+
+# tmux prefix+R reloads config.
+reload_config = "prefix+shift+r"
+
+# tmux prefix+b breaks pane into its own window. In Herdr, closest match: move pane to new tab.
+toggle_sidebar = "prefix+shift+b"
+
+# Resize muscle memory from tmux prefix+H/J/K/L.
+[[keys.command]]
+key = "prefix+shift+h"
+type = "shell"
+command = '$HERDR_BIN_PATH pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction left --amount 10'
+description = "resize pane left"
+
+[[keys.command]]
+key = "prefix+shift+j"
+type = "shell"
+command = '$HERDR_BIN_PATH pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction down --amount 10'
+description = "resize pane down"
+
+[[keys.command]]
+key = "prefix+shift+k"
+type = "shell"
+command = '$HERDR_BIN_PATH pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction up --amount 10'
+description = "resize pane up"
+
+[[keys.command]]
+key = "prefix+shift+l"
+type = "shell"
+command = '$HERDR_BIN_PATH pane resize --pane "$HERDR_ACTIVE_PANE_ID" --direction right --amount 10'
+description = "resize pane right"
+
+[[keys.command]]
+key = "prefix+b"
+type = "shell"
+command = '$HERDR_BIN_PATH pane move "$HERDR_ACTIVE_PANE_ID" --new-tab --focus'
+description = "break pane to new tab"
