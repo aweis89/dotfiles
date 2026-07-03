@@ -19,10 +19,10 @@ if ! status is-interactive
     return
 end
 
-# Auto tmux
-if test -z "$TMUX" && test -z "$NVIM"
-    tmux new-session -ds default 2>/dev/null
-    tmux attach -t default
+# Auto Herdr. Herdr sets HERDR_ENV=1 inside managed panes; keep that guard to avoid nesting.
+# Set HERDR_DISABLE_AUTO_ATTACH=1 before launching fish to skip this.
+if test -z "$HERDR_ENV" && test -z "$TMUX" && test -z "$NVIM" && test -z "$HERDR_DISABLE_AUTO_ATTACH" && command -q herdr
+    herdr
 end
 
 alias bat="bat --theme auto:system --theme-dark default --theme-light GitHub"
