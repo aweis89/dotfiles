@@ -1,0 +1,90 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Template dependency: re-run when managed agent tools change.
+config_file=$(mktemp)
+status_file=$(mktemp)
+trap 'rm -f "$config_file" "$status_file"' EXIT
+
+cat >"$config_file" <<'EOF'
+{{ include ".chezmoidata/agent-tools.json" }}
+EOF
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "jq is required to configure agent tools" >&2
+  exit 1
+fi
+
+install_herdr_integrations() {
+  if [ "$(jq '.herdrIntegrations // [] | length' "$config_file")" -eq 0 ]; then
+    return 0
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    echo "herdr not found; skipping herdr integrations" >&2
+    return 0
+  fi
+
+  if ! herdr integration status >"$status_file" 2>/dev/null; then
+    : >"$status_file"
+  fi
+
+  while IFS= read -r integration; do
+    [ -n "$integration" ] || continue
+
+    current_state=$(awk -F': ' -v name="$integration" '$1 == name { print $2 }' "$status_file" | head -n1)
+    if printf '%s\n' "$current_state" | grep -q '^current '; then
+      echo "herdr integration already current: $integration"
+      continue
+    fi
+
+    echo "Installing herdr integration: $integration"
+    herdr integration install "$integration"
+  done < <(jq -r '.herdrIntegrations[]?' "$config_file")
+}
+
+install_skills() {
+  if [ "$(jq '.skills // [] | length' "$config_file")" -eq 0 ]; then
+    return 0
+  fi
+
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "npx not found; skipping skills" >&2
+    return 0
+  fi
+
+  while IFS= read -r skill_entry; do
+    package=$(printf '%s\n' "$skill_entry" | jq -r '.package // empty')
+    if [ -z "$package" ]; then
+      echo "Skipping skill entry without package" >&2
+      continue
+    fi
+
+    args=(--yes skills add "$package" --yes)
+
+    scope=$(printf '%s\n' "$skill_entry" | jq -r '.scope // "global"')
+    if [ "$scope" = "global" ]; then
+      args+=(--global)
+    elif [ "$scope" != "project" ]; then
+      echo "Unsupported skill scope for $package: $scope" >&2
+      exit 1
+    fi
+
+    while IFS= read -r agent; do
+      [ -n "$agent" ] || continue
+      args+=(--agent "$agent")
+    done < <(printf '%s\n' "$skill_entry" | jq -r --slurpfile config "$config_file" '(.agents // ($config[0].defaultSkillAgents // []))[]?')
+
+    while IFS= read -r skill; do
+      [ -n "$skill" ] || continue
+      args+=(--skill "$skill")
+    done < <(printf '%s\n' "$skill_entry" | jq -r '([.skill? // empty] + (.skills // []))[]')
+
+    echo "Installing skills from: $package"
+    npx "${args[@]}"
+  done < <(jq -c '.skills[]?' "$config_file")
+}
+
+install_herdr_integrations
+install_skills

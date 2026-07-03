@@ -34,6 +34,7 @@ brew 'tmux'
 brew 'tree'
 brew 'watch'
 brew 'wget'
+brew 'herdr'
 
 cask 'docker-desktop'
 cask 'font-fira-code'

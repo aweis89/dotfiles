@@ -1,0 +1,26 @@
+{
+  "herdrIntegrations": [
+    "pi",
+    "codex",
+    "claude"
+  ],
+  "defaultSkillAgents": [
+    "claude-code",
+    "codex",
+    "pi"
+  ],
+  "skills": [
+    {
+      "package": "ogulcancelik/herdr",
+      "skills": [
+        "herdr"
+      ],
+      "agents": [
+        "claude-code",
+        "codex",
+        "pi"
+      ],
+      "scope": "global"
+    }
+  ]
+}
