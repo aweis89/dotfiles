@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -eu
+
+# Template dependency: re-run when managed Pi package list changes.
+managed_settings_file=$(mktemp)
+package_json_tmp=$(mktemp)
+trap 'rm -f "$managed_settings_file" "$package_json_tmp"' EXIT
+
+cat >"$managed_settings_file" <<'EOF'
+{{ include ".chezmoidata/pi-agent-settings.json" }}
+EOF
+
+pi_npm_dir=${PI_AGENT_NPM_DIR:-"$HOME/.pi/agent/npm"}
+package_json=$pi_npm_dir/package.json
+npmrc=$pi_npm_dir/.npmrc
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "jq is required to configure Pi agent npm overrides" >&2
+  exit 1
+fi
+
+mkdir -p "$pi_npm_dir"
+
+if [ ! -f "$package_json" ]; then
+  cat >"$package_json" <<'EOF'
+{
+  "name": "pi-extensions",
+  "private": true
+}
+EOF
+fi
+
+jq '.overrides.undici = "6.27.0"' "$package_json" >"$package_json_tmp"
+if ! cmp -s "$package_json_tmp" "$package_json"; then
+  mv "$package_json_tmp" "$package_json"
+else
+  rm -f "$package_json_tmp"
+fi
+
+if [ ! -f "$npmrc" ]; then
+  : >"$npmrc"
+fi
+if grep -q '^legacy-peer-deps=' "$npmrc"; then
+  sed -i.bak 's/^legacy-peer-deps=.*/legacy-peer-deps=true/' "$npmrc"
+  rm -f "$npmrc.bak"
+elif ! grep -q '^legacy-peer-deps=true$' "$npmrc"; then
+  printf '\nlegacy-peer-deps=true\n' >>"$npmrc"
+fi
+
+# If packages are already installed, refresh lockfile/node_modules so audit picks up overrides.
+if jq -e '(.dependencies // {}) | length > 0' "$package_json" >/dev/null; then
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "npm is required to apply Pi agent npm overrides" >&2
+    exit 1
+  fi
+
+  (cd "$pi_npm_dir" && npm install --legacy-peer-deps --no-audit --no-fund)
+fi
