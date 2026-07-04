@@ -1,8 +1,6 @@
 function __envrcs_item
     if set -q ENVRCS_ITEM; and test -n "$ENVRCS_ITEM"
         printf '%s\n' "$ENVRCS_ITEM"
-    else if set -q ENVRCS_RBW_ITEM; and test -n "$ENVRCS_RBW_ITEM"
-        printf '%s\n' "$ENVRCS_RBW_ITEM"
     else
         printf '%s\n' '~/.local/share/chezmoi/envrcs.yaml'
     end
@@ -29,7 +27,7 @@ function __envrcs_plain_source_file
 end
 
 function __envrcs_require
-    for required_command in bw chezmoi jq mktemp rbw
+    for required_command in bw chezmoi jq mktemp
         if not command -q "$required_command"
             echo "✗ Missing required command: $required_command" >&2
             return 1
@@ -293,7 +291,6 @@ function __envrcs_push_bw
     end
 
     bw sync >/dev/null 2>&1 || true
-    rbw sync >/dev/null 2>&1 || true
     rm -f "$item_json" "$encoded_json"
 end
 
@@ -345,16 +342,10 @@ function __envrcs_pull
     set -l encrypted_file (__envrcs_source_file); or return 1
     set -l plain_file (__envrcs_tmp_file .yaml)
 
-    echo "Syncing rbw..."
-    rbw sync >/dev/null 2>&1 || true
-
     echo "Pulling $item -> $encrypted_file"
-    if not rbw get --raw "$item" 2>/dev/null | jq -er '.notes // empty' >"$plain_file"
-        echo "rbw read failed; falling back to bw" >&2
-        if not __envrcs_pull_bw "$item" "$plain_file"
-            rm -f "$plain_file"
-            return 1
-        end
+    if not __envrcs_pull_bw "$item" "$plain_file"
+        rm -f "$plain_file"
+        return 1
     end
     chmod 600 "$plain_file"
 

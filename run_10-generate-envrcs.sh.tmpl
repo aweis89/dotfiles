@@ -102,5 +102,5 @@ for path, b64 in chosen.items():
         subprocess.run([direnv, "allow"], cwd=os.path.dirname(dest), check=False)
 PY
 {{- else }}
-echo "envrcs.yaml.age missing; run 'envrcs sync' to pull secrets from rbw"
+echo "envrcs.yaml.age missing; run 'envrcs sync' to pull secrets from Bitwarden"
 {{- end }}
