@@ -3,6 +3,13 @@
 
 onboarding = false
 
+[theme]
+# Follow host terminal light/dark appearance and switch Herdr UI themes live.
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
 [terminal]
 # Match tmux default shell and keep new panes in current pane/workspace cwd.
 default_shell = "/opt/homebrew/bin/fish"
