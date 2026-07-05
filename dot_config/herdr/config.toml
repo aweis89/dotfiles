@@ -50,6 +50,12 @@ type = "plugin_action"
 command = "herdr-picker-plus.open"
 description = "open picker plus"
 
+[[keys.command]]
+key = "prefix+g"
+type = "plugin_action"
+command = "tdi.worktree-from-pr.pick"
+description = "worktree from GitHub PR"
+
 # Resize muscle memory from tmux prefix+H/J/K/L.
 [[keys.command]]
 key = "prefix+shift+h"
