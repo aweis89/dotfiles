@@ -51,6 +51,18 @@ command = "herdr-picker-plus.open"
 description = "open picker plus"
 
 [[keys.command]]
+key = "prefix+t"
+type = "plugin_action"
+command = "herdr-picker-plus.open"
+description = "open picker plus"
+
+[[keys.command]]
+key = "prefix+space"
+type = "plugin_action"
+command = "herdr-picker-plus.open"
+description = "open picker plus"
+
+[[keys.command]]
 key = "prefix+g"
 type = "plugin_action"
 command = "tdi.worktree-from-pr.pick"
