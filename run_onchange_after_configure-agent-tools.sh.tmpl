@@ -44,6 +44,34 @@ install_herdr_integrations() {
   done < <(jq -r '.herdrIntegrations[]?' "$config_file")
 }
 
+install_herdr_plugins() {
+  if [ "$(jq '.herdrPlugins // [] | length' "$config_file")" -eq 0 ]; then
+    return 0
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    echo "herdr not found; skipping herdr plugins" >&2
+    return 0
+  fi
+
+  if ! herdr plugin list --json >"$status_file" 2>/dev/null; then
+    echo '{"result":{"plugins":[]}}' >"$status_file"
+  fi
+
+  while IFS= read -r plugin; do
+    [ -n "$plugin" ] || continue
+
+    plugin_id=$(printf '%s\n' "$plugin" | awk -F/ '{ print $2 }')
+    if jq -e --arg plugin "$plugin" --arg id "$plugin_id" '.result.plugins[]? | select(.plugin_id == $id or ((.source.owner + "/" + .source.repo) == $plugin))' "$status_file" >/dev/null; then
+      echo "herdr plugin already installed: $plugin"
+      continue
+    fi
+
+    echo "Installing herdr plugin: $plugin"
+    herdr plugin install "$plugin" --yes
+  done < <(jq -r '.herdrPlugins[]?' "$config_file")
+}
+
 install_skills() {
   if [ "$(jq '.skills // [] | length' "$config_file")" -eq 0 ]; then
     return 0
@@ -87,4 +115,5 @@ install_skills() {
 }
 
 install_herdr_integrations
+install_herdr_plugins
 install_skills

@@ -4,6 +4,9 @@
     "codex",
     "claude"
   ],
+  "herdrPlugins": [
+    "thanhdat77/herdr-picker-plus"
+  ],
   "defaultSkillAgents": [
     "claude-code",
     "codex",
