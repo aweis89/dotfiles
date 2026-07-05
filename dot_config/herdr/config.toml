@@ -44,6 +44,12 @@ reload_config = "prefix+shift+r"
 # tmux prefix+b breaks pane into its own window. In Herdr, closest match: move pane to new tab.
 toggle_sidebar = "prefix+shift+b"
 
+[[keys.command]]
+key = "ctrl+t"
+type = "plugin_action"
+command = "herdr-picker-plus.open"
+description = "open picker plus"
+
 # Resize muscle memory from tmux prefix+H/J/K/L.
 [[keys.command]]
 key = "prefix+shift+h"
