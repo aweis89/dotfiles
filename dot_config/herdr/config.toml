@@ -41,8 +41,8 @@ zoom = ["prefix+i", "prefix+z"]
 # tmux prefix+R reloads config.
 reload_config = "prefix+shift+r"
 
-# tmux prefix+b breaks pane into its own window. In Herdr, closest match: move pane to new tab.
-toggle_sidebar = "prefix+shift+b"
+# prefix+S hides/shows sidebar; keep prior prefix+B binding too.
+toggle_sidebar = ["prefix+shift+s", "prefix+shift+b"]
 
 [[keys.command]]
 key = "ctrl+t"
@@ -80,3 +80,6 @@ key = "prefix+b"
 type = "shell"
 command = '$HERDR_BIN_PATH pane move "$HERDR_ACTIVE_PANE_ID" --new-tab --focus'
 description = "break pane to new tab"
+
+[ui]
+agent_panel_sort = "spaces"
