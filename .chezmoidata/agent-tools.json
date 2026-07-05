@@ -5,7 +5,8 @@
     "claude"
   ],
   "herdrPlugins": [
-    "thanhdat77/herdr-picker-plus"
+    "thanhdat77/herdr-picker-plus",
+    "tdi/herdr-worktree-from-pr"
   ],
   "defaultSkillAgents": [
     "claude-code",
