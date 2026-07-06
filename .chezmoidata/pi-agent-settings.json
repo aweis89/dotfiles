@@ -27,6 +27,7 @@
     "cursor/gpt-latest@272k:fast",
     "cursor/opus-latest@300k:fast",
     "openai-codex/gpt-5.5",
-    "z-ai/glm-5.2"
+    "z-ai/glm-5.2",
+    "ollama/qwen3.6:35b"
   ]
 }
