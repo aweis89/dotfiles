@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Template dependency: keep managed Herdr integrations/plugins visible in this script.
+# This is run_after (not run_onchange) so a machine that applied before herdr was
+# installed will install missing plugins on the next apply.
+config_file=$(mktemp)
+status_file=$(mktemp)
+trap 'rm -f "$config_file" "$status_file"' EXIT
+
+cat >"$config_file" <<'EOF'
+{{ include ".chezmoidata/agent-tools.json" }}
+EOF
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "jq is required to configure herdr plugins" >&2
+  exit 1
+fi
+
+if ! command -v herdr >/dev/null 2>&1; then
+  echo "herdr not found; skipping herdr plugins" >&2
+  exit 0
+fi
+
+install_herdr_integrations() {
+  if [ "$(jq '.herdrIntegrations // [] | length' "$config_file")" -eq 0 ]; then
+    return 0
+  fi
+
+  if ! herdr integration status >"$status_file" 2>/dev/null; then
+    : >"$status_file"
+  fi
+
+  while IFS= read -r integration; do
+    [ -n "$integration" ] || continue
+
+    current_state=$(awk -F': ' -v name="$integration" '$1 == name { print $2 }' "$status_file" | head -n1)
+    if printf '%s\n' "$current_state" | grep -q '^current '; then
+      echo "herdr integration already current: $integration"
+      continue
+    fi
+
+    echo "Installing herdr integration: $integration"
+    herdr integration install "$integration"
+  done < <(jq -r '.herdrIntegrations[]?' "$config_file")
+}
+
+install_herdr_plugins() {
+  if [ "$(jq '.herdrPlugins // [] | length' "$config_file")" -eq 0 ]; then
+    return 0
+  fi
+
+  if ! herdr plugin list --json >"$status_file" 2>/dev/null; then
+    echo '{"result":{"plugins":[]}}' >"$status_file"
+  fi
+
+  while IFS= read -r plugin; do
+    [ -n "$plugin" ] || continue
+
+    plugin_id=$(printf '%s\n' "$plugin" | awk -F/ '{ print $2 }')
+    if jq -e --arg plugin "$plugin" --arg id "$plugin_id" '.result.plugins[]? | select(.plugin_id == $id or ((.source.owner + "/" + .source.repo) == $plugin))' "$status_file" >/dev/null; then
+      echo "herdr plugin already installed: $plugin"
+      continue
+    fi
+
+    echo "Installing herdr plugin: $plugin"
+    herdr plugin install "$plugin" --yes
+  done < <(jq -r '.herdrPlugins[]?' "$config_file")
+}
+
+install_herdr_integrations
+install_herdr_plugins
