@@ -43,5 +43,3 @@ cask 'codex'
 cask 'chromium'
 cask 'codexbar'
 cask 'keepingyouawake'
-
-npm '@hypabolic/hypa'
