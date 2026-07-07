@@ -6,6 +6,28 @@ function __envrcs_item
     end
 end
 
+function __envrcs_item_candidates
+    set -l item $argv[1]
+    if test -z "$item"
+        set item (__envrcs_item)
+    end
+
+    set -l candidates "$item"
+    set -l alternate
+
+    if string match -q '~/*' -- "$item"
+        set alternate (string replace -r '^~(?=/|$)' "$HOME" -- "$item")
+    else if string match -q "$HOME/*" -- "$item"
+        set alternate (string replace "$HOME" '~' -- "$item")
+    end
+
+    if test -n "$alternate"; and not contains -- "$alternate" $candidates
+        set -a candidates "$alternate"
+    end
+
+    printf '%s\n' $candidates
+end
+
 function __envrcs_source_dir
     set -l source_dir (chezmoi source-path 2>/dev/null)
     if test $status -ne 0 -o -z "$source_dir"
@@ -239,17 +261,58 @@ function __envrcs_bw_ensure
     end
 end
 
+function __envrcs_bw_get_item
+    set -l item_json $argv[1]
+    set -e argv[1]
+    set -l candidates $argv
+    set -l error_file (__envrcs_tmp_file)
+
+    for candidate in $candidates
+        true >"$error_file"
+        if bw get item "$candidate" >"$item_json" 2>"$error_file"
+            rm -f "$error_file"
+            return 0
+        end
+    end
+
+    set -l error_text (string collect <"$error_file")
+    rm -f "$error_file"
+
+    if test -n "$error_text"
+        printf '%s\n' "$error_text" >&2
+    end
+
+    echo "  Tried Bitwarden items: "(string join ', ' $candidates) >&2
+    return 1
+end
+
 function __envrcs_pull_bw
     set -l item $argv[1]
     set -l plain_file $argv[2]
+    set -l item_json (__envrcs_tmp_file)
+    set -l candidates (__envrcs_item_candidates "$item")
 
-    __envrcs_bw_ensure; or return 1
+    __envrcs_bw_ensure; or begin
+        rm -f "$item_json"
+        return 1
+    end
+
+    bw sync >/dev/null 2>&1 || true
 
     echo "Pulling with bw fallback..."
-    if not bw get item "$item" | jq -er '.notes // empty' >"$plain_file"
+    if not __envrcs_bw_get_item "$item_json" $candidates
+        rm -f "$item_json"
         echo "✗ Failed to read Bitwarden note with bw: $item" >&2
         return 1
     end
+
+    if not jq -er '.notes // empty' "$item_json" >"$plain_file"
+        rm -f "$item_json"
+        echo "✗ Bitwarden item has no note content: $item" >&2
+        return 1
+    end
+
+    rm -f "$item_json"
 end
 
 function __envrcs_bw_prepare_item_update
@@ -257,8 +320,9 @@ function __envrcs_bw_prepare_item_update
     set -l plain_file $argv[2]
     set -l item_json $argv[3]
     set -l encoded_json $argv[4]
+    set -l candidates (__envrcs_item_candidates "$item")
 
-    if not bw get item "$item" >"$item_json"
+    if not __envrcs_bw_get_item "$item_json" $candidates
         echo "✗ Failed to read Bitwarden item with bw: $item" >&2
         echo "  Repair/create item in Bitwarden, then retry envrcs push" >&2
         return 1
