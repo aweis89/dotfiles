@@ -252,19 +252,13 @@ function __envrcs_pull_bw
     end
 end
 
-function __envrcs_push_bw
+function __envrcs_bw_prepare_item_update
     set -l item $argv[1]
     set -l plain_file $argv[2]
-    set -l item_json (__envrcs_tmp_file)
-    set -l encoded_json (__envrcs_tmp_file)
-
-    __envrcs_bw_ensure; or begin
-        rm -f "$item_json" "$encoded_json"
-        return 1
-    end
+    set -l item_json $argv[3]
+    set -l encoded_json $argv[4]
 
     if not bw get item "$item" >"$item_json"
-        rm -f "$item_json" "$encoded_json"
         echo "✗ Failed to read Bitwarden item with bw: $item" >&2
         echo "  Repair/create item in Bitwarden, then retry envrcs push" >&2
         return 1
@@ -272,26 +266,82 @@ function __envrcs_push_bw
 
     set -l item_id (jq -er '.id' "$item_json")
     if test $status -ne 0 -o -z "$item_id"
-        rm -f "$item_json" "$encoded_json"
         echo "✗ Bitwarden item missing id: $item" >&2
         return 1
     end
 
     if not jq -c --rawfile contents "$plain_file" '.notes = $contents' "$item_json" >"$encoded_json"
-        rm -f "$item_json" "$encoded_json"
         echo "✗ Failed to prepare Bitwarden item update" >&2
         return 1
     end
 
-    echo "Pushing with bw -> $item"
-    if not cat "$encoded_json" | bw encode | bw edit item "$item_id" >/dev/null
-        rm -f "$item_json" "$encoded_json"
-        echo "✗ Failed to update Bitwarden note with bw: $item" >&2
+    printf '%s\n' "$item_id"
+end
+
+function __envrcs_bw_edit_item
+    set -l item_id $argv[1]
+    set -l encoded_json $argv[2]
+    set -l error_file $argv[3]
+
+    if begin
+            cat "$encoded_json" | bw encode | bw edit item "$item_id" >/dev/null
+        end 2>"$error_file"
+        return 0
+    end
+
+    return 1
+end
+
+function __envrcs_push_bw
+    set -l item $argv[1]
+    set -l plain_file $argv[2]
+    set -l item_json (__envrcs_tmp_file)
+    set -l encoded_json (__envrcs_tmp_file)
+    set -l edit_error (__envrcs_tmp_file)
+
+    __envrcs_bw_ensure; or begin
+        rm -f "$item_json" "$encoded_json" "$edit_error"
         return 1
     end
 
     bw sync >/dev/null 2>&1 || true
-    rm -f "$item_json" "$encoded_json"
+
+    set -l item_id (__envrcs_bw_prepare_item_update "$item" "$plain_file" "$item_json" "$encoded_json")
+    if test $status -ne 0
+        rm -f "$item_json" "$encoded_json" "$edit_error"
+        return 1
+    end
+
+    echo "Pushing with bw -> $item"
+    if __envrcs_bw_edit_item "$item_id" "$encoded_json" "$edit_error"
+        bw sync >/dev/null 2>&1 || true
+        rm -f "$item_json" "$encoded_json" "$edit_error"
+        return 0
+    end
+
+    set -l edit_error_text (string collect <"$edit_error")
+    if string match -qi '*out of date*' -- "$edit_error_text"
+        echo "Bitwarden item was out of date; syncing and retrying..."
+        bw sync >/dev/null 2>&1 || true
+        set item_id (__envrcs_bw_prepare_item_update "$item" "$plain_file" "$item_json" "$encoded_json")
+        if test $status -eq 0
+            true >"$edit_error"
+            if __envrcs_bw_edit_item "$item_id" "$encoded_json" "$edit_error"
+                bw sync >/dev/null 2>&1 || true
+                rm -f "$item_json" "$encoded_json" "$edit_error"
+                return 0
+            end
+        end
+    end
+
+    set edit_error_text (string collect <"$edit_error")
+    if test -n "$edit_error_text"
+        printf '%s\n' "$edit_error_text" >&2
+    end
+
+    rm -f "$item_json" "$encoded_json" "$edit_error"
+    echo "✗ Failed to update Bitwarden note with bw: $item" >&2
+    return 1
 end
 
 function __envrcs_encrypt_cache
