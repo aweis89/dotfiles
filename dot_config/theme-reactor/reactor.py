@@ -8,14 +8,12 @@ class ThemeObserver(NSObject):
     def themeChanged_(self, notification):
         defaults = NSUserDefaults.standardUserDefaults()
         is_dark = defaults.stringForKey_("AppleInterfaceStyle") == "Dark"
-        kitty_theme = f"Catppuccin Kitty {'Mocha' if is_dark else 'Latte'}"
 
         print(f"Apple Interface Style Changed to {'Dark' if is_dark else 'Light'}")
 
         commands = [
             "tmux source-file ~/.config/tmux/tmux.conf",
             "touch ~/.config/nvim/lua/plugins/editor.lua",
-            f"kitty +kitten themes --reload-in=all {kitty_theme}",
         ]
         command = " && ".join(commands)
         try:
@@ -27,21 +25,6 @@ class ThemeObserver(NSObject):
                 print('Error: ' + err.decode('UTF-8'))
         except Exception as e:
             print(f"Error executing command: {str(e)}")
-            
-        delete_line('~/.config/kitty/kitty.conf', kitty_theme)
-
-
-
-def delete_line(filename, text):
-    filename = os.path.expanduser(filename)
-
-    with open(filename, 'r') as file:
-        lines = file.readlines()
-
-    with open(filename, 'w') as file:
-        for line in lines:
-            if text not in line:
-                file.write(line)
 
 def main():
     os.environ['PATH'] = '/opt/homebrew/bin' + os.pathsep + os.environ['PATH']

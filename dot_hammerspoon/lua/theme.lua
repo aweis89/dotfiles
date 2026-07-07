@@ -6,7 +6,6 @@ local reload_theme_path = "~/tmp/theme-reload"
 
 -- Sync theme across apps and notify dependents
 local function syncTheme()
-  os.execute("~/.config/kitty/sync-theme " .. "tokyonight")
   os.execute("/opt/homebrew/bin/tmux source-file ~/.config/tmux/tmux.conf")
   os.execute("touch " .. reload_theme_path)
 end

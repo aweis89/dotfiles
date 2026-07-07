@@ -2116,12 +2116,6 @@
       }
     },
     "cask": {
-      "kitty": {
-        "version": "0.30.0",
-        "options": {
-          "full_name": "kitty"
-        }
-      },
       "docker": {
         "version": "4.23.0,120376",
         "options": {
