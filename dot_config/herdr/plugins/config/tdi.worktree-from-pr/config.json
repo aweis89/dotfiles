@@ -1,3 +1,4 @@
 {
-  "useDirenv": true
+  "useDirenv": true,
+  "pauseOnError": true
 }
