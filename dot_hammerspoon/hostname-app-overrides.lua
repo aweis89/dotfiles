@@ -10,7 +10,6 @@ return {
 
 	["ACV2MK4DXH0"] = {
 		-- Only specify the apps that should be different from default
-		["c"] = "Microsoft Outlook", -- Calendar: Microsoft Outlook instead of calendar
 	},
 
 	-- Add more hostname overrides here as needed
