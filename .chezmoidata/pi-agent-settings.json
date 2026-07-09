@@ -12,7 +12,6 @@
     "npm:pi-intercom",
     "npm:pi-mcp-adapter",
     "npm:pi-patty-bg-tasks",
-    "npm:pi-prompt-template-model",
     "npm:pi-rtk-optimizer",
     "npm:pi-subagents",
     "npm:pi-tmux-thread",
