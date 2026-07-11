@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+# Re-run whenever the managed host registry changes.
+# registry checksum: {{ include ".chezmoidata/ssh-hosts.json" | sha256sum }}
+
+ssh_dir="$HOME/.ssh"
+config="$ssh_dir/config"
+include_line='Include ~/.ssh/chezmoi_hosts'
+
+mkdir -p "$ssh_dir"
+chmod 700 "$ssh_dir"
+touch "$config"
+chmod 600 "$config"
+
+if ! grep -Fqx "$include_line" "$config"; then
+    tmp="$(mktemp "${config}.XXXXXX")"
+    {
+        printf '%s\n\n' "$include_line"
+        cat "$config"
+    } > "$tmp"
+    chmod 600 "$tmp"
+    mv "$tmp" "$config"
+fi

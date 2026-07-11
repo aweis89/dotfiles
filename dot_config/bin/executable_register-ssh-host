@@ -1,0 +1,73 @@
+#!/bin/sh
+set -eu
+
+usage() {
+    cat <<'EOF'
+Usage: register-ssh-host [alias]
+
+Register this machine in the shared chezmoi SSH host registry.
+The alias defaults to the current username. Commit and push the resulting
+registry change so other machines receive it on their next pull/apply.
+EOF
+}
+
+case "${1:-}" in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+esac
+
+alias_name="${1:-$(id -un)}"
+case "$alias_name" in
+    ''|*[!A-Za-z0-9._-]*)
+        echo "Invalid alias: $alias_name" >&2
+        echo 'Use only letters, numbers, dots, underscores, and hyphens.' >&2
+        exit 2
+        ;;
+esac
+
+user_name="$(id -un)"
+if command -v scutil >/dev/null 2>&1; then
+    local_name="$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
+else
+    local_name="$(hostname -s)"
+fi
+hostname_value="${local_name%.local}.local"
+source_dir="$(chezmoi source-path)"
+registry="$source_dir/.chezmoidata/ssh-hosts.json"
+
+if [ -x /usr/bin/python3 ]; then
+    python_bin=/usr/bin/python3
+elif command -v python3 >/dev/null 2>&1; then
+    python_bin="$(command -v python3)"
+else
+    echo 'python3 is required to update the host registry.' >&2
+    exit 1
+fi
+
+REGISTRY="$registry" ALIAS_NAME="$alias_name" HOSTNAME_VALUE="$hostname_value" USER_NAME="$user_name" \
+"$python_bin" <<'PY'
+import json
+import os
+from pathlib import Path
+
+path = Path(os.environ["REGISTRY"])
+data = json.loads(path.read_text()) if path.exists() else {"sshHosts": []}
+entry = {
+    "alias": os.environ["ALIAS_NAME"],
+    "hostname": os.environ["HOSTNAME_VALUE"],
+    "user": os.environ["USER_NAME"],
+}
+hosts = [host for host in data.get("sshHosts", []) if host.get("alias") != entry["alias"]]
+hosts.append(entry)
+data["sshHosts"] = sorted(hosts, key=lambda host: host["alias"].lower())
+temporary = path.with_suffix(".json.tmp")
+temporary.write_text(json.dumps(data, indent=2) + "\n")
+temporary.replace(path)
+PY
+
+chezmoi apply "$HOME/.ssh/chezmoi_hosts"
+printf 'Registered %s -> %s (user %s)\n' "$alias_name" "$hostname_value" "$user_name"
+printf 'Registry: %s\n' "$registry"
+printf 'Next: commit and push the registry change to share it.\n'

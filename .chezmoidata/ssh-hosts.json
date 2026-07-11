@@ -1,0 +1,9 @@
+{
+  "sshHosts": [
+    {
+      "alias": "cal",
+      "hostname": "AWeisberg-M0WDH2Q2JP.local",
+      "user": "aaron.weisberg"
+    }
+  ]
+}
