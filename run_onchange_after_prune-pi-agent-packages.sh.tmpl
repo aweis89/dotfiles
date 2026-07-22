@@ -23,10 +23,32 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! command -v npm >/dev/null 2>&1; then
+if [ -n "${PI_AGENT_NODE:-}" ]; then
+  node_cmd=$PI_AGENT_NODE
+elif [ -x /opt/homebrew/opt/node/bin/node ]; then
+  node_cmd=/opt/homebrew/opt/node/bin/node
+elif command -v node >/dev/null 2>&1; then
+  node_cmd=$(command -v node)
+else
+  echo "node is required to prune Pi agent packages" >&2
+  exit 1
+fi
+
+if [ -n "${PI_AGENT_NPM:-}" ]; then
+  npm_cmd=$PI_AGENT_NPM
+elif [ -x /opt/homebrew/opt/node/bin/npm ]; then
+  npm_cmd=/opt/homebrew/opt/node/bin/npm
+elif command -v npm >/dev/null 2>&1; then
+  npm_cmd=$(command -v npm)
+else
   echo "npm is required to prune Pi agent packages" >&2
   exit 1
 fi
+
+node_bin_dir=$(dirname "$node_cmd")
+run_npm() {
+  PATH="$node_bin_dir:$PATH" "$npm_cmd" "$@"
+}
 
 # Managed package names declared in pi-agent-settings.json (npm: sources only).
 managed_packages=$(
@@ -64,4 +86,4 @@ echo "Pruning Pi agent npm packages removed from managed settings:"
 printf '  - %s\n' $stale
 
 # shellcheck disable=SC2086
-(cd "$pi_npm_dir" && npm uninstall --no-audit --no-fund -- $stale)
+(cd "$pi_npm_dir" && run_npm uninstall --no-audit --no-fund -- $stale)

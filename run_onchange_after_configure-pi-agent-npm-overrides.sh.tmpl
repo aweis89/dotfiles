@@ -14,11 +14,39 @@ EOF
 pi_npm_dir=${PI_AGENT_NPM_DIR:-"$HOME/.pi/agent/npm"}
 package_json=$pi_npm_dir/package.json
 npmrc=$pi_npm_dir/.npmrc
+native_abi_stamp=$pi_npm_dir/.native-node-abi
 
 if ! command -v jq >/dev/null 2>&1; then
   echo "jq is required to configure Pi agent npm overrides" >&2
   exit 1
 fi
+
+if [ -n "${PI_AGENT_NODE:-}" ]; then
+  node_cmd=$PI_AGENT_NODE
+elif [ -x /opt/homebrew/opt/node/bin/node ]; then
+  node_cmd=/opt/homebrew/opt/node/bin/node
+elif command -v node >/dev/null 2>&1; then
+  node_cmd=$(command -v node)
+else
+  echo "node is required to configure Pi agent npm overrides" >&2
+  exit 1
+fi
+
+if [ -n "${PI_AGENT_NPM:-}" ]; then
+  npm_cmd=$PI_AGENT_NPM
+elif [ -x /opt/homebrew/opt/node/bin/npm ]; then
+  npm_cmd=/opt/homebrew/opt/node/bin/npm
+elif command -v npm >/dev/null 2>&1; then
+  npm_cmd=$(command -v npm)
+else
+  echo "npm is required to configure Pi agent npm overrides" >&2
+  exit 1
+fi
+
+node_bin_dir=$(dirname "$node_cmd")
+run_npm() {
+  PATH="$node_bin_dir:$PATH" "$npm_cmd" "$@"
+}
 
 mkdir -p "$pi_npm_dir"
 
@@ -50,10 +78,18 @@ fi
 
 # If packages are already installed, refresh lockfile/node_modules so audit picks up overrides.
 if jq -e '(.dependencies // {}) | length > 0' "$package_json" >/dev/null; then
-  if ! command -v npm >/dev/null 2>&1; then
-    echo "npm is required to apply Pi agent npm overrides" >&2
-    exit 1
-  fi
+  native_abi=$("$node_cmd" -p '"modules:" + process.versions.modules + " platform:" + process.platform + " arch:" + process.arch')
 
-  (cd "$pi_npm_dir" && npm install --legacy-peer-deps --no-audit --no-fund)
+  (cd "$pi_npm_dir" && run_npm install --legacy-peer-deps --no-audit --no-fund)
+
+  if find "$pi_npm_dir/node_modules" -type f -name '*.node' -print -quit | grep -q .; then
+    previous_native_abi=$(cat "$native_abi_stamp" 2>/dev/null || true)
+    if [ "$previous_native_abi" != "$native_abi" ]; then
+      echo "Rebuilding Pi agent native npm modules for $native_abi"
+      (cd "$pi_npm_dir" && run_npm rebuild --no-audit --no-fund)
+    fi
+    printf '%s\n' "$native_abi" >"$native_abi_stamp"
+  else
+    rm -f "$native_abi_stamp"
+  fi
 fi
