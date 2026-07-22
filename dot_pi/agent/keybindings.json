@@ -4,6 +4,6 @@
   "app.model.cycleForward": ["ctrl+e"],
   "tui.editor.cursorLeft": ["left"],
   "tui.input.newLine": ["ctrl+j"],
-  "tui.input.submit": ["enter", "shift+enter"],
+  "tui.input.submit": ["enter"],
   "tui.input.copy": []
 }
