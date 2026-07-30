@@ -3,6 +3,9 @@
 -- Lua.workspace.library = os.getenv("HOME") .. "/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
 hs.loadSpoon("EmmyLua")
 
+-- Enable the `hs` command-line tool / message port for runtime introspection.
+require("hs.ipc")
+
 -- Hide dock icon so canvases can appear over fullscreen windows (macOS Sierra+).
 hs.dockicon.hide()
 
