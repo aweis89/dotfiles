@@ -7,6 +7,7 @@
     "npm:@sting8k/pi-vcc",
     "npm:@tintinweb/pi-subagents",
     "npm:@nonplanarslicer/pi-save-output",
+    "npm:@vanillagreen/pi-background-tasks",
     "npm:@vanillagreen/pi-tool-renderer",
     "npm:pi-btw",
     "npm:pi-cursor-sdk",
