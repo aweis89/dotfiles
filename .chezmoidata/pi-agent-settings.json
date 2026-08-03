@@ -13,7 +13,6 @@
     "npm:pi-find-packages",
     "npm:pi-hermes-memory",
     "npm:pi-mcp-adapter",
-    "npm:pi-patty-bg-tasks",
     "npm:pi-tmux-thread",
     "npm:pi-vim"
   ],
