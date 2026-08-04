@@ -15,6 +15,12 @@ fish_add_path \
     /opt/homebrew/share/google-cloud-sdk/bin \
     /Applications/Docker.app/Contents/Resources/bin
 
+# Herdr can outlive the tmux server it was launched from and pass its stale
+# identity to managed panes. Prevent applications from probing that dead socket.
+if set -q HERDR_ENV
+    set -e TMUX TMUX_PANE
+end
+
 if ! status is-interactive
     return
 end
