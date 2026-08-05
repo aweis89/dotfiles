@@ -104,7 +104,6 @@ set -gx FZF_DEFAULT_OPTS '--tmux 95% --multi --ansi' \
     '--bind "ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up"' \
     '--bind="ctrl-/:change-preview-window(down,50%,border-top|hidden|)"'
 set -gx pure_enable_k8s true
-set -gx pure_k8s_context_max_length 20
 
 # Keep a block cursor across all Fish modes.
 set -g fish_cursor_default block
