@@ -3,7 +3,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 export default function interruptSubmit(pi: ExtensionAPI) {
   let pendingSubmission: string | undefined;
 
-  pi.registerShortcut("shift+enter", {
+  pi.registerShortcut("ctrl+enter", {
     description: "Submit input and interrupt the current agent run",
     handler: (ctx) => {
       const text = ctx.ui.getEditorText().trim();
