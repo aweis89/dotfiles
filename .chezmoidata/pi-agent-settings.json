@@ -1,7 +1,6 @@
 {
   "packages": [
     "npm:@vanillagreen/pi-background-tasks",
-    "npm:@vanillagreen/pi-qol",
     "npm:@vanillagreen/pi-skills-manager",
     "npm:@vanillagreen/pi-task-panel",
     "npm:@vanillagreen/pi-tool-renderer",
