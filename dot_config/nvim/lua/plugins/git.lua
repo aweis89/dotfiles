@@ -52,7 +52,7 @@ return {
       provider = "pi",
       providers = {
         pi = {
-          model = "github-copilot/gpt-5-mini",
+          model = "openai-codex/gpt-5.6-luna",
           thinking = "low",
         },
       },
