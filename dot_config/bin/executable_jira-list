@@ -5,6 +5,20 @@ jira-done() {
 	jira issue move "$id" --resolution Done "Resolve Issue"
 }
 
+download-ticket() {
+	local id="$1"
+	local ticket_file="$PWD/$id.md"
+	local temp_file
+
+	temp_file=$(mktemp "$ticket_file.tmp.XXXXXX") || return 1
+	if ! jira issue view "$id" --plain >"$temp_file"; then
+		rm -f "$temp_file"
+		return 1
+	fi
+	mv "$temp_file" "$ticket_file"
+	echo "Saved ticket to $ticket_file"
+}
+
 # Create temp files for state and helper script
 FILTER_STATE=$(mktemp)
 HELPER_SCRIPT=$(mktemp)
@@ -100,6 +114,7 @@ ctrl-o)
 	exit 0 # Exit after creating the branch
 	;;
 ctrl-h)
+	download-ticket "$id" || exit 1
 	herdr workspace create --cwd "$PWD" --label "$id" --focus
 	exit $?
 	;;
