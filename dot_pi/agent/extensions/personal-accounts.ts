@@ -9,12 +9,12 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
  * "two Anthropic accounts" has to mean "two provider ids that both talk to
  * Anthropic". These clones reuse the built-in providers' auth (including the
  * real Claude Pro/Max and ChatGPT OAuth flows), models, and streaming, and only
- * swap the id, so `/login ap` and `/login op` authenticate personal accounts
+ * swap the id, so `/login pa` and `/login pc` authenticate personal accounts
  * without touching the work credentials stored under `anthropic`/`openai-codex`.
  */
 const CLONES = [
-	{ source: "anthropic", id: "ap", name: "Anthropic Personal" },
-	{ source: "openai-codex", id: "op", name: "OpenAI Personal" },
+	{ source: "anthropic", id: "pa", name: "Personal Anthropic" },
+	{ source: "openai-codex", id: "pc", name: "Personal Codex" },
 ] as const;
 
 /**
