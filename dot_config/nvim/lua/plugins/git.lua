@@ -49,10 +49,11 @@ return {
     config = true,
     ---@class AiCommitMsgConfig
     opts = {
-      provider = "copilot",
+      provider = "pi",
       providers = {
-        copilot = {
-          model = "openai/gpt-4o-mini",
+        pi = {
+          model = "github-copilot/gpt-5-mini",
+          thinking = "low",
         },
       },
     },
