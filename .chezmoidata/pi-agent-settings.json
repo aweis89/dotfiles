@@ -21,6 +21,9 @@
   "enabledModels": [
     "anthropic/claude-opus-5",
     "openai-codex/gpt-5.6-sol",
-    "cursor/opus-latest@300k:fast"
+    "cursor/opus-latest@300k:fast",
+    "ap/claude-opus-5",
+    "ap/claude-fable-5",
+    "op/gpt-5.6-sol"
   ]
 }
