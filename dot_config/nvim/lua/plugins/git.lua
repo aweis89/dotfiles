@@ -53,7 +53,7 @@ return {
       providers = {
         pi = {
           model = "openai-codex/gpt-5.6-luna",
-          thinking = "low",
+          thinking = "off",
         },
       },
     },

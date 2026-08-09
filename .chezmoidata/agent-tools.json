@@ -5,6 +5,7 @@
     "claude"
   ],
   "herdrPlugins": [
+    "persiyanov/herdr-reviewr",
     "thanhdat77/herdr-picker-plus",
     "aweis89/herdr-worktree-from-pr"
   ],
