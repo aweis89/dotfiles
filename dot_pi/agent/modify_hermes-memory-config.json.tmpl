@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+source_dir=${CHEZMOI_SOURCE_DIR:-}
+if [ -z "$source_dir" ]; then
+  source_dir=$(chezmoi source-path)
+fi
+
+managed_config_file=$(mktemp)
+trap 'rm -f "$managed_config_file"' EXIT
+
+cat >"$managed_config_file" <<'EOF'
+{
+  "childExtensionPaths": [
+    "{{ .chezmoi.homeDir }}/.pi/agent/extensions/personal-accounts.ts",
+    "{{ .chezmoi.homeDir }}/.pi/agent/extensions/codex-selective-proxy.ts"
+  ]
+}
+EOF
+
+sh "$source_dir/.chezmoi-helpers/merge-json.sh" "$managed_config_file"
