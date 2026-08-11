@@ -2,7 +2,13 @@
 
 jira-done() {
 	local id="$1"
-	jira issue move "$id" --resolution Done "Resolve Issue"
+	local state=${JIRA_DONE_STATE:-Resolve Issue}
+
+	if [[ ${JIRA_DONE_SKIP_RESOLUTION:-0} == 1 ]]; then
+		jira issue move "$id" "$state"
+	else
+		jira issue move "$id" --resolution "${JIRA_DONE_RESOLUTION:-Done}" "$state"
+	fi
 }
 
 download-ticket() {
