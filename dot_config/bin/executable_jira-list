@@ -135,6 +135,7 @@ ctrl-d)
 		fi
 	fi
 	jira-done "$id" || exit 1
+	exit 0
 	;;
 esac
 
