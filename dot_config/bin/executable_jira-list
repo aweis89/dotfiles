@@ -119,7 +119,8 @@ ctrl-h)
 	exit $?
 	;;
 ctrl-d)
-	story_points=$(jira issue view "$id" --raw | jq -r '.fields.customfield_10002 // empty')
+	story_points_field=${JIRA_STORY_POINTS_FIELD:-customfield_10002}
+	story_points=$(jira issue view "$id" --raw | jq -r --arg field "$story_points_field" '.fields[$field] // empty')
 	if [[ -z "$story_points" ]] || [[ "$story_points" == "null" ]]; then
 		echo "Issue $id has no story points."
 		read -r -p "Enter story points: " points
