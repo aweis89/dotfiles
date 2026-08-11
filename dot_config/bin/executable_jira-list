@@ -38,9 +38,9 @@ ACTION="$3"
 jira_list() {
     local filter="$1"
     case "$filter" in
-        0) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -s~Done ;;
-        1) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -s Done ;;
-        2) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" ;;
+        0) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -q 'project IS NOT EMPTY' -s~Done ;;
+        1) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -q 'project IS NOT EMPTY' -s Done ;;
+        2) jira issue list --plain --no-headers --columns type,key,status,summary --assignee "$JIRA_ME" -q 'project IS NOT EMPTY' ;;
     esac
 }
 
