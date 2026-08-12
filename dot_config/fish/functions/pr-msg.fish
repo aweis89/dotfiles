@@ -1,4 +1,7 @@
 function pr-msg
+    argparse v/view -- $argv
+    or return
+
     # Retrieve PR data
     set pr (gh pr view --json url,title,number,isDraft,additions,deletions)
     # Extract repository name
@@ -35,4 +38,9 @@ function pr-msg
     end
     # Output the message and copy to clipboard
     echo (set -q PR_EMOJI; and echo $PR_EMOJI; or echo ":pull-request:")" :shirt: ($size) $msg" | tee /dev/tty | pbcopy
+
+    # Optionally open the PR in the browser
+    if set -q _flag_view
+        gh pr view --web
+    end
 end
