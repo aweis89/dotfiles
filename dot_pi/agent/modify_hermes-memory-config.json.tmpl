@@ -11,6 +11,7 @@ trap 'rm -f "$managed_config_file"' EXIT
 
 cat >"$managed_config_file" <<'EOF'
 {
+  "llmModelOverride": "anthropic/claude-sonnet-5",
   "childExtensionPaths": [
     "{{ .chezmoi.homeDir }}/.pi/agent/extensions/personal-accounts.ts",
     "{{ .chezmoi.homeDir }}/.pi/agent/extensions/codex-selective-proxy.ts"
