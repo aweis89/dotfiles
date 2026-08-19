@@ -4,6 +4,8 @@
   "app.model.cycleForward": ["ctrl+e"],
   "app.thinking.cycle": ["ctrl+tab"],
   "tui.editor.cursorLeft": ["left"],
+  "tui.altScreen.halfPageUp": ["ctrl+u"],
+  "tui.altScreen.halfPageDown": ["ctrl+d"],
   "tui.input.newLine": ["shift+enter", "ctrl+j"],
   "tui.input.submit": ["enter"],
   "tui.input.copy": []
