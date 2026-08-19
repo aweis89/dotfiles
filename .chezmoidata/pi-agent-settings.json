@@ -16,6 +16,7 @@
     "npm:pi-vim"
   ],
   "hideThinkingBlock": false,
+  "tuiMode": "fullscreen",
   "steeringMode": "all",
   "followUpMode": "all",
   "enabledModels": [
