@@ -1,5 +1,5 @@
 -- App-specific key remaps via eventtap.
--- Remaps ctrl+f/l/t/a/s/x to cmd equivalents in Chromium-family browsers.
+-- Remaps ctrl+f/l/t/a/s/x/w to macOS shortcuts in Chromium-family browsers.
 local remap_util = require("lua.remap_util")
 
 local CHROMIUM_FAMILY_APP_NAMES = {
@@ -52,6 +52,12 @@ for _, remap in ipairs({
 		sourceKey = "x",
 		targetMods = { "cmd" },
 		targetKey = "w",
+	},
+	{
+		sourceMods = { ctrl = true },
+		sourceKey = "w",
+		targetMods = { "cmd" },
+		targetKey = "`",
 	},
 }) do
 	remap.appNames = CHROMIUM_FAMILY_APP_NAMES
