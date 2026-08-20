@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "basic-memory": {
+      "command": "basic-memory",
+      "args": [
+        "mcp"
+      ],
+      "env": {
+        "BASIC_MEMORY_NO_PROMOS": "1"
+      },
+      "directTools": [
+        "search_notes",
+        "read_note",
+        "write_note",
+        "edit_note",
+        "build_context",
+        "recent_activity",
+        "list_memory_projects"
+      ],
+      "approveTools": [
+        "delete_note",
+        "delete_project"
+      ]
+    }
+  }
+}

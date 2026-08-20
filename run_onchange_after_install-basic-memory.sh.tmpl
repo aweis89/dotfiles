@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Template dependency: re-run when the managed Basic Memory MCP configuration changes.
+config_file=$(mktemp)
+trap 'rm -f "$config_file"' EXIT
+
+cat >"$config_file" <<'EOF'
+{{ include ".chezmoidata/pi-mcp.json" }}
+EOF
+
+if ! command -v uv >/dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1; then
+    echo "Installing uv for Basic Memory..."
+    brew install uv
+  else
+    echo "uv is required to install Basic Memory" >&2
+    exit 1
+  fi
+fi
+
+echo "Installing Basic Memory..."
+uv tool install --upgrade --native-tls basic-memory
+
+export BASIC_MEMORY_NO_PROMOS=1
+project_name=main
+project_path=${BASIC_MEMORY_PROJECT_PATH:-"$HOME/basic-memory"}
+
+echo "Configuring local Basic Memory project '$project_name' at $project_path..."
+mkdir -p "$project_path"
+basic-memory project set-local "$project_name" --local-path "$project_path"
+
+echo "Basic Memory installation complete"

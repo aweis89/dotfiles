@@ -26,6 +26,18 @@
         "pi"
       ],
       "scope": "global"
+    },
+    {
+      "package": "basicmachines-co/basic-memory/skills",
+      "skills": [
+        "memory-notes",
+        "memory-capture",
+        "memory-continue"
+      ],
+      "agents": [
+        "pi"
+      ],
+      "scope": "global"
     }
   ]
 }

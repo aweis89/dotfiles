@@ -110,7 +110,7 @@ install_skills() {
     done < <(printf '%s\n' "$skill_entry" | jq -r '([.skill? // empty] + (.skills // []))[]')
 
     echo "Installing skills from: $package"
-    npx "${args[@]}"
+    npx "${args[@]}" </dev/null
   done < <(jq -c '.skills[]?' "$config_file")
 }
 
