@@ -18,6 +18,8 @@ Use this skill when reviewing GitHub pull requests, approving PRs, leaving PR re
 - After submitting approvals/comments, verify the resulting state with `gh pr view <pr> --json reviews`.
 - Avoid fragile inline shell quoting for review bodies, especially when comments include Markdown, backticks, `${...}`, `<...>`, apostrophes, or multiline text.
 - Prefer quoted heredocs, temp files, or JSON `--input` payloads for review/comment body text.
+- When reporting a finding in chat, always say whether it can be posted as a GitHub inline suggestion.
+- Write findings in a gentle, matter-of-fact register. State the mechanism and its consequence; do not editorialize about how bad it is.
 
 ## Inspecting PRs
 
@@ -45,6 +47,101 @@ If deeper validation is needed, fetch PR refs locally without changing the user'
 git fetch origin pull/<pr>/head:review-pr-<pr> --force
 git show review-pr-<pr>:path/to/file | nl -ba | sed -n '1,120p'
 ```
+
+## Presenting findings in chat
+
+When you report findings, classify each one two ways: by severity, and by whether it can be posted as an inline suggestion.
+
+Severity groups — blocking, should-fix, nit — must be honest, since users frequently ask to post only the blocking subset.
+
+A finding maps cleanly to an inline suggestion when:
+
+- the fix is a concrete edit to a contiguous range of lines in the diff
+- the replacement text is unambiguous, not one of several reasonable designs
+- applying it on its own leaves the file valid
+
+A finding should stay prose when:
+
+- the fix spans non-contiguous hunks (a suggestion must be one contiguous range, and multi-hunk fixes cannot be applied as a unit)
+- the right shape depends on repo conventions or author intent
+- it concerns the PR description, commit history, or process rather than the diff
+- it is a question rather than a change
+
+Present the mapping as a short table keyed by line number so the user can approve at a glance, and list the non-candidates separately with the reason. Then wait for explicit direction on which to post.
+
+## Posting inline suggestions
+
+`gh pr review` cannot attach inline comments, so build the review payload as JSON and POST it. Generate the JSON with `python3` to avoid shell quoting problems with Markdown, backticks, and `${{ ... }}`.
+
+Get the head SHA first:
+
+```bash
+gh pr view <pr> --json headRefOid --jq .headRefOid
+```
+
+```bash
+python3 - <<'PY'
+import json
+
+comment = """Short explanation of the mechanism and its consequence.
+
+```suggestion
+<replacement text for the entire line range>
+```
+"""
+
+payload = {
+    "commit_id": "<head sha>",
+    "body": "<top-level review body>",
+    "event": "COMMENT",
+    "comments": [
+        {
+            "path": "path/to/file",
+            "start_line": 92,
+            "line": 93,
+            "side": "RIGHT",
+            "start_side": "RIGHT",
+            "body": comment,
+        }
+    ],
+}
+
+with open("/tmp/pr-review.json", "w") as f:
+    json.dump(payload, f)
+PY
+
+gh api --method POST repos/OWNER/REPO/pulls/<pr>/reviews \
+  --input /tmp/pr-review.json \
+  --jq '{id, state, html_url}'
+```
+
+Notes:
+
+- The `suggestion` block replaces the whole `start_line`..`line` range, so it must repeat any unchanged lines inside that range.
+- Omit `start_line` and `start_side` for a single-line comment.
+- Line numbers are relative to the file at `commit_id`; use `side: RIGHT` for added or changed lines.
+- Verify placement afterwards:
+
+```bash
+gh api repos/OWNER/REPO/pulls/<pr>/comments \
+  --jq '.[] | [.id, .path, .start_line, .line] | @tsv'
+```
+
+## Tone
+
+Aim for a careful colleague pointing something out, not a verdict on the author's competence. Findings are usually right on substance and wrong on delivery, so spend the effort on framing.
+
+- Describe the mechanism and its consequence, then stop. Do not append a sentence rating how bad it is.
+- Cut editorializing closers such as "that's worse than no check at all", "this is a footgun", or "this defeats the whole purpose". They carry no information and read as scolding.
+- Prefer conditional framing to absolutist framing: "if someone adds a chart" rather than "the moment someone adds a chart". Same meaning, less accusatory.
+- Drop intensifiers and rhetorical flourish. "Reports a green check without validating" beats "silently passes with zero validation".
+- Make each point once. Restating a criticism for emphasis reads as piling on.
+- Reserve bold and emphasis for technical facts a reader might skim past, never for judgment.
+- Ask instead of asserting when intent is unclear: "is dropping the path filter intentional?" rather than "the path filter was removed".
+- Mention what the PR does well when it is genuinely notable, kept brief and specific. Skip generic praise.
+- Be precise about confidence: separate observed failures, likely risks, style preferences, and questions. Overstating certainty is itself a tone problem.
+
+Re-read every comment body against these points before posting. Removing one judgment sentence is usually the whole edit.
 
 ## Approving good PRs
 
@@ -153,6 +250,9 @@ A quoted heredoc plus `-f body="$body"` also works, but JSON `--input` is safer 
 
 - Approve only PRs that were actually reviewed and have no unresolved concerns.
 - Use a comment-only review for PRs with issues unless the user explicitly asks for a different review state.
+- For every finding, state in chat whether it can be an inline suggestion, and wait for direction on which ones to post.
+- Re-read each comment body for tone before posting: cut judgment sentences, soften absolutist framing, keep the mechanism.
+- After the author pushes fixes, re-fetch the head SHA and diff it against the reviewed SHA to confirm the changes landed as expected before approving.
 - Verify your submitted review state and body with `gh pr view <pr> --json reviews`.
 - If a submitted review comment renders incorrectly, update the review body through the API instead of adding duplicate corrective comments.
 - Be precise when describing findings: distinguish between observed failures, likely risks, style suggestions, and questions.
