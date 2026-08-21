@@ -2,6 +2,7 @@
   "app.interrupt": ["ctrl+c"],
   "app.clear": ["ctrl+x"],
   "app.model.cycleForward": ["ctrl+e"],
+  "app.session.togglePath": [],
   "app.models.toggleProvider": [],
   "app.thinking.cycle": ["ctrl+n"],
   "tui.editor.cursorLeft": ["left"],
