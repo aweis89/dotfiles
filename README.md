@@ -65,11 +65,14 @@ chezmoi add --autotemplate ~/.someconfig
 
 ## Structure
 
-- **Homebrew packages**: `Brewfile` - managed by chezmoi run-once scripts
-- **Shell config**: `.config/fish/` - Fish shell configuration
-- **Application configs**: `.config/` directory with various app configurations
-- **Scripts**: `.config/bin/` - custom utility scripts
-- **Setup automation**: `run_once_*.sh` - automated setup scripts that run on first apply
+Chezmoi reads its source state from `home/`, as configured by `.chezmoiroot`. Files outside `home/` are repository metadata and documentation.
+
+- **Global agent guidance**: `home/AGENTS.md` - managed as `~/AGENTS.md`
+- **Homebrew packages**: `home/Brewfile` - managed by chezmoi run-once scripts
+- **Shell config**: `home/dot_config/fish/` - Fish shell configuration
+- **Application configs**: `home/dot_config/` - application configuration
+- **Scripts**: `home/dot_config/bin/` - custom utility scripts
+- **Setup automation**: `home/run_once_*.sh` - automated setup scripts that run on first apply
 
 ## Migration from Stow
 

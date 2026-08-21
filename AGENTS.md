@@ -1,20 +1,24 @@
-# Global Agent Guidelines
+# Agent Guidelines for Chezmoi Dotfiles
 
-## Local configuration
-- Local dotfiles and workstation configuration are managed with chezmoi in `~/.local/share/chezmoi`.
-- When working in that repo, read `~/.local/share/chezmoi/CHEZMOI_AGENTS.md` for repo-specific guidance.
+Chezmoi-managed dotfiles for Fish shell, Neovim (LazyVim), Hammerspoon, tmux, and macOS.
 
-## Tooling
-- Some binaries are provided by asdf shims under `~/.asdf/shims`. If `which <cmd>` finds a shim but execution says no version is set, check `asdf current <tool>`, `asdf list <tool>`, and `asdf shimversions <cmd>`.
-- asdf version selection depends on the current directory and nearest `.tool-versions`; use an explicit installed version via `asdf shell <tool> <version>` or run from a directory with the right `.tool-versions` when needed.
+## Commands
+- `chezmoi apply <target>` - apply changes for a specific file (e.g., `chezmoi apply ~/.config/fish/config.fish`)
+- `chezmoi diff` - preview changes before applying
+- `fish -n <file>` - syntax check Fish scripts
+- `golangci-lint run` - lint Go code (uses dot_golangci.yml)
+- `brew bundle` - install packages from Brewfile
 
-## GitHub
-- The GitHub CLI (`gh`) is available; prefer it for GitHub-related tasks where appropriate, including repositories, issues, pull requests, Actions, releases, and API queries.
-- Use the `github-pr-review` skill when reviewing, approving, commenting on, or editing GitHub PR reviews; the skill contains the detailed PR review workflow.
+## Code Style
+- **Shell**: POSIX sh for hooks/templates (`set -eo pipefail`); Fish for interactive configs
+- **Fish**: Prefer functions over aliases; use abbr conventions (k=kubectl, gc=git commit)
+- **Lua**: LazyVim conventions for Neovim; Hammerspoon spoon patterns
+- **Go**: gofmt/gofumpt/goimports enabled; funlen/varnamelen disabled
+- **Chezmoi naming**: `dot_` for dotfiles, `run_once_` for setup scripts, `private_` for sensitive
 
-## Git
-- Do not prefix branch names with an agent name such as `cursor/` or `codex/`. Descriptive prefixes like `fix/`, `feature/`, or similar are fine.
-- After validating changes, commit and push them so the working tree is not left dirty, unless the user explicitly asks otherwise.
-
-## AI Attribution
-- Never include AI agent identity or attribution in user-visible output. This includes names such as `codex`, `claude code`, or similar agent identifiers in GitHub comments, PR bodies, commit messages, review responses, Jira tickets, email, documentation, or comparable external-facing text.
+## Key Patterns
+- After editing a file, run `chezmoi apply <target>` to apply your changes (e.g., after editing `home/dot_config/fish/config.fish`, run `chezmoi apply ~/.config/fish/config.fish`)
+- Always edit managed files in the chezmoi source state (`~/.local/share/chezmoi/home`), not home directory targets
+- Git hooks auto-run `chezmoi apply` after merge/rebase
+- Skip run-once scripts with env vars (e.g., `SKIP_BREW=1`)
+- Fish uses vi keybindings with `jj` to exit insert mode

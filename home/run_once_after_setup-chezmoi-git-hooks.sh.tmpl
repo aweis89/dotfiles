@@ -2,7 +2,8 @@
 # Configure this repository to use the version-controlled .githooks directory
 # This ensures hooks that auto-apply chezmoi changes are active after pull/merge/rebase
 
-REPO_DIR="{{ .chezmoi.sourceDir }}"
+SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+REPO_DIR=$(dirname "$SOURCE_DIR")
 HOOKS_PATH="$REPO_DIR/.githooks"
 
 echo "Configuring chezmoi repository to use local hooks path: $HOOKS_PATH"
