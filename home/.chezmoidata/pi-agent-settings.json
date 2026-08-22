@@ -7,7 +7,7 @@
     "npm:@vanillagreen/pi-task-panel",
     "npm:@vanillagreen/pi-tool-renderer",
     "npm:@vanillagreen/pi-web-tools",
-    "npm@plannotator/pi-extension",
+    "npm:@plannotator/pi-extension",
     "npm:@pi-plugins/usage",
     "npm:@mjakl/pi-dark-or-light",
     "npm:@sting8k/pi-vcc",
